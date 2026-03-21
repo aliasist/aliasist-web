@@ -1,4 +1,11 @@
 [README.md](https://github.com/user-attachments/files/26153569/README.md)
+------------------------------------------------------------------------------------------------------------------------------------
+CODED IN WINDOWS + LINUX 
+download here: 
+https://github.com/aliasist/aliasistabductor/releases/tag/%23v2.7.0
+
+------------------------------------------------------------------------------------------------------------------------------------
+
 # 🛸 Aliasist Abductor
 
 **Aliasist Abductor** is a high-performance media utility designed to streamline the process of fetching and archiving digital content (Audio, Video, and Images) from the web.
