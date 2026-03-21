@@ -54,7 +54,7 @@ To ensure a premium user experience, I refactored the animation logic in `index.
 
 ## 👤 Author
 **Blake Hooper**
-* [Portfolio Website](https://your-portfolio-link.com)
+* [Portfolio Website](https://aliasist.com)
 * [GitHub](https://github.com/aliasist)
 
 ---
