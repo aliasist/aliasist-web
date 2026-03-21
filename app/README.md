@@ -24,12 +24,10 @@ Built with a custom animated splash screen, a custom draggable title bar, downlo
 
 ## Screenshots
 
-Add screenshots in this folder so users can preview the app:
-- `assets/screenshots/splash.png`
-- `assets/screenshots/app.png`
+Images live next to the README under `app/assets/` (paths below are relative to `app/README.md`):
 
-![Splash](assets/screenshots/splash.png)
-![App](assets/screenshots/app.png)
+![Splash](assets/splash.png)
+![App](assets/app.png)
 
 ---
 
