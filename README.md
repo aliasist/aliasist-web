@@ -3,7 +3,7 @@
 
 **Aliasist Abductor** is a high-performance media utility designed to streamline the process of fetching and archiving digital content (Audio, Video, and Images) from the web.
 
-![App Screenshot](./assets/main-screenshot.png)
+![App Screenshot](./assets/splash.png)
 
 ## 🌟 Key Features
 
