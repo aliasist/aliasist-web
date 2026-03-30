@@ -1,50 +1,56 @@
 import { motion } from "framer-motion";
+import { playHover, playClick } from "@/hooks/useSound";
 
 const releaseTag = "#v2.7.0";
 const releaseBaseUrl = `https://github.com/aliasist/aliasistabductor/releases/download/${releaseTag}`;
 
-const appImageFile = "Aliasist.Files.Abductor-2.7.0.AppImage";
-const snapFile = "aliasist-files-abductor_2.7.0_amd64.snap";
-const windowsExeFile = "Aliasist.Files.Abductor.Setup.2.7.0.exe";
-
 const downloadLinks = {
-  appImage: `${releaseBaseUrl}/${encodeURIComponent(appImageFile)}`,
-  snap: `${releaseBaseUrl}/${snapFile}`,
-  windowsExe: `${releaseBaseUrl}/${encodeURIComponent(windowsExeFile)}`,
+  appImage: `${releaseBaseUrl}/${encodeURIComponent("Aliasist.Files.Abductor-2.7.0.AppImage")}`,
+  snap:     `${releaseBaseUrl}/aliasist-files-abductor_2.7.0_amd64.snap`,
+  windowsExe: `${releaseBaseUrl}/${encodeURIComponent("Aliasist.Files.Abductor.Setup.2.7.0.exe")}`,
 };
 
 const projects = [
   {
-    name: "Aliaist-Files-Abductor",
+    name: "Aliasist-Files-Abductor",
     description:
       "A file organization and automation tool that abducts your messy directories and deposits them exactly where they belong. Built with a clean CLI interface and an alien theme that doesn't apologize for itself. Does the work. No questions asked.",
     tech: ["Python", "CLI", "File Automation"],
     github: `https://github.com/aliasist/aliasistabductor/releases/tag/${releaseTag}`,
     downloads: [
       { label: "AppImage", href: downloadLinks.appImage },
-      { label: "snap", href: downloadLinks.snap },
-      { label: "Windows EXE", href: downloadLinks.windowsExe },
+      { label: "Snap",     href: downloadLinks.snap },
+      { label: "Windows",  href: downloadLinks.windowsExe },
     ],
-    featured: true,
     status: "Active",
     icon: "🛸",
     link: null as string | null,
     linkLabel: null as string | null,
-    embed: false,
   },
   {
     name: "DataSist",
     description:
-      "Live AI data center intelligence platform — 35+ facilities tracked across 13 countries. Power consumption, water usage, investment, renewable energy coverage, community resistance, and grid stress risk. Includes Groq-powered AI analysis, facility comparison mode, region filters, and a full admin CRUD panel. Part of the Aliasist app suite.",
+      "Live AI data center intelligence platform — 35+ facilities tracked across 13 countries. Power consumption, water usage, investment, renewable energy coverage, community resistance, and grid stress risk. Groq AI analysis, facility comparison, region filters, and a full admin CRUD panel.",
     tech: ["React", "Vite", "SQLite", "Groq AI", "Leaflet", "Recharts"],
     github: "https://github.com/aliasist",
     downloads: [],
-    featured: true,
     status: "Live",
     icon: "🌐",
     link: "/datasist",
     linkLabel: "Open DataSist →",
-    embed: true,
+  },
+];
+
+const comingSoon = [
+  {
+    codename: "PROJECT CIPHER",
+    description: "// adversarial_ml_toolkit — pending clearance",
+    eta: "Q3 2026",
+  },
+  {
+    codename: "PROJECT SPECTER",
+    description: "// ai_threat_modeling_suite — in development",
+    eta: "Q4 2026",
   },
 ];
 
@@ -52,115 +58,157 @@ const ProjectsSection = () => {
   return (
     <section id="projects" className="py-28 px-6">
       <div className="max-w-5xl mx-auto">
-        <div className="classified-divider mb-16">
-          <span>Artifacts // Projects</span>
-        </div>
-
         <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="classified-divider mb-16"
+        >
+          <span>Artifacts // Projects</span>
+        </motion.div>
+
+        <motion.h2
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
+          className="text-3xl sm:text-4xl font-bold text-foreground mb-12 tracking-tight"
         >
-          <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-12 tracking-tight">
-            Deployed tools.
-          </h2>
+          Deployed tools.
+        </motion.h2>
 
-          <div className="grid gap-0.5">
-            {projects.map((project) => (
-              <div
-                key={project.name}
-                className="relative bg-foreground text-background p-8 sm:p-12 overflow-hidden group"
-              >
-                {/* Background icon */}
-                <div className="absolute top-8 right-10 text-6xl opacity-10 select-none">
-                  {project.icon}
+        <div className="grid gap-0.5">
+          {projects.map((project, i) => (
+            <motion.div
+              key={project.name}
+              initial={{ opacity: 0, y: 30 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.55, delay: i * 0.1 }}
+              onMouseEnter={() => playHover()}
+              className="relative bg-foreground text-background p-8 sm:p-12 overflow-hidden group"
+            >
+              {/* Subtle teal glow on hover */}
+              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_hsl(165_90%_42%_/_0.08)_0%,_transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+              {/* Background icon */}
+              <div className="absolute top-8 right-10 text-7xl opacity-[0.07] select-none group-hover:opacity-[0.12] transition-opacity duration-500">
+                {project.icon}
+              </div>
+
+              <div className="flex items-center gap-3 mb-6 relative z-10">
+                <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-electric">
+                  <span className="w-1.5 h-1.5 rounded-full bg-electric animate-pulse" />
+                  {project.status}
+                </span>
+                <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-background/25">
+                  — Featured
+                </span>
+              </div>
+
+              <h3 className="relative z-10 text-2xl sm:text-3xl font-bold text-background mb-4 font-mono tracking-tight">
+                {project.name}
+              </h3>
+              <p className="relative z-10 text-sm text-background/60 leading-relaxed mb-8 max-w-2xl">
+                {project.description}
+              </p>
+
+              <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
+                <div className="flex gap-2 flex-wrap">
+                  {project.tech.map((t) => (
+                    <span
+                      key={t}
+                      className="px-3 py-1 text-[11px] font-mono bg-background/8 text-background/65 border border-background/10 rounded-sm"
+                    >
+                      {t}
+                    </span>
+                  ))}
                 </div>
+                <a
+                  href={project.github}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => playClick()}
+                  className="font-mono text-xs uppercase tracking-[0.1em] text-electric hover:text-electric/70 transition-colors"
+                >
+                  GitHub ↗
+                </a>
+              </div>
 
-                <div className="flex items-center gap-3 mb-6">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-electric">
-                    ● {project.status}
-                  </span>
-                  <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-background/30">
-                    — Featured
-                  </span>
+              {project.downloads.length > 0 && (
+                <div className="relative z-10 flex gap-4 flex-wrap mt-6 pt-6 border-t border-background/10">
+                  {project.downloads.map((d) => (
+                    <a
+                      key={d.label}
+                      href={d.href}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      onMouseEnter={() => playHover()}
+                      onClick={() => playClick()}
+                      className="font-mono text-xs uppercase tracking-[0.1em] text-background/60 hover:text-electric transition-colors flex items-center gap-1.5"
+                    >
+                      ↧ {d.label}
+                    </a>
+                  ))}
                 </div>
+              )}
 
-                <h3 className="text-2xl sm:text-3xl font-bold text-background mb-4 font-mono tracking-tight">
-                  {project.name}
-                </h3>
-
-                <p className="text-sm text-background/60 leading-relaxed mb-8 max-w-2xl">
-                  {project.description}
-                </p>
-
-                <div className="flex items-center justify-between flex-wrap gap-4">
-                  <div className="flex gap-2 flex-wrap">
-                    {project.tech.map((t) => (
-                      <span
-                        key={t}
-                        className="px-3 py-1 text-[11px] font-mono bg-background/10 text-background/70 border border-background/10 rounded-sm"
-                      >
-                        {t}
-                      </span>
-                    ))}
-                  </div>
+              {project.link && (
+                <div className="relative z-10 mt-6">
                   <a
-                    href={project.github}
-                    className="font-mono text-xs uppercase tracking-[0.1em] text-electric hover:text-electric/70 transition-colors flex items-center gap-1.5"
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    href={project.link}
+                    onMouseEnter={() => playHover()}
+                    onClick={() => playClick()}
+                    className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] bg-electric text-background px-5 py-2.5 rounded-sm hover:bg-electric/85 transition-all hover:-translate-y-0.5"
                   >
-                    View on GitHub ↗
+                    {project.linkLabel}
                   </a>
                 </div>
+              )}
+            </motion.div>
+          ))}
 
-                {/* Download links (Abductor) */}
-                {project.downloads.length > 0 && (
-                  <div className="flex gap-3 flex-wrap mt-6">
-                    {project.downloads.map((d) => (
-                      <a
-                        key={d.label}
-                        href={d.href}
-                        className="font-mono text-xs uppercase tracking-[0.1em] text-electric hover:text-electric/70 transition-colors flex items-center gap-1.5"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                      >
-                        Download {d.label} ↧
-                      </a>
-                    ))}
-                  </div>
-                )}
+          {/* Classified coming-soon slots */}
+          <div className="grid sm:grid-cols-2 gap-0.5 mt-0.5">
+            {comingSoon.map((item, i) => (
+              <motion.div
+                key={item.codename}
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                onMouseEnter={() => playHover()}
+                className="relative border border-dashed border-border p-10 flex flex-col items-start justify-between min-h-[180px] bg-card group overflow-hidden hover:border-electric/30 transition-colors"
+              >
+                {/* Redaction bars */}
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
+                  <div className="absolute top-0 left-0 right-0 h-px bg-electric/20" />
+                  <div className="absolute bottom-0 left-0 right-0 h-px bg-electric/20" />
+                </div>
 
-                {/* DataSist launch link */}
-                {project.link && (
-                  <div className="mt-6">
-                    <a
-                      href={project.link}
-                      className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] bg-electric text-background px-5 py-2.5 rounded-sm hover:bg-electric/85 transition-colors"
-                    >
-                      {project.linkLabel}
-                    </a>
-                  </div>
-                )}
-              </div>
+                <div>
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-electric/60 mb-3">
+                    ▓▓▓ CLASSIFIED ▓▓▓
+                  </p>
+                  <p className="font-mono text-sm font-bold text-foreground/50 tracking-tight mb-2">
+                    {item.codename}
+                  </p>
+                  <p className="font-mono text-xs text-muted-foreground/60">
+                    {item.description}
+                  </p>
+                </div>
+
+                <div className="flex items-center gap-2 mt-6">
+                  <span className="w-1.5 h-1.5 rounded-full bg-electric/40 animate-pulse" />
+                  <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/50">
+                    ETA: {item.eta}
+                  </span>
+                </div>
+              </motion.div>
             ))}
-
-            {/* Placeholder slots */}
-            <div className="grid sm:grid-cols-2 gap-0.5">
-              <div className="border border-dashed border-border p-10 flex flex-col items-center justify-center min-h-[160px] bg-card">
-                <p className="font-mono text-xs text-muted-foreground tracking-[0.1em]">
-                  // projects_are_coming_soon
-                </p>
-              </div>
-              <div className="border border-dashed border-border p-10 flex flex-col items-center justify-center min-h-[160px] bg-card">
-                <p className="font-mono text-xs text-muted-foreground tracking-[0.1em]">
-                  // they_will_be_deployed_here_and_on_GitHub
-                </p>
-              </div>
-            </div>
           </div>
-        </motion.div>
+        </div>
       </div>
     </section>
   );

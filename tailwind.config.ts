@@ -1,7 +1,7 @@
 import type { Config } from "tailwindcss";
 
 export default {
-  darkMode: ["class"],
+  darkMode: ["class", "[class~='light']"],
   content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
   prefix: "",
   theme: {
@@ -94,6 +94,23 @@ export default {
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "electric-pulse": "electric-pulse 2.5s ease-in-out infinite",
+        "iris-rotate": "iris-rotate 12s linear infinite",
+        "cursor-blink": "blink 1s step-end infinite",
+      },
+      keyframes: {
+        "electric-pulse": {
+          "0%, 100%": { boxShadow: "0 0 0 0 rgba(0,201,123,0)" },
+          "50%":       { boxShadow: "0 0 16px 4px rgba(0,201,123,0.25)" },
+        },
+        "iris-rotate": {
+          from: { transform: "rotate(0deg)" },
+          to:   { transform: "rotate(360deg)" },
+        },
+        blink: {
+          "0%, 100%": { opacity: "1" },
+          "50%":      { opacity: "0" },
+        },
       },
     },
   },

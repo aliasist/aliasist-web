@@ -1,31 +1,74 @@
 import { motion } from "framer-motion";
+import { playHover, playScan } from "@/hooks/useSound";
+import { useEffect, useRef, useState } from "react";
 
 const skills = [
   "Python", "JavaScript", "HTML / CSS",
   "UI Design", "CLI Tools", "File Automation",
-  "Security Research", "AiSec (Learning)",
+  "Security Research", "AiSec (Learning)", "React / Vite", "Node.js",
 ];
 
 const stats = [
-  { num: "10+", label: "Years coding since childhood" },
-  { num: "2×", label: "Languages — Python & JS" },
-  { num: "1→", label: "Clear target: AiSec" },
-  { num: "∞", label: "Problems left to solve" },
+  { num: "10+", label: "Years coding since childhood", sym: "+" },
+  { num: "2×",  label: "Languages — Python & JS",      sym: "×" },
+  { num: "1→",  label: "Clear target: AiSec",           sym: "→" },
+  { num: "∞",   label: "Problems left to solve",         sym: "∞" },
 ];
 
+const stagger = {
+  hidden: {},
+  show: {
+    transition: { staggerChildren: 0.08 },
+  },
+};
+
+const skillItem = {
+  hidden: { opacity: 0, scale: 0.85 },
+  show:   { opacity: 1, scale: 1, transition: { type: "spring", stiffness: 260, damping: 20 } },
+};
+
+function useScanOnView() {
+  const ref = useRef<HTMLDivElement>(null);
+  const [fired, setFired] = useState(false);
+  useEffect(() => {
+    const el = ref.current;
+    if (!el) return;
+    const obs = new IntersectionObserver(
+      ([entry]) => {
+        if (entry.isIntersecting && !fired) {
+          playScan();
+          setFired(true);
+        }
+      },
+      { threshold: 0.3 }
+    );
+    obs.observe(el);
+    return () => obs.disconnect();
+  }, [fired]);
+  return ref;
+}
+
 const AboutSection = () => {
+  const skillsRef = useScanOnView();
+
   return (
-    <section id="about" className="py-28 px-6 bg-card">
+    <section id="about" className="py-28 px-6 bg-card relative">
       <div className="max-w-5xl mx-auto">
-        <div className="classified-divider mb-16">
+        <motion.div
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5 }}
+          className="classified-divider mb-16"
+        >
           <span>Dossier // About</span>
-        </div>
+        </motion.div>
 
         <div className="grid md:grid-cols-2 gap-16 items-start">
           {/* Left — bio */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: -24 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
@@ -33,77 +76,93 @@ const AboutSection = () => {
               Origin file.
             </h2>
 
-            <div className="space-y-4 text-base leading-relaxed text-foreground/70">
+            <div className="space-y-5 text-base leading-relaxed text-foreground/65">
               <p>
                 I've been poking at code since I was a kid —{" "}
-                <strong className="text-foreground font-semibold">HTML, CSS</strong>, It's always been a passion of mine. It's been interesting with the advent of AI to see where the new wave of tech is heading. It's something I want to be a part of, and learn more about.  
+                <strong className="text-foreground font-semibold">HTML, CSS, Python</strong>.
+                Always a passion project. The advent of AI changed the
+                trajectory entirely — this is the frontier I want to be on.
               </p>
               <p>
-                Now I'm studying{" "}
-                <strong className="text-foreground font-semibold">Computer Information Systems</strong>{" "}
-                Focusing on trending software. and developments. " "
-                <strong className="text-foreground font-semibold">
-                  Scripts and Tools for AI Development coming soon... 
-                </strong>
-                . Aliasist is where I build, experiment, and ship real tools while I
-                work toward that.
+                Currently studying{" "}
+                <strong className="text-foreground font-semibold">Computer Information Systems</strong>,
+                building open-source security tools, and learning the adversarial
+                side of machine learning. Aliasist is where I ship real things
+                while I work toward that goal.
               </p>
               <p>
-                Python, JavaScript, CSS, and HTML.{" "}
-                <strong className="text-foreground font-semibold">The obsession isn't.</strong>
+                The tools change.{" "}
+                <strong className="text-foreground font-semibold">The obsession doesn't.</strong>
               </p>
             </div>
 
             {/* Path badge */}
-            <div className="mt-8 inline-flex items-center gap-2 bg-foreground text-electric font-mono text-xs px-4 py-2 tracking-[0.1em] uppercase">
+            <motion.div
+              whileHover={{ x: 4 }}
+              transition={{ type: "spring", stiffness: 300 }}
+              className="mt-8 inline-flex items-center gap-2 bg-foreground text-electric font-mono text-xs px-4 py-2.5 tracking-[0.12em] uppercase"
+            >
               ◈ Path: CIS → CS → AiSec
-            </div>
+            </motion.div>
 
             {/* Skills */}
-            <div className="mt-10">
+            <div className="mt-10" ref={skillsRef}>
               <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-muted-foreground mb-4">
                 // skill_set
               </p>
-              <div className="flex flex-wrap gap-2">
+              <motion.div
+                className="flex flex-wrap gap-2"
+                variants={stagger}
+                initial="hidden"
+                whileInView="show"
+                viewport={{ once: true }}
+              >
                 {skills.map((skill) => (
-                  <span
+                  <motion.span
                     key={skill}
-                    className="px-3 py-1.5 text-xs font-mono bg-background text-foreground/70 border border-border rounded-sm hover:border-electric/40 hover:text-foreground transition-colors"
+                    variants={skillItem}
+                    onMouseEnter={() => playHover()}
+                    className="px-3 py-1.5 text-xs font-mono bg-background text-foreground/65 border border-border rounded-sm hover:border-electric/50 hover:text-electric hover:bg-electric/5 transition-all cursor-default"
                   >
                     {skill}
-                  </span>
+                  </motion.span>
                 ))}
-              </div>
+              </motion.div>
             </div>
           </motion.div>
 
           {/* Right — stats */}
           <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
+            initial={{ opacity: 0, x: 24 }}
+            whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.15 }}
+            transition={{ duration: 0.6, delay: 0.12 }}
             className="flex flex-col gap-0.5"
           >
-            {stats.map((s) => (
-              <div
+            {stats.map((s, i) => (
+              <motion.div
                 key={s.num}
-                className="group bg-background border-l-2 border-transparent hover:border-electric px-8 py-7 transition-all hover:bg-card"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true }}
+                transition={{ duration: 0.5, delay: i * 0.1 }}
+                onMouseEnter={() => playHover()}
+                className="group bg-background border-l-2 border-transparent hover:border-electric px-8 py-7 transition-all duration-300 hover:bg-card hover:shadow-[inset_4px_0_0_hsl(165_90%_42%_/_0.15)]"
               >
                 <div className="text-5xl font-bold tracking-tight text-foreground mb-1">
-                  {s.num.includes("+") || s.num.includes("×") || s.num.includes("→") ? (
-                    <>
-                      {s.num.replace(/[+×→∞]/, "")}
-                      <span className="text-electric">{s.num.match(/[+×→∞]/)?.[0]}</span>
-                    </>
+                  {s.sym === "∞" ? (
+                    <span className="text-electric">∞</span>
                   ) : (
-                    <span>{s.num}</span>
+                    <>
+                      <span>{s.num.replace(/[+×→∞]/g, "")}</span>
+                      <span className="text-electric">{s.sym}</span>
+                    </>
                   )}
                 </div>
-                <div className="font-mono text-xs uppercase tracking-[0.1em] text-muted-foreground">
+                <div className="font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground group-hover:text-foreground/70 transition-colors">
                   {s.label}
                 </div>
-              </div>
+              </motion.div>
             ))}
           </motion.div>
         </div>
