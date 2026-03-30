@@ -1,12 +1,16 @@
-import  React, { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
+import { Link, useLocation } from "react-router-dom";
 import { motion } from "framer-motion";
 import logo from "@/assets/logo-transparent.png";
 
-const navLinks = [
+const anchorLinks = [
   { label: "About", href: "#about" },
   { label: "Projects", href: "#projects" },
   { label: "Blog", href: "#blog" },
-  { label: "Contact", href: "#contact" },
+];
+
+const routeLinks = [
+  { label: "DataSist", href: "/datasist" },
 ];
 
 const Navbar = () => {
@@ -39,6 +43,9 @@ const Navbar = () => {
     });
   };
 
+  const location = useLocation();
+  const isOnDataSist = location.pathname === "/datasist";
+
   return (
     <motion.nav
       initial={{ y: -80 }}
@@ -51,12 +58,13 @@ const Navbar = () => {
       }`}
     >
       <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
-    <a href="#" className="flex items-center">
-        <img src={logo} alt="Aliasist" className="h-8 w-auto" />
-          </a>
+        <a href="/" className="flex items-center">
+          <img src={logo} alt="Aliasist" className="h-8 w-auto" />
+        </a>
         {/* Desktop */}
         <div className="hidden md:flex items-center gap-8">
-          {navLinks.slice(0, -1).map((link) => (
+          {/* Anchor links — only show when not on a sub-page */}
+          {!isOnDataSist && anchorLinks.map((link) => (
             <a
               key={link.href}
               href={link.href}
@@ -64,6 +72,20 @@ const Navbar = () => {
             >
               {link.label}
             </a>
+          ))}
+          {/* Route links */}
+          {routeLinks.map((link) => (
+            <Link
+              key={link.href}
+              to={link.href}
+              className={`text-xs font-mono uppercase tracking-[0.1em] transition-colors ${
+                location.pathname === link.href
+                  ? "text-electric"
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              {link.label}
+            </Link>
           ))}
           <button
             type="button"
@@ -81,12 +103,14 @@ const Navbar = () => {
             </span>
             <span className="hidden lg:inline">{isDark ? "Dark" : "Light"}</span>
           </button>
-          <a
-            href="#contact"
-            className="text-xs font-mono uppercase tracking-[0.1em] bg-foreground text-background px-4 py-2 rounded-sm hover:bg-foreground/85 transition-colors"
-          >
-            Contact
-          </a>
+          {!isOnDataSist && (
+            <a
+              href="#contact"
+              className="text-xs font-mono uppercase tracking-[0.1em] bg-foreground text-background px-4 py-2 rounded-sm hover:bg-foreground/85 transition-colors"
+            >
+              Contact
+            </a>
+          )}
         </div>
 
         {/* Mobile toggle */}
@@ -168,7 +192,7 @@ const Navbar = () => {
               <span>Theme</span>
               <span className="text-foreground">{isDark ? "Dark" : "Light"}</span>
             </button>
-            {navLinks.map((link) => (
+            {anchorLinks.map((link) => (
               <a
                 key={link.href}
                 href={link.href}
@@ -178,6 +202,27 @@ const Navbar = () => {
                 {link.label}
               </a>
             ))}
+            {routeLinks.map((link) => (
+              <Link
+                key={link.href}
+                to={link.href}
+                onClick={() => setMobileOpen(false)}
+                className={`text-xs font-mono uppercase tracking-[0.1em] transition-colors ${
+                  location.pathname === link.href
+                    ? "text-electric"
+                    : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {link.label}
+              </Link>
+            ))}
+            <a
+              href="#contact"
+              onClick={() => setMobileOpen(false)}
+              className="text-xs font-mono uppercase tracking-[0.1em] text-muted-foreground hover:text-foreground"
+            >
+              Contact
+            </a>
           </div>
         </motion.div>
       )}

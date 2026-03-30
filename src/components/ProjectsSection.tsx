@@ -28,6 +28,23 @@ const projects = [
     featured: true,
     status: "Active",
     icon: "🛸",
+    link: null as string | null,
+    linkLabel: null as string | null,
+    embed: false,
+  },
+  {
+    name: "DataSist",
+    description:
+      "Live AI data center intelligence platform — 35+ facilities tracked across 13 countries. Power consumption, water usage, investment, renewable energy coverage, community resistance, and grid stress risk. Includes Groq-powered AI analysis, facility comparison mode, region filters, and a full admin CRUD panel. Part of the Aliasist app suite.",
+    tech: ["React", "Vite", "SQLite", "Groq AI", "Leaflet", "Recharts"],
+    github: "https://github.com/aliasist",
+    downloads: [],
+    featured: true,
+    status: "Live",
+    icon: "🌐",
+    link: "/datasist",
+    linkLabel: "Open DataSist →",
+    embed: true,
   },
 ];
 
@@ -50,7 +67,6 @@ const ProjectsSection = () => {
           </h2>
 
           <div className="grid gap-0.5">
-            {/* Featured project */}
             {projects.map((project) => (
               <div
                 key={project.name}
@@ -99,23 +115,38 @@ const ProjectsSection = () => {
                   </a>
                 </div>
 
-                <div className="flex gap-3 flex-wrap mt-6">
-                  {project.downloads.map((d) => (
+                {/* Download links (Abductor) */}
+                {project.downloads.length > 0 && (
+                  <div className="flex gap-3 flex-wrap mt-6">
+                    {project.downloads.map((d) => (
+                      <a
+                        key={d.label}
+                        href={d.href}
+                        className="font-mono text-xs uppercase tracking-[0.1em] text-electric hover:text-electric/70 transition-colors flex items-center gap-1.5"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                      >
+                        Download {d.label} ↧
+                      </a>
+                    ))}
+                  </div>
+                )}
+
+                {/* DataSist launch link */}
+                {project.link && (
+                  <div className="mt-6">
                     <a
-                      key={d.label}
-                      href={d.href}
-                      className="font-mono text-xs uppercase tracking-[0.1em] text-electric hover:text-electric/70 transition-colors flex items-center gap-1.5"
-                      target="_blank"
-                      rel="noopener noreferrer"
+                      href={project.link}
+                      className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] bg-electric text-background px-5 py-2.5 rounded-sm hover:bg-electric/85 transition-colors"
                     >
-                      Download {d.label} ↧
+                      {project.linkLabel}
                     </a>
-                  ))}
-                </div>
+                  </div>
+                )}
               </div>
             ))}
 
-            {/* Placeholders */}
+            {/* Placeholder slots */}
             <div className="grid sm:grid-cols-2 gap-0.5">
               <div className="border border-dashed border-border p-10 flex flex-col items-center justify-center min-h-[160px] bg-card">
                 <p className="font-mono text-xs text-muted-foreground tracking-[0.1em]">
