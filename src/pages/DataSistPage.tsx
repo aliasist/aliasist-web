@@ -4,8 +4,7 @@ import { motion } from "framer-motion";
 import logo from "@/assets/logo-transparent.png";
 import { playClick } from "@/hooks/useSound";
 
-const DATASIST_URL =
-  "https://www.perplexity.ai/computer/a/datasist-dist-public-0ilHep44QzGPA4yskFRNOQ";
+const DATASIST_URL = "https://data.aliasist.com";
 
 const DataSistPage = () => {
   const [loaded, setLoaded] = useState(false);
