@@ -1,6 +1,7 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { playHover, playTransmit } from "@/hooks/useSound";
 import { useEffect, useRef, useState } from "react";
+import { useAIImage } from "@/hooks/useAIImage";
 
 // Will be replaced with live worker URL after deploy
 const NEWS_API = "https://aliasist-news.bchooper0730.workers.dev/api/news";
@@ -75,6 +76,87 @@ const FALLBACK_POSTS = [
 ];
 
 const FILTERS = ["All", "AI & Tech", "Finance", "Defense", "AiSec"];
+
+// Individual blog card — isolated so each can call useAIImage independently
+const BlogCard = ({ article, index }: { article: Article; index: number }) => {
+  const { src: aiThumb } = useAIImage("blog", { width: 800, height: 450 });
+
+  return (
+    <motion.a
+      href={article.url}
+      target="_blank"
+      rel="noopener noreferrer"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.4, delay: index * 0.04 }}
+      onMouseEnter={() => playHover()}
+      className="group bg-background border border-border hover:border-electric/30 transition-all duration-300 relative overflow-hidden hover:-translate-y-0.5 flex flex-col"
+    >
+      {/* AI-generated thumbnail image at top of card */}
+      <div className="relative w-full aspect-video overflow-hidden bg-card">
+        {aiThumb ? (
+          <motion.img
+            src={aiThumb}
+            alt=""
+            aria-hidden="true"
+            className="w-full h-full object-cover"
+            initial={{ opacity: 0, scale: 1.04 }}
+            animate={{ opacity: 1, scale: 1 }}
+            transition={{ duration: 0.9, ease: "easeOut" }}
+          />
+        ) : (
+          // Shimmer placeholder while loading
+          <div className="w-full h-full bg-gradient-to-r from-card via-border/20 to-card animate-pulse" />
+        )}
+        {/* Dark overlay so text underneath stays readable */}
+        <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
+        {/* Category tag on image */}
+        <div className="absolute bottom-3 left-3">
+          <span
+            className="font-mono text-[10px] uppercase tracking-[0.15em] px-2 py-0.5 border rounded-sm backdrop-blur-sm bg-background/40"
+            style={{ color: article.color, borderColor: `${article.color}40` }}
+          >
+            {article.tag === "aisec" ? "AiSec" : article.tag}
+          </span>
+        </div>
+      </div>
+
+      {/* Card body */}
+      <div className="p-5 flex flex-col flex-1">
+        {/* Bottom accent line */}
+        <div
+          className="absolute bottom-0 left-0 right-0 h-px scale-x-0 group-hover:scale-x-100 transition-transform duration-400 origin-left"
+          style={{ background: article.color }}
+        />
+
+        {/* Time */}
+        <div className="flex items-center justify-between mb-3">
+          <span className="font-mono text-[10px] text-muted-foreground/50">
+            {timeAgo(article.published)}
+          </span>
+        </div>
+
+        {/* Title */}
+        <h3 className="text-sm font-semibold text-foreground/85 leading-snug mb-3 group-hover:text-foreground transition-colors duration-200 flex-1">
+          {article.title}
+        </h3>
+
+        {/* Source + arrow */}
+        <div className="flex items-center justify-between mt-2">
+          <span className="font-mono text-[10px] text-muted-foreground/40 truncate max-w-[140px]">
+            {article.source}
+          </span>
+          <span
+            className="font-mono text-[11px] opacity-0 group-hover:opacity-100 transition-opacity duration-200"
+            style={{ color: article.color }}
+          >
+            Read ↗
+          </span>
+        </div>
+      </div>
+    </motion.a>
+  );
+};
 
 const TransmissionsSection = () => {
   const sectionRef = useTransmitOnView();
@@ -213,54 +295,7 @@ const TransmissionsSection = () => {
               className="grid sm:grid-cols-2 lg:grid-cols-3 gap-0.5"
             >
               {displayed.map((article, i) => (
-                <motion.a
-                  key={article.id}
-                  href={article.url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: i * 0.04 }}
-                  onMouseEnter={() => playHover()}
-                  className="group bg-background border border-border p-6 hover:border-electric/30 transition-all duration-300 relative overflow-hidden hover:-translate-y-0.5 flex flex-col"
-                >
-                  {/* Bottom accent line */}
-                  <div
-                    className="absolute bottom-0 left-0 right-0 h-px scale-x-0 group-hover:scale-x-100 transition-transform duration-400 origin-left"
-                    style={{ background: article.color }}
-                  />
-
-                  {/* Tag + time */}
-                  <div className="flex items-center justify-between mb-4">
-                    <span
-                      className="font-mono text-[10px] uppercase tracking-[0.15em] px-2 py-0.5 border rounded-sm"
-                      style={{ color: article.color, borderColor: `${article.color}40` }}
-                    >
-                      {article.tag === "aisec" ? "AiSec" : article.tag}
-                    </span>
-                    <span className="font-mono text-[10px] text-muted-foreground/50">
-                      {timeAgo(article.published)}
-                    </span>
-                  </div>
-
-                  {/* Title */}
-                  <h3 className="text-sm font-semibold text-foreground/85 leading-snug mb-3 group-hover:text-foreground transition-colors duration-200 flex-1">
-                    {article.title}
-                  </h3>
-
-                  {/* Source + arrow */}
-                  <div className="flex items-center justify-between mt-2">
-                    <span className="font-mono text-[10px] text-muted-foreground/40 truncate max-w-[140px]">
-                      {article.source}
-                    </span>
-                    <span
-                      className="font-mono text-[11px] opacity-0 group-hover:opacity-100 transition-opacity duration-200"
-                      style={{ color: article.color }}
-                    >
-                      Read ↗
-                    </span>
-                  </div>
-                </motion.a>
+                <BlogCard key={article.id} article={article} index={i} />
               ))}
             </motion.div>
           </AnimatePresence>

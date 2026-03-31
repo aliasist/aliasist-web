@@ -4,6 +4,7 @@ import pulseBanner from "@/assets/pulse-banner-command.jpg";
 import abduction1 from "@/assets/abduction-1.jpg";
 import spaceLogo from "@/assets/spacesist-logo.png";
 import tikaLogo from "@/assets/tikasist-logo.png";
+import { useAIImage, type AIImageType } from "@/hooks/useAIImage";
 
 const releaseTag = "#v2.7.0";
 const releaseBaseUrl = `https://github.com/aliasist/aliasistabductor/releases/download/${releaseTag}`;
@@ -27,6 +28,7 @@ const projects = [
     link: "https://tikasist.pages.dev",
     linkLabel: "Open TikaSist →",
     banner: tikaLogo,
+    aiType: "project-tikasist" as AIImageType,
   },
   {
     name: "SpaceSist",
@@ -40,6 +42,7 @@ const projects = [
     link: "https://space.aliasist.com",
     linkLabel: "Open SpaceSist →",
     banner: spaceLogo,
+    aiType: "project-spacesist" as AIImageType,
   },
   {
     name: "PulseSist",
@@ -53,6 +56,7 @@ const projects = [
     link: "https://pulse.aliasist.com",
     linkLabel: "Open PulseSist →",
     banner: pulseBanner,
+    aiType: "project-pulsesist" as AIImageType,
   },
   {
     name: "Aliasist-Files-Abductor",
@@ -70,6 +74,7 @@ const projects = [
     link: null as string | null,
     linkLabel: null as string | null,
     banner: abduction1,
+    aiType: "project-generic" as AIImageType,
   },
   {
     name: "DataSist",
@@ -83,6 +88,7 @@ const projects = [
     link: "https://datasist-frontend.pages.dev",
     linkLabel: "Open DataSist →",
     banner: null,
+    aiType: "project-datasist" as AIImageType,
   },
 ];
 
@@ -98,6 +104,120 @@ const comingSoon = [
     eta: "Q4 2026",
   },
 ];
+
+// Per-card component so each card can independently call useAIImage
+const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: number }) => {
+  const { src: aiSrc } = useAIImage(project.aiType, { width: 1200, height: 600 });
+
+  return (
+    <motion.div
+      key={project.name}
+      initial={{ opacity: 0, y: 30 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true }}
+      transition={{ duration: 0.55, delay: index * 0.1 }}
+      onMouseEnter={() => playHover()}
+      className="relative bg-foreground text-background p-8 sm:p-12 overflow-hidden group"
+    >
+      {/* Static fallback banner — always present at base opacity */}
+      {project.banner && (
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-[0.06] pointer-events-none"
+          style={{ backgroundImage: `url(${project.banner})` }}
+        />
+      )}
+
+      {/* AI-generated banner — fades in over the fallback, intensifies on hover */}
+      {aiSrc && (
+        <motion.div
+          className="absolute inset-0 bg-cover bg-center pointer-events-none"
+          style={{ backgroundImage: `url(${aiSrc})` }}
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 0.12 }}
+          whileHover={{ opacity: 0.22 }}
+          transition={{ duration: 1.2, ease: "easeInOut" }}
+        />
+      )}
+
+      {/* Teal glow on hover */}
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_hsl(165_90%_42%_/_0.08)_0%,_transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+
+      {/* Background icon */}
+      <div className="absolute top-8 right-10 text-7xl opacity-[0.07] select-none group-hover:opacity-[0.12] transition-opacity duration-500">
+        {project.icon}
+      </div>
+
+      <div className="flex items-center gap-3 mb-6 relative z-10">
+        <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-electric">
+          <span className="w-1.5 h-1.5 rounded-full bg-electric animate-pulse" />
+          {project.status}
+        </span>
+        <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-background/25">
+          — Featured
+        </span>
+      </div>
+
+      <h3 className="relative z-10 text-2xl sm:text-3xl font-bold text-background mb-4 font-mono tracking-tight">
+        {project.name}
+      </h3>
+      <p className="relative z-10 text-sm text-background/60 leading-relaxed mb-8 max-w-2xl">
+        {project.description}
+      </p>
+
+      <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
+        <div className="flex gap-2 flex-wrap">
+          {project.tech.map((t) => (
+            <span key={t} className="px-3 py-1 text-[11px] font-mono bg-background/10 text-background/65 border border-background/10 rounded-sm">
+              {t}
+            </span>
+          ))}
+        </div>
+        <a
+          href={project.github}
+          target="_blank"
+          rel="noopener noreferrer"
+          onClick={() => playClick()}
+          className="font-mono text-xs uppercase tracking-[0.1em] text-electric hover:text-electric/70 transition-colors"
+        >
+          GitHub ↗
+        </a>
+      </div>
+
+      {project.downloads.length > 0 && (
+        <div className="relative z-10 flex gap-4 flex-wrap mt-6 pt-6 border-t border-background/10">
+          {project.downloads.map((d) => (
+            <a
+              key={d.label}
+              href={d.href}
+              target="_blank"
+              rel="noopener noreferrer"
+              onMouseEnter={() => playHover()}
+              onClick={() => playClick()}
+              className="font-mono text-xs uppercase tracking-[0.1em] text-background/60 hover:text-electric transition-colors"
+            >
+              ↧ {d.label}
+            </a>
+          ))}
+        </div>
+      )}
+
+      {project.link && (
+        <div className="relative z-10 mt-6">
+          <a
+            href={project.link}
+            target="_blank"
+            rel="noopener noreferrer"
+            onMouseEnter={() => playHover()}
+            onClick={() => playClick()}
+            className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] bg-electric text-background px-5 py-2.5 rounded-sm hover:bg-electric/85 transition-all hover:-translate-y-0.5"
+          >
+            {project.linkLabel}
+          </a>
+        </div>
+      )}
+    </motion.div>
+  );
+};
 
 const ProjectsSection = () => {
   return (
@@ -125,100 +245,7 @@ const ProjectsSection = () => {
 
         <div className="grid gap-0.5">
           {projects.map((project, i) => (
-            <motion.div
-              key={project.name}
-              initial={{ opacity: 0, y: 30 }}
-              whileInView={{ opacity: 1, y: 0 }}
-              viewport={{ once: true }}
-              transition={{ duration: 0.55, delay: i * 0.1 }}
-              onMouseEnter={() => playHover()}
-              className="relative bg-foreground text-background p-8 sm:p-12 overflow-hidden group"
-            >
-              {/* Banner image background */}
-              {project.banner && (
-                <div
-                  className="absolute inset-0 bg-cover bg-center opacity-[0.08] group-hover:opacity-[0.15] transition-opacity duration-700"
-                  style={{ backgroundImage: `url(${project.banner})` }}
-                />
-              )}
-
-              {/* Teal glow on hover */}
-              <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_hsl(165_90%_42%_/_0.08)_0%,_transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-
-              {/* Background icon */}
-              <div className="absolute top-8 right-10 text-7xl opacity-[0.07] select-none group-hover:opacity-[0.12] transition-opacity duration-500">
-                {project.icon}
-              </div>
-
-              <div className="flex items-center gap-3 mb-6 relative z-10">
-                <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-electric">
-                  <span className="w-1.5 h-1.5 rounded-full bg-electric animate-pulse" />
-                  {project.status}
-                </span>
-                <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-background/25">
-                  — Featured
-                </span>
-              </div>
-
-              <h3 className="relative z-10 text-2xl sm:text-3xl font-bold text-background mb-4 font-mono tracking-tight">
-                {project.name}
-              </h3>
-              <p className="relative z-10 text-sm text-background/60 leading-relaxed mb-8 max-w-2xl">
-                {project.description}
-              </p>
-
-              <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
-                <div className="flex gap-2 flex-wrap">
-                  {project.tech.map((t) => (
-                    <span key={t} className="px-3 py-1 text-[11px] font-mono bg-background/10 text-background/65 border border-background/10 rounded-sm">
-                      {t}
-                    </span>
-                  ))}
-                </div>
-                <a
-                  href={project.github}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  onClick={() => playClick()}
-                  className="font-mono text-xs uppercase tracking-[0.1em] text-electric hover:text-electric/70 transition-colors"
-                >
-                  GitHub ↗
-                </a>
-              </div>
-
-              {project.downloads.length > 0 && (
-                <div className="relative z-10 flex gap-4 flex-wrap mt-6 pt-6 border-t border-background/10">
-                  {project.downloads.map((d) => (
-                    <a
-                      key={d.label}
-                      href={d.href}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      onMouseEnter={() => playHover()}
-                      onClick={() => playClick()}
-                      className="font-mono text-xs uppercase tracking-[0.1em] text-background/60 hover:text-electric transition-colors"
-                    >
-                      ↧ {d.label}
-                    </a>
-                  ))}
-                </div>
-              )}
-
-              {project.link && (
-                <div className="relative z-10 mt-6">
-                  <a
-                    href={project.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    onMouseEnter={() => playHover()}
-                    onClick={() => playClick()}
-                    className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] bg-electric text-background px-5 py-2.5 rounded-sm hover:bg-electric/85 transition-all hover:-translate-y-0.5"
-                  >
-                    {project.linkLabel}
-                  </a>
-                </div>
-              )}
-            </motion.div>
+            <ProjectCard key={project.name} project={project} index={i} />
           ))}
 
           {/* Classified coming-soon slots */}
