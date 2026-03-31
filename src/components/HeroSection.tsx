@@ -1,10 +1,17 @@
 import { motion } from "framer-motion";
 import AlienEye from "./AlienEye";
 import { playClick } from "@/hooks/useSound";
+import heroBanner from "@/assets/hero-banner.png";
+import badge from "@/assets/badge.png";
 
 const HeroSection = () => {
   return (
     <section className="relative min-h-screen flex items-center justify-center grid-bg overflow-hidden scanlines">
+      {/* Hero banner background — very subtle, mostly dark */}
+      <div
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.12] pointer-events-none"
+        style={{ backgroundImage: `url(${heroBanner})` }}
+      />
       {/* Radial gradient centered on eye */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_60%_at_50%_40%,_hsl(165_90%_42%_/_0.07)_0%,_transparent_70%)] pointer-events-none" />
 
@@ -109,6 +116,20 @@ const HeroSection = () => {
           <span>Aliasist Suite</span>
         </motion.div>
       </div>
+
+      {/* Roswell badge watermark — bottom left */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ delay: 1.5, duration: 1 }}
+        className="absolute bottom-16 left-8 hidden lg:block pointer-events-none"
+      >
+        <img
+          src={badge}
+          alt="Aliasist Roswell Badge"
+          className="w-28 h-28 opacity-20 hover:opacity-40 transition-opacity duration-500"
+        />
+      </motion.div>
 
       {/* Bottom fade */}
       <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background to-transparent pointer-events-none" />
