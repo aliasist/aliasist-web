@@ -12,7 +12,7 @@ const anchorLinks = [
 ];
 
 const routeLinks = [
-  { label: "DataSist", href: "/datasist" },
+  { label: "DataSist", href: "https://datasist-frontend.pages.dev", external: true },
   { label: "PulseSist", href: "https://pulse.aliasist.com", external: true },
 ];
 
@@ -100,15 +100,17 @@ const Navbar = () => {
               ))}
 
             {routeLinks.map((link) => (
-              <Link
+              <a
                 key={link.href}
-                to={link.href}
+                href={link.href}
+                target="_blank"
+                rel="noopener noreferrer"
                 onMouseEnter={() => playHover()}
                 onClick={() => playClick()}
-                className={navLinkClass(location.pathname === link.href)}
+                className={navLinkClass()}
               >
                 {link.label}
-              </Link>
+              </a>
             ))}
 
             {/* Sound toggle */}
@@ -202,16 +204,16 @@ const Navbar = () => {
                     </a>
                   ))}
                 {routeLinks.map((link) => (
-                  <Link
+                  <a
                     key={link.href}
-                    to={link.href}
+                    href={link.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onClick={() => { playClick(); setMobileOpen(false); }}
-                    className={`text-xs font-mono uppercase tracking-[0.1em] transition-colors ${
-                      location.pathname === link.href ? "text-electric" : "text-muted-foreground hover:text-foreground"
-                    }`}
+                    className="text-xs font-mono uppercase tracking-[0.1em] text-muted-foreground hover:text-electric transition-colors py-1"
                   >
-                    {link.label}
-                  </Link>
+                    {link.label} ↗
+                  </a>
                 ))}
                 <button
                   onClick={toggleSound}

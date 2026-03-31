@@ -367,3 +367,88 @@ button, a[class*="rounded"] {
     align-items: center;
   }
 }
+
+/* ─── Mobile responsive fixes ─── */
+
+/* Hero wordmark — scale down on small screens */
+@media (max-width: 480px) {
+  .glitch-text {
+    font-size: clamp(3rem, 18vw, 6rem) !important;
+  }
+}
+
+/* Touch-friendly interactive elements */
+@media (max-width: 768px) {
+  /* Larger tap targets */
+  a, button {
+    min-height: 44px;
+  }
+
+  /* Full-width CTAs on mobile */
+  .flex.flex-col.sm\\:flex-row a {
+    width: 100%;
+    justify-content: center;
+  }
+
+  /* Projects section padding */
+  section#projects .p-8 {
+    padding: 1.5rem;
+  }
+
+  /* Classified cards full width */
+  .grid.sm\\:grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+
+  /* About section — full width columns */
+  .grid.md\\:grid-cols-2 {
+    grid-template-columns: 1fr;
+  }
+
+  /* Contact links readable on mobile */
+  .font-mono.text-sm {
+    font-size: 0.8rem;
+  }
+
+  /* Transmissions grid — single column on small mobile */
+  .grid.lg\\:grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  /* Transmissions — 1 col */
+  .grid.sm\\:grid-cols-2.lg\\:grid-cols-3 {
+    grid-template-columns: 1fr;
+  }
+
+  /* Reduce section padding on mobile */
+  .py-28 {
+    padding-top: 4rem;
+    padding-bottom: 4rem;
+  }
+
+  /* Stat cards full width */
+  .border-l-2 {
+    padding-left: 1.25rem;
+    padding-right: 1.25rem;
+  }
+}
+
+/* DataSist page mobile */
+@media (max-width: 768px) {
+  .grid.sm\\:grid-cols-2:not(.gap-0\\.5) {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Prevent horizontal scroll */
+html, body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}

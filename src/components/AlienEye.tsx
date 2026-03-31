@@ -48,7 +48,7 @@ const AlienEye = () => {
     <motion.div
       ref={eyeRef}
       className="relative flex items-center justify-center"
-      style={{ width: 200, height: 200 }}
+      style={{ width: "clamp(140px, 30vw, 200px)", height: "clamp(140px, 30vw, 200px)" }}
       initial={{ scale: 0.6, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}
       transition={{ duration: 1.2, ease: [0.34, 1.56, 0.64, 1] }}
