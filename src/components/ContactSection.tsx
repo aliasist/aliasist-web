@@ -163,7 +163,7 @@ const ContactSection = () => {
                 {[
                   { n: "5", l: "Live Apps" },
                   { n: "7", l: "APIs" },
-                  { n: "48+", l: "Data Centers" },
+                  { n: "340+", l: "Data Centers" },
                 ].map((s) => (
                   <div key={s.l} className="bg-background/5 border border-background/10 p-4 text-center">
                     <div className="text-xl font-bold text-electric">{s.n}</div>

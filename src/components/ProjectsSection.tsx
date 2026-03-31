@@ -116,7 +116,7 @@ const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: n
       viewport={{ once: true }}
       transition={{ duration: 0.55, delay: index * 0.1 }}
       onMouseEnter={() => playHover()}
-      className="relative bg-foreground text-background p-8 sm:p-12 overflow-hidden group"
+      className="relative bg-card border border-border/60 hover:border-electric/40 text-foreground p-8 sm:p-12 overflow-hidden group transition-colors duration-300"
     >
       {/* Static fallback banner — always present at base opacity */}
       {project.banner && (
@@ -139,7 +139,9 @@ const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: n
       )}
 
       {/* Teal glow on hover */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_hsl(165_90%_42%_/_0.08)_0%,_transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_hsl(165_90%_42%_/_0.12)_0%,_transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+      {/* Top edge accent line on hover */}
+      <div className="absolute top-0 left-0 right-0 h-px bg-electric/0 group-hover:bg-electric/50 transition-colors duration-300" />
 
       {/* Background icon */}
       <div className="absolute top-8 right-10 text-7xl opacity-[0.07] select-none group-hover:opacity-[0.12] transition-opacity duration-500">
@@ -151,22 +153,22 @@ const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: n
           <span className="w-1.5 h-1.5 rounded-full bg-electric animate-pulse" />
           {project.status}
         </span>
-        <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-background/25">
+        <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/50">
           — Featured
         </span>
       </div>
 
-      <h3 className="relative z-10 text-2xl sm:text-3xl font-bold text-background mb-4 font-mono tracking-tight">
+      <h3 className="relative z-10 text-2xl sm:text-3xl font-bold text-foreground mb-4 font-mono tracking-tight">
         {project.name}
       </h3>
-      <p className="relative z-10 text-sm text-background/60 leading-relaxed mb-8 max-w-2xl">
+      <p className="relative z-10 text-sm text-muted-foreground leading-relaxed mb-8 max-w-2xl">
         {project.description}
       </p>
 
       <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
         <div className="flex gap-2 flex-wrap">
           {project.tech.map((t) => (
-            <span key={t} className="px-3 py-1 text-[11px] font-mono bg-background/10 text-background/65 border border-background/10 rounded-sm">
+            <span key={t} className="px-3 py-1 text-[11px] font-mono bg-electric/[0.08] text-electric/80 border border-electric/20 rounded-sm">
               {t}
             </span>
           ))}
@@ -183,7 +185,7 @@ const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: n
       </div>
 
       {project.downloads.length > 0 && (
-        <div className="relative z-10 flex gap-4 flex-wrap mt-6 pt-6 border-t border-background/10">
+        <div className="relative z-10 flex gap-4 flex-wrap mt-6 pt-6 border-t border-border/40">
           {project.downloads.map((d) => (
             <a
               key={d.label}
@@ -192,7 +194,7 @@ const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: n
               rel="noopener noreferrer"
               onMouseEnter={() => playHover()}
               onClick={() => playClick()}
-              className="font-mono text-xs uppercase tracking-[0.1em] text-background/60 hover:text-electric transition-colors"
+              className="font-mono text-xs uppercase tracking-[0.1em] text-muted-foreground hover:text-electric transition-colors"
             >
               ↧ {d.label}
             </a>
