@@ -3,7 +3,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { playClick, playHover, playSuccess } from "@/hooks/useSound";
 
 // All AI calls go through the llm-chat Cloudflare Worker — no API key in the browser
-const CHAT_ENDPOINT = "https://assistant.aliasist.com/api/chat";
+const CHAT_ENDPOINT = "https://llm-chat.bchooper0730.workers.dev/api/chat";
 
 const SYSTEM_PROMPT = `You are the Aliasist AI — the intelligent assistant embedded in aliasist.com, the developer portfolio and project hub of Blake, an AI security developer and CS student.
 

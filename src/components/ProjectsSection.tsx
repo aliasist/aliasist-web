@@ -5,7 +5,7 @@ import abduction1 from "@/assets/abduction-1.jpg";
 import tikaLogo from "@/assets/tikasist-logo.png";
 import { useAIImage, type AIImageType } from "@/hooks/useAIImage";
 
-const releaseTag = "#v2.7.0";
+const releaseTag = "v2.7.0";
 const releaseBaseUrl = `https://github.com/aliasist/aliasistabductor/releases/download/${releaseTag}`;
 
 const downloadLinks = {
