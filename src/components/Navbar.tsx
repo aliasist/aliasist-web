@@ -1,150 +1,118 @@
 import React, { useState, useEffect, useRef } from "react";
-import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { Show, UserButton } from "@clerk/react";
-import logo from "@/assets/logo-transparent.png";
+import newLogo from "@/assets/aliasist-new-logo.png";
 import { playHover, playClick, setEnabled } from "@/hooks/useSound";
 
-const anchorLinks = [
+// ── Data ──────────────────────────────────────────────────────────────────────
+
+const pageLinks = [
   { label: "About",    href: "#about" },
   { label: "Projects", href: "#projects" },
   { label: "Blog",     href: "#transmissions" },
 ];
 
-const externalLinks = [
-  { label: "DataSist",  href: "https://datasist-frontend.pages.dev" },
-  { label: "PulseSist", href: "https://pulse.aliasist.com" },
-  { label: "SpaceSist", href: "https://space.aliasist.com" },
-  { label: "TikaSist",  href: "https://tikasist.pages.dev" },
+const suiteApps = [
+  { label: "DataSist",  sub: "AI Data Center Intel",        href: "https://datasist-frontend.pages.dev", icon: "🌐" },
+  { label: "PulseSist", sub: "Stock Market Intelligence",   href: "https://pulse.aliasist.com",          icon: "📈" },
+  { label: "SpaceSist", sub: "Live Space Portal",           href: "https://space.aliasist.com",          icon: "🌌" },
+  { label: "TikaSist",  sub: "TikTok Keyword Intelligence", href: "https://tikasist.pages.dev",          icon: "👁️" },
 ];
 
-// Each letter of ALIASIST gets a stagger glow on hover
-const WORDMARK = "ALIASIST";
+// ── Sub-components ─────────────────────────────────────────────────────────────
 
-const GlowWordmark = () => {
-  const [hovered, setHovered] = useState(false);
-  const [activeIdx, setActiveIdx] = useState(-1);
-
-  useEffect(() => {
-    if (!hovered) { setActiveIdx(-1); return; }
-    let i = 0;
-    const interval = setInterval(() => {
-      setActiveIdx(i % WORDMARK.length);
-      i++;
-    }, 80);
-    return () => clearInterval(interval);
-  }, [hovered]);
-
-  return (
-    <a
-      href="/"
-      onClick={() => playClick()}
-      onMouseEnter={() => { setHovered(true); playHover(); }}
-      onMouseLeave={() => setHovered(false)}
-      className="flex items-center gap-2.5 group select-none"
-      aria-label="Aliasist home"
-    >
-      <img
-        src={logo}
-        alt=""
-        className="h-7 w-auto transition-all duration-300 group-hover:drop-shadow-[0_0_10px_hsl(165_90%_42%_/_0.8)]"
-      />
-      <span className="hidden sm:flex font-mono text-sm font-bold tracking-[0.18em] uppercase">
-        {WORDMARK.split("").map((char, i) => (
-          <motion.span
-            key={i}
-            animate={{
-              color: activeIdx === i ? "hsl(165, 90%, 60%)" : hovered ? "hsl(165, 90%, 42%)" : "hsl(150, 10%, 94%)",
-              textShadow: activeIdx === i
-                ? "0 0 12px hsl(165 90% 42%), 0 0 24px hsl(165 90% 42% / 0.5)"
-                : "none",
-            }}
-            transition={{ duration: 0.12 }}
-            style={{ display: "inline-block" }}
-          >
-            {char}
-          </motion.span>
-        ))}
-      </span>
-    </a>
-  );
-};
-
-// UFO that tracks cursor across the navbar
-const NavUFO = ({ containerRef }: { containerRef: React.RefObject<HTMLDivElement> }) => {
-  const rawX = useMotionValue(0);
-  const rawY = useMotionValue(0);
-  const x = useSpring(rawX, { stiffness: 120, damping: 18 });
-  const y = useSpring(rawY, { stiffness: 120, damping: 18 });
-  const [visible, setVisible] = useState(false);
+// Suite dropdown
+const SuiteDropdown = () => {
+  const [open, setOpen] = useState(false);
+  const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const el = containerRef.current;
-    if (!el) return;
-
-    const onMove = (e: MouseEvent) => {
-      const rect = el.getBoundingClientRect();
-      if (
-        e.clientY >= rect.top && e.clientY <= rect.bottom &&
-        e.clientX >= rect.left && e.clientX <= rect.right
-      ) {
-        rawX.set(e.clientX - rect.left - 16);
-        rawY.set(e.clientY - rect.top - 10);
-        setVisible(true);
-      } else {
-        setVisible(false);
-      }
+    const handler = (e: MouseEvent) => {
+      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
     };
-    window.addEventListener("mousemove", onMove);
-    return () => window.removeEventListener("mousemove", onMove);
-  }, [rawX, rawY]);
+    document.addEventListener("mousedown", handler);
+    return () => document.removeEventListener("mousedown", handler);
+  }, []);
 
   return (
-    <AnimatePresence>
-      {visible && (
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0, scale: 0.5 }}
+    <div ref={ref} className="relative">
+      <button
+        onClick={() => { setOpen(o => !o); playClick(); }}
+        onMouseEnter={() => playHover()}
+        className={`flex items-center gap-1.5 text-xs font-mono uppercase tracking-[0.1em] transition-colors duration-200 ${
+          open ? "text-electric" : "text-muted-foreground hover:text-foreground"
+        }`}
+      >
+        Suite
+        <motion.svg
+          animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.2 }}
-          style={{ x, y, position: "absolute", pointerEvents: "none", zIndex: 60 }}
+          width="10" height="10" viewBox="0 0 24 24" fill="none"
         >
-          {/* UFO SVG */}
-          <svg viewBox="0 0 100 58.4" width={32} style={{ filter: "drop-shadow(0 0 6px hsl(165,90%,42%))" }}>
-            <defs>
-              <linearGradient id="ufo-g" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="#0acb9b" />
-                <stop offset="100%" stopColor="#06b077" />
-              </linearGradient>
-            </defs>
-            <path
-              d="M 99.922,17.594 C 98.75,11.344 84.634,8.459 65.7,9.774 63.108,5.45 57.739,2.628 51.473,2.26 50.285,0.543 47.711,-0.372 44.973,0.141 42.235,0.654 40.167,2.439 39.681,4.471 33.974,7.084 29.992,11.659 29.142,16.628 11.019,22.262 -1.094,30.063 0.078,36.314 c 1.202,6.408 16.011,9.277 35.668,7.711 1.925,1.294 4.643,2.171 7.826,2.531 -0.885,-0.904 -1.729,-1.926 -2.521,-3.051 0.858,-0.099 1.724,-0.205 2.596,-0.32 0.762,1.323 1.571,2.515 2.413,3.545 2.363,0.065 4.911,-0.131 7.531,-0.622 7.335,-1.375 13.294,-4.696 15.877,-8.406 18.89,-5.66 31.655,-13.701 30.454,-20.108 z M 50.539,29.831 c -13.173,2.471 -24.318,1.983 -24.894,-1.085 -0.223,-1.187 1.173,-2.587 3.724,-3.999 0.11,0.652 0.354,1.271 0.899,1.856 1.538,0.324 3.147,0.509 4.787,0.589 -0.203,-1.647 -0.294,-3.264 -0.288,-4.833 0.957,-0.351 1.972,-0.694 3.041,-1.027 0.06,1.892 0.235,3.864 0.541,5.883 3.97,-0.114 7.965,-0.711 11.446,-1.364 5.907,-1.107 13.24,-2.461 18.553,-5.939 0.339,-0.851 0.283,-1.669 0.069,-2.49 2.897,0.392 4.711,1.191 4.934,2.38 0.574,3.068 -9.638,7.559 -22.812,10.029 z"
-              fill="url(#ufo-g)"
-              opacity="0.85"
-            />
-          </svg>
-          {/* Teal beam below UFO */}
-          <div style={{
-            position: "absolute",
-            top: "100%",
-            left: "50%",
-            transform: "translateX(-50%)",
-            width: 2,
-            height: 20,
-            background: "linear-gradient(to bottom, hsl(165,90%,42%), transparent)",
-            opacity: 0.5,
-          }} />
-        </motion.div>
-      )}
-    </AnimatePresence>
+          <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+        </motion.svg>
+      </button>
+
+      <AnimatePresence>
+        {open && (
+          <motion.div
+            initial={{ opacity: 0, y: 8, scale: 0.97 }}
+            animate={{ opacity: 1, y: 0, scale: 1 }}
+            exit={{ opacity: 0, y: 8, scale: 0.97 }}
+            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
+            className="absolute top-full right-0 mt-3 w-64 bg-card border border-border shadow-[0_8px_40px_hsl(165_90%_42%_/_0.12)] z-50 overflow-hidden"
+            style={{ borderRadius: "2px" }}
+          >
+            {/* Header */}
+            <div className="px-4 py-3 border-b border-border/60 flex items-center justify-between">
+              <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50">
+                Aliasist Suite
+              </span>
+              <span className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.1em] text-electric/60">
+                <span className="w-1 h-1 rounded-full bg-electric animate-pulse" />
+                {suiteApps.length} Live
+              </span>
+            </div>
+
+            {suiteApps.map((app, i) => (
+              <motion.a
+                key={app.label}
+                href={app.href}
+                target="_blank"
+                rel="noopener noreferrer"
+                onClick={() => { playClick(); setOpen(false); }}
+                onMouseEnter={() => playHover()}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.15, delay: i * 0.04 }}
+                className="group flex items-center gap-3 px-4 py-3 hover:bg-electric/5 border-b border-border/30 last:border-0 transition-colors"
+              >
+                <span className="text-xl leading-none">{app.icon}</span>
+                <div className="flex-1 min-w-0">
+                  <p className="font-mono text-xs font-semibold text-foreground group-hover:text-electric transition-colors">
+                    {app.label}
+                  </p>
+                  <p className="font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground/50 mt-0.5 truncate">
+                    {app.sub}
+                  </p>
+                </div>
+                <span className="opacity-0 group-hover:opacity-100 text-electric font-mono text-xs transition-opacity">↗</span>
+              </motion.a>
+            ))}
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </div>
   );
 };
+
+// ── Main Navbar ───────────────────────────────────────────────────────────────
 
 const Navbar = () => {
   const [scrolled, setScrolled]     = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [isDark, setIsDark]         = useState(true);
   const [soundOn, setSoundOn]       = useState(true);
-  const navRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -161,7 +129,7 @@ const Navbar = () => {
 
   const toggleTheme = () => {
     playClick();
-    setIsDark((prev) => {
+    setIsDark(prev => {
       const next = !prev;
       document.documentElement.classList.toggle("light", !next);
       localStorage.setItem("aliasist-theme", next ? "dark" : "light");
@@ -170,176 +138,228 @@ const Navbar = () => {
   };
 
   const toggleSound = () => {
-    setSoundOn((prev) => {
-      setEnabled(!prev);
-      return !prev;
-    });
+    setSoundOn(prev => { setEnabled(!prev); return !prev; });
   };
 
-  const linkClass = "text-xs font-mono uppercase tracking-[0.1em] text-muted-foreground hover:text-electric transition-colors duration-200 relative group";
-
   return (
-    <>
-      <motion.nav
-        ref={navRef}
-        initial={{ y: -80, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.5, ease: "easeOut" }}
-        className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 overflow-visible ${
-          scrolled
-            ? "bg-background/80 backdrop-blur-xl border-b border-border/50 shadow-[0_2px_30px_hsl(165_90%_42%_/_0.06)]"
-            : "bg-transparent"
-        }`}
-      >
-        {/* Floating UFO tracker */}
-        <NavUFO containerRef={navRef as React.RefObject<HTMLDivElement>} />
+    <motion.nav
+      initial={{ y: -80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ duration: 0.5, ease: "easeOut" }}
+      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+        scrolled
+          ? "bg-background/85 backdrop-blur-xl border-b border-border/50 shadow-[0_1px_24px_hsl(165_90%_42%_/_0.05)]"
+          : "bg-transparent"
+      }`}
+    >
+      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-8">
 
-        <div className="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between relative z-10">
-          {/* Glowing wordmark */}
-          <GlowWordmark />
+        {/* ── LEFT: Logo ── */}
+        <a
+          href="/"
+          onClick={() => playClick()}
+          onMouseEnter={() => playHover()}
+          className="flex items-center gap-2.5 flex-shrink-0 group"
+          aria-label="Aliasist home"
+        >
+          <motion.img
+            src={newLogo}
+            alt="Aliasist"
+            className="h-8 w-8 object-contain"
+            whileHover={{ scale: 1.1, filter: "drop-shadow(0 0 10px hsl(165 90% 42% / 0.8))" }}
+            transition={{ type: "spring", stiffness: 400, damping: 20 }}
+          />
+          <span className="font-bold text-sm tracking-[0.12em] uppercase text-foreground group-hover:text-electric transition-colors duration-300">
+            Aliasist
+          </span>
+        </a>
 
-          {/* Desktop links */}
-          <div className="hidden md:flex items-center gap-7">
-            {anchorLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                onMouseEnter={() => playHover()}
-                className={linkClass}
-              >
-                {link.label}
-                <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-electric group-hover:w-full transition-all duration-300" />
-              </a>
-            ))}
-
-            {/* Divider */}
-            <span className="w-px h-4 bg-border/60" />
-
-            {externalLinks.map((link) => (
-              <a
-                key={link.href}
-                href={link.href}
-                target="_blank"
-                rel="noopener noreferrer"
-                onMouseEnter={() => playHover()}
-                onClick={() => playClick()}
-                className={linkClass}
-              >
-                {link.label}
-                <span className="absolute -bottom-0.5 left-0 w-0 h-px bg-electric group-hover:w-full transition-all duration-300" />
-              </a>
-            ))}
-
-            {/* Divider */}
-            <span className="w-px h-4 bg-border/60" />
-
-            {/* Sound */}
-            <button
-              type="button"
-              onClick={toggleSound}
-              className="text-[11px] font-mono text-muted-foreground hover:text-electric transition-colors"
-              aria-label={soundOn ? "Mute" : "Unmute"}
-              title={soundOn ? "Mute sounds" : "Enable sounds"}
-            >
-              {soundOn ? "◉" : "◎"}
-            </button>
-
-            {/* Theme */}
-            <button
-              type="button"
-              onClick={toggleTheme}
-              className="group inline-flex items-center gap-1.5 text-xs font-mono uppercase tracking-[0.1em] text-muted-foreground hover:text-foreground transition-colors"
-              aria-label="Toggle theme"
-            >
-              <span className="relative inline-flex h-5 w-9 items-center rounded-full border border-border/70 bg-background/60 transition-colors">
-                <span className={`inline-block h-3.5 w-3.5 rounded-full bg-electric transition-transform duration-200 ${isDark ? "translate-x-4" : "translate-x-1"}`} />
-              </span>
-            </button>
-
-            {/* Auth */}
-            <Show when="signed-in">
-              <UserButton />
-            </Show>
-            <Show when="signed-out">
-              <a
-                href="https://auth.aliasist.com"
-                onMouseEnter={() => playHover()}
-                onClick={() => playClick()}
-                className="relative text-xs font-mono uppercase tracking-[0.1em] border border-electric/40 text-electric px-4 py-2 rounded-sm hover:bg-electric/10 hover:shadow-[0_0_16px_hsl(165_90%_42%_/_0.2)] transition-all duration-300"
-              >
-                Sign In
-              </a>
-            </Show>
-
-            {/* Contact CTA */}
+        {/* ── CENTER: Page links ── */}
+        <div className="hidden md:flex items-center gap-6 flex-1 justify-center">
+          {pageLinks.map(link => (
             <a
-              href="#contact"
+              key={link.href}
+              href={link.href}
               onMouseEnter={() => playHover()}
-              onClick={() => playClick()}
-              className="relative text-xs font-mono uppercase tracking-[0.1em] bg-electric text-background px-4 py-2 rounded-sm hover:bg-electric/85 transition-all duration-300"
+              className="relative text-xs font-mono uppercase tracking-[0.1em] text-muted-foreground hover:text-foreground transition-colors duration-200 group py-1"
             >
-              Contact
+              {link.label}
+              <span className="absolute bottom-0 left-0 w-0 h-px bg-electric group-hover:w-full transition-all duration-300" />
             </a>
-          </div>
+          ))}
 
-          {/* Mobile */}
-          <div className="md:hidden flex items-center gap-2">
-            <button type="button" onClick={toggleTheme} className="text-muted-foreground hover:text-foreground transition-colors p-1" aria-label="Toggle theme">
-              {isDark
-                ? <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M12 18a6 6 0 1 0 0-12 6 6 0 0 0 0 12Z" stroke="currentColor" strokeWidth="2"/><path d="M12 2v2M12 20v2M4 12H2M22 12h-2M5.6 5.6 4.2 4.2M19.8 19.8l-1.4-1.4M18.4 5.6l1.4-1.4M4.2 19.8l1.4-1.4" stroke="currentColor" strokeWidth="2" strokeLinecap="round"/></svg>
-                : <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M21 14.5A8.5 8.5 0 0 1 9.5 3a6.5 6.5 0 1 0 11.5 11.5Z" stroke="currentColor" strokeWidth="2" strokeLinejoin="round"/></svg>
-              }
-            </button>
-            <button onClick={() => { playClick(); setMobileOpen(!mobileOpen); }} className="text-foreground p-2" aria-label="Toggle menu">
-              <div className="w-5 flex flex-col gap-1">
-                <span className={`block h-px bg-foreground transition-all duration-300 ${mobileOpen ? "rotate-45 translate-y-[3px]" : ""}`} />
-                <span className={`block h-px bg-foreground transition-all duration-300 ${mobileOpen ? "opacity-0 w-0" : ""}`} />
-                <span className={`block h-px bg-foreground transition-all duration-300 ${mobileOpen ? "-rotate-45 -translate-y-[3px]" : ""}`} />
-              </div>
-            </button>
-          </div>
+          {/* Subtle separator */}
+          <span className="w-px h-4 bg-border/60 mx-1" />
+
+          {/* Suite dropdown */}
+          <SuiteDropdown />
         </div>
 
-        {/* Mobile menu */}
-        <AnimatePresence>
-          {mobileOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              transition={{ duration: 0.25 }}
-              className="md:hidden bg-background/95 backdrop-blur-xl border-b border-border"
+        {/* ── RIGHT: Controls ── */}
+        <div className="hidden md:flex items-center gap-4 flex-shrink-0">
+
+          {/* Sound toggle */}
+          <button
+            onClick={toggleSound}
+            title={soundOn ? "Mute" : "Unmute"}
+            className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-electric transition-colors text-sm rounded-sm hover:bg-electric/5"
+            aria-label={soundOn ? "Mute sounds" : "Enable sounds"}
+          >
+            {soundOn ? (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+              </svg>
+            )}
+          </button>
+
+          {/* Theme toggle */}
+          <button
+            onClick={toggleTheme}
+            title={isDark ? "Light mode" : "Dark mode"}
+            className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-electric transition-colors rounded-sm hover:bg-electric/5"
+            aria-label="Toggle theme"
+          >
+            {isDark ? (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+              </svg>
+            ) : (
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+              </svg>
+            )}
+          </button>
+
+          {/* Divider */}
+          <span className="w-px h-5 bg-border/60" />
+
+          {/* Auth */}
+          <Show when="signed-in">
+            <UserButton />
+          </Show>
+          <Show when="signed-out">
+            <a
+              href="https://auth.aliasist.com"
+              onMouseEnter={() => playHover()}
+              onClick={() => playClick()}
+              className="text-xs font-mono uppercase tracking-[0.1em] text-muted-foreground hover:text-electric border border-border/60 hover:border-electric/40 px-3 py-1.5 rounded-sm transition-all duration-200 hover:bg-electric/5"
             >
-              <div className="px-6 py-5 flex flex-col gap-4">
-                {anchorLinks.map(link => (
-                  <a key={link.href} href={link.href} onClick={() => { playClick(); setMobileOpen(false); }}
-                    className="text-xs font-mono uppercase tracking-[0.1em] text-muted-foreground hover:text-foreground transition-colors py-1">
-                    {link.label}
-                  </a>
-                ))}
-                <div className="h-px bg-border/50" />
-                {externalLinks.map(link => (
-                  <a key={link.href} href={link.href} target="_blank" rel="noopener noreferrer"
-                    onClick={() => { playClick(); setMobileOpen(false); }}
-                    className="text-xs font-mono uppercase tracking-[0.1em] text-electric hover:text-electric/70 transition-colors py-1 flex items-center justify-between">
-                    {link.label}
-                    <span className="opacity-50">↗</span>
-                  </a>
-                ))}
-                <div className="h-px bg-border/50" />
-                <button onClick={toggleSound} className="text-left text-xs font-mono uppercase tracking-[0.1em] text-muted-foreground py-1">
-                  Sound: {soundOn ? "On ◉" : "Off ◎"}
+              Sign In
+            </a>
+          </Show>
+
+          {/* Contact CTA */}
+          <a
+            href="#contact"
+            onMouseEnter={() => playHover()}
+            onClick={() => playClick()}
+            className="text-xs font-mono uppercase tracking-[0.1em] bg-electric text-background px-4 py-1.5 rounded-sm hover:bg-electric/85 transition-all duration-200 hover:shadow-[0_0_16px_hsl(165_90%_42%_/_0.3)]"
+          >
+            Contact
+          </a>
+        </div>
+
+        {/* ── MOBILE: Hamburger ── */}
+        <button
+          onClick={() => { playClick(); setMobileOpen(!mobileOpen); }}
+          className="md:hidden text-foreground p-2 -mr-2"
+          aria-label="Toggle menu"
+        >
+          <div className="w-5 flex flex-col gap-[5px]">
+            <span className={`block h-px bg-foreground transition-all duration-300 ${mobileOpen ? "rotate-45 translate-y-[6px]" : ""}`} />
+            <span className={`block h-px bg-foreground transition-all duration-300 ${mobileOpen ? "opacity-0 w-0" : ""}`} />
+            <span className={`block h-px bg-foreground transition-all duration-300 ${mobileOpen ? "-rotate-45 -translate-y-[6px]" : ""}`} />
+          </div>
+        </button>
+      </div>
+
+      {/* ── MOBILE MENU ── */}
+      <AnimatePresence>
+        {mobileOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            transition={{ duration: 0.25 }}
+            className="md:hidden bg-background/98 backdrop-blur-xl border-b border-border overflow-hidden"
+          >
+            <div className="px-6 py-6 space-y-1">
+
+              {/* Page links */}
+              {pageLinks.map(link => (
+                <a
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => { playClick(); setMobileOpen(false); }}
+                  className="flex items-center h-11 text-xs font-mono uppercase tracking-[0.1em] text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  {link.label}
+                </a>
+              ))}
+
+              {/* Divider */}
+              <div className="h-px bg-border/50 my-3" />
+
+              {/* Suite apps */}
+              <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40 py-1">
+                The Suite
+              </p>
+              {suiteApps.map(app => (
+                <a
+                  key={app.label}
+                  href={app.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  onClick={() => { playClick(); setMobileOpen(false); }}
+                  className="flex items-center gap-3 h-11 text-xs font-mono uppercase tracking-[0.1em] text-muted-foreground hover:text-electric transition-colors"
+                >
+                  <span>{app.icon}</span>
+                  <span>{app.label}</span>
+                  <span className="ml-auto opacity-30 text-[10px]">↗</span>
+                </a>
+              ))}
+
+              {/* Divider */}
+              <div className="h-px bg-border/50 my-3" />
+
+              {/* Controls row */}
+              <div className="flex items-center gap-4 py-2">
+                <button onClick={toggleSound} className="text-xs font-mono text-muted-foreground hover:text-electric transition-colors">
+                  {soundOn ? "Sound On" : "Sound Off"}
                 </button>
-                <a href="#contact" onClick={() => { playClick(); setMobileOpen(false); }}
-                  className="text-xs font-mono uppercase tracking-[0.1em] text-electric border border-electric/30 px-4 py-2.5 text-center rounded-sm">
+                <button onClick={toggleTheme} className="text-xs font-mono text-muted-foreground hover:text-electric transition-colors">
+                  {isDark ? "Light Mode" : "Dark Mode"}
+                </button>
+              </div>
+
+              {/* Auth + Contact */}
+              <div className="flex gap-3 pt-2">
+                <Show when="signed-out">
+                  <a href="https://auth.aliasist.com"
+                    className="flex-1 text-center text-xs font-mono uppercase tracking-[0.1em] text-electric border border-electric/30 py-2.5 rounded-sm hover:bg-electric/5 transition-colors">
+                    Sign In
+                  </a>
+                </Show>
+                <a href="#contact"
+                  onClick={() => { playClick(); setMobileOpen(false); }}
+                  className="flex-1 text-center text-xs font-mono uppercase tracking-[0.1em] bg-electric text-background py-2.5 rounded-sm hover:bg-electric/85 transition-colors">
                   Contact
                 </a>
               </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
-      </motion.nav>
-    </>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+    </motion.nav>
   );
 };
 
