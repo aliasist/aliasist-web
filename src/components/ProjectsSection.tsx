@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { playHover, playClick } from "@/hooks/useSound";
 import pulseBanner from "@/assets/pulse-banner-command.jpg";
 import abduction1 from "@/assets/abduction-1.jpg";
-import spaceLogo from "@/assets/spacesist-logo.png";
 import tikaLogo from "@/assets/tikasist-logo.png";
 import { useAIImage, type AIImageType } from "@/hooks/useAIImage";
 
@@ -41,7 +40,7 @@ const projects = [
     icon: "🌌",
     link: "https://space.aliasist.com",
     linkLabel: "Open SpaceSist →",
-    banner: spaceLogo,
+    banner: null,
     aiType: "project-spacesist" as AIImageType,
   },
   {
@@ -69,7 +68,7 @@ const projects = [
       { label: "Snap",     href: downloadLinks.snap },
       { label: "Windows",  href: downloadLinks.windowsExe },
     ],
-    status: "Active",
+    status: "Live",
     icon: "🛸",
     link: null as string | null,
     linkLabel: null as string | null,

@@ -109,15 +109,33 @@ const SuiteDropdown = () => {
 // ── Main Navbar ───────────────────────────────────────────────────────────────
 
 const Navbar = () => {
-  const [scrolled, setScrolled]     = useState(false);
-  const [mobileOpen, setMobileOpen] = useState(false);
-  const [isDark, setIsDark]         = useState(true);
-  const [soundOn, setSoundOn]       = useState(true);
+  const [scrolled, setScrolled]         = useState(false);
+  const [mobileOpen, setMobileOpen]     = useState(false);
+  const [isDark, setIsDark]             = useState(true);
+  const [soundOn, setSoundOn]           = useState(true);
+  const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
+  }, []);
+
+  // Scroll-spy — highlight the nav link whose section is in view
+  useEffect(() => {
+    const sectionIds = pageLinks.map(l => l.href.replace("#", ""));
+    const observers: IntersectionObserver[] = [];
+    sectionIds.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const obs = new IntersectionObserver(
+        ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
+        { threshold: 0.25, rootMargin: "-80px 0px -40% 0px" }
+      );
+      obs.observe(el);
+      observers.push(obs);
+    });
+    return () => observers.forEach(o => o.disconnect());
   }, []);
 
   useEffect(() => {
@@ -176,17 +194,24 @@ const Navbar = () => {
 
         {/* ── CENTER: Page links ── */}
         <div className="hidden md:flex items-center gap-6 flex-1 justify-center">
-          {pageLinks.map(link => (
-            <a
-              key={link.href}
-              href={link.href}
-              onMouseEnter={() => playHover()}
-              className="relative text-xs font-mono uppercase tracking-[0.1em] text-muted-foreground hover:text-foreground transition-colors duration-200 group py-1"
-            >
-              {link.label}
-              <span className="absolute bottom-0 left-0 w-0 h-px bg-electric group-hover:w-full transition-all duration-300" />
-            </a>
-          ))}
+          {pageLinks.map(link => {
+            const isActive = activeSection === link.href.replace("#", "");
+            return (
+              <a
+                key={link.href}
+                href={link.href}
+                onMouseEnter={() => playHover()}
+                className={`relative text-xs font-mono uppercase tracking-[0.1em] transition-colors duration-200 group py-1 ${
+                  isActive ? "text-electric" : "text-muted-foreground hover:text-foreground"
+                }`}
+              >
+                {link.label}
+                <span className={`absolute bottom-0 left-0 h-px bg-electric transition-all duration-300 ${
+                  isActive ? "w-full" : "w-0 group-hover:w-full"
+                }`} />
+              </a>
+            );
+          })}
 
           {/* Subtle separator */}
           <span className="w-px h-4 bg-border/60 mx-1" />
