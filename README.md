@@ -1,61 +1,54 @@
-[README.md](https://github.com/user-attachments/files/26153569/README.md)
-------------------------------------------------------------------------------------------------------------------------------------
-CODED IN WINDOWS + LINUX 
-download here: 
-https://github.com/aliasist/aliasistabductor/releases/tag/%23v2.7.0
+# Aliasist.com
 
-------------------------------------------------------------------------------------------------------------------------------------
+> **Adversarial by Nature. Defensive by Design.**
 
-# 🛸 Aliasist Abductor
+The main portfolio and project hub for [aliasist.com](https://aliasist.com) — built by Blake, an AI security developer and CS student.
 
-**Aliasist Abductor** is a high-performance media utility designed to streamline the process of fetching and archiving digital content (Audio, Video, and Images) from the web.
+## Stack
 
-![App Screenshot](./app/assets/splash.png)
+- **Framework:** Vite + React + TypeScript
+- **Styling:** Tailwind CSS v3 + shadcn/ui
+- **Animation:** Framer Motion
+- **Fonts:** Space Grotesk + JetBrains Mono
+- **AI Chat:** Groq LLaMA 3.3 via [llm-chat](https://github.com/aliasist/llm-chat) Worker
+- **Hosting:** Cloudflare Pages (auto-deploy on push to `master`)
 
-## 🌟 Key Features
+## The Aliasist Suite
 
-* **Universal Media Fetching:** Intelligent detection and downloading of `.mp4`, `.mp3`, and high-res image formats.
-* **SPA Routing:** Custom-built routing logic for Cloudflare Pages to ensure seamless navigation.
-* **Performance-First UI:** Refactored CSS animations and a lightweight TypeScript core for near-instant interaction speeds.
-* **Modern Theme Engine:** Persistent dark/light mode toggle that respects user system preferences.
+| App | Repo | Live |
+|-----|------|------|
+| **aliasist.com** | [aliasistabductor](https://github.com/aliasist/aliasistabductor) | [aliasist.com](https://aliasist.com) |
+| **DataSist** | [datasist](https://github.com/aliasist/datasist) | [datasist-frontend.pages.dev](https://datasist-frontend.pages.dev) |
+| **DataSist API** | [datasist-worker](https://github.com/aliasist/datasist-worker) | Cloudflare Worker |
+| **PulseSist** | [stockmarket](https://github.com/aliasist/stockmarket) | [pulse.aliasist.com](https://pulse.aliasist.com) |
+| **AI Chat** | [llm-chat](https://github.com/aliasist/llm-chat) | [assistant.aliasist.com](https://assistant.aliasist.com) |
 
----
+## Features
 
-## 🛠️ Tech Stack
+- 🛸 **Alien Eye Hero** — cursor-tracking iris with live animation
+- ⭐ **Starfield background** — 180 procedurally animated stars
+- 🔊 **Sound engine** — subtle Web Audio API tones on interaction
+- 🤖 **Groq AI chat** — Aliasist-aware assistant via 🛸 widget
+- 🌑 **Dark-first theme** — teal-green `#00C97B` accent palette
+- 📜 **Scroll progress bar** — teal glow at top of viewport
+- 🔒 **Classified project cards** — PROJECT CIPHER + PROJECT SPECTER
 
-| Category | Technology |
-| :--- | :--- |
-| **Frontend** | React 18 / TypeScript |
-| **Build Tool** | Vite |
-| **Styling** | Tailwind CSS / PostCSS |
-| **Deployment** | Cloudflare Pages |
+## Local Development
 
----
+```bash
+git clone https://github.com/aliasist/aliasistabductor
+cd aliasistabductor
+npm install --legacy-peer-deps
+npm run dev
+```
 
-## 🧠 Technical Case Study
+## Deploy
 
-### The Challenge: Cloudflare SPA Routing
-Deploying a Single Page Application (SPA) to Cloudflare often results in `404 Not Found` errors when a user refreshes a sub-page. 
+Pushes to `master` auto-deploy via Cloudflare Pages.
 
-**The Solution:** I implemented a robust routing configuration within `vite.config.ts` and utilized Cloudflare's redirect rules to ensure all requests are handled by `index.html`. This allows the client-side router to maintain state without server-side interruptions.
+## Brand
 
-### Performance Optimization
-To ensure a premium user experience, I refactored the animation logic in `index.css` and improved the keyframes for smooth rendering.
-
----
-
-## 📦 Getting Started
-
-1. **Clone:** `git clone https://github.com/aliasist/aliasistabductor.git`
-2. **Install:** `npm install`
-3. **Run:** `npm run dev`
-
----
-
-## 👤 Author
-**Blake Hooper**
-* [Portfolio Website](https://aliasist.com)
-* [GitHub](https://github.com/aliasist)
-
----
-*Disclaimer: This tool is for personal archival of legally accessible media. Please respect digital rights management (DRM) and platform Terms of Service.*
+- **Logo:** Alien head with Saturn rings
+- **Mascot:** UFO spaceship
+- **Theme:** Roswell 1947 × AI Security
+- **Contact:** dev@aliasist.com
