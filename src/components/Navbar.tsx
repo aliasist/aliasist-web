@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence, useMotionValue, useSpring } from "framer-motion";
+import { Show, UserButton } from "@clerk/react";
 import logo from "@/assets/logo-transparent.png";
-import { playHover, playClick, setEnabled, isEnabled } from "@/hooks/useSound";
+import { playHover, playClick, setEnabled } from "@/hooks/useSound";
 
 const anchorLinks = [
   { label: "About",    href: "#about" },
@@ -254,12 +255,27 @@ const Navbar = () => {
               </span>
             </button>
 
+            {/* Auth */}
+            <Show when="signed-in">
+              <UserButton />
+            </Show>
+            <Show when="signed-out">
+              <a
+                href="https://auth.aliasist.com"
+                onMouseEnter={() => playHover()}
+                onClick={() => playClick()}
+                className="relative text-xs font-mono uppercase tracking-[0.1em] border border-electric/40 text-electric px-4 py-2 rounded-sm hover:bg-electric/10 hover:shadow-[0_0_16px_hsl(165_90%_42%_/_0.2)] transition-all duration-300"
+              >
+                Sign In
+              </a>
+            </Show>
+
             {/* Contact CTA */}
             <a
               href="#contact"
               onMouseEnter={() => playHover()}
               onClick={() => playClick()}
-              className="relative text-xs font-mono uppercase tracking-[0.1em] border border-electric/40 text-electric px-4 py-2 rounded-sm hover:bg-electric/10 hover:shadow-[0_0_16px_hsl(165_90%_42%_/_0.2)] transition-all duration-300"
+              className="relative text-xs font-mono uppercase tracking-[0.1em] bg-electric text-background px-4 py-2 rounded-sm hover:bg-electric/85 transition-all duration-300"
             >
               Contact
             </a>
