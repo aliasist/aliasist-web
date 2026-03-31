@@ -5,23 +5,24 @@ import streetBanner from "@/assets/pulse-banner-street.jpg";
 const links = [
   { label: "GitHub",           href: "https://github.com/aliasist",  icon: "⌥" },
   { label: "dev@aliasist.com", href: "mailto:dev@aliasist.com",       icon: "✉" },
-  { label: "aliasist.com",     href: "https://www.aliasist.com",      icon: "◈" },
+];
+
+const suite = [
+  { label: "DataSist",  sub: "AI Data Center Intel",    href: "https://datasist-frontend.pages.dev", icon: "🌐" },
+  { label: "PulseSist", sub: "Stock Market Intelligence", href: "https://pulse.aliasist.com",         icon: "📈" },
+  { label: "SpaceSist", sub: "Live Space Portal",        href: "https://space.aliasist.com",          icon: "🌌" },
 ];
 
 const ContactSection = () => {
   return (
     <section id="contact" className="py-28 px-6 bg-foreground text-background relative overflow-hidden">
-      {/* Street banner background — very subtle */}
+      {/* Street banner background */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-[0.07] pointer-events-none"
+        className="absolute inset-0 bg-cover bg-center opacity-[0.06] pointer-events-none"
         style={{ backgroundImage: `url(${streetBanner})` }}
       />
-      {/* Overlay gradient for readability */}
       <div className="absolute inset-0 bg-gradient-to-b from-foreground/80 via-foreground/60 to-foreground/90 pointer-events-none" />
-
-      {/* Teal glow */}
-      <div
-        className="absolute -right-32 -bottom-32 w-[500px] h-[500px] rounded-full pointer-events-none opacity-[0.06]"
+      <div className="absolute -right-32 -bottom-32 w-[500px] h-[500px] rounded-full pointer-events-none opacity-[0.05]"
         style={{ background: "radial-gradient(circle, hsl(165 90% 42%), transparent 70%)" }}
       />
 
@@ -52,8 +53,8 @@ const ContactSection = () => {
                 <strong className="text-background/85 font-semibold">
                   Open to collaborations, internships, and interesting problems.
                 </strong>{" "}
-                Building in public, documenting the journey, always looking for
-                teams working on open-source AI and security tooling.
+                Building in public, pursuing AiSec, always looking for teams
+                working on open-source AI and security tooling.
               </p>
 
               <a
@@ -66,44 +67,95 @@ const ContactSection = () => {
                 <span className="relative">Send a message ↗</span>
               </a>
 
-              <p className="mt-5 font-mono text-[10px] uppercase tracking-[0.15em] text-background/20">
-                Responses prioritized by technical complexity & project fit
-              </p>
-            </div>
+              {/* Contact links */}
+              <div className="flex flex-col gap-px mt-6">
+                {links.map((link, i) => (
+                  <motion.a
+                    key={link.label}
+                    href={link.href}
+                    target={link.href.startsWith("http") ? "_blank" : undefined}
+                    rel="noopener noreferrer"
+                    onMouseEnter={() => playHover()}
+                    onClick={() => playClick()}
+                    initial={{ opacity: 0, x: -12 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.3, delay: i * 0.08 }}
+                    whileHover={{ x: 4 }}
+                    className="group flex items-center justify-between px-5 py-4 bg-background/5 border border-background/10 hover:bg-electric/10 hover:border-electric/25 transition-all font-mono text-sm text-background/55 hover:text-electric"
+                  >
+                    <div className="flex items-center gap-3">
+                      <span className="text-electric/40 group-hover:text-electric transition-colors">{link.icon}</span>
+                      <span>{link.label}</span>
+                    </div>
+                    <span className="opacity-20 group-hover:opacity-100 transition-all">↗</span>
+                  </motion.a>
+                ))}
+              </div>
 
-            {/* Right — links */}
-            <div className="flex flex-col gap-px">
-              {links.map((link, i) => (
-                <motion.a
-                  key={link.label}
-                  href={link.href}
-                  target={link.href.startsWith("http") ? "_blank" : undefined}
-                  rel="noopener noreferrer"
-                  onMouseEnter={() => playHover()}
-                  onClick={() => playClick()}
-                  initial={{ opacity: 0, x: 20 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4, delay: i * 0.08 }}
-                  whileHover={{ x: 6 }}
-                  className="group flex items-center justify-between px-6 py-5 bg-background/5 border border-background/10 hover:bg-electric/10 hover:border-electric/30 transition-all font-mono text-sm text-background/60 hover:text-electric"
-                >
-                  <div className="flex items-center gap-3">
-                    <span className="text-electric/50 group-hover:text-electric transition-colors text-base">
-                      {link.icon}
-                    </span>
-                    <span>{link.label}</span>
-                  </div>
-                  <span className="opacity-20 group-hover:opacity-100 transition-all">↗</span>
-                </motion.a>
-              ))}
-
-              {/* Disclaimer */}
-              <div className="mt-px border border-dashed border-background/12 p-5 bg-background/3">
+              <div className="mt-px border border-dashed border-background/12 p-4">
                 <p className="font-mono text-[11px] text-background/25 leading-relaxed">
                   // Currently iterating on this system. Responses prioritized by
                   technical complexity and project alignment.
                 </p>
+              </div>
+            </div>
+
+            {/* Right — The Aliasist Suite */}
+            <div>
+              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-background/30 mb-5">
+                // The Aliasist Suite
+              </p>
+              <div className="flex flex-col gap-0.5">
+                {suite.map((app, i) => (
+                  <motion.a
+                    key={app.label}
+                    href={app.href}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    onMouseEnter={() => playHover()}
+                    onClick={() => playClick()}
+                    initial={{ opacity: 0, x: 20 }}
+                    whileInView={{ opacity: 1, x: 0 }}
+                    viewport={{ once: true }}
+                    transition={{ duration: 0.4, delay: i * 0.1 }}
+                    whileHover={{ x: 6 }}
+                    className="group flex items-center justify-between px-6 py-5 bg-background/5 border border-background/10 hover:bg-electric/10 hover:border-electric/30 transition-all"
+                  >
+                    <div className="flex items-center gap-4">
+                      <span className="text-2xl">{app.icon}</span>
+                      <div>
+                        <p className="font-mono text-sm font-semibold text-background/80 group-hover:text-electric transition-colors">
+                          {app.label}
+                        </p>
+                        <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-background/35 mt-0.5">
+                          {app.sub}
+                        </p>
+                      </div>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.1em] text-electric/60">
+                        <span className="w-1.5 h-1.5 rounded-full bg-electric animate-pulse" />
+                        Live
+                      </span>
+                      <span className="opacity-20 group-hover:opacity-100 group-hover:text-electric text-background transition-all font-mono">↗</span>
+                    </div>
+                  </motion.a>
+                ))}
+              </div>
+
+              {/* Stats */}
+              <div className="mt-4 grid grid-cols-3 gap-0.5">
+                {[
+                  { n: "4", l: "Live Apps" },
+                  { n: "7", l: "APIs" },
+                  { n: "48+", l: "Data Centers" },
+                ].map((s) => (
+                  <div key={s.l} className="bg-background/5 border border-background/10 p-4 text-center">
+                    <div className="text-xl font-bold text-electric">{s.n}</div>
+                    <div className="font-mono text-[9px] uppercase tracking-[0.1em] text-background/30 mt-1">{s.l}</div>
+                  </div>
+                ))}
               </div>
             </div>
           </div>

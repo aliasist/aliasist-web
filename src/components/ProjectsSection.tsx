@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { playHover, playClick } from "@/hooks/useSound";
 import pulseBanner from "@/assets/pulse-banner-command.jpg";
 import abduction1 from "@/assets/abduction-1.jpg";
+import spaceLogo from "@/assets/spacesist-logo.png";
 
 const releaseTag = "#v2.7.0";
 const releaseBaseUrl = `https://github.com/aliasist/aliasistabductor/releases/download/${releaseTag}`;
@@ -13,6 +14,19 @@ const downloadLinks = {
 };
 
 const projects = [
+  {
+    name: "SpaceSist",
+    description:
+      "Live space intelligence portal — NASA APOD daily images, real-time ISS tracking (5s updates), SpaceX mission control, near-Earth asteroid radar, 6,000+ exoplanet archive, and NASA image gallery. 7 live APIs. The universe, in real time.",
+    tech: ["React", "Vite", "NASA APIs", "SpaceX API", "Leaflet", "Cloudflare"],
+    github: "https://github.com/aliasist",
+    downloads: [],
+    status: "Live",
+    icon: "🌌",
+    link: "https://space.aliasist.com",
+    linkLabel: "Open SpaceSist →",
+    banner: spaceLogo,
+  },
   {
     name: "PulseSist",
     description:
