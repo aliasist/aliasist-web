@@ -8,9 +8,10 @@ const links = [
 ];
 
 const suite = [
-  { label: "DataSist",  sub: "AI Data Center Intel",    href: "https://datasist-frontend.pages.dev", icon: "🌐" },
-  { label: "PulseSist", sub: "Stock Market Intelligence", href: "https://pulse.aliasist.com",         icon: "📈" },
-  { label: "SpaceSist", sub: "Live Space Portal",        href: "https://space.aliasist.com",          icon: "🌌" },
+  { label: "DataSist",  sub: "AI Data Center Intel",      href: "https://datasist-frontend.pages.dev", icon: "🌐" },
+  { label: "PulseSist", sub: "Stock Market Intelligence",  href: "https://pulse.aliasist.com",          icon: "📈" },
+  { label: "SpaceSist", sub: "Live Space Portal",          href: "https://space.aliasist.com",           icon: "🌌" },
+  { label: "TikaSist",  sub: "TikTok Keyword Intelligence", href: "https://tikasist.pages.dev",          icon: "👁️" },
 ];
 
 const ContactSection = () => {
@@ -147,7 +148,7 @@ const ContactSection = () => {
               {/* Stats */}
               <div className="mt-4 grid grid-cols-3 gap-0.5">
                 {[
-                  { n: "4", l: "Live Apps" },
+                  { n: "5", l: "Live Apps" },
                   { n: "7", l: "APIs" },
                   { n: "48+", l: "Data Centers" },
                 ].map((s) => (

@@ -12,7 +12,7 @@ const skills = [
 
 const stats = [
   { num: "10+", label: "Years coding since childhood", sym: "+" },
-  { num: "3",   label: "Live apps in the Aliasist suite", sym: "" },
+  { num: "5",   label: "Live apps in the Aliasist suite", sym: "" },
   { num: "1→",  label: "Clear target: AiSec",           sym: "→" },
   { num: "∞",   label: "Problems left to solve",         sym: "∞" },
 ];

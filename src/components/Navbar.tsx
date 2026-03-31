@@ -14,6 +14,7 @@ const externalLinks = [
   { label: "DataSist",  href: "https://datasist-frontend.pages.dev" },
   { label: "PulseSist", href: "https://pulse.aliasist.com" },
   { label: "SpaceSist", href: "https://space.aliasist.com" },
+  { label: "TikaSist",  href: "https://tikasist.pages.dev" },
 ];
 
 // Each letter of ALIASIST gets a stagger glow on hover

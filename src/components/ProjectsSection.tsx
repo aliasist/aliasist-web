@@ -3,6 +3,7 @@ import { playHover, playClick } from "@/hooks/useSound";
 import pulseBanner from "@/assets/pulse-banner-command.jpg";
 import abduction1 from "@/assets/abduction-1.jpg";
 import spaceLogo from "@/assets/spacesist-logo.png";
+import tikaLogo from "@/assets/tikasist-logo.png";
 
 const releaseTag = "#v2.7.0";
 const releaseBaseUrl = `https://github.com/aliasist/aliasistabductor/releases/download/${releaseTag}`;
@@ -14,6 +15,19 @@ const downloadLinks = {
 };
 
 const projects = [
+  {
+    name: "TikaSist",
+    description:
+      "TikTok keyword intelligence platform — track hashtags, creators, and topics. Run automated scans, collect matching videos with full engagement metrics (likes, comments, shares, saves), browse results in a searchable grid, and monitor scan history. Built on Cloudflare Workers + D1.",
+    tech: ["Vite", "Cloudflare Workers", "D1", "TikTok", "Keyword AI"],
+    github: "https://github.com/aliasist",
+    downloads: [],
+    status: "Live",
+    icon: "👁️",
+    link: "https://tikasist.pages.dev",
+    linkLabel: "Open TikaSist →",
+    banner: tikaLogo,
+  },
   {
     name: "SpaceSist",
     description:
