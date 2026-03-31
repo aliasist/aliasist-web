@@ -4,7 +4,9 @@ const DATASIST_URL = "https://datasist-frontend.pages.dev";
 
 const DataSistPage = () => {
   useEffect(() => {
-    window.location.href = DATASIST_URL;
+    window.open(DATASIST_URL, "_blank");
+    // Go back to home after opening
+    window.location.href = "/#projects";
   }, []);
 
   return (
