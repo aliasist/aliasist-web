@@ -288,3 +288,82 @@
   opacity: 0.4;
   z-index: 0;
 }
+
+/* ─── Smooth font rendering ─── */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+}
+
+/* ─── Better focus styles ─── */
+*:focus-visible {
+  outline: 2px solid hsl(var(--electric));
+  outline-offset: 3px;
+  border-radius: 2px;
+}
+
+/* ─── Smooth image rendering ─── */
+img {
+  image-rendering: -webkit-optimize-contrast;
+}
+
+/* ─── Section transitions ─── */
+section {
+  position: relative;
+}
+
+/* ─── Link hover transitions ─── */
+a {
+  transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+/* ─── Better button feel ─── */
+button, a[class*="rounded"] {
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* ─── Gradient text utility ─── */
+.text-gradient {
+  background: linear-gradient(135deg, hsl(var(--electric)), hsl(165 90% 65%));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* ─── Glass card effect ─── */
+.glass {
+  background: hsl(var(--background) / 0.6);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid hsl(var(--border) / 0.5);
+}
+
+/* ─── Section separator fade ─── */
+.section-fade-top {
+  position: relative;
+}
+.section-fade-top::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, hsl(var(--border)), transparent);
+}
+
+/* ─── Animated gradient border ─── */
+@keyframes border-spin {
+  from { background-position: 0% 50%; }
+  to   { background-position: 100% 50%; }
+}
+
+/* ─── Improved mobile tap areas ─── */
+@media (max-width: 768px) {
+  a, button {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+}

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import logo from "@/assets/logo-transparent.png";
+import icon from "@/assets/aliasist-icon.jpg";
 import { playHover, playClick, setEnabled, isEnabled } from "@/hooks/useSound";
 
 const anchorLinks = [
