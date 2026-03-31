@@ -1,5 +1,7 @@
 import { motion } from "framer-motion";
 import { playHover, playClick } from "@/hooks/useSound";
+import pulseBanner from "@/assets/pulse-banner-command.jpg";
+import abduction1 from "@/assets/abduction-1.jpg";
 
 const releaseTag = "#v2.7.0";
 const releaseBaseUrl = `https://github.com/aliasist/aliasistabductor/releases/download/${releaseTag}`;
@@ -11,6 +13,19 @@ const downloadLinks = {
 };
 
 const projects = [
+  {
+    name: "PulseSist",
+    description:
+      "Real-time stock market intelligence platform. Live candlestick charts, portfolio tracking, AI-powered market analysis, and multi-ticker surveillance. Built for traders who think the market is being watched — because it is.",
+    tech: ["React", "Vite", "Cloudflare Workers", "D1", "FMP API", "AI"],
+    github: "https://github.com/aliasist/stockmarket",
+    downloads: [],
+    status: "Live",
+    icon: "📈",
+    link: "https://pulse.aliasist.com",
+    linkLabel: "Open PulseSist →",
+    banner: pulseBanner,
+  },
   {
     name: "Aliasist-Files-Abductor",
     description:
@@ -26,18 +41,20 @@ const projects = [
     icon: "🛸",
     link: null as string | null,
     linkLabel: null as string | null,
+    banner: abduction1,
   },
   {
     name: "DataSist",
     description:
-      "Live AI data center intelligence platform — 35+ facilities tracked across 13 countries. Power consumption, water usage, investment, renewable energy coverage, community resistance, and grid stress risk. Groq AI analysis, facility comparison, region filters, and a full admin CRUD panel.",
-    tech: ["React", "Vite", "SQLite", "Groq AI", "Leaflet", "Recharts"],
-    github: "https://github.com/aliasist",
+      "Live AI data center intelligence platform — 48 facilities tracked across 13 countries. Real-time EIA electricity prices, power consumption, water usage, investment data, community resistance, and grid stress risk. Groq AI analysis, facility comparison, region filters, and full admin CRUD panel.",
+    tech: ["React", "Vite", "D1", "Groq AI", "Leaflet", "EIA API"],
+    github: "https://github.com/aliasist/datasist",
     downloads: [],
     status: "Live",
     icon: "🌐",
-    link: "/datasist",
+    link: "https://datasist-frontend.pages.dev",
     linkLabel: "Open DataSist →",
+    banner: null,
   },
 ];
 
@@ -89,7 +106,15 @@ const ProjectsSection = () => {
               onMouseEnter={() => playHover()}
               className="relative bg-foreground text-background p-8 sm:p-12 overflow-hidden group"
             >
-              {/* Subtle teal glow on hover */}
+              {/* Banner image background */}
+              {project.banner && (
+                <div
+                  className="absolute inset-0 bg-cover bg-center opacity-[0.08] group-hover:opacity-[0.15] transition-opacity duration-700"
+                  style={{ backgroundImage: `url(${project.banner})` }}
+                />
+              )}
+
+              {/* Teal glow on hover */}
               <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_hsl(165_90%_42%_/_0.08)_0%,_transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
               {/* Background icon */}
@@ -117,10 +142,7 @@ const ProjectsSection = () => {
               <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
                 <div className="flex gap-2 flex-wrap">
                   {project.tech.map((t) => (
-                    <span
-                      key={t}
-                      className="px-3 py-1 text-[11px] font-mono bg-background/8 text-background/65 border border-background/10 rounded-sm"
-                    >
+                    <span key={t} className="px-3 py-1 text-[11px] font-mono bg-background/10 text-background/65 border border-background/10 rounded-sm">
                       {t}
                     </span>
                   ))}
@@ -146,7 +168,7 @@ const ProjectsSection = () => {
                       rel="noopener noreferrer"
                       onMouseEnter={() => playHover()}
                       onClick={() => playClick()}
-                      className="font-mono text-xs uppercase tracking-[0.1em] text-background/60 hover:text-electric transition-colors flex items-center gap-1.5"
+                      className="font-mono text-xs uppercase tracking-[0.1em] text-background/60 hover:text-electric transition-colors"
                     >
                       ↧ {d.label}
                     </a>
@@ -158,6 +180,8 @@ const ProjectsSection = () => {
                 <div className="relative z-10 mt-6">
                   <a
                     href={project.link}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     onMouseEnter={() => playHover()}
                     onClick={() => playClick()}
                     className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] bg-electric text-background px-5 py-2.5 rounded-sm hover:bg-electric/85 transition-all hover:-translate-y-0.5"
@@ -181,12 +205,10 @@ const ProjectsSection = () => {
                 onMouseEnter={() => playHover()}
                 className="relative border border-dashed border-border p-10 flex flex-col items-start justify-between min-h-[180px] bg-card group overflow-hidden hover:border-electric/30 transition-colors"
               >
-                {/* Redaction bars */}
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">
                   <div className="absolute top-0 left-0 right-0 h-px bg-electric/20" />
                   <div className="absolute bottom-0 left-0 right-0 h-px bg-electric/20" />
                 </div>
-
                 <div>
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-electric/60 mb-3">
                     ▓▓▓ CLASSIFIED ▓▓▓
@@ -198,7 +220,6 @@ const ProjectsSection = () => {
                     {item.description}
                   </p>
                 </div>
-
                 <div className="flex items-center gap-2 mt-6">
                   <span className="w-1.5 h-1.5 rounded-full bg-electric/40 animate-pulse" />
                   <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/50">

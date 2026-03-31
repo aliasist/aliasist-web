@@ -3,6 +3,7 @@ import AlienEye from "./AlienEye";
 import { playClick } from "@/hooks/useSound";
 import heroBanner from "@/assets/hero-banner.png";
 import badge from "@/assets/badge.png";
+import aliasistIcon from "@/assets/aliasist-icon.jpg";
 
 const HeroSection = () => {
   return (

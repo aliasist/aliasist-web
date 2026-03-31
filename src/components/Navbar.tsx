@@ -12,6 +12,7 @@ const anchorLinks = [
 
 const routeLinks = [
   { label: "DataSist", href: "/datasist" },
+  { label: "PulseSist", href: "https://pulse.aliasist.com", external: true },
 ];
 
 const Navbar = () => {
