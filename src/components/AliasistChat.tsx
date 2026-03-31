@@ -64,29 +64,9 @@ const AliasistChat = () => {
         }),
       });
 
-      // Worker streams SSE — read the full stream and extract text
-      const reader = res.body?.getReader();
-      const decoder = new TextDecoder();
-      let reply = "";
-
-      if (reader) {
-        while (true) {
-          const { done, value } = await reader.read();
-          if (done) break;
-          const chunk = decoder.decode(value, { stream: true });
-          // Parse SSE lines: "data: {\"response\":\"...\"}" or "data: [DONE]"
-          for (const line of chunk.split("\n")) {
-            if (line.startsWith("data: ") && !line.includes("[DONE]")) {
-              try {
-                const json = JSON.parse(line.slice(6));
-                if (json.response) reply += json.response;
-              } catch {}
-            }
-          }
-        }
-      }
-
-      setMessages((prev) => [...prev, { role: "assistant", content: reply || "// signal_lost — try again" }]);
+      const data = await res.json() as { response?: string; error?: string };
+      const reply = data.response ?? "// signal_lost — try again";
+      setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
       playSuccess();
     } catch {
       setMessages((prev) => [...prev, { role: "assistant", content: "// transmission_error — check your connection." }]);
