@@ -1,6 +1,9 @@
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { playHover, playClick, playSuccess } from "@/hooks/useSound";
 import streetBanner from "@/assets/pulse-banner-street.jpg";
+import { useState, useRef } from "react";
+
+const CONTACT_API = "https://llm-chat.bchooper0730.workers.dev/api/contact";
 
 const GitHubIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -27,7 +30,41 @@ const suite = [
   { label: "TikaSist",  sub: "TikTok Keyword Intelligence", href: "https://tikasist.pages.dev",          icon: "👁️" },
 ];
 
+type FormState = "idle" | "sending" | "success" | "error";
+
 const ContactSection = () => {
+  const [name, setName]       = useState("");
+  const [email, setEmail]     = useState("");
+  const [message, setMessage] = useState("");
+  const [formState, setFormState] = useState<FormState>("idle");
+  const [errorMsg, setErrorMsg]   = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (formState === "sending") return;
+    setFormState("sending");
+    setErrorMsg("");
+    playClick();
+    try {
+      const res = await fetch(CONTACT_API, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ name: name.trim(), email: email.trim(), message: message.trim() }),
+      });
+      const data = await res.json() as { ok?: boolean; error?: string };
+      if (!res.ok || !data.ok) throw new Error(data.error ?? "Unknown error");
+      setFormState("success");
+      playSuccess();
+      setName(""); setEmail(""); setMessage("");
+    } catch (err) {
+      setFormState("error");
+      setErrorMsg(err instanceof Error ? err.message : "Transmission failed");
+    }
+  };
+
+  const inputClass = "w-full bg-background/8 border border-background/15 text-background placeholder:text-background/25 font-mono text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-electric/50 focus:bg-electric/5 transition-all duration-200";
+
   return (
     <section id="contact" className="py-28 px-6 bg-foreground text-background relative overflow-hidden">
       {/* Street banner background */}
@@ -52,37 +89,109 @@ const ContactSection = () => {
           transition={{ duration: 0.6 }}
         >
           <div className="grid md:grid-cols-2 gap-16 items-start">
-            {/* Left */}
+            {/* Left — contact form */}
             <div>
               <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-electric mb-6">
                 <span className="w-2 h-2 bg-electric rounded-full animate-pulse" />
                 Signal open
               </div>
 
-              <h2 className="text-3xl sm:text-4xl font-bold text-background mb-6 tracking-tight leading-tight">
+              <h2 className="text-3xl sm:text-4xl font-bold text-background mb-4 tracking-tight leading-tight">
                 Make contact.
               </h2>
 
-              <p className="text-base text-background/55 leading-relaxed mb-10 max-w-sm">
-                <strong className="text-background/85 font-semibold">
+              <p className="text-sm text-background/50 leading-relaxed mb-8 max-w-sm">
+                <strong className="text-background/75 font-semibold">
                   Open to collaborations, internships, and interesting problems.
                 </strong>{" "}
-                Building in public, pursuing AiSec, always looking for teams
-                working on open-source AI and security tooling.
+                Building in public, pursuing AiSec.
               </p>
 
-              <a
-                href="mailto:dev@aliasist.com"
-                onMouseEnter={() => playHover()}
-                onClick={() => { playClick(); setTimeout(() => playSuccess(), 150); }}
-                className="group relative inline-flex items-center gap-2 px-8 py-3.5 bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] rounded-sm overflow-hidden transition-all hover:-translate-y-0.5 active:scale-95"
-              >
-                <span className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-                <span className="relative">Send a message ↗</span>
-              </a>
+              {/* ── Contact form ── */}
+              <AnimatePresence mode="wait">
+                {formState === "success" ? (
+                  <motion.div
+                    key="success"
+                    initial={{ opacity: 0, y: 12 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    className="border border-electric/30 bg-electric/8 px-6 py-8 rounded-sm"
+                  >
+                    <div className="flex items-center gap-3 mb-3">
+                      <span className="w-2 h-2 rounded-full bg-electric animate-pulse" />
+                      <span className="font-mono text-xs uppercase tracking-[0.18em] text-electric">Transmission received</span>
+                    </div>
+                    <p className="font-mono text-sm text-background/60 leading-relaxed">
+                      Message logged. Responses prioritized by technical complexity and project alignment.
+                    </p>
+                    <button
+                      onClick={() => setFormState("idle")}
+                      className="mt-5 font-mono text-[11px] uppercase tracking-[0.1em] text-background/35 hover:text-electric transition-colors"
+                    >
+                      Send another ↩
+                    </button>
+                  </motion.div>
+                ) : (
+                  <motion.form
+                    key="form"
+                    ref={formRef}
+                    onSubmit={handleSubmit}
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    className="flex flex-col gap-3"
+                  >
+                    <div className="grid sm:grid-cols-2 gap-3">
+                      <input
+                        type="text"
+                        placeholder="Name"
+                        value={name}
+                        onChange={e => setName(e.target.value)}
+                        required
+                        maxLength={100}
+                        className={inputClass}
+                      />
+                      <input
+                        type="email"
+                        placeholder="Email"
+                        value={email}
+                        onChange={e => setEmail(e.target.value)}
+                        required
+                        maxLength={200}
+                        className={inputClass}
+                      />
+                    </div>
+                    <textarea
+                      placeholder="Message — what are you working on?"
+                      value={message}
+                      onChange={e => setMessage(e.target.value)}
+                      required
+                      maxLength={5000}
+                      rows={5}
+                      className={`${inputClass} resize-none`}
+                    />
 
-              {/* Contact links */}
-              <div className="flex flex-col gap-px mt-6">
+                    {formState === "error" && (
+                      <p className="font-mono text-[11px] text-red-400/80">
+                        // error: {errorMsg || "transmission failed — try dev@aliasist.com"}
+                      </p>
+                    )}
+
+                    <button
+                      type="submit"
+                      disabled={formState === "sending"}
+                      onMouseEnter={() => playHover()}
+                      className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] rounded-sm overflow-hidden transition-all hover:-translate-y-0.5 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+                    >
+                      <span className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
+                      <span className="relative">
+                        {formState === "sending" ? "// transmitting..." : "Send message ↗"}
+                      </span>
+                    </button>
+                  </motion.form>
+                )}
+              </AnimatePresence>
+
+              {/* Direct links below form */}
+              <div className="flex flex-col gap-px mt-5">
                 {links.map((link, i) => (
                   <motion.a
                     key={link.label}
@@ -105,13 +214,6 @@ const ContactSection = () => {
                     <span className="opacity-20 group-hover:opacity-100 transition-all">↗</span>
                   </motion.a>
                 ))}
-              </div>
-
-              <div className="mt-px border border-dashed border-background/12 p-4">
-                <p className="font-mono text-[11px] text-background/25 leading-relaxed">
-                  // Currently iterating on this system. Responses prioritized by
-                  technical complexity and project alignment.
-                </p>
               </div>
             </div>
 

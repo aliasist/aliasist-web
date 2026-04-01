@@ -146,7 +146,7 @@ const HeroSection = () => {
           transition={{ delay: 1.2, duration: 0.8 }}
           className="flex items-center justify-center gap-5 mt-16 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/30"
         >
-          {["Open Source", "AI Security", "5 Live Apps"].map((t, i) => (
+          {["Open Source", "AI Security", "4 Live Apps"].map((t, i) => (
             <span key={t} className="flex items-center gap-5">
               {i > 0 && <span className="w-1 h-1 rounded-full bg-border/60" />}
               {t}

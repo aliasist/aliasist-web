@@ -1,7 +1,6 @@
 import { motion, AnimatePresence } from "framer-motion";
 import { playHover, playTransmit } from "@/hooks/useSound";
 import { useEffect, useRef, useState } from "react";
-import { useAIImage } from "@/hooks/useAIImage";
 
 // Will be replaced with live worker URL after deploy
 const NEWS_API = "https://aliasist-news.bchooper0730.workers.dev/api/news";
@@ -77,10 +76,69 @@ const FALLBACK_POSTS = [
 
 const FILTERS = ["All", "AI & Tech", "Finance", "Defense", "AiSec"];
 
-// Individual blog card — isolated so each can call useAIImage independently
-const BlogCard = ({ article, index }: { article: Article; index: number }) => {
-  const { src: aiThumb } = useAIImage("blog", { width: 800, height: 450 });
+// Category-based thumbnail gradients — always render, no external dependency
+const CARD_GRADIENTS: Record<string, string> = {
+  tech:    "linear-gradient(135deg, hsl(165 90% 8%) 0%, hsl(165 60% 14%) 50%, hsl(165 90% 8%) 100%)",
+  finance: "linear-gradient(135deg, hsl(195 90% 8%) 0%, hsl(195 60% 14%) 50%, hsl(195 90% 8%) 100%)",
+  defense: "linear-gradient(135deg, hsl(30 80% 8%) 0%, hsl(30 50% 14%) 50%, hsl(30 80% 8%) 100%)",
+  aisec:   "linear-gradient(135deg, hsl(0 80% 8%) 0%, hsl(0 50% 14%) 50%, hsl(0 80% 8%) 100%)",
+};
 
+// Grid pattern SVG per category
+const CARD_PATTERNS: Record<string, string> = {
+  tech:    "M 0 20 L 20 0 M -5 5 L 5 -5 M 15 25 L 25 15",
+  finance: "M 0 0 L 20 20 M 20 0 L 0 20",
+  defense: "M 10 0 L 10 20 M 0 10 L 20 10",
+  aisec:   "M 0 0 L 20 20 M 0 20 L 20 0 M 10 0 L 10 20 M 0 10 L 20 10",
+};
+
+const CardThumbnail = ({ article }: { article: Article }) => {
+  const bg = CARD_GRADIENTS[article.tag] ?? CARD_GRADIENTS.tech;
+  const pat = CARD_PATTERNS[article.tag] ?? CARD_PATTERNS.tech;
+  const svgId = `pat-${article.tag}`;
+
+  return (
+    <div className="relative w-full aspect-video overflow-hidden" style={{ background: bg }}>
+      {/* Subtle animated grid pattern */}
+      <svg className="absolute inset-0 w-full h-full opacity-[0.08]" aria-hidden="true">
+        <defs>
+          <pattern id={svgId} width="20" height="20" patternUnits="userSpaceOnUse">
+            <path d={pat} stroke={article.color} strokeWidth="0.5" fill="none" />
+          </pattern>
+        </defs>
+        <rect width="100%" height="100%" fill={`url(#${svgId})`} />
+      </svg>
+      {/* Radial glow at centre */}
+      <div
+        className="absolute inset-0"
+        style={{ background: `radial-gradient(ellipse 60% 60% at 50% 50%, ${article.color}18 0%, transparent 70%)` }}
+      />
+      {/* Faint source label watermark */}
+      <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+        <span
+          className="font-mono text-[9px] uppercase tracking-[0.35em] opacity-10 select-none"
+          style={{ color: article.color }}
+        >
+          {article.source}
+        </span>
+      </div>
+      {/* Bottom fade */}
+      <div className="absolute inset-0 bg-gradient-to-t from-background/70 to-transparent" />
+      {/* Category tag */}
+      <div className="absolute bottom-3 left-3">
+        <span
+          className="font-mono text-[10px] uppercase tracking-[0.15em] px-2 py-0.5 border rounded-sm backdrop-blur-sm bg-background/40"
+          style={{ color: article.color, borderColor: `${article.color}40` }}
+        >
+          {article.tag === "aisec" ? "AiSec" : article.tag}
+        </span>
+      </div>
+    </div>
+  );
+};
+
+// Individual blog card
+const BlogCard = ({ article, index }: { article: Article; index: number }) => {
   return (
     <motion.a
       href={article.url}
@@ -92,34 +150,8 @@ const BlogCard = ({ article, index }: { article: Article; index: number }) => {
       onMouseEnter={() => playHover()}
       className="group bg-background border border-border hover:border-electric/30 transition-all duration-300 relative overflow-hidden hover:-translate-y-0.5 flex flex-col"
     >
-      {/* AI-generated thumbnail image at top of card */}
-      <div className="relative w-full aspect-video overflow-hidden bg-card">
-        {aiThumb ? (
-          <motion.img
-            src={aiThumb}
-            alt=""
-            aria-hidden="true"
-            className="w-full h-full object-cover"
-            initial={{ opacity: 0, scale: 1.04 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ duration: 0.9, ease: "easeOut" }}
-          />
-        ) : (
-          // Shimmer placeholder while loading
-          <div className="w-full h-full bg-gradient-to-r from-card via-border/20 to-card animate-pulse" />
-        )}
-        {/* Dark overlay so text underneath stays readable */}
-        <div className="absolute inset-0 bg-gradient-to-t from-background/60 to-transparent" />
-        {/* Category tag on image */}
-        <div className="absolute bottom-3 left-3">
-          <span
-            className="font-mono text-[10px] uppercase tracking-[0.15em] px-2 py-0.5 border rounded-sm backdrop-blur-sm bg-background/40"
-            style={{ color: article.color, borderColor: `${article.color}40` }}
-          >
-            {article.tag === "aisec" ? "AiSec" : article.tag}
-          </span>
-        </div>
-      </div>
+      {/* Category thumbnail — always renders */}
+      <CardThumbnail article={article} />
 
       {/* Card body */}
       <div className="p-5 flex flex-col flex-1">
