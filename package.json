@@ -3,6 +3,6 @@
   "version": "1.0.0",
   "private": true,
   "scripts": {
-    "build": "echo 'Static site — no build step required'"
+    "build": "mkdir -p dist && cp index.html aliasistlogo.png alien_icon1.ico 'alien_icon(PNG).png' 'Alien cowboy and futuristic emblem logo.png' dist/ && cp -r public dist/"
   }
 }
