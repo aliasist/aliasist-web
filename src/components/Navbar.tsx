@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Show, UserButton } from "@clerk/react";
-import newLogo from "@/assets/aliasist-new-logo.png";
+import newLogo from "@/assets/aliasist-logo.png";
 import { playHover, playClick, setEnabled } from "@/hooks/useSound";
 
 // ── Data ──────────────────────────────────────────────────────────────────────
