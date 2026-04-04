@@ -1,0 +1,1111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aliasist — Advancing AI Security and Programs.</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=DM+Mono:ital,wght@0,300;0,400;0,500;1,300&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #F5F4F0;
+    --bg2: #EDECEA;
+    --bg3: #E4E3DE;
+    --ink: #0D0D0B;
+    --ink2: #3A3A36;
+    --ink3: #7A7A74;
+    --signal: #00C875;
+    --signal2: #00A85E;
+    --warn: #C8F000;
+    --border: rgba(13,13,11,0.1);
+    --border2: rgba(13,13,11,0.06);
+    --mono: 'DM Mono', monospace;
+    --display: 'Syne', sans-serif;
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: var(--display);
+    background: var(--bg);
+    color: var(--ink);
+    overflow-x: hidden;
+    cursor: none;
+  }
+
+  /* CUSTOM CURSOR */
+  .cursor {
+    position: fixed;
+    width: 8px; height: 8px;
+    background: var(--signal);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9999;
+    transform: translate(-50%, -50%);
+    transition: transform 0.1s;
+  }
+  .cursor-ring {
+    position: fixed;
+    width: 32px; height: 32px;
+    border: 1px solid var(--signal);
+    border-radius: 50%;
+    pointer-events: none;
+    z-index: 9998;
+    transform: translate(-50%, -50%);
+    transition: all 0.15s ease;
+    opacity: 0.5;
+  }
+
+  /* NOISE OVERLAY */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1;
+    opacity: 0.4;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(245,244,240,0.85);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid var(--border2);
+  }
+
+  .nav-logo {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 18px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .nav-logo-mark {
+    width: 24px; height: 24px;
+    background: var(--signal);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 10px;
+    font-family: var(--mono);
+    color: var(--ink);
+    font-weight: 500;
+  }
+
+  .nav-links {
+    display: flex;
+    align-items: center;
+    gap: 36px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink3);
+    text-decoration: none;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--ink); }
+
+  .nav-cta {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink) !important;
+    background: var(--signal);
+    padding: 8px 18px;
+    border-radius: 2px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+    transition: background 0.2s !important;
+  }
+  .nav-cta:hover { background: var(--signal2) !important; color: var(--ink) !important; }
+
+  /* HERO */
+  #hero {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 0 48px 80px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(0,200,117,0.06) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(0,200,117,0.06) 1px, transparent 1px);
+    background-size: 60px 60px;
+    pointer-events: none;
+  }
+
+  .hero-classified {
+    position: absolute;
+    top: 120px;
+    right: 48px;
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--ink3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border: 1px solid var(--border);
+    padding: 6px 12px;
+    opacity: 0.6;
+  }
+
+  .hero-classified::before {
+    content: '▮ ';
+    color: var(--signal);
+    animation: blink 1.2s steps(1) infinite;
+  }
+
+  @keyframes blink { 0%,100%{opacity:1} 50%{opacity:0} }
+
+  .hero-eyebrow {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--signal2);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .hero-eyebrow::before {
+    content: '';
+    width: 32px;
+    height: 1px;
+    background: var(--signal);
+  }
+
+  .hero-name {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(64px, 10vw, 140px);
+    line-height: 0.92;
+    letter-spacing: -0.04em;
+    color: var(--ink);
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .glitch {
+    position: relative;
+    display: inline-block;
+  }
+
+  .glitch::before,
+  .glitch::after {
+    content: attr(data-text);
+    position: absolute;
+    top: 0; left: 0;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .glitch::before {
+    color: var(--signal);
+    animation: glitch1 4s infinite;
+    clip-path: polygon(0 0, 100% 0, 100% 35%, 0 35%);
+    transform: translate(-2px, 0);
+  }
+
+  .glitch::after {
+    color: #FF6B6B;
+    animation: glitch2 4s infinite;
+    clip-path: polygon(0 65%, 100% 65%, 100% 100%, 0 100%);
+    transform: translate(2px, 0);
+  }
+
+  @keyframes glitch1 {
+    0%,94%,100% { transform: translate(0); opacity: 0; }
+    95% { transform: translate(-3px, 1px); opacity: 0.8; }
+    97% { transform: translate(2px, -1px); opacity: 0.6; }
+  }
+
+  @keyframes glitch2 {
+    0%,94%,100% { transform: translate(0); opacity: 0; }
+    95% { transform: translate(3px, -1px); opacity: 0.8; }
+    97% { transform: translate(-2px, 1px); opacity: 0.5; }
+  }
+
+  .hero-tagline {
+    font-family: var(--display);
+    font-weight: 500;
+    font-size: clamp(18px, 2.5vw, 28px);
+    color: var(--ink2);
+    margin-bottom: 12px;
+    letter-spacing: -0.01em;
+  }
+
+  .hero-sub {
+    font-family: var(--mono);
+    font-size: 13px;
+    color: var(--ink3);
+    letter-spacing: 0.05em;
+    margin-bottom: 48px;
+  }
+
+  .hero-actions {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+  }
+
+  .btn-primary {
+    font-family: var(--mono);
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--ink);
+    background: var(--signal);
+    padding: 14px 28px;
+    border-radius: 2px;
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: background 0.2s, transform 0.15s;
+    display: inline-block;
+  }
+  .btn-primary:hover { background: var(--signal2); transform: translateY(-1px); }
+
+  .btn-secondary {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink2);
+    border: 1px solid var(--border);
+    padding: 14px 28px;
+    border-radius: 2px;
+    text-decoration: none;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    transition: border-color 0.2s, transform 0.15s;
+    display: inline-block;
+  }
+  .btn-secondary:hover { border-color: var(--ink3); transform: translateY(-1px); }
+
+  .hero-scroll {
+    position: absolute;
+    bottom: 80px;
+    right: 48px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    writing-mode: vertical-rl;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    opacity: 0.5;
+  }
+
+  .hero-scroll::after {
+    content: '';
+    width: 1px;
+    height: 48px;
+    background: var(--ink3);
+    animation: scrollline 2s ease infinite;
+  }
+
+  @keyframes scrollline {
+    0% { transform: scaleY(0); transform-origin: top; }
+    50% { transform: scaleY(1); transform-origin: top; }
+    51% { transform: scaleY(1); transform-origin: bottom; }
+    100% { transform: scaleY(0); transform-origin: bottom; }
+  }
+
+  /* SECTIONS */
+  section {
+    padding: 120px 48px;
+    position: relative;
+  }
+
+  .section-label {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--signal2);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .section-label::before {
+    content: '';
+    width: 24px;
+    height: 1px;
+    background: var(--signal);
+  }
+
+  .section-title {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: clamp(36px, 5vw, 60px);
+    letter-spacing: -0.03em;
+    line-height: 1;
+    margin-bottom: 60px;
+    color: var(--ink);
+  }
+
+  /* ABOUT */
+  #about {
+    background: var(--bg2);
+    border-top: 1px solid var(--border2);
+    border-bottom: 1px solid var(--border2);
+  }
+
+  .about-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .about-bio {
+    font-size: 17px;
+    line-height: 1.75;
+    color: var(--ink2);
+    font-family: var(--display);
+    font-weight: 400;
+  }
+
+  .about-bio strong {
+    color: var(--ink);
+    font-weight: 600;
+  }
+
+  .about-bio p + p { margin-top: 20px; }
+
+  .skills-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2px;
+    margin-top: 40px;
+  }
+
+  .skill-item {
+    background: var(--bg3);
+    padding: 14px 18px;
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink2);
+    letter-spacing: 0.03em;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s;
+  }
+
+  .skill-item:hover { background: var(--bg); }
+
+  .skill-item::before {
+    content: '';
+    width: 6px;
+    height: 6px;
+    background: var(--signal);
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .about-stats {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .stat-block {
+    background: var(--bg3);
+    padding: 28px 32px;
+    border-left: 3px solid transparent;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  .stat-block:hover {
+    border-left-color: var(--signal);
+    background: var(--bg);
+  }
+
+  .stat-num {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 48px;
+    letter-spacing: -0.03em;
+    color: var(--ink);
+    line-height: 1;
+    margin-bottom: 4px;
+  }
+
+  .stat-num span {
+    color: var(--signal);
+  }
+
+  .stat-desc {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink3);
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .path-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: var(--ink);
+    color: var(--signal);
+    font-family: var(--mono);
+    font-size: 11px;
+    padding: 8px 16px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 32px;
+  }
+
+  /* PROJECTS */
+  #projects { background: var(--bg); }
+
+  .projects-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 2px;
+  }
+
+  .project-card {
+    background: var(--bg2);
+    padding: 40px;
+    position: relative;
+    overflow: hidden;
+    transition: background 0.2s;
+    text-decoration: none;
+    color: inherit;
+    display: block;
+  }
+
+  .project-card:hover { background: var(--bg3); }
+
+  .project-card.featured {
+    background: var(--ink);
+    color: var(--bg);
+    grid-column: span 2;
+  }
+
+  .project-card.featured:hover { background: #1a1a17; }
+
+  .project-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--signal);
+    margin-bottom: 20px;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .project-tag::before {
+    content: '';
+    width: 16px;
+    height: 1px;
+    background: var(--signal);
+  }
+
+  .project-name {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: -0.02em;
+    margin-bottom: 14px;
+    line-height: 1.1;
+  }
+
+  .project-card.featured .project-name { font-size: 38px; color: #fff; }
+
+  .project-desc {
+    font-size: 14px;
+    line-height: 1.65;
+    color: var(--ink3);
+    margin-bottom: 28px;
+    font-family: var(--display);
+    font-weight: 400;
+  }
+
+  .project-card.featured .project-desc { color: rgba(245,244,240,0.6); }
+
+  .project-stack {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 28px;
+  }
+
+  .stack-tag {
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: 0.06em;
+    padding: 4px 10px;
+    background: var(--bg3);
+    color: var(--ink2);
+    border-radius: 2px;
+  }
+
+  .project-card.featured .stack-tag {
+    background: rgba(255,255,255,0.1);
+    color: rgba(245,244,240,0.7);
+  }
+
+  .project-link {
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--signal);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    transition: gap 0.2s;
+  }
+
+  .project-card:hover .project-link { gap: 10px; }
+
+  .project-ufo {
+    position: absolute;
+    top: 32px;
+    right: 40px;
+    font-size: 32px;
+    opacity: 0.15;
+    filter: grayscale(1);
+  }
+
+  .project-card.featured .project-ufo { opacity: 0.08; font-size: 64px; top: 40px; right: 48px; }
+
+  .coming-soon {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    min-height: 200px;
+    border: 1px dashed var(--border);
+    background: transparent;
+  }
+
+  .coming-soon-text {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--ink3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+  }
+
+  /* TRANSMISSIONS / BLOG */
+  #transmissions {
+    background: var(--bg2);
+    border-top: 1px solid var(--border2);
+    border-bottom: 1px solid var(--border2);
+  }
+
+  .transmissions-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 2px;
+  }
+
+  .transmission-card {
+    background: var(--bg3);
+    padding: 32px;
+    transition: background 0.2s;
+    cursor: pointer;
+  }
+
+  .transmission-card:hover { background: var(--bg); }
+
+  .tx-meta {
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink3);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    gap: 12px;
+  }
+
+  .tx-freq {
+    color: var(--signal2);
+  }
+
+  .tx-title {
+    font-family: var(--display);
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: -0.01em;
+    line-height: 1.3;
+    margin-bottom: 12px;
+    color: var(--ink);
+  }
+
+  .tx-excerpt {
+    font-size: 13px;
+    line-height: 1.6;
+    color: var(--ink3);
+    font-family: var(--display);
+    font-weight: 400;
+    margin-bottom: 20px;
+  }
+
+  .tx-read {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--signal2);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  /* CONTACT */
+  #contact { background: var(--ink); color: var(--bg); }
+
+  #contact .section-label { color: var(--signal); }
+  #contact .section-label::before { background: var(--signal); }
+  #contact .section-title { color: #fff; }
+
+  .contact-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 80px;
+    align-items: start;
+  }
+
+  .contact-desc {
+    font-size: 18px;
+    line-height: 1.7;
+    color: rgba(245,244,240,0.6);
+    font-family: var(--display);
+    font-weight: 400;
+    margin-bottom: 40px;
+  }
+
+  .contact-desc strong { color: var(--bg); font-weight: 600; }
+
+  .contact-open {
+    font-family: var(--mono);
+    font-size: 12px;
+    color: var(--signal);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 32px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .contact-open::before {
+    content: '';
+    width: 8px;
+    height: 8px;
+    background: var(--signal);
+    border-radius: 50%;
+    animation: pulse 2s ease infinite;
+  }
+
+  @keyframes pulse {
+    0%,100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.5; transform: scale(0.8); }
+  }
+
+  .contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+
+  .contact-link {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 20px 24px;
+    background: rgba(255,255,255,0.04);
+    border: 1px solid rgba(255,255,255,0.06);
+    text-decoration: none;
+    color: rgba(245,244,240,0.8);
+    font-family: var(--mono);
+    font-size: 13px;
+    letter-spacing: 0.05em;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .contact-link:hover {
+    background: rgba(0,200,117,0.1);
+    color: var(--signal);
+    border-color: rgba(0,200,117,0.2);
+  }
+
+  .contact-link-arrow { opacity: 0.4; transition: opacity 0.2s, transform 0.2s; }
+  .contact-link:hover .contact-link-arrow { opacity: 1; transform: translate(3px, -3px); }
+
+  /* FOOTER */
+  footer {
+    background: var(--ink);
+    border-top: 1px solid rgba(255,255,255,0.06);
+    padding: 32px 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .footer-logo {
+    font-family: var(--display);
+    font-weight: 800;
+    font-size: 16px;
+    color: rgba(245,244,240,0.4);
+    letter-spacing: -0.02em;
+  }
+
+  .footer-copy {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: rgba(245,244,240,0.2);
+    letter-spacing: 0.05em;
+  }
+
+  .footer-signal {
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--signal);
+    letter-spacing: 0.08em;
+    opacity: 0.6;
+  }
+
+  /* DIVIDER */
+  .classified-divider {
+    height: 1px;
+    background: var(--border2);
+    position: relative;
+    overflow: visible;
+  }
+
+  .classified-divider::after {
+    content: 'CLASSIFIED // ALIASIST-INTERNAL';
+    position: absolute;
+    left: 48px;
+    top: -8px;
+    font-family: var(--mono);
+    font-size: 10px;
+    color: var(--ink3);
+    letter-spacing: 0.12em;
+    background: var(--bg2);
+    padding: 0 12px;
+    opacity: 0.4;
+  }
+
+  /* RESPONSIVE */
+  @media (max-width: 768px) {
+    nav { padding: 16px 24px; }
+    .nav-links { display: none; }
+    #hero { padding: 0 24px 60px; }
+    .hero-classified { display: none; }
+    section { padding: 80px 24px; }
+    .about-grid { grid-template-columns: 1fr; gap: 40px; }
+    .projects-grid { grid-template-columns: 1fr; }
+    .project-card.featured { grid-column: span 1; }
+    .transmissions-grid { grid-template-columns: 1fr; }
+    .contact-grid { grid-template-columns: 1fr; gap: 40px; }
+    footer { flex-direction: column; gap: 12px; text-align: center; padding: 24px; }
+    .skills-grid { grid-template-columns: 1fr; }
+  }
+
+  /* FADE IN */
+  .fade-in {
+    opacity: 0;
+    transform: translateY(20px);
+    transition: opacity 0.6s ease, transform 0.6s ease;
+  }
+  .fade-in.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor"></div>
+<div class="cursor-ring" id="cursorRing"></div>
+
+<!-- NAV -->
+<nav>
+  <a href="#hero" class="nav-logo">
+    <div class="nav-logo-mark">∅</div>
+    aliasist
+  </a>
+  <ul class="nav-links">
+    <li><a href="#about">About</a></li>
+    <li><a href="#projects">Projects</a></li>
+    <li><a href="#transmissions">Transmissions</a></li>
+    <li><a href="#contact" class="nav-cta">Contact</a></li>
+  </ul>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-classified">SIGNAL DETECTED // SECTOR 7G</div>
+
+  <div class="hero-eyebrow">AI Security &amp; Adversarial Defense</div>
+
+  <h1 class="hero-name">
+    <span class="glitch" data-text="ALIASIST">ALIASIST</span>
+  </h1>
+
+  <p class="hero-tagline">Adversarial by nature. Defensive by design.</p>
+  <p class="hero-sub">// Not all threats come from this world.</p>
+
+  <div class="hero-actions">
+    <a href="#projects" class="btn-primary">View My Work</a>
+    <a href="#contact" class="btn-secondary">Contact Me</a>
+  </div>
+
+  <div class="hero-scroll">Scroll</div>
+</section>
+
+<!-- ABOUT -->
+<section id="about">
+  <div class="section-label">About</div>
+  <h2 class="section-title">Origin file.</h2>
+
+  <div class="about-grid">
+    <div>
+      <div class="about-bio">
+        <p>I've been poking at code since I was a kid — <strong>HTML, CSS</strong>, figuring out how things work by breaking them. No classroom. No roadmap. Just curiosity and a terminal.</p>
+        <p>Now I'm studying <strong>Computer Information Systems</strong> with plans to transfer into a CS degree, with my sights set on <strong>AI Security and Adversarial Defense</strong>. Aliasist is where I build, experiment, and ship real tools while I work toward that.</p>
+        <p>The degree is new. <strong>The obsession isn't.</strong></p>
+      </div>
+
+      <div class="path-badge">
+        ◈ Path: CIS → CS → AiSec
+      </div>
+
+      <div class="skills-grid" style="margin-top: 32px;">
+        <div class="skill-item">Python</div>
+        <div class="skill-item">JavaScript</div>
+        <div class="skill-item">HTML / CSS</div>
+        <div class="skill-item">UI Design</div>
+        <div class="skill-item">File Automation</div>
+        <div class="skill-item">AiSec (Learning)</div>
+        <div class="skill-item">CLI Tools</div>
+        <div class="skill-item">Self-Taught</div>
+      </div>
+    </div>
+
+    <div class="about-stats fade-in">
+      <div class="stat-block">
+        <div class="stat-num">10<span>+</span></div>
+        <div class="stat-desc">Years coding since childhood</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">2<span>×</span></div>
+        <div class="stat-desc">Languages — Python &amp; JavaScript</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">1<span>→</span></div>
+        <div class="stat-desc">Clear target: AI Security</div>
+      </div>
+      <div class="stat-block">
+        <div class="stat-num">∞</div>
+        <div class="stat-desc">Problems left to solve</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="classified-divider"></div>
+
+<!-- PROJECTS -->
+<section id="projects">
+  <div class="section-label">Projects / Tools</div>
+  <h2 class="section-title">Deployed tools.</h2>
+
+  <div class="projects-grid">
+    <!-- Featured -->
+    <div class="project-card featured fade-in">
+      <div class="project-ufo">🛸</div>
+      <div class="project-tag">Featured — Active</div>
+      <div class="project-name">Aliaist-Files-Abductor</div>
+      <div class="project-desc">A file organization and automation tool that abducts files from chaos and deposits them exactly where they belong. Built with a clean CLI interface and an alien theme that doesn't apologize for itself. Does the work. No questions asked.</div>
+      <div class="project-stack">
+        <span class="stack-tag">Python</span>
+        <span class="stack-tag">CLI</span>
+        <span class="stack-tag">File Automation</span>
+        <span class="stack-tag">Aliasist</span>
+      </div>
+      <div class="project-link">View on GitHub ↗</div>
+    </div>
+
+    <!-- Placeholder 1 -->
+    <div class="project-card coming-soon fade-in">
+      <div class="coming-soon-text">// Next transmission incoming</div>
+    </div>
+
+    <!-- Placeholder 2 -->
+    <div class="project-card coming-soon fade-in">
+      <div class="coming-soon-text">// Signal not yet acquired</div>
+    </div>
+  </div>
+</section>
+
+<div class="classified-divider" style="--bg2: var(--bg);"></div>
+
+<!-- TRANSMISSIONS -->
+<section id="transmissions">
+  <div class="section-label">Blog</div>
+  <h2 class="section-title">Transmissions.</h2>
+
+  <div class="transmissions-grid">
+    <div class="transmission-card fade-in">
+      <div class="tx-meta">
+        <span class="tx-freq">FREQ-001</span>
+        <span>Coming Soon</span>
+      </div>
+      <div class="tx-title">What adversarial AI actually means — and why it matters now</div>
+      <div class="tx-excerpt">The threat landscape is shifting. AI systems aren't just targets anymore — they're vectors. Here's what I'm learning about the field I'm building toward.</div>
+      <div class="tx-read">Read transmission ↗</div>
+    </div>
+
+    <div class="transmission-card fade-in">
+      <div class="tx-meta">
+        <span class="tx-freq">FREQ-002</span>
+        <span>Coming Soon</span>
+      </div>
+      <div class="tx-title">Self-taught to CS degree: what nobody tells you about the gap</div>
+      <div class="tx-excerpt">The jump from teaching yourself to formal computer science isn't just about syntax. It's about unlearning some things and doubling down on others.</div>
+      <div class="tx-read">Read transmission ↗</div>
+    </div>
+
+    <div class="transmission-card fade-in">
+      <div class="tx-meta">
+        <span class="tx-freq">FREQ-003</span>
+        <span>Coming Soon</span>
+      </div>
+      <div class="tx-title">Building Aliaist-Files-Abductor: why I made a tool nobody asked for</div>
+      <div class="tx-excerpt">The best projects start with personal problems. Here's how a messy downloads folder turned into a CLI tool with an alien obsession.</div>
+      <div class="tx-read">Read transmission ↗</div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACT -->
+<section id="contact">
+  <div class="section-label">Contact</div>
+  <h2 class="section-title">Make contact.</h2>
+
+  <div class="contact-grid">
+    <div>
+      <div class="contact-open">Available for opportunities</div>
+      <p class="contact-desc">
+        <strong>Open to collaborations, internships, and interesting problems.</strong> If you're working on something in AI security, automation, or tooling — or you just want to talk shop — I'm listening.
+      </p>
+      <a href="mailto:hello@aliasist.com" class="btn-primary" style="background: var(--signal); color: var(--ink);">Send a message ↗</a>
+    </div>
+
+    <div class="contact-links">
+      <a href="#" class="contact-link">
+        <span>GitHub</span>
+        <span class="contact-link-arrow">↗</span>
+      </a>
+      <a href="#" class="contact-link">
+        <span>LinkedIn</span>
+        <span class="contact-link-arrow">↗</span>
+      </a>
+      <a href="#" class="contact-link">
+        <span>aliasist.com</span>
+        <span class="contact-link-arrow">↗</span>
+      </a>
+      <a href="mailto:hello@aliasist.com" class="contact-link">
+        <span>hello@aliasist.com</span>
+        <span class="contact-link-arrow">↗</span>
+      </a>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">aliasist</div>
+  <div class="footer-copy">© 2025 Aliasist. All transmissions reserved.</div>
+  <div class="footer-signal">SIGNAL: ACTIVE ◈</div>
+</footer>
+
+<script>
+  // Custom cursor
+  const cursor = document.getElementById('cursor');
+  const ring = document.getElementById('cursorRing');
+  let mx = 0, my = 0, rx = 0, ry = 0;
+
+  document.addEventListener('mousemove', e => {
+    mx = e.clientX; my = e.clientY;
+    cursor.style.left = mx + 'px';
+    cursor.style.top = my + 'px';
+  });
+
+  function animateRing() {
+    rx += (mx - rx) * 0.12;
+    ry += (my - ry) * 0.12;
+    ring.style.left = rx + 'px';
+    ring.style.top = ry + 'px';
+    requestAnimationFrame(animateRing);
+  }
+  animateRing();
+
+  document.querySelectorAll('a, button').forEach(el => {
+    el.addEventListener('mouseenter', () => {
+      cursor.style.transform = 'translate(-50%,-50%) scale(2)';
+      ring.style.transform = 'translate(-50%,-50%) scale(1.5)';
+      ring.style.opacity = '0.8';
+    });
+    el.addEventListener('mouseleave', () => {
+      cursor.style.transform = 'translate(-50%,-50%) scale(1)';
+      ring.style.transform = 'translate(-50%,-50%) scale(1)';
+      ring.style.opacity = '0.5';
+    });
+  });
+
+  // Fade in on scroll
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        e.target.classList.add('visible');
+      }
+    });
+  }, { threshold: 0.1 });
+
+  document.querySelectorAll('.fade-in').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
