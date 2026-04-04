@@ -10,8 +10,6 @@ import Starfield from "@/components/Starfield";
 import ScrollProgress from "@/components/ScrollProgress";
 import AliasistChat from "@/components/AliasistChat";
 import AISplashScreen from "@/components/AISplashScreen";
-import DailyGallery from "@/components/DailyGallery";
-import AIImageBot from "@/components/AIImageBot";
 
 // Show the splash screen once per browser session
 function shouldShowSplash(): boolean {
@@ -49,8 +47,6 @@ const Index = () => {
         <HeroSection />
         <AboutSection />
         <ProjectsSection />
-        <DailyGallery />
-        <AIImageBot />
         <TransmissionsSection />
         <ContactSection />
         <Footer />

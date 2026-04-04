@@ -1,16 +1,13 @@
 /**
- * AISplashScreen
- * Full-screen loading overlay with a unique AI-generated background on every visit.
- * Shown once per session (sessionStorage gated).
- * Fades out once the AI art is ready + a minimum display time has passed.
+ * SplashScreen
+ * Full-screen loading overlay shown once per session.
+ * Fades out after a minimum display time.
  */
 
 import { useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAIImage } from "@/hooks/useAIImage";
 
-const MIN_DISPLAY_MS = 1600; // minimum time the splash is visible
-const FALLBACK_DISMISS_MS = 6000; // hard timeout if worker is slow
+const MIN_DISPLAY_MS = 1600;
 
 interface AISplashScreenProps {
   onDismiss?: () => void;
@@ -18,30 +15,12 @@ interface AISplashScreenProps {
 
 const AISplashScreen = ({ onDismiss }: AISplashScreenProps) => {
   const [visible, setVisible] = useState(true);
-  const [bgReady, setBgReady] = useState(false);
-  const startRef = useRef(Date.now());
   const dismissedRef = useRef(false);
 
-  const { src, loading } = useAIImage("loading");
-
-  // Once the image arrives, wait for MIN_DISPLAY_MS before dismissing
   useEffect(() => {
-    if (!loading && !dismissedRef.current) {
-      const elapsed = Date.now() - startRef.current;
-      const remaining = Math.max(0, MIN_DISPLAY_MS - elapsed);
-      const timer = setTimeout(() => dismiss(), remaining);
-      return () => clearTimeout(timer);
-    }
-  }, [loading]);
-
-  // Hard fallback — dismiss regardless of image status
-  useEffect(() => {
-    const timer = setTimeout(() => dismiss(), FALLBACK_DISMISS_MS);
+    const timer = setTimeout(() => dismiss(), MIN_DISPLAY_MS);
     return () => clearTimeout(timer);
   }, []);
-
-  // Fade in the background image once it's loaded into the DOM
-  const handleBgLoad = () => setBgReady(true);
 
   function dismiss() {
     if (dismissedRef.current) return;
@@ -54,28 +33,14 @@ const AISplashScreen = ({ onDismiss }: AISplashScreenProps) => {
     <AnimatePresence>
       {visible && (
         <motion.div
-          key="ai-splash"
+          key="splash"
           className="fixed inset-0 z-[9999] flex flex-col items-center justify-center overflow-hidden"
           style={{ background: "#0a0f0a" }}
           initial={{ opacity: 1 }}
           exit={{ opacity: 0 }}
           transition={{ duration: 0.8, ease: "easeInOut" }}
         >
-          {/* AI-generated background art */}
-          {src && (
-            <motion.img
-              src={src}
-              alt=""
-              aria-hidden="true"
-              onLoad={handleBgLoad}
-              className="absolute inset-0 w-full h-full object-cover pointer-events-none select-none"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: bgReady ? 0.45 : 0 }}
-              transition={{ duration: 1.4, ease: "easeInOut" }}
-            />
-          )}
-
-          {/* Dark overlay gradient — keeps text readable */}
+          {/* Dark overlay gradient */}
           <div className="absolute inset-0 bg-gradient-to-b from-background/60 via-transparent to-background/80 pointer-events-none" />
 
           {/* Scanline texture */}
@@ -114,8 +79,8 @@ const AISplashScreen = ({ onDismiss }: AISplashScreenProps) => {
               <motion.div
                 className="h-full bg-electric rounded-full"
                 initial={{ width: "0%" }}
-                animate={{ width: loading ? "65%" : "100%" }}
-                transition={{ duration: loading ? 1.5 : 0.4, ease: "easeOut" }}
+                animate={{ width: "100%" }}
+                transition={{ duration: MIN_DISPLAY_MS / 1000, ease: "easeOut" }}
               />
             </motion.div>
 
@@ -127,7 +92,7 @@ const AISplashScreen = ({ onDismiss }: AISplashScreenProps) => {
               className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.25em] text-muted-foreground/50"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-electric animate-pulse" />
-              {loading ? "GENERATING VISUAL SIGNATURE..." : "READY"}
+              READY
             </motion.div>
           </div>
 

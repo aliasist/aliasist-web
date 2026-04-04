@@ -5,30 +5,14 @@ import heroBanner from "@/assets/hero-banner.png";
 import badge from "@/assets/badge.png";
 import aliasistIcon from "@/assets/logo.png";
 import mascot from "@/assets/mascot.png";
-import { useAIImage } from "@/hooks/useAIImage";
-
 const HeroSection = () => {
-  // AI-generated banner — unique on every visit, falls back to static asset
-  const { src: aiBanner, loading: bannerLoading } = useAIImage("hero");
-
   return (
     <section className="relative min-h-screen flex items-center justify-center grid-bg overflow-hidden scanlines">
-      {/* Static fallback banner — always visible at base opacity */}
+      {/* Static banner */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.10] pointer-events-none"
         style={{ backgroundImage: `url(${heroBanner})` }}
       />
-
-      {/* AI-generated banner — fades in over the static one */}
-      {aiBanner && (
-        <motion.div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-          style={{ backgroundImage: `url(${aiBanner})` }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: bannerLoading ? 0 : 0.18 }}
-          transition={{ duration: 1.8, ease: "easeInOut" }}
-        />
-      )}
 
       {/* Layered radial glows */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_35%,_hsl(165_90%_42%_/_0.06)_0%,_transparent_65%)] pointer-events-none" />
