@@ -3,7 +3,7 @@ import AlienEye from "./AlienEye";
 import { playClick } from "@/hooks/useSound";
 import heroBanner from "@/assets/hero-banner.png";
 import badge from "@/assets/badge.png";
-import aliasistIcon from "@/assets/aliasist-icon.jpg";
+import aliasistIcon from "@/assets/logo.png";
 import mascot from "@/assets/mascot.png";
 import { useAIImage } from "@/hooks/useAIImage";
 
@@ -45,7 +45,7 @@ const HeroSection = () => {
         Systems Operational // Q2 2026
       </motion.div>
 
-      {/* New icon — bottom right atmospheric */}
+      {/* Glossy alien icon — bottom right atmospheric */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
