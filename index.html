@@ -2,38 +2,80 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
-    <link rel="manifest" href="/manifest.webmanifest" />
-    <meta name="theme-color" content="#0a0f0a" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Aliasist — Logos</title>
+    <style>
+      *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-    <title>Aliasist — Adversarial by Nature. Defensive by Design.</title>
-    <meta name="description" content="Aliasist is the developer portfolio and project hub of Blake — AI security tools, open-source automation, and adversarial defense. Building the tools that find the gaps before they do." />
-    <meta name="author" content="Blake | Aliasist" />
-    <meta name="keywords" content="AI security, AiSec, adversarial ML, open source, developer portfolio, Aliasist, DataSist, PulseSist" />
+      body {
+        background: #0a0f0a;
+        color: #f5f4f0;
+        font-family: sans-serif;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        gap: 48px;
+        padding: 48px 24px;
+      }
 
-    <!-- Open Graph -->
-    <meta property="og:title" content="Aliasist — Adversarial by Nature. Defensive by Design." />
-    <meta property="og:description" content="AI security tools, open-source automation, and adversarial defense. Building the tools that find the gaps before they do." />
-    <meta property="og:type" content="website" />
-    <meta property="og:url" content="https://www.aliasist.com" />
-    <meta property="og:image" content="https://www.aliasist.com/og-image.png" />
-    <meta property="og:image:width" content="1200" />
-    <meta property="og:image:height" content="630" />
-    <meta property="og:site_name" content="Aliasist" />
+      h1 {
+        font-size: 14px;
+        letter-spacing: 0.2em;
+        text-transform: uppercase;
+        color: #7a7a74;
+      }
 
-    <!-- Twitter / X -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="Aliasist — Adversarial by Nature. Defensive by Design." />
-    <meta name="twitter:description" content="AI security tools, open-source automation, and adversarial defense." />
-    <meta name="twitter:image" content="https://www.aliasist.com/og-image.png" />
+      .logos {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 48px;
+        align-items: center;
+        justify-content: center;
+      }
+
+      .logo-card {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+      }
+
+      .logo-card img {
+        max-width: 320px;
+        max-height: 320px;
+        object-fit: contain;
+        border-radius: 4px;
+      }
+
+      .logo-card span {
+        font-size: 11px;
+        letter-spacing: 0.1em;
+        text-transform: uppercase;
+        color: #7a7a74;
+      }
+    </style>
   </head>
 
   <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <h1>Aliasist — Logo Concepts</h1>
+
+    <div class="logos">
+      <div class="logo-card">
+        <img src="aliasistlogo.png" alt="Aliasist Logo" />
+        <span>aliasistlogo.png</span>
+      </div>
+
+      <div class="logo-card">
+        <img src="Alien cowboy and futuristic emblem logo.png" alt="Alien Cowboy and Futuristic Emblem Logo" />
+        <span>Alien cowboy and futuristic emblem logo</span>
+      </div>
+
+      <div class="logo-card">
+        <img src="alien_icon(PNG).png" alt="Alien Icon" />
+        <span>alien_icon(PNG).png</span>
+      </div>
+    </div>
   </body>
 </html>
