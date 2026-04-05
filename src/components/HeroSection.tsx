@@ -3,31 +3,16 @@ import AlienEye from "./AlienEye";
 import { playClick } from "@/hooks/useSound";
 import heroBanner from "@/assets/hero-banner.png";
 import badge from "@/assets/badge.png";
-import mascot from "../../images/aliasist-mascot-final.png";
-import { useAIImage } from "@/hooks/useAIImage";
-
+import aliasistIcon from "@/assets/logo.png";
+import mascot from "@/assets/mascot.png";
 const HeroSection = () => {
-  // AI-generated banner — unique on every visit, falls back to static asset
-  const { src: aiBanner, loading: bannerLoading } = useAIImage("hero");
-
   return (
     <section className="relative min-h-screen flex items-center justify-center grid-bg overflow-hidden scanlines">
-      {/* Static fallback banner — always visible at base opacity */}
+      {/* Static banner */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.10] pointer-events-none"
         style={{ backgroundImage: `url(${heroBanner})` }}
       />
-
-      {/* AI-generated banner — fades in over the static one */}
-      {aiBanner && (
-        <motion.div
-          className="absolute inset-0 bg-cover bg-center bg-no-repeat pointer-events-none"
-          style={{ backgroundImage: `url(${aiBanner})` }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: bannerLoading ? 0 : 0.18 }}
-          transition={{ duration: 1.8, ease: "easeInOut" }}
-        />
-      )}
 
       {/* Layered radial glows */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_35%,_hsl(165_90%_42%_/_0.06)_0%,_transparent_65%)] pointer-events-none" />
@@ -44,7 +29,7 @@ const HeroSection = () => {
         Systems Operational // Q2 2026
       </motion.div>
 
-      {/* New icon — bottom right atmospheric */}
+      {/* Glossy alien icon — bottom right atmospheric */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
@@ -52,10 +37,35 @@ const HeroSection = () => {
         className="absolute bottom-12 right-8 hidden lg:block pointer-events-none"
       >
         <img
-          src={mascot}
-          alt="Aliasist Mascot UFO"
-          className="w-28 h-28 rounded-xl opacity-[0.16] hover:opacity-[0.28] transition-opacity duration-700 object-contain shadow-xl"
+          src={aliasistIcon}
+          alt=""
+          className="w-24 h-24 rounded-xl opacity-[0.12] hover:opacity-[0.22] transition-opacity duration-700 object-cover"
         />
+      </motion.div>
+
+      {/* Mascot: aliasist, the cowboy alien — hero right side (desktop) */}
+      <motion.div
+        initial={{ opacity: 0, scale: 0.7, rotate: 8 }}
+        animate={{ opacity: 1, scale: 1, rotate: 0 }}
+        transition={{ delay: 0.9, duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }}
+        className="absolute right-6 xl:right-14 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center gap-2 z-20"
+      >
+        <motion.div
+          animate={{ y: [0, -10, 0] }}
+          transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+          className="relative"
+        >
+          <div className="absolute -inset-3 rounded-full border border-electric/25 animate-pulse pointer-events-none" />
+          <img
+            src={mascot}
+            alt="Meet our mascot: aliasist, the cowboy alien!"
+            title="Meet our mascot: aliasist, the cowboy alien!"
+            className="w-44 h-44 xl:w-52 xl:h-52 rounded-full object-cover border-2 border-electric/50 shadow-[0_0_24px_hsl(165_90%_42%_/_0.35)] hover:shadow-[0_0_48px_hsl(165_90%_42%_/_0.55)] hover:scale-105 transition-all duration-500 cursor-pointer select-none"
+          />
+        </motion.div>
+        <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-electric/50 text-center">
+          aliasist // cowboy alien
+        </p>
       </motion.div>
 
       <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
@@ -68,6 +78,28 @@ const HeroSection = () => {
           transition={{ duration: 1, delay: 0.1, ease: [0.34, 1.56, 0.64, 1] }}
         >
           <AlienEye />
+        </motion.div>
+
+        {/* Mascot — mobile only (centered, below the eye) */}
+        <motion.div
+          initial={{ opacity: 0, scale: 0.7 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ delay: 0.9, duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }}
+          className="flex lg:hidden justify-center mb-8"
+        >
+          <motion.div
+            animate={{ y: [0, -8, 0] }}
+            transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
+            className="relative"
+          >
+            <div className="absolute -inset-2 rounded-full border border-electric/25 animate-pulse pointer-events-none" />
+            <img
+              src={mascot}
+              alt="Meet our mascot: aliasist, the cowboy alien!"
+              title="Meet our mascot: aliasist, the cowboy alien!"
+              className="w-24 h-24 rounded-full object-cover border-2 border-electric/50 shadow-[0_0_16px_hsl(165_90%_42%_/_0.3)] select-none"
+            />
+          </motion.div>
         </motion.div>
 
         {/* Eyeline label */}

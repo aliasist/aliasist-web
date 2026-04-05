@@ -3,7 +3,6 @@ import { playHover, playClick } from "@/hooks/useSound";
 import pulseBanner from "@/assets/pulse-banner-command.jpg";
 import abduction1 from "@/assets/abduction-1.jpg";
 import tikaLogo from "@/assets/tikasist-logo.png";
-import { useAIImage, type AIImageType } from "@/hooks/useAIImage";
 
 const releaseTag = "v2.7.0";
 const releaseBaseUrl = `https://github.com/aliasist/aliasistabductor/releases/download/${releaseTag}`;
@@ -27,7 +26,6 @@ const projects = [
     link: "https://tikasist-api.bchooper0730.workers.dev",
     linkLabel: "Open TikaSist →",
     banner: tikaLogo,
-    aiType: "project-tikasist" as AIImageType,
   },
   {
     name: "SpaceSist",
@@ -41,7 +39,6 @@ const projects = [
     link: "https://space.aliasist.com",
     linkLabel: "Open SpaceSist →",
     banner: null,
-    aiType: "project-spacesist" as AIImageType,
   },
   {
     name: "PulseSist",
@@ -55,7 +52,6 @@ const projects = [
     link: "https://pulse.aliasist.com",
     linkLabel: "Open PulseSist →",
     banner: pulseBanner,
-    aiType: "project-pulsesist" as AIImageType,
   },
   {
     name: "Aliasist-Files-Abductor",
@@ -73,7 +69,6 @@ const projects = [
     link: null as string | null,
     linkLabel: null as string | null,
     banner: abduction1,
-    aiType: "project-generic" as AIImageType,
   },
   {
     name: "DataSist",
@@ -87,7 +82,6 @@ const projects = [
     link: "https://datasist-frontend.pages.dev",
     linkLabel: "Open DataSist →",
     banner: null,
-    aiType: "project-datasist" as AIImageType,
   },
 ];
 
@@ -104,10 +98,8 @@ const comingSoon = [
   },
 ];
 
-// Per-card component so each card can independently call useAIImage
+// Per-card component
 const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: number }) => {
-  const { src: aiSrc } = useAIImage(project.aiType, { width: 1200, height: 600 });
-
   return (
     <motion.div
       key={project.name}
@@ -118,23 +110,11 @@ const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: n
       onMouseEnter={() => playHover()}
       className="relative bg-card border border-border/60 hover:border-electric/40 text-foreground p-8 sm:p-12 overflow-hidden group transition-colors duration-300"
     >
-      {/* Static fallback banner — always present at base opacity */}
+      {/* Static banner */}
       {project.banner && (
         <div
           className="absolute inset-0 bg-cover bg-center opacity-[0.06] pointer-events-none"
           style={{ backgroundImage: `url(${project.banner})` }}
-        />
-      )}
-
-      {/* AI-generated banner — fades in over the fallback, intensifies on hover */}
-      {aiSrc && (
-        <motion.div
-          className="absolute inset-0 bg-cover bg-center pointer-events-none"
-          style={{ backgroundImage: `url(${aiSrc})` }}
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 0.12 }}
-          whileHover={{ opacity: 0.22 }}
-          transition={{ duration: 1.2, ease: "easeInOut" }}
         />
       )}
 
