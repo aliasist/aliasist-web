@@ -1,7 +1,7 @@
 import { motion } from "framer-motion";
 import { playHover, playScan } from "@/hooks/useSound";
 import { useEffect, useRef, useState } from "react";
-import abduction2 from "@/assets/abduction-2.jpg";
+import mascot from "../../images/aliasist-mascot-final.png";
 
 const skills = [
   "Python", "JavaScript", "HTML / CSS",
@@ -50,8 +50,8 @@ const AboutSection = () => {
     <section id="about" className="py-28 px-6 bg-card relative overflow-hidden">
       {/* Atmospheric background image */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-[0.04] pointer-events-none"
-        style={{ backgroundImage: `url(${abduction2})` }}
+        className="absolute inset-0 bg-cover bg-center opacity-[0.06] pointer-events-none"
+        style={{ backgroundImage: `url(${mascot})` }}
       />
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-electric/[0.03] pointer-events-none" />
@@ -89,9 +89,7 @@ const AboutSection = () => {
               <p>
                 Currently studying{" "}
                 <strong className="text-foreground/90 font-semibold">Computer Information Systems</strong>,
-                building open-source security tools, and learning the adversarial
-                side of machine learning. Aliasist is where I ship real things
-                while I work toward that goal.
+                learning the adversarial side of machine learning, and building open-source tools. Aliasist is where I ship real things while I work toward that goal.
               </p>
               <p>
                 The tools change.{" "}

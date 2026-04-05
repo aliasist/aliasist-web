@@ -72,6 +72,12 @@ const ContactSection = () => {
         className="absolute inset-0 bg-cover bg-center opacity-[0.06] pointer-events-none"
         style={{ backgroundImage: `url(${streetBanner})` }}
       />
+        import mascot from "../../images/aliasist-mascot-final.png";
+        {/* Mascot background for branding */}
+        <div
+          className="absolute inset-0 bg-cover bg-center opacity-[0.04] pointer-events-none"
+          style={{ backgroundImage: `url(${mascot})` }}
+        />
       <div className="absolute inset-0 bg-gradient-to-b from-foreground/80 via-foreground/60 to-foreground/90 pointer-events-none" />
       <div className="absolute -right-32 -bottom-32 w-[500px] h-[500px] rounded-full pointer-events-none opacity-[0.05]"
         style={{ background: "radial-gradient(circle, hsl(165 90% 42%), transparent 70%)" }}

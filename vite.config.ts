@@ -2,6 +2,8 @@ import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 
+import { cloudflare } from "@cloudflare/vite-plugin";
+
 // https://vitejs.dev/config/
 export default defineConfig(async ({ mode }) => {
   // `lovable-tagger` is optional dev tooling; don't fail production builds
@@ -27,7 +29,7 @@ export default defineConfig(async ({ mode }) => {
         overlay: false,
       },
     },
-    plugins: [react(), ...devPlugins],
+    plugins: [react(), ...devPlugins, cloudflare()],
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),

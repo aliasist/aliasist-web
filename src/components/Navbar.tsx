@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Show, UserButton } from "@clerk/react";
-import newLogo from "@/assets/aliasist-new-logo.png";
+import logoSVG from "../../images/aliasist_logo.svg";
 import { playHover, playClick, setEnabled } from "@/hooks/useSound";
 
 // ── Data ──────────────────────────────────────────────────────────────────────
@@ -181,7 +181,7 @@ const Navbar = () => {
           aria-label="Aliasist home"
         >
           <motion.img
-            src={newLogo}
+            src={logoSVG}
             alt="Aliasist"
             className="h-8 w-8 object-contain"
             whileHover={{ scale: 1.1, filter: "drop-shadow(0 0 10px hsl(165 90% 42% / 0.8))" }}

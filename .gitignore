@@ -39,3 +39,6 @@ coverage/
 # TypeScript
 *.tsbuildinfo
 .env.local
+
+.dev.vars*
+!.dev.vars.example

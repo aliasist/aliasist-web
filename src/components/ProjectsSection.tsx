@@ -24,7 +24,7 @@ const projects = [
     downloads: [],
     status: "Live",
     icon: "👁️",
-    link: "https://tikasist.pages.dev",
+    link: "https://tikasist-api.bchooper0730.workers.dev",
     linkLabel: "Open TikaSist →",
     banner: tikaLogo,
     aiType: "project-tikasist" as AIImageType,

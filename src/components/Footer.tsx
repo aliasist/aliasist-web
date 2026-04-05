@@ -1,9 +1,16 @@
+import mascot from "../../images/aliasist-mascot-final.png";
 import { playHover } from "@/hooks/useSound";
 
 const Footer = () => {
   return (
     <footer className="py-8 px-6 bg-foreground border-t border-background/10">
-      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4">
+      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 relative">
+                {/* Mascot branding, bottom left */}
+                <img
+                  src={mascot}
+                  alt="Aliasist Mascot UFO"
+                  className="hidden sm:block absolute -left-20 bottom-0 w-16 h-16 opacity-30 hover:opacity-60 transition-opacity duration-700 pointer-events-none select-none"
+                />
         <p className="font-mono text-xs text-background/30">
           © {new Date().getFullYear()} Aliasist. All rights reserved.
         </p>

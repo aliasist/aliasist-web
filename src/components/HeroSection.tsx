@@ -3,7 +3,7 @@ import AlienEye from "./AlienEye";
 import { playClick } from "@/hooks/useSound";
 import heroBanner from "@/assets/hero-banner.png";
 import badge from "@/assets/badge.png";
-import aliasistIcon from "@/assets/aliasist-icon.jpg";
+import mascot from "../../images/aliasist-mascot-final.png";
 import { useAIImage } from "@/hooks/useAIImage";
 
 const HeroSection = () => {
@@ -52,9 +52,9 @@ const HeroSection = () => {
         className="absolute bottom-12 right-8 hidden lg:block pointer-events-none"
       >
         <img
-          src={aliasistIcon}
-          alt=""
-          className="w-24 h-24 rounded-xl opacity-[0.12] hover:opacity-[0.22] transition-opacity duration-700 object-cover"
+          src={mascot}
+          alt="Aliasist Mascot UFO"
+          className="w-28 h-28 rounded-xl opacity-[0.16] hover:opacity-[0.28] transition-opacity duration-700 object-contain shadow-xl"
         />
       </motion.div>
 
