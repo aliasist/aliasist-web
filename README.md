@@ -1,54 +1,50 @@
-# Aliasist.com
+# Aliasist
 
-> **Adversarial by Nature. Defensive by Design.**
+Main repository for the Aliasist site, serverless endpoints, active apps, and archived project snapshots.
 
-The main portfolio and project hub for [aliasist.com](https://aliasist.com) — built by Blake, an AI security developer and CS student.
+## Active Layout
 
-## Stack
+- `website/` - main Aliasist web app built with Vite, React, and TypeScript
+- `functions/` - serverless API handlers used by the site
+- `apps/` - active sibling apps and services under development
+- `archive/` - preserved older builds, experiments, and prior deployments
 
-- **Framework:** Vite + React + TypeScript
-- **Styling:** Tailwind CSS v3 + shadcn/ui
-- **Animation:** Framer Motion
-- **Fonts:** Space Grotesk + JetBrains Mono
-- **AI Chat:** Groq LLaMA 3.3 via [llm-chat](https://github.com/aliasist/llm-chat) Worker
-- **Hosting:** Cloudflare Pages (auto-deploy on push to `master`)
+## Current Primary App
 
-## The Aliasist Suite
+The main public-facing site lives in `website/`.
 
-| App | Repo | Live |
-|-----|------|------|
-| **aliasist.com** | [aliasistabductor](https://github.com/aliasist/aliasistabductor) | [aliasist.com](https://aliasist.com) |
-| **DataSist** | [datasist](https://github.com/aliasist/datasist) | [datasist-frontend.pages.dev](https://datasist-frontend.pages.dev) |
-| **DataSist API** | [datasist-worker](https://github.com/aliasist/datasist-worker) | Cloudflare Worker |
-| **PulseSist** | [stockmarket](https://github.com/aliasist/stockmarket) | [pulse.aliasist.com](https://pulse.aliasist.com) |
-| **AI Chat** | [llm-chat](https://github.com/aliasist/llm-chat) | [assistant.aliasist.com](https://assistant.aliasist.com) |
-
-## Features
-
-- 🛸 **Alien Eye Hero** — cursor-tracking iris with live animation
-- ⭐ **Starfield background** — 180 procedurally animated stars
-- 🔊 **Sound engine** — subtle Web Audio API tones on interaction
-- 🤖 **Groq AI chat** — Aliasist-aware assistant via 🛸 widget
-- 🌑 **Dark-first theme** — teal-green `#00C97B` accent palette
-- 📜 **Scroll progress bar** — teal glow at top of viewport
-- 🔒 **Classified project cards** — PROJECT CIPHER + PROJECT SPECTER
-
-## Local Development
+Typical local workflow:
 
 ```bash
-git clone https://github.com/aliasist/aliasistabductor
-cd aliasistabductor
-npm install --legacy-peer-deps
+cd website
+npm install
 npm run dev
 ```
 
-## Deploy
+## Apps
 
-Pushes to `master` auto-deploy via Cloudflare Pages.
+- `apps/ecosist/` - environmental intelligence app
+- `apps/datasist/` - DataSist frontend bundle for Cloudflare Pages
+- `apps/datasist-api/` - DataSist Cloudflare Worker API
+- `apps/pulsesist/` - market and finance app
+- `apps/hearthsist-api/` - backend API for HearthSist
+- `apps/space-asist/` - additional app workspace
 
-## Brand
+## Cloudflare CLI Deploys
 
-- **Logo:** Alien head with Saturn rings
-- **Mascot:** UFO spaceship
-- **Theme:** Roswell 1947 × AI Security
-- **Contact:** dev@aliasist.com
+Primary terminal deploy commands:
+
+```bash
+cd website && npm run cf:deploy
+cd apps/ecosist && npm run cf:deploy
+cd apps/pulsesist && npm run cf:deploy
+cd apps/datasist && npm run cf:deploy
+cd apps/datasist-api && npm run cf:deploy
+```
+
+## Notes
+
+- `archive/` is intentionally retained for reference and recovery.
+- `apps/datasist-api/` was promoted out of `archive/` because it is still an active deploy target.
+- Root-level `node_modules/` and `package-lock.json` reflect an earlier site setup and should be reviewed before the next cleanup pass.
+- Before pushing, review `git status` carefully because the current restructure is recorded as deletions plus new directories until it is staged and committed.
