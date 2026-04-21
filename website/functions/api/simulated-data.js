@@ -34,32 +34,41 @@ export async function onRequest(context) {
     // Helpers
     function clamp(v, a, b) { return Math.max(a, Math.min(b, v)); }
 
-    // Determine zone if not provided (simple lat/lng heuristic)
+    // Oklahoma-focused defaults: clamp coordinates to Oklahoma and support county param
+    const OK_BBOX = { minLat: 33.6158, maxLat: 37.0023, minLng: -103.0026, maxLng: -94.4307 };
+    const okDefault = { lat: 35.4676, lng: -97.5164 }; // Oklahoma City
+    const countyParam = (url.searchParams.get("county") || "").trim();
+    let adjusted = false;
+
+    // Resolve lat/lng (use provided or default to OKC)
+    let resolvedLat = Number.isFinite(lat) ? lat : okDefault.lat;
+    let resolvedLng = Number.isFinite(lng) ? lng : okDefault.lng;
+
+    // Clamp to Oklahoma bounding box
+    if (resolvedLat < OK_BBOX.minLat) { resolvedLat = OK_BBOX.minLat; adjusted = true; }
+    if (resolvedLat > OK_BBOX.maxLat) { resolvedLat = OK_BBOX.maxLat; adjusted = true; }
+    if (resolvedLng < OK_BBOX.minLng) { resolvedLng = OK_BBOX.minLng; adjusted = true; }
+    if (resolvedLng > OK_BBOX.maxLng) { resolvedLng = OK_BBOX.maxLng; adjusted = true; }
+
+    // Determine zone (state or county-specific)
     let resolvedZone = zone;
-    if (!resolvedZone) {
-      if (!Number.isFinite(lat) || !Number.isFinite(lng)) {
-        resolvedZone = "US-UNKNOWN";
-      } else if (lng < -110) {
-        resolvedZone = "US-WRAP-CAISO";
-      } else if (lng < -95) {
-        resolvedZone = "US-MOUN-PEAK";
-      } else if (lng < -85) {
-        resolvedZone = "US-MIDW-MISO";
-      } else {
-        resolvedZone = "US-EAST-PJM";
-      }
+    if (countyParam) {
+      const safe = countyParam.toUpperCase().replace(/[^A-Z0-9]+/g, "-");
+      resolvedZone = `OK-${safe}`;
+    } else {
+      resolvedZone = "OK";
     }
 
-    // Zone baseline values (carbon gCO2/kWh, renewable %, price USD/MWh)
+    // Zone baseline values (carbon gCO2/kWh, renewable %, price USD/MWh) tuned for Oklahoma
     const zoneBaselines = {
-      "US-MIDW-MISO": { carbon: 350, renewable: 25, price: 40 },
-      "US-EAST-PJM": { carbon: 400, renewable: 20, price: 45 },
-      "US-WRAP-CAISO": { carbon: 100, renewable: 65, price: 85 },
-      "US-ERCOT": { carbon: 500, renewable: 30, price: 30 },
+      "OK": { carbon: 420, renewable: 22, price: 45 },
+      "OK-OKLAHOMA-COUNTY": { carbon: 400, renewable: 24, price: 43 },
+      "OK-TULSA-COUNTY": { carbon: 430, renewable: 18, price: 47 },
+      "OK-PAWNEE-COUNTY": { carbon: 380, renewable: 30, price: 40 },
       "US-UNKNOWN": { carbon: 350, renewable: 30, price: 50 },
     };
 
-    const baseline = zoneBaselines[resolvedZone] || zoneBaselines["US-UNKNOWN"];
+    const baseline = zoneBaselines[resolvedZone] || zoneBaselines["OK"];
 
     // Time range defaults: last 24 hours
     const now = Date.now();
@@ -116,8 +125,12 @@ export async function onRequest(context) {
       zone: resolvedZone,
       requested: {
         zone: zone || null,
-        lat: Number.isFinite(lat) ? lat : null,
-        lng: Number.isFinite(lng) ? lng : null,
+        county: countyParam || null,
+        lat: resolvedLat,
+        lng: resolvedLng,
+        latOriginallyProvided: Number.isFinite(lat),
+        lngOriginallyProvided: Number.isFinite(lng),
+        adjustedToOklahoma: adjusted,
         temporalGranularity: temporal,
         datacenterLoad: datacenterLoad,
         start: start,
