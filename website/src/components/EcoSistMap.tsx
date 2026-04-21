@@ -89,6 +89,39 @@ export default function EcoSistMap({
     return () => { if (raf) cancelAnimationFrame(raf); };
   }, [radarPlaying, radarData, radarFrameIndex, setRadarFrameIndex]);
 
+  // Tornado paths overlay (fetch GeoJSON and add line layer)
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !mapReady) return;
+
+    let added = false;
+    let sourceId = 'tornado-paths-source';
+    let layerId = 'tornado-paths-layer';
+
+    fetch('/api/tornado-paths')
+      .then((r) => r.json())
+      .then((data) => {
+        const geo = data.geojson || data;
+        if (!geo || !geo.features) return;
+        if (!map.getSource(sourceId)) {
+          map.addSource(sourceId, { type: 'geojson', data: geo } as any);
+          map.addLayer({ id: layerId, type: 'line', source: sourceId, paint: { 'line-color': '#00ff90', 'line-width': 3 } });
+          added = true;
+        } else {
+          const src = map.getSource(sourceId) as any;
+          try { src.setData(geo); } catch (e) {}
+        }
+      })
+      .catch(() => {});
+
+    return () => {
+      try {
+        if (map.getLayer(layerId)) map.removeLayer(layerId);
+        if (map.getSource(sourceId)) map.removeSource(sourceId);
+      } catch (e) {}
+    };
+  }, [mapReady]);
+
   return (
     <div className="relative">
       <div ref={mapContainer} className="w-full h-[600px] rounded-md overflow-hidden" />

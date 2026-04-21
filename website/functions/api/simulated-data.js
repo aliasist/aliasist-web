@@ -59,16 +59,23 @@ export async function onRequest(context) {
       resolvedZone = "OK";
     }
 
-    // Zone baseline values (carbon gCO2/kWh, renewable %, price USD/MWh) tuned for Oklahoma
-    const zoneBaselines = {
+    // County-level baselines for Oklahoma (carbon gCO2/kWh, renewable %, price USD/MWh)
+    const countyBaselines = {
       "OK": { carbon: 420, renewable: 22, price: 45 },
       "OK-OKLAHOMA-COUNTY": { carbon: 400, renewable: 24, price: 43 },
       "OK-TULSA-COUNTY": { carbon: 430, renewable: 18, price: 47 },
-      "OK-PAWNEE-COUNTY": { carbon: 380, renewable: 30, price: 40 },
+      "OK-CLEVELAND-COUNTY": { carbon: 410, renewable: 20, price: 44 },
+      "OK-CANADIAN-COUNTY": { carbon: 390, renewable: 28, price: 42 },
+      "OK-PAYNE-COUNTY": { carbon: 395, renewable: 26, price: 41 },
+      "OK-GARFIELD-COUNTY": { carbon: 385, renewable: 27, price: 40 },
+      "OK-KAY-COUNTY": { carbon: 380, renewable: 30, price: 39 },
+      "OK-COMANCHE-COUNTY": { carbon: 450, renewable: 15, price: 48 },
+      "OK-OSAGE-COUNTY": { carbon: 360, renewable: 35, price: 38 },
+      "OK-CREEK-COUNTY": { carbon: 420, renewable: 22, price: 45 },
       "US-UNKNOWN": { carbon: 350, renewable: 30, price: 50 },
     };
 
-    const baseline = zoneBaselines[resolvedZone] || zoneBaselines["OK"];
+    const baseline = countyBaselines[resolvedZone] || countyBaselines["OK"];
 
     // Time range defaults: last 24 hours
     const now = Date.now();
