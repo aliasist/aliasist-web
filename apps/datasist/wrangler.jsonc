@@ -1,0 +1,5 @@
+{
+  "$schema": "../../website/node_modules/wrangler/config-schema.json",
+  "name": "datasist-frontend",
+  "pages_build_output_dir": "."
+}

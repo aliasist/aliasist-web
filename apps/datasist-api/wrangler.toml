@@ -1,0 +1,32 @@
+name = "datasist-api"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "datasist"
+database_id = "92a70e0c-819c-4f59-a5ae-a844e3fbb450"
+
+[vars]
+APP_NAME = "DataSist"
+ALLOWED_ORIGIN = "https://data.aliasist.com"
+RAG_API_URL = ""
+# Same Clerk instance as aliasist.com; publishable key is safe to ship.
+CLERK_PUBLISHABLE_KEY = "pk_live_Y2xlcmsuYWxpYXNpc3QuY29tJA"
+
+# Admin gating for mutation routes (POST/PUT/PATCH/DELETE /api/data-centers/*,
+# POST /api/sync, POST /api/neon/sync). Both secrets below must be set, otherwise
+# the worker fails closed and rejects every admin request with 503.
+#
+#   npx wrangler secret put CLERK_SECRET_KEY          # sk_live_... from Clerk dashboard
+#   npx wrangler secret put ADMIN_USER_IDS            # comma-separated user_... ids
+
+# Cron — sync D1 → Neon every hour
+[triggers]
+crons = ["0 * * * *"]
+
+[[d1_databases]]
+binding = "ANALYTICS"
+database_name = "aliasist-analytics"
+database_id = "76035036-4ee2-45ba-865d-ab2c18089cfc"
