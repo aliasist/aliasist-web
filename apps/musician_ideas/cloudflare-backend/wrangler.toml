@@ -1,0 +1,24 @@
+name = "musician-ideas-backend"
+main = "src/index.ts"
+compatibility_date = "2026-04-21"
+compatibility_flags = ["nodejs_compat"]
+workers_dev = true
+
+# R2 bucket for audio files.
+[[r2_buckets]]
+binding = "AUDIO_BUCKET"
+bucket_name = "musician-ideas-audio"
+
+# D1 database for idea metadata.
+[[d1_databases]]
+binding = "IDEAS_DB"
+database_name = "musician_ideas_metadata"
+
+# Durable Object for real-time chat/notifications.
+[[durable_objects.bindings]]
+name = "ChatRoom"
+class_name = "ChatRoom"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ChatRoom"]
