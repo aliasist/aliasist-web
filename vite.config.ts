@@ -28,12 +28,20 @@ export default defineConfig(async ({ mode }) => {
       hmr: {
         overlay: false,
       },
+      allowedHosts: [
+        "debian-cursor-precipitation-really.trycloudflare.com",
+        ".trycloudflare.com",
+      ],
     },
     plugins: [react(), ...devPlugins, cloudflare()],
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),
+        "@images": path.resolve(__dirname, "./images"),
       },
+    },
+    test: {
+      passWithNoTests: true,
     },
   };
 });

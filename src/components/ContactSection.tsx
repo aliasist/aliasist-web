@@ -1,9 +1,13 @@
+
 import { motion, AnimatePresence } from "framer-motion";
 import { playHover, playClick, playSuccess } from "@/hooks/useSound";
-import streetBanner from "@/assets/pulse-banner-street.jpg";
+import streetBanner from "@images/aliasist_banner_street.png";
+import mascot from "@/assets/mascot.svg";
 import { useState, useRef } from "react";
+import { contact, suiteApps } from "@/content/homepage";
+import { readJsonBody, siteEndpoints } from "@/config/api";
 
-const CONTACT_API = "https://llm-chat.bchooper0730.workers.dev/api/contact";
+const CONTACT_API = siteEndpoints.contactApi;
 
 const GitHubIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -18,17 +22,10 @@ const MailIcon = () => (
   </svg>
 );
 
-const links = [
-  { label: "GitHub",           href: "https://github.com/aliasist",  Icon: GitHubIcon },
-  { label: "dev@aliasist.com", href: "mailto:dev@aliasist.com",       Icon: MailIcon },
-];
-
-const suite = [
-  { label: "DataSist",  sub: "AI Data Center Intel",      href: "https://datasist-frontend.pages.dev", icon: "🌐" },
-  { label: "PulseSist", sub: "Stock Market Intelligence",  href: "https://pulse.aliasist.com",          icon: "📈" },
-  { label: "SpaceSist", sub: "Live Space Portal",          href: "https://space.aliasist.com",           icon: "🌌" },
-  { label: "TikaSist",  sub: "TikTok Keyword Intelligence", href: "https://tikasist.pages.dev",          icon: "👁️" },
-];
+const linkIcons = {
+  github: GitHubIcon,
+  email: MailIcon,
+} as const;
 
 type FormState = "idle" | "sending" | "success" | "error";
 
@@ -52,8 +49,9 @@ const ContactSection = () => {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ name: name.trim(), email: email.trim(), message: message.trim() }),
       });
-      const data = await res.json() as { ok?: boolean; error?: string };
-      if (!res.ok || !data.ok) throw new Error(data.error ?? "Unknown error");
+      const data = await readJsonBody<{ ok?: boolean; error?: string }>(res);
+      if (!data) throw new Error("Invalid response from server");
+      if (!res.ok || !data.ok) throw new Error(data.error ?? `Request failed (${res.status})`);
       setFormState("success");
       playSuccess();
       setName(""); setEmail(""); setMessage("");
@@ -69,15 +67,14 @@ const ContactSection = () => {
     <section id="contact" className="py-28 px-6 bg-foreground text-background relative overflow-hidden">
       {/* Street banner background */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-[0.06] pointer-events-none"
+        className="absolute inset-0 bg-cover bg-center opacity-[0.12] mix-blend-screen pointer-events-none"
         style={{ backgroundImage: `url(${streetBanner})` }}
       />
-        import mascot from "../../images/aliasist-mascot-final.png";
-        {/* Mascot background for branding */}
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-[0.04] pointer-events-none"
-          style={{ backgroundImage: `url(${mascot})` }}
-        />
+      {/* Mascot background for branding */}
+      <div
+        className="absolute inset-0 bg-cover bg-center opacity-[0.04] pointer-events-none"
+        style={{ backgroundImage: `url(${mascot})` }}
+      />
       <div className="absolute inset-0 bg-gradient-to-b from-foreground/80 via-foreground/60 to-foreground/90 pointer-events-none" />
       <div className="absolute -right-32 -bottom-32 w-[500px] h-[500px] rounded-full pointer-events-none opacity-[0.05]"
         style={{ background: "radial-gradient(circle, hsl(165 90% 42%), transparent 70%)" }}
@@ -85,7 +82,7 @@ const ContactSection = () => {
 
       <div className="max-w-5xl mx-auto relative z-10">
         <div className="classified-divider mb-16 [&>span]:text-background/35 before:bg-background/10 after:bg-background/10">
-          <span>Channel Open // Contact</span>
+          <span>{contact.dividerLabel}</span>
         </div>
 
         <motion.div
@@ -99,18 +96,18 @@ const ContactSection = () => {
             <div>
               <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-electric mb-6">
                 <span className="w-2 h-2 bg-electric rounded-full animate-pulse" />
-                Signal open
+                {contact.signalLabel}
               </div>
 
               <h2 className="text-3xl sm:text-4xl font-bold text-background mb-4 tracking-tight leading-tight">
-                Make contact.
+                {contact.headline}
               </h2>
 
               <p className="text-sm text-background/50 leading-relaxed mb-8 max-w-sm">
                 <strong className="text-background/75 font-semibold">
-                  Open to collaborations, internships, and interesting problems.
+                  {contact.introStrong}
                 </strong>{" "}
-                Building in public, pursuing AiSec.
+                {contact.introRest}
               </p>
 
               {/* ── Contact form ── */}
@@ -124,16 +121,16 @@ const ContactSection = () => {
                   >
                     <div className="flex items-center gap-3 mb-3">
                       <span className="w-2 h-2 rounded-full bg-electric animate-pulse" />
-                      <span className="font-mono text-xs uppercase tracking-[0.18em] text-electric">Transmission received</span>
+                      <span className="font-mono text-xs uppercase tracking-[0.18em] text-electric">{contact.successTitle}</span>
                     </div>
                     <p className="font-mono text-sm text-background/60 leading-relaxed">
-                      Message logged. Responses prioritized by technical complexity and project alignment.
+                      {contact.successBody}
                     </p>
                     <button
                       onClick={() => setFormState("idle")}
                       className="mt-5 font-mono text-[11px] uppercase tracking-[0.1em] text-background/35 hover:text-electric transition-colors"
                     >
-                      Send another ↩
+                      {contact.sendAnother}
                     </button>
                   </motion.div>
                 ) : (
@@ -148,7 +145,7 @@ const ContactSection = () => {
                     <div className="grid sm:grid-cols-2 gap-3">
                       <input
                         type="text"
-                        placeholder="Name"
+                        placeholder={contact.placeholders.name}
                         value={name}
                         onChange={e => setName(e.target.value)}
                         required
@@ -157,7 +154,7 @@ const ContactSection = () => {
                       />
                       <input
                         type="email"
-                        placeholder="Email"
+                        placeholder={contact.placeholders.email}
                         value={email}
                         onChange={e => setEmail(e.target.value)}
                         required
@@ -166,7 +163,7 @@ const ContactSection = () => {
                       />
                     </div>
                     <textarea
-                      placeholder="Message — what are you working on?"
+                      placeholder={contact.placeholders.message}
                       value={message}
                       onChange={e => setMessage(e.target.value)}
                       required
@@ -177,7 +174,7 @@ const ContactSection = () => {
 
                     {formState === "error" && (
                       <p className="font-mono text-[11px] text-red-400/80">
-                        // error: {errorMsg || "transmission failed — try dev@aliasist.com"}
+                        {contact.errorPrefix} {errorMsg || contact.errorFallback}
                       </p>
                     )}
 
@@ -189,7 +186,7 @@ const ContactSection = () => {
                     >
                       <span className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                       <span className="relative">
-                        {formState === "sending" ? "// transmitting..." : "Send message ↗"}
+                        {formState === "sending" ? contact.submitSending : contact.submitIdle}
                       </span>
                     </button>
                   </motion.form>
@@ -198,38 +195,43 @@ const ContactSection = () => {
 
               {/* Direct links below form */}
               <div className="flex flex-col gap-px mt-5">
-                {links.map((link, i) => (
-                  <motion.a
-                    key={link.label}
-                    href={link.href}
-                    target={link.href.startsWith("http") ? "_blank" : undefined}
-                    rel="noopener noreferrer"
-                    onMouseEnter={() => playHover()}
-                    onClick={() => playClick()}
-                    initial={{ opacity: 0, x: -12 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.3, delay: i * 0.08 }}
-                    whileHover={{ x: 4 }}
-                    className="group flex items-center justify-between px-5 py-4 bg-background/5 border border-background/10 hover:bg-electric/10 hover:border-electric/25 transition-all font-mono text-sm text-background/55 hover:text-electric"
-                  >
-                    <div className="flex items-center gap-3">
-                      <span className="text-electric/40 group-hover:text-electric transition-colors"><link.Icon /></span>
-                      <span>{link.label}</span>
-                    </div>
-                    <span className="opacity-20 group-hover:opacity-100 transition-all">↗</span>
-                  </motion.a>
-                ))}
+                {contact.directLinks.map((link, i) => {
+                  const Icon = linkIcons[link.iconKey];
+                  return (
+                    <motion.a
+                      key={link.label}
+                      href={link.href}
+                      target={link.href.startsWith("http") ? "_blank" : undefined}
+                      rel="noopener noreferrer"
+                      onMouseEnter={() => playHover()}
+                      onClick={() => playClick()}
+                      initial={{ opacity: 0, x: -12 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.3, delay: i * 0.08 }}
+                      whileHover={{ x: 4 }}
+                      className="group flex items-center justify-between px-5 py-4 bg-background/5 border border-background/10 hover:bg-electric/10 hover:border-electric/25 transition-all font-mono text-sm text-background/55 hover:text-electric"
+                    >
+                      <div className="flex items-center gap-3">
+                        <span className="text-electric/40 group-hover:text-electric transition-colors">
+                          <Icon />
+                        </span>
+                        <span>{link.label}</span>
+                      </div>
+                      <span className="opacity-20 group-hover:opacity-100 transition-all">↗</span>
+                    </motion.a>
+                  );
+                })}
               </div>
             </div>
 
             {/* Right — The Aliasist Suite */}
             <div>
               <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-background/30 mb-5">
-                // The Aliasist Suite
+                {contact.suiteColumnLabel}
               </p>
               <div className="flex flex-col gap-0.5">
-                {suite.map((app, i) => (
+                {suiteApps.map((app, i) => (
                   <motion.a
                     key={app.label}
                     href={app.href}
@@ -258,7 +260,7 @@ const ContactSection = () => {
                     <div className="flex items-center gap-2">
                       <span className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.1em] text-electric/60">
                         <span className="w-1.5 h-1.5 rounded-full bg-electric animate-pulse" />
-                        Live
+                        {contact.liveBadge}
                       </span>
                       <span className="opacity-20 group-hover:opacity-100 group-hover:text-electric text-background transition-all font-mono">↗</span>
                     </div>
@@ -268,11 +270,7 @@ const ContactSection = () => {
 
               {/* Stats */}
               <div className="mt-4 grid grid-cols-3 gap-0.5">
-                {[
-                  { n: "5", l: "Live Apps" },
-                  { n: "7", l: "APIs" },
-                  { n: "340+", l: "Data Centers" },
-                ].map((s) => (
+                {contact.suiteStats.map((s) => (
                   <div key={s.l} className="bg-background/5 border border-background/10 p-4 text-center">
                     <div className="text-xl font-bold text-electric">{s.n}</div>
                     <div className="font-mono text-[9px] uppercase tracking-[0.1em] text-background/30 mt-1">{s.l}</div>

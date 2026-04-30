@@ -36,7 +36,7 @@ const Index = () => {
   }, [showSplash]);
 
   return (
-    <div className="min-h-screen bg-background relative">
+    <div className="min-h-screen relative">
       {showSplash && (
         <AISplashScreen onDismiss={() => setShowSplash(false)} />
       )}

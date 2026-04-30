@@ -1,105 +1,14 @@
 import { motion } from "framer-motion";
 import { playHover, playClick } from "@/hooks/useSound";
-import pulseBanner from "@/assets/pulse-banner-command.jpg";
-import abduction1 from "@/assets/abduction-1.jpg";
-import tikaLogo from "@/assets/tikasist-logo.png";
-
-const releaseTag = "v2.7.0";
-const releaseBaseUrl = `https://github.com/aliasist/aliasistabductor/releases/download/${releaseTag}`;
-
-const downloadLinks = {
-  appImage: `${releaseBaseUrl}/${encodeURIComponent("Aliasist.Files.Abductor-2.7.0.AppImage")}`,
-  snap:     `${releaseBaseUrl}/aliasist-files-abductor_2.7.0_amd64.snap`,
-  windowsExe: `${releaseBaseUrl}/${encodeURIComponent("Aliasist.Files.Abductor.Setup.2.7.0.exe")}`,
-};
-
-const projects = [
-  {
-    name: "TikaSist",
-    description:
-      "TikTok keyword intelligence platform — track hashtags, creators, and topics. Run automated scans, collect matching videos with full engagement metrics (likes, comments, shares, saves), browse results in a searchable grid, and monitor scan history. Built on Cloudflare Workers + D1.",
-    tech: ["Vite", "Cloudflare Workers", "D1", "TikTok", "Keyword AI"],
-    github: "https://github.com/aliasist",
-    downloads: [],
-    status: "Live",
-    icon: "👁️",
-    link: "https://tikasist-api.bchooper0730.workers.dev",
-    linkLabel: "Open TikaSist →",
-    banner: tikaLogo,
-  },
-  {
-    name: "SpaceSist",
-    description:
-      "Live space intelligence portal — NASA APOD daily images, real-time ISS tracking (5s updates), SpaceX mission control, near-Earth asteroid radar, 6,000+ exoplanet archive, and NASA image gallery. 7 live APIs. The universe, in real time.",
-    tech: ["React", "Vite", "NASA APIs", "SpaceX API", "Leaflet", "Cloudflare"],
-    github: "https://github.com/aliasist",
-    downloads: [],
-    status: "Live",
-    icon: "🌌",
-    link: "https://space.aliasist.com",
-    linkLabel: "Open SpaceSist →",
-    banner: null,
-  },
-  {
-    name: "PulseSist",
-    description:
-      "Real-time stock market intelligence platform. Live candlestick charts, portfolio tracking, AI-powered market analysis, and multi-ticker surveillance. Built for traders who think the market is being watched — because it is.",
-    tech: ["React", "Vite", "Cloudflare Workers", "D1", "FMP API", "AI"],
-    github: "https://github.com/aliasist/stockmarket",
-    downloads: [],
-    status: "Live",
-    icon: "📈",
-    link: "https://pulse.aliasist.com",
-    linkLabel: "Open PulseSist →",
-    banner: pulseBanner,
-  },
-  {
-    name: "Aliasist-Files-Abductor",
-    description:
-      "A file organization and automation tool that abducts your messy directories and deposits them exactly where they belong. Built with a clean CLI interface and an alien theme that doesn't apologize for itself. Does the work. No questions asked.",
-    tech: ["Python", "CLI", "File Automation"],
-    github: `https://github.com/aliasist/aliasistabductor/releases/tag/${releaseTag}`,
-    downloads: [
-      { label: "AppImage", href: downloadLinks.appImage },
-      { label: "Snap",     href: downloadLinks.snap },
-      { label: "Windows",  href: downloadLinks.windowsExe },
-    ],
-    status: "Live",
-    icon: "🛸",
-    link: null as string | null,
-    linkLabel: null as string | null,
-    banner: abduction1,
-  },
-  {
-    name: "DataSist",
-    description:
-      "Live AI data center intelligence platform — 48 facilities tracked across 13 countries. Real-time EIA electricity prices, power consumption, water usage, investment data, community resistance, and grid stress risk. Groq AI analysis, facility comparison, region filters, and full admin CRUD panel.",
-    tech: ["React", "Vite", "D1", "Groq AI", "Leaflet", "EIA API"],
-    github: "https://github.com/aliasist/datasist",
-    downloads: [],
-    status: "Live",
-    icon: "🌐",
-    link: "https://datasist-frontend.pages.dev",
-    linkLabel: "Open DataSist →",
-    banner: null,
-  },
-];
-
-const comingSoon = [
-  {
-    codename: "PROJECT CIPHER",
-    description: "// adversarial_ml_toolkit — pending clearance",
-    eta: "Q3 2026",
-  },
-  {
-    codename: "PROJECT SPECTER",
-    description: "// ai_threat_modeling_suite — in development",
-    eta: "Q4 2026",
-  },
-];
+import {
+  projects,
+  comingSoonProjects,
+  projectsSection,
+  type ProjectCard,
+} from "@/content/homepage";
 
 // Per-card component
-const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: number }) => {
+const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }) => {
   return (
     <motion.div
       key={project.name}
@@ -113,9 +22,12 @@ const ProjectCard = ({ project, index }: { project: typeof projects[0]; index: n
       {/* Static banner */}
       {project.banner && (
         <div
-          className="absolute inset-0 bg-cover bg-center opacity-[0.06] pointer-events-none"
+          className="absolute inset-0 bg-cover bg-center opacity-[0.08] mix-blend-screen pointer-events-none"
           style={{ backgroundImage: `url(${project.banner})` }}
         />
+      )}
+      {project.banner && (
+        <div className="absolute inset-0 bg-gradient-to-r from-card via-card/85 to-card/55 pointer-events-none" />
       )}
 
       {/* Teal glow on hover */}
@@ -211,7 +123,7 @@ const ProjectsSection = () => {
           transition={{ duration: 0.5 }}
           className="classified-divider mb-16"
         >
-          <span>Artifacts // Projects</span>
+          <span>{projectsSection.dividerLabel}</span>
         </motion.div>
 
         <motion.h2
@@ -221,7 +133,7 @@ const ProjectsSection = () => {
           transition={{ duration: 0.6 }}
           className="text-3xl sm:text-4xl font-bold text-foreground mb-12 tracking-tight"
         >
-          Deployed tools.
+          {projectsSection.headline}
         </motion.h2>
 
         <div className="grid gap-0.5">
@@ -231,7 +143,7 @@ const ProjectsSection = () => {
 
           {/* Classified coming-soon slots */}
           <div className="grid sm:grid-cols-2 gap-0.5 mt-0.5">
-            {comingSoon.map((item, i) => (
+            {comingSoonProjects.map((item, i) => (
               <motion.div
                 key={item.codename}
                 initial={{ opacity: 0, y: 20 }}

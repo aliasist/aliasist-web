@@ -1,5 +1,6 @@
-import mascot from "../../images/aliasist-mascot-final.png";
+import mascot from "@/assets/mascot.svg";
 import { playHover } from "@/hooks/useSound";
+import { footer } from "@/content/homepage";
 
 const Footer = () => {
   return (
@@ -8,35 +9,35 @@ const Footer = () => {
                 {/* Mascot branding, bottom left */}
                 <img
                   src={mascot}
-                  alt="Aliasist Mascot UFO"
+                  alt={footer.mascotAlt}
                   className="hidden sm:block absolute -left-20 bottom-0 w-16 h-16 opacity-30 hover:opacity-60 transition-opacity duration-700 pointer-events-none select-none"
                 />
         <p className="font-mono text-xs text-background/30">
-          © {new Date().getFullYear()} Aliasist. All rights reserved.
+          © {new Date().getFullYear()} {footer.brandName}. All rights reserved.
         </p>
 
         <div className="flex items-center gap-5">
           <a
-            href="https://github.com/aliasist"
+            href={footer.githubHref}
             target="_blank"
             rel="noopener noreferrer"
             onMouseEnter={() => playHover()}
             className="font-mono text-[10px] uppercase tracking-[0.15em] text-background/30 hover:text-electric transition-colors"
           >
-            GitHub
+            {footer.githubLabel}
           </a>
           <a
-            href="mailto:dev@aliasist.com"
+            href={footer.emailHref}
             onMouseEnter={() => playHover()}
             className="font-mono text-[10px] uppercase tracking-[0.15em] text-background/30 hover:text-electric transition-colors"
           >
-            Email
+            {footer.emailLabel}
           </a>
         </div>
 
         <p className="font-mono text-[10px] text-electric/50 tracking-[0.12em] uppercase flex items-center gap-1.5">
           <span className="w-1.5 h-1.5 rounded-full bg-electric/60 animate-pulse" />
-          Aliasist v1.1.0 // Signal Active
+          {footer.versionLine}
         </p>
       </div>
     </footer>

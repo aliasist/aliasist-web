@@ -1,21 +1,8 @@
 import { motion } from "framer-motion";
 import { playHover, playScan } from "@/hooks/useSound";
 import { useEffect, useRef, useState } from "react";
-import mascot from "../../images/aliasist-mascot-final.png";
-
-const skills = [
-  "Python", "JavaScript", "HTML / CSS",
-  "React / Vite", "Node.js", "UI Design",
-  "CLI Tools", "File Automation",
-  "Security Research", "AiSec (Learning)",
-];
-
-const stats = [
-  { num: "10+", label: "Years coding since childhood", sym: "+" },
-  { num: "5",   label: "Live apps in the Aliasist suite", sym: "" },
-  { num: "1→",  label: "Clear target: AiSec",           sym: "→" },
-  { num: "∞",   label: "Problems left to solve",         sym: "∞" },
-];
+import mascot from "@/assets/mascot.svg";
+import { about } from "@/content/homepage";
 
 const stagger = {
   hidden: {},
@@ -64,7 +51,7 @@ const AboutSection = () => {
           transition={{ duration: 0.5 }}
           className="classified-divider mb-16"
         >
-          <span>Dossier // About</span>
+          <span>{about.dividerLabel}</span>
         </motion.div>
 
         <div className="grid md:grid-cols-2 gap-16 items-start">
@@ -76,24 +63,24 @@ const AboutSection = () => {
             transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
           >
             <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-8 tracking-tight">
-              Origin file.
+              {about.headline}
             </h2>
 
             <div className="space-y-5 text-base leading-relaxed text-foreground/60">
               <p>
-                I've been poking at code since I was a kid —{" "}
-                <strong className="text-foreground/90 font-semibold">HTML, CSS, Python</strong>.
-                Always a passion project. The advent of AI changed the
-                trajectory entirely — this is the frontier I want to be on.
+                {about.bio.p1Before}
+                <strong className="text-foreground/90 font-semibold">{about.bio.p1Strong}</strong>
+                {about.bio.p1After}
               </p>
               <p>
-                Currently studying{" "}
-                <strong className="text-foreground/90 font-semibold">Computer Information Systems</strong>,
-                learning the adversarial side of machine learning, and building open-source tools. Aliasist is where I ship real things while I work toward that goal.
+                {about.bio.p2Before}
+                <strong className="text-foreground/90 font-semibold">{about.bio.p2Strong}</strong>
+                {about.bio.p2After}
               </p>
               <p>
-                The tools change.{" "}
-                <strong className="text-foreground/90 font-semibold">The obsession doesn't.</strong>
+                {about.bio.p3Before}
+                <strong className="text-foreground/90 font-semibold">{about.bio.p3Strong}</strong>
+                {about.bio.p3After}
               </p>
             </div>
 
@@ -103,13 +90,13 @@ const AboutSection = () => {
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
               className="mt-8 inline-flex items-center gap-2 bg-foreground text-electric font-mono text-xs px-4 py-2.5 tracking-[0.12em] uppercase cursor-default"
             >
-              ◈ Path: CIS → CS → AiSec
+              {about.pathBadge}
             </motion.div>
 
             {/* Skills */}
             <div className="mt-10" ref={skillsRef}>
               <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground/60 mb-5">
-                // skill_set
+                {about.skillsLabel}
               </p>
               <motion.div
                 className="flex flex-wrap gap-2"
@@ -118,7 +105,7 @@ const AboutSection = () => {
                 whileInView="show"
                 viewport={{ once: true }}
               >
-                {skills.map((skill) => (
+                {about.skills.map((skill) => (
                   <motion.span
                     key={skill}
                     variants={skillItem}
@@ -140,7 +127,7 @@ const AboutSection = () => {
             transition={{ duration: 0.65, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
             className="flex flex-col gap-px"
           >
-            {stats.map((s, i) => (
+            {about.stats.map((s, i) => (
               <motion.div
                 key={s.num}
                 initial={{ opacity: 0, y: 20 }}

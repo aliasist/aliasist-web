@@ -1,23 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Show, UserButton } from "@clerk/react";
-import newLogo from "@/assets/aliasist-logo.png";
+import { ClerkLoaded, ClerkLoading, Show, SignInButton, UserButton } from "@clerk/react";
+import newLogo from "@/assets/mascot.svg";
 import { playHover, playClick, setEnabled } from "@/hooks/useSound";
-
-// ── Data ──────────────────────────────────────────────────────────────────────
-
-const pageLinks = [
-  { label: "About",    href: "#about" },
-  { label: "Projects", href: "#projects" },
-  { label: "Blog",     href: "#transmissions" },
-];
-
-const suiteApps = [
-  { label: "DataSist",  sub: "AI Data Center Intel",        href: "https://datasist-frontend.pages.dev", icon: "🌐" },
-  { label: "PulseSist", sub: "Stock Market Intelligence",   href: "https://pulse.aliasist.com",          icon: "📈" },
-  { label: "SpaceSist", sub: "Live Space Portal",           href: "https://space.aliasist.com",          icon: "🌌" },
-  { label: "TikaSist",  sub: "TikTok Keyword Intelligence", href: "https://tikasist.pages.dev",          icon: "👁️" },
-];
+import { pageNavLinks, suiteApps } from "@/content/homepage";
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
 
@@ -106,6 +92,80 @@ const SuiteDropdown = () => {
   );
 };
 
+const signInButtonClass =
+  "text-xs font-mono uppercase tracking-[0.1em] text-muted-foreground hover:text-electric border border-border/60 hover:border-electric/40 px-3 py-1.5 rounded-sm transition-all duration-200 hover:bg-electric/5";
+
+const mobileSignInButtonClass =
+  "flex-1 text-center text-xs font-mono uppercase tracking-[0.1em] text-electric border border-electric/30 py-2.5 rounded-sm hover:bg-electric/5 transition-colors";
+
+const DesktopAuthControl = () => (
+  <>
+    <ClerkLoading>
+      <button
+        type="button"
+        disabled
+        className={`${signInButtonClass} opacity-50 cursor-wait`}
+        aria-busy="true"
+      >
+        Sign In
+      </button>
+    </ClerkLoading>
+    <ClerkLoaded>
+      <Show when="signed-in">
+        <UserButton />
+      </Show>
+      <Show when="signed-out">
+        <SignInButton mode="modal">
+          <button
+            type="button"
+            onMouseEnter={() => playHover()}
+            onClick={() => playClick()}
+            className={signInButtonClass}
+          >
+            Sign In
+          </button>
+        </SignInButton>
+      </Show>
+    </ClerkLoaded>
+  </>
+);
+
+const MobileAuthControl = ({ onDone }: { onDone: () => void }) => (
+  <>
+    <ClerkLoading>
+      <button
+        type="button"
+        disabled
+        className={`${mobileSignInButtonClass} opacity-50 cursor-wait`}
+        aria-busy="true"
+      >
+        Sign In
+      </button>
+    </ClerkLoading>
+    <ClerkLoaded>
+      <Show when="signed-in">
+        <div className="flex-1 flex items-center justify-center py-2">
+          <UserButton />
+        </div>
+      </Show>
+      <Show when="signed-out">
+        <SignInButton mode="modal">
+          <button
+            type="button"
+            onClick={() => {
+              playClick();
+              onDone();
+            }}
+            className={mobileSignInButtonClass}
+          >
+            Sign In
+          </button>
+        </SignInButton>
+      </Show>
+    </ClerkLoaded>
+  </>
+);
+
 // ── Main Navbar ───────────────────────────────────────────────────────────────
 
 const Navbar = () => {
@@ -123,7 +183,7 @@ const Navbar = () => {
 
   // Scroll-spy — highlight the nav link whose section is in view
   useEffect(() => {
-    const sectionIds = pageLinks.map(l => l.href.replace("#", ""));
+    const sectionIds = pageNavLinks.map(l => l.href.replace("#", ""));
     const observers: IntersectionObserver[] = [];
     sectionIds.forEach(id => {
       const el = document.getElementById(id);
@@ -183,8 +243,9 @@ const Navbar = () => {
           <motion.img
             src={newLogo}
             alt="Aliasist"
-            className="h-8 w-8 object-contain"
-            whileHover={{ scale: 1.1, filter: "drop-shadow(0 0 10px hsl(165 90% 42% / 0.8))" }}
+            className="h-12 w-auto max-h-14 object-contain drop-shadow-[0_2px_12px_hsl(165_90%_42%_/_0.12)] transition-all duration-300"
+            style={{ minWidth: 48, background: "transparent" }}
+            whileHover={{ scale: 1.1, filter: "drop-shadow(0 0 16px hsl(165 90% 42% / 0.8))" }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
           />
           <span className="font-bold text-sm tracking-[0.12em] uppercase text-foreground group-hover:text-electric transition-colors duration-300">
@@ -194,7 +255,7 @@ const Navbar = () => {
 
         {/* ── CENTER: Page links ── */}
         <div className="hidden md:flex items-center gap-6 flex-1 justify-center">
-          {pageLinks.map(link => {
+          {pageNavLinks.map(link => {
             const isActive = activeSection === link.href.replace("#", "");
             return (
               <a
@@ -268,26 +329,14 @@ const Navbar = () => {
           <span className="w-px h-5 bg-border/60" />
 
           {/* Auth */}
-          <Show when="signed-in">
-            <UserButton />
-          </Show>
-          <Show when="signed-out">
-            <a
-              href="https://auth.aliasist.com"
-              onMouseEnter={() => playHover()}
-              onClick={() => playClick()}
-              className="text-xs font-mono uppercase tracking-[0.1em] text-muted-foreground hover:text-electric border border-border/60 hover:border-electric/40 px-3 py-1.5 rounded-sm transition-all duration-200 hover:bg-electric/5"
-            >
-              Sign In
-            </a>
-          </Show>
+          <DesktopAuthControl />
 
           {/* Contact CTA */}
           <a
             href="#contact"
             onMouseEnter={() => playHover()}
             onClick={() => playClick()}
-            className="text-xs font-mono uppercase tracking-[0.1em] bg-electric text-background px-4 py-1.5 rounded-sm hover:bg-electric/85 transition-all duration-200 hover:shadow-[0_0_16px_hsl(165_90%_42%_/_0.3)]"
+            className="text-xs font-mono uppercase tracking-[0.1em] bg-electric text-background px-4 py-1.5 rounded-full hover:bg-electric/85 transition-all duration-200 hover:shadow-[0_0_16px_hsl(165_90%_42%_/_0.3)]"
           >
             Contact
           </a>
@@ -320,7 +369,7 @@ const Navbar = () => {
             <div className="px-6 py-6 space-y-1">
 
               {/* Page links */}
-              {pageLinks.map(link => (
+              {pageNavLinks.map(link => (
                 <a
                   key={link.href}
                   href={link.href}
@@ -368,12 +417,7 @@ const Navbar = () => {
 
               {/* Auth + Contact */}
               <div className="flex gap-3 pt-2">
-                <Show when="signed-out">
-                  <a href="https://auth.aliasist.com"
-                    className="flex-1 text-center text-xs font-mono uppercase tracking-[0.1em] text-electric border border-electric/30 py-2.5 rounded-sm hover:bg-electric/5 transition-colors">
-                    Sign In
-                  </a>
-                </Show>
+                <MobileAuthControl onDone={() => setMobileOpen(false)} />
                 <a href="#contact"
                   onClick={() => { playClick(); setMobileOpen(false); }}
                   className="flex-1 text-center text-xs font-mono uppercase tracking-[0.1em] bg-electric text-background py-2.5 rounded-sm hover:bg-electric/85 transition-colors">
