@@ -1,0 +1,27 @@
+[submodule "apps/aliasist-auth"]
+	path = apps/aliasist-auth
+	url = https://github.com/aliasist/aliasist-auth.git
+[submodule "apps/chatroom"]
+	path = apps/chatroom
+	url = https://github.com/aliasist/chatroom.git
+[submodule "apps/ecosist"]
+	path = apps/ecosist
+	url = https://github.com/aliasist/ecosist.git
+[submodule "apps/llm-chat"]
+	path = apps/llm-chat
+	url = https://github.com/aliasist/llm-chat.git
+[submodule "apps/news-worker"]
+	path = apps/news-worker
+	url = https://github.com/aliasist/news-worker.git
+[submodule "apps/phoenix-image-worker"]
+	path = apps/phoenix-image-worker
+	url = https://github.com/aliasist/phoenix-image-worker.git
+[submodule "apps/pulsesist"]
+	path = apps/pulsesist
+	url = https://github.com/aliasist/stockmarket.git
+[submodule "apps/spacesist"]
+	path = apps/spacesist
+	url = https://github.com/aliasist/space-asist.git
+[submodule "apps/swot"]
+	path = apps/swot
+	url = https://github.com/aliasist/swot.git
