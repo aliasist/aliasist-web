@@ -2,8 +2,8 @@ import { ClerkProvider } from "@clerk/react";
 import { useMemo, type ReactNode } from "react";
 
 /**
- * Prefer env (`.env.local`, Cloudflare Pages build vars); optional dev key when running `vite` locally.
- * Fallback keeps production builds working when vars are injected only at deploy time.
+ * Publishable key must come from env — never embed production keys in source.
+ * Cloudflare Pages: set `VITE_CLERK_PUBLISHABLE_KEY` for Production (and Preview if previews should sign in).
  */
 function resolvePublishableKey(): string {
   const primary = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY?.trim();
@@ -12,9 +12,17 @@ function resolvePublishableKey(): string {
   if (import.meta.env.DEV) {
     const devKey = import.meta.env.VITE_CLERK_DEV_PUBLISHABLE_KEY?.trim();
     if (devKey) return devKey;
+    console.warn(
+      "[Clerk] Set VITE_CLERK_PUBLISHABLE_KEY or VITE_CLERK_DEV_PUBLISHABLE_KEY for local sign-in.",
+    );
+    return "";
   }
 
-  return "pk_live_Y2xlcmsuYWxpYXNpc3QuY29tJA";
+  // Production build without key at build time — Pages should inject VITE_* before `vite build`
+  console.error(
+    "[Clerk] Missing VITE_CLERK_PUBLISHABLE_KEY — sign-in will not work until Pages env is set.",
+  );
+  return "";
 }
 
 const PUBLISHABLE_KEY = resolvePublishableKey();
@@ -30,10 +38,12 @@ const CENTRAL_SIGN_UP =
 /** Same Clerk instance as auth.aliasist.com — set on Pages when using custom FAPI host. */
 const clerkProxyUrl = import.meta.env.VITE_CLERK_PROXY_URL?.trim();
 
+/** Origins Clerk may redirect back to after Account Portal / OAuth (production + dev + tunnels). */
 const defaultRedirectOriginPatterns: Array<string | RegExp> = [
   /^https:\/\/.+\.trycloudflare\.com$/,
   /^http:\/\/localhost(?::\d+)?$/,
   /^http:\/\/127\.0\.0\.1(?::\d+)?$/,
+  // apex + www + subdomains (e.g. www.aliasist.com, aliasist.com)
   /^https:\/\/([\w-]+\.)?aliasist\.com$/,
 ];
 

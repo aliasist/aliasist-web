@@ -2,7 +2,10 @@ import { clerkReturnHref, clerkReturnUrl } from "@/lib/clerk-return-url";
 
 type ClerkSignInClient = {
   loaded: boolean;
-  openSignIn: (opts?: { fallbackRedirectUrl?: string }) => void;
+  openSignIn: (opts?: {
+    fallbackRedirectUrl?: string;
+    oauthFlow?: "auto" | "redirect" | "popup";
+  }) => void;
   redirectToSignIn: (opts?: {
     redirectUrl?: string | null;
     signInFallbackRedirectUrl?: string | null;
@@ -15,21 +18,40 @@ type ClerkSignInClient = {
 };
 
 /**
- * Default: send users to **auth.aliasist.com** (same as DataSist / EcoSist). Embedded modal often breaks
- * on this origin without `VITE_CLERK_PROXY_URL` because Clerk FAPI is on clerk.aliasist.com.
+ * With `VITE_CLERK_PROXY_URL` set (recommended for aliasist.com), defaults to **modal + popup OAuth**
+ * so users stay on the homepage instead of navigating to auth.aliasist.com.
  *
- * Set `VITE_CLERK_SIGN_IN_MODE=modal` only if you configure proxy + want overlay sign-in here.
+ * Opt out with `VITE_CLERK_SIGN_IN_MODE=redirect`. Without a proxy, keep redirect mode — modal often
+ * breaks when Clerk FAPI is only on clerk.aliasist.com.
  *
  * @see https://clerk.com/docs/guides/dashboard/dns-domains/satellite-domains
  */
 export function openClerkSignIn(clerk: ClerkSignInClient): void {
-  if (!clerk.loaded) return;
-
   const mode = import.meta.env.VITE_CLERK_SIGN_IN_MODE?.trim().toLowerCase();
+  const proxyConfigured = !!import.meta.env.VITE_CLERK_PROXY_URL?.trim();
+  const useModal =
+    mode === "modal" || (mode !== "redirect" && proxyConfigured);
   const href = clerkReturnHref();
 
-  if (mode === "modal") {
-    clerk.openSignIn({ fallbackRedirectUrl: clerkReturnUrl() });
+  if (!clerk.loaded) {
+    const fallback =
+      import.meta.env.VITE_CLERK_PRIMARY_SIGN_IN_URL?.trim() ||
+      "https://auth.aliasist.com/sign-in";
+    try {
+      const dest = new URL(fallback);
+      dest.searchParams.set("redirect_url", href);
+      window.location.assign(dest.href);
+    } catch {
+      window.location.assign(fallback);
+    }
+    return;
+  }
+
+  if (useModal) {
+    clerk.openSignIn({
+      fallbackRedirectUrl: clerkReturnUrl(),
+      oauthFlow: "popup",
+    });
     return;
   }
 

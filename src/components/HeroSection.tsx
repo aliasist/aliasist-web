@@ -4,6 +4,7 @@ import badge from "@/assets/aliasist-diff-logo.png";
 import aliasistIcon from "@/assets/aliasist-logo-brand.svg";
 import mascot from "@/assets/blue-logo.svg";
 import { hero } from "@/content/homepage";
+import { HomeGoogleAuth } from "@/components/HomeGoogleAuth";
 
 const HeroSection = () => {
   return (
@@ -171,6 +172,8 @@ const HeroSection = () => {
               {hero.ctaContact}
             </a>
           </motion.div>
+
+          <HomeGoogleAuth />
         </div>
 
         {/* Status row */}
