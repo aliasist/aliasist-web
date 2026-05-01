@@ -1,3 +1,4 @@
+import { ClerkSignInModalRoot } from "@/components/ClerkSignInModalRoot";
 import { ClerkProvider } from "@clerk/react";
 import { useMemo, type ReactNode } from "react";
 
@@ -114,7 +115,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
       }}
     >
-      {children}
+      <ClerkSignInModalRoot>{children}</ClerkSignInModalRoot>
     </ClerkProvider>
   );
 }
