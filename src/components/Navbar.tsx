@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { SignInButton, useAuth, UserButton } from "@clerk/react";
+import { useAuth, UserButton } from "@clerk/react";
 import newLogo from "@/assets/aliasist-logo-brand.svg";
 import { playHover, playClick, setEnabled } from "@/hooks/useSound";
 import { pageNavLinks, suiteApps } from "@/content/homepage";
+import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
 
@@ -112,6 +113,7 @@ const navUserButtonAppearance = {
 };
 
 const DesktopAuthControl = () => {
+  const openSiteSignIn = useOpenSiteSignIn();
   const { isLoaded, isSignedIn } = useAuth();
 
   if (isSignedIn) {
@@ -119,24 +121,27 @@ const DesktopAuthControl = () => {
   }
 
   return (
-    <SignInButton mode="modal" fallbackRedirectUrl="/" forceRedirectUrl="/">
-      <button
-        type="button"
-        aria-busy={!isLoaded}
-        aria-label={isLoaded ? "Sign in" : "Loading sign-in"}
-        title={!isLoaded ? "Connecting to Clerk…" : "Sign in"}
-        onMouseEnter={() => {
-          playHover();
-        }}
-        className={`${signInButtonClass} shrink-0 cursor-pointer text-foreground/90 ${!isLoaded ? "opacity-70" : ""}`}
-      >
-        Sign In
-      </button>
-    </SignInButton>
+    <button
+      type="button"
+      aria-busy={!isLoaded}
+      aria-label={isLoaded ? "Sign in" : "Loading sign-in"}
+      title={!isLoaded ? "Connecting to Clerk…" : "Sign in"}
+      onMouseEnter={() => {
+        playHover();
+      }}
+      onClick={() => {
+        playClick();
+        openSiteSignIn();
+      }}
+      className={`${signInButtonClass} shrink-0 cursor-pointer text-foreground/90 ${!isLoaded ? "opacity-70" : ""}`}
+    >
+      Sign In
+    </button>
   );
 };
 
 const MobileAuthControl = () => {
+  const openSiteSignIn = useOpenSiteSignIn();
   const { isLoaded, isSignedIn } = useAuth();
 
   if (isSignedIn) {
@@ -148,20 +153,22 @@ const MobileAuthControl = () => {
   }
 
   return (
-    <SignInButton mode="modal" fallbackRedirectUrl="/" forceRedirectUrl="/">
-      <button
-        type="button"
-        aria-busy={!isLoaded}
-        aria-label={isLoaded ? "Sign in" : "Loading sign-in"}
-        title={!isLoaded ? "Connecting to Clerk…" : "Sign in"}
-        onMouseEnter={() => {
-          playHover();
-        }}
-        className={`${mobileSignInButtonClass} cursor-pointer${!isLoaded ? " opacity-70" : ""}`}
-      >
-        Sign In
-      </button>
-    </SignInButton>
+    <button
+      type="button"
+      aria-busy={!isLoaded}
+      aria-label={isLoaded ? "Sign in" : "Loading sign-in"}
+      title={!isLoaded ? "Connecting to Clerk…" : "Sign in"}
+      onMouseEnter={() => {
+        playHover();
+      }}
+      onClick={() => {
+        playClick();
+        openSiteSignIn();
+      }}
+      className={`${mobileSignInButtonClass} cursor-pointer${!isLoaded ? " opacity-70" : ""}`}
+    >
+      Sign In
+    </button>
   );
 };
 
