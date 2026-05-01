@@ -1,5 +1,6 @@
-import { Show, SignInButton, useAuth, useClerk } from "@clerk/react";
+import { Show, useAuth, useClerk } from "@clerk/react";
 import { useCallback, useEffect, useRef } from "react";
+import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
 
 const GSI_SCRIPT = "https://accounts.google.com/gsi/client";
 
@@ -83,10 +84,11 @@ function loadGsiScript(): Promise<void> {
 /**
  * Embedded Google sign-in on the landing hero: GIS button + One Tap (when
  * `VITE_GOOGLE_WEB_CLIENT_ID` matches the Clerk Google OAuth client).
- * Falls back to Clerk modal + popup OAuth when the client id is unset.
+ * Without that env var, the hero uses the same overlay `<SignIn />` as the navbar.
  */
 export function HomeGoogleAuth() {
   const clerk = useClerk();
+  const openSiteSignIn = useOpenSiteSignIn();
   const { isLoaded } = useAuth();
   const hostRef = useRef<HTMLDivElement>(null);
   const clientId = import.meta.env.VITE_GOOGLE_WEB_CLIENT_ID?.trim();
@@ -167,18 +169,13 @@ export function HomeGoogleAuth() {
             id="google-signin-button"
             className="flex min-h-10 items-center justify-center"
           >
-            <SignInButton
-              mode="modal"
-              fallbackRedirectUrl="/"
-              forceRedirectUrl="/"
+            <button
+              type="button"
+              className="rounded-sm border border-border/60 px-8 py-3 font-mono text-xs uppercase tracking-[0.14em] text-foreground/80 shadow-none transition-all duration-300 hover:border-electric/60 hover:bg-electric/5 hover:text-electric hover:shadow-electric-outline hover:-translate-y-0.5 active:scale-95"
+              onClick={() => openSiteSignIn()}
             >
-              <button
-                type="button"
-                className="rounded-sm border border-border/60 px-8 py-3 font-mono text-xs uppercase tracking-[0.14em] text-foreground/80 shadow-none transition-all duration-300 hover:border-electric/60 hover:bg-electric/5 hover:text-electric hover:shadow-electric-outline hover:-translate-y-0.5 active:scale-95"
-              >
-                Continue with Google
-              </button>
-            </SignInButton>
+              Continue with Google
+            </button>
           </div>
         )}
       </div>
