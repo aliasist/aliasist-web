@@ -8,7 +8,15 @@ let ctx: AudioContext | null = null;
 let enabled = true;
 
 function getCtx(): AudioContext {
-  if (!ctx) ctx = new (window.AudioContext || (window as any).webkitAudioContext)();
+  if (!ctx) {
+    const WA = typeof window.AudioContext !== "undefined" ? window.AudioContext : undefined;
+    const WK = typeof window !== "undefined"
+      ? (window as Window & typeof globalThis & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext
+      : undefined;
+    const Ctor = WA ?? WK;
+    if (!Ctor) throw new Error("Web Audio API is not supported in this browser");
+    ctx = new Ctor();
+  }
   return ctx;
 }
 
@@ -70,7 +78,9 @@ export function playScan() {
     gainNode.gain.exponentialRampToValueAtTime(0.0001, ac.currentTime + 0.35);
     osc.start(ac.currentTime);
     osc.stop(ac.currentTime + 0.4);
-  } catch {}
+  } catch {
+    /* Audio blocked — silently ignore */
+  }
 }
 
 export function playTransmit() {

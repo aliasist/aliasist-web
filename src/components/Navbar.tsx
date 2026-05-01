@@ -1,9 +1,10 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ClerkLoaded, ClerkLoading, Show, SignInButton, UserButton } from "@clerk/react";
-import newLogo from "@/assets/mascot.svg";
+import { useAuth, useClerk, UserButton } from "@clerk/react";
+import newLogo from "@/assets/aliasist-logo-brand.svg";
 import { playHover, playClick, setEnabled } from "@/hooks/useSound";
 import { pageNavLinks, suiteApps } from "@/content/homepage";
+import { openClerkSignIn } from "@/lib/open-clerk-sign-in";
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
 
@@ -23,10 +24,13 @@ const SuiteDropdown = () => {
   return (
     <div ref={ref} className="relative">
       <button
+        type="button"
         onClick={() => { setOpen(o => !o); playClick(); }}
         onMouseEnter={() => playHover()}
-        className={`flex items-center gap-1.5 text-xs font-mono uppercase tracking-[0.1em] transition-colors duration-200 ${
-          open ? "text-electric" : "text-muted-foreground hover:text-foreground"
+        className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-mono uppercase tracking-[0.16em] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+          open
+            ? "bg-electric/10 text-electric shadow-electric-xs"
+            : "text-muted-foreground hover:bg-electric/[0.06] hover:text-foreground hover:shadow-electric-ring-inset"
         }`}
       >
         Suite
@@ -46,8 +50,7 @@ const SuiteDropdown = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.97 }}
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute top-full right-0 mt-3 w-64 bg-card border border-border shadow-[0_8px_40px_hsl(165_90%_42%_/_0.12)] z-50 overflow-hidden"
-            style={{ borderRadius: "2px" }}
+            className="absolute top-full right-0 z-50 mt-3 w-64 overflow-hidden rounded-lg border border-border/80 bg-card/95 shadow-electric-panel backdrop-blur-xl"
           >
             {/* Header */}
             <div className="px-4 py-3 border-b border-border/60 flex items-center justify-between">
@@ -55,7 +58,7 @@ const SuiteDropdown = () => {
                 Aliasist Suite
               </span>
               <span className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.1em] text-electric/60">
-                <span className="w-1 h-1 rounded-full bg-electric animate-pulse" />
+                <span className="w-1 h-1 rounded-full bg-electric animate-pulse shadow-electric-dot" />
                 {suiteApps.length} Live
               </span>
             </div>
@@ -71,18 +74,19 @@ const SuiteDropdown = () => {
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.15, delay: i * 0.04 }}
-                className="group flex items-center gap-3 px-4 py-3 hover:bg-electric/5 border-b border-border/30 last:border-0 transition-colors"
+                className="group relative flex items-center gap-3 border-b border-border/30 px-4 py-3 transition-colors duration-300 last:border-0 hover:bg-[linear-gradient(90deg,hsl(165_90%_42%_/_0.06)_0%,transparent_100%)]"
               >
-                <span className="text-xl leading-none">{app.icon}</span>
+                <span className="absolute left-0 top-1/2 h-0 w-[3px] -translate-y-1/2 rounded-full bg-electric opacity-0 shadow-electric-accent-line transition-all duration-300 group-hover:h-[60%] group-hover:opacity-100" aria-hidden />
+                <span className="text-xl leading-none transition-transform duration-300 group-hover:scale-110">{app.icon}</span>
                 <div className="flex-1 min-w-0">
-                  <p className="font-mono text-xs font-semibold text-foreground group-hover:text-electric transition-colors">
+                  <p className="font-mono text-xs font-semibold text-foreground transition-colors duration-300 group-hover:text-electric">
                     {app.label}
                   </p>
                   <p className="font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground/50 mt-0.5 truncate">
                     {app.sub}
                   </p>
                 </div>
-                <span className="opacity-0 group-hover:opacity-100 text-electric font-mono text-xs transition-opacity">↗</span>
+                <span className="translate-x-0.5 font-mono text-xs text-electric opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">↗</span>
               </motion.a>
             ))}
           </motion.div>
@@ -93,78 +97,82 @@ const SuiteDropdown = () => {
 };
 
 const signInButtonClass =
-  "text-xs font-mono uppercase tracking-[0.1em] text-muted-foreground hover:text-electric border border-border/60 hover:border-electric/40 px-3 py-1.5 rounded-sm transition-all duration-200 hover:bg-electric/5";
+  "border border-border/50 bg-background/40 px-3.5 py-2 text-xs font-mono uppercase tracking-[0.16em] text-muted-foreground backdrop-blur-sm transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-electric/35 hover:bg-electric/[0.07] hover:text-electric hover:shadow-electric-glass-hover active:scale-[0.98] rounded-full";
 
 const mobileSignInButtonClass =
-  "flex-1 text-center text-xs font-mono uppercase tracking-[0.1em] text-electric border border-electric/30 py-2.5 rounded-sm hover:bg-electric/5 transition-colors";
+  "flex-1 rounded-md border border-electric/35 bg-electric/[0.04] py-2.5 text-center text-xs font-mono uppercase tracking-[0.16em] text-electric shadow-electric-mobile-signin transition-all duration-300 hover:border-electric/50 hover:bg-electric/10 hover:shadow-electric-mobile-signin-hover active:scale-[0.99]";
 
-const DesktopAuthControl = () => (
-  <>
-    <ClerkLoading>
-      <button
-        type="button"
-        disabled
-        className={`${signInButtonClass} opacity-50 cursor-wait`}
-        aria-busy="true"
-      >
-        Sign In
-      </button>
-    </ClerkLoading>
-    <ClerkLoaded>
-      <Show when="signed-in">
-        <UserButton />
-      </Show>
-      <Show when="signed-out">
-        <SignInButton mode="modal">
-          <button
-            type="button"
-            onMouseEnter={() => playHover()}
-            onClick={() => playClick()}
-            className={signInButtonClass}
-          >
-            Sign In
-          </button>
-        </SignInButton>
-      </Show>
-    </ClerkLoaded>
-  </>
-);
+const utilityButtonClass =
+  "flex h-9 w-9 items-center justify-center rounded-full border border-transparent text-muted-foreground transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-electric/25 hover:bg-electric/[0.08] hover:text-electric hover:shadow-electric-utility-hover active:scale-95";
 
-const MobileAuthControl = ({ onDone }: { onDone: () => void }) => (
-  <>
-    <ClerkLoading>
-      <button
-        type="button"
-        disabled
-        className={`${mobileSignInButtonClass} opacity-50 cursor-wait`}
-        aria-busy="true"
-      >
-        Sign In
-      </button>
-    </ClerkLoading>
-    <ClerkLoaded>
-      <Show when="signed-in">
-        <div className="flex-1 flex items-center justify-center py-2">
-          <UserButton />
-        </div>
-      </Show>
-      <Show when="signed-out">
-        <SignInButton mode="modal">
-          <button
-            type="button"
-            onClick={() => {
-              playClick();
-              onDone();
-            }}
-            className={mobileSignInButtonClass}
-          >
-            Sign In
-          </button>
-        </SignInButton>
-      </Show>
-    </ClerkLoaded>
-  </>
-);
+const navUserButtonAppearance = {
+  elements: {
+    userButtonAvatarBox: "h-8 w-8 ring-1 ring-border/50 rounded-full",
+    userButtonPopoverCard: "rounded-md border border-border bg-card shadow-lg",
+  },
+};
+
+const DesktopAuthControl = () => {
+  const clerk = useClerk();
+  const { isLoaded, isSignedIn } = useAuth();
+
+  if (isSignedIn) {
+    return <UserButton appearance={navUserButtonAppearance} />;
+  }
+
+  const openSignIn = () => {
+    playClick();
+    openClerkSignIn(clerk);
+  };
+
+  return (
+    <button
+      type="button"
+      aria-busy={!isLoaded}
+      aria-label={isLoaded ? "Sign in" : "Loading sign-in"}
+      title={!isLoaded ? "Connecting to Clerk…" : "Sign in"}
+      onMouseEnter={() => {
+        playHover();
+      }}
+      onClick={openSignIn}
+      className={`${signInButtonClass} shrink-0 cursor-pointer text-foreground/90 ${!isLoaded ? "opacity-70" : ""}`}
+    >
+      Sign In
+    </button>
+  );
+};
+
+const MobileAuthControl = ({ onDone }: { onDone: () => void }) => {
+  const clerk = useClerk();
+  const { isLoaded, isSignedIn } = useAuth();
+
+  if (isSignedIn) {
+    return (
+      <div className="flex-1 flex items-center justify-center py-2">
+        <UserButton appearance={navUserButtonAppearance} />
+      </div>
+    );
+  }
+
+  const openSignIn = () => {
+    playClick();
+    onDone();
+    openClerkSignIn(clerk);
+  };
+
+  return (
+    <button
+      type="button"
+      aria-busy={!isLoaded}
+      aria-label={isLoaded ? "Sign in" : "Loading sign-in"}
+      title={!isLoaded ? "Connecting to Clerk…" : "Sign in"}
+      onClick={openSignIn}
+      className={`${mobileSignInButtonClass} cursor-pointer${!isLoaded ? " opacity-70" : ""}`}
+    >
+      Sign In
+    </button>
+  );
+};
 
 // ── Main Navbar ───────────────────────────────────────────────────────────────
 
@@ -224,37 +232,48 @@ const Navbar = () => {
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
+      className={`fixed top-0 left-0 right-0 z-[200] transition-all duration-300 ${
         scrolled
-          ? "bg-background/85 backdrop-blur-xl border-b border-border/50 shadow-[0_1px_24px_hsl(165_90%_42%_/_0.05)]"
-          : "bg-transparent"
+          ? "bg-background/82 backdrop-blur-2xl border-b border-border/50 shadow-electric-bar"
+          : "bg-background/[0.03] backdrop-blur-[2px]"
       }`}
     >
-      <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between gap-8">
+      <a
+        href="#main-content"
+        className="fixed left-4 top-20 z-[100] -translate-x-[200%] focus:translate-x-0 transition-transform duration-200 px-4 py-2 bg-card border border-border/60 rounded-[var(--radius)] font-mono text-[10px] uppercase tracking-widest text-foreground shadow-lg outline-none ring-2 ring-ring ring-offset-2 ring-offset-background sm:left-6 sm:top-24"
+      >
+        Skip to content
+      </a>
+      <div className="mx-auto flex h-[4.5rem] w-full max-w-site items-center justify-between gap-5 px-4 sm:gap-8 sm:px-8 lg:px-12 xl:px-16">
 
         {/* ── LEFT: Logo ── */}
         <a
           href="/"
           onClick={() => playClick()}
           onMouseEnter={() => playHover()}
-          className="flex items-center gap-2.5 flex-shrink-0 group"
+          className="group flex flex-shrink-0 items-center gap-3 rounded-xl py-1 pr-2 transition-all duration-300 hover:bg-electric/[0.04]"
           aria-label="Aliasist home"
         >
           <motion.img
             src={newLogo}
             alt="Aliasist"
-            className="h-12 w-auto max-h-14 object-contain drop-shadow-[0_2px_12px_hsl(165_90%_42%_/_0.12)] transition-all duration-300"
-            style={{ minWidth: 48, background: "transparent" }}
+            className="h-14 w-auto max-h-16 object-contain drop-shadow-electric-logo transition-all duration-300 sm:h-16 sm:max-h-[4.5rem]"
+            style={{ minWidth: 56, background: "transparent" }}
             whileHover={{ scale: 1.1, filter: "drop-shadow(0 0 16px hsl(165 90% 42% / 0.8))" }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
           />
-          <span className="font-bold text-sm tracking-[0.12em] uppercase text-foreground group-hover:text-electric transition-colors duration-300">
-            Aliasist
-          </span>
+          <div className="hidden sm:flex flex-col leading-none">
+            <span className="font-bold text-sm uppercase tracking-[0.16em] text-foreground transition-all duration-300 group-hover:text-electric group-hover:[text-shadow:0_0_28px_hsl(165_90%_42%_/_0.25)]">
+              Aliasist
+            </span>
+            <span className="mt-1 font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground/45 transition-colors duration-300 group-hover:text-muted-foreground/65">
+              Signal Active
+            </span>
+          </div>
         </a>
 
         {/* ── CENTER: Page links ── */}
-        <div className="hidden md:flex items-center gap-6 flex-1 justify-center">
+        <div className="hidden md:flex flex-1 items-center justify-center gap-2 rounded-full border border-border/35 bg-background/50 px-2.5 py-1.5 shadow-electric-nav-well backdrop-blur-md">
           {pageNavLinks.map(link => {
             const isActive = activeSection === link.href.replace("#", "");
             return (
@@ -262,84 +281,86 @@ const Navbar = () => {
                 key={link.href}
                 href={link.href}
                 onMouseEnter={() => playHover()}
-                className={`relative text-xs font-mono uppercase tracking-[0.1em] transition-colors duration-200 group py-1 ${
-                  isActive ? "text-electric" : "text-muted-foreground hover:text-foreground"
+                className={`group relative overflow-hidden rounded-full px-4 py-2 text-xs font-mono uppercase tracking-[0.16em] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                  isActive
+                    ? "bg-electric/[0.12] text-electric shadow-electric-xs"
+                    : "text-muted-foreground hover:bg-electric/[0.06] hover:text-foreground hover:tracking-[0.2em] hover:shadow-electric-ring-inset-soft"
                 }`}
               >
-                {link.label}
-                <span className={`absolute bottom-0 left-0 h-px bg-electric transition-all duration-300 ${
-                  isActive ? "w-full" : "w-0 group-hover:w-full"
-                }`} />
+                <span className="relative z-10">{link.label}</span>
+                <span
+                  className={`pointer-events-none absolute inset-x-2 top-1/2 h-full -translate-y-1/2 rounded-full bg-gradient-to-r from-transparent via-electric/10 to-transparent opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100 ${isActive ? "opacity-60" : ""}`}
+                  aria-hidden
+                />
+                <span
+                  className={`absolute bottom-1 left-1/2 h-[2px] -translate-x-1/2 rounded-full bg-electric shadow-electric-accent-line transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                    isActive ? "w-[calc(100%-1.25rem)] opacity-100" : "w-0 opacity-0 group-hover:w-[calc(100%-1.25rem)] group-hover:opacity-100"
+                  }`}
+                />
               </a>
             );
           })}
 
           {/* Subtle separator */}
-          <span className="w-px h-4 bg-border/60 mx-1" />
+          <span className="mx-1.5 h-4 w-px bg-border/60" />
 
           {/* Suite dropdown */}
           <SuiteDropdown />
         </div>
 
         {/* ── RIGHT: Controls ── */}
-        <div className="hidden md:flex items-center gap-4 flex-shrink-0">
+        <div className="hidden md:flex items-center gap-3 flex-shrink-0">
+          <div className="flex items-center gap-1 rounded-full border border-border/35 bg-background/50 p-1 shadow-electric-nav-well-inset backdrop-blur-md">
+            <button
+              onClick={toggleSound}
+              title={soundOn ? "Mute" : "Unmute"}
+              className={utilityButtonClass}
+              aria-label={soundOn ? "Mute sounds" : "Enable sounds"}
+            >
+              {soundOn ? (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
+                </svg>
+              ) : (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
+                  <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
+                </svg>
+              )}
+            </button>
 
-          {/* Sound toggle */}
-          <button
-            onClick={toggleSound}
-            title={soundOn ? "Mute" : "Unmute"}
-            className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-electric transition-colors text-sm rounded-sm hover:bg-electric/5"
-            aria-label={soundOn ? "Mute sounds" : "Enable sounds"}
-          >
-            {soundOn ? (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-                <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-              </svg>
-            ) : (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-                <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
-              </svg>
-            )}
-          </button>
-
-          {/* Theme toggle */}
-          <button
-            onClick={toggleTheme}
-            title={isDark ? "Light mode" : "Dark mode"}
-            className="w-8 h-8 flex items-center justify-center text-muted-foreground hover:text-electric transition-colors rounded-sm hover:bg-electric/5"
-            aria-label="Toggle theme"
-          >
-            {isDark ? (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-              </svg>
-            ) : (
-              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-              </svg>
-            )}
-          </button>
-
-          {/* Divider */}
-          <span className="w-px h-5 bg-border/60" />
-
-          {/* Auth */}
-          <DesktopAuthControl />
-
-          {/* Contact CTA */}
-          <a
-            href="#contact"
-            onMouseEnter={() => playHover()}
-            onClick={() => playClick()}
-            className="text-xs font-mono uppercase tracking-[0.1em] bg-electric text-background px-4 py-1.5 rounded-full hover:bg-electric/85 transition-all duration-200 hover:shadow-[0_0_16px_hsl(165_90%_42%_/_0.3)]"
-          >
-            Contact
-          </a>
+            <button
+              onClick={toggleTheme}
+              title={isDark ? "Light mode" : "Dark mode"}
+              className={utilityButtonClass}
+              aria-label="Toggle theme"
+            >
+              {isDark ? (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
+                  <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
+                </svg>
+              ) : (
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
+                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
+                </svg>
+              )}
+            </button>
+          </div>
+          <div className="flex items-center gap-3 shrink-0 min-w-0">
+            <a
+              href="#contact"
+              onMouseEnter={() => playHover()}
+              onClick={() => playClick()}
+              className="rounded-full bg-electric px-5 py-2 text-xs font-mono uppercase tracking-[0.16em] text-background shadow-electric-sm transition-[background-color,box-shadow,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-electric/90 hover:shadow-electric-md active:scale-[0.98]"
+            >
+              Contact
+            </a>
+            <DesktopAuthControl />
+          </div>
         </div>
 
         {/* ── MOBILE: Hamburger ── */}
@@ -366,7 +387,7 @@ const Navbar = () => {
             transition={{ duration: 0.25 }}
             className="md:hidden bg-background/98 backdrop-blur-xl border-b border-border overflow-hidden"
           >
-            <div className="px-6 py-6 space-y-1">
+            <div className="space-y-1 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-5 sm:px-8 lg:px-12 xl:px-16">
 
               {/* Page links */}
               {pageNavLinks.map(link => (
@@ -374,7 +395,7 @@ const Navbar = () => {
                   key={link.href}
                   href={link.href}
                   onClick={() => { playClick(); setMobileOpen(false); }}
-                  className="flex items-center h-11 text-xs font-mono uppercase tracking-[0.1em] text-muted-foreground hover:text-foreground transition-colors"
+                  className="-mx-1 flex h-12 items-center rounded-lg px-3 text-xs font-mono uppercase tracking-[0.15em] text-muted-foreground transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-electric/[0.06] hover:pl-4 hover:text-foreground hover:shadow-[inset_3px_0_0_hsl(165_90%_42%_/_0.65)]"
                 >
                   {link.label}
                 </a>
@@ -394,11 +415,11 @@ const Navbar = () => {
                   target="_blank"
                   rel="noopener noreferrer"
                   onClick={() => { playClick(); setMobileOpen(false); }}
-                  className="flex items-center gap-3 h-11 text-xs font-mono uppercase tracking-[0.1em] text-muted-foreground hover:text-electric transition-colors"
+                  className="group -mx-1 flex h-12 items-center gap-3 rounded-lg px-3 text-xs font-mono uppercase tracking-[0.15em] text-muted-foreground transition-all duration-300 hover:bg-electric/[0.06] hover:text-electric hover:shadow-[inset_3px_0_0_hsl(165_90%_42%_/_0.5)]"
                 >
-                  <span>{app.icon}</span>
+                  <span className="transition-transform duration-300 group-hover:scale-110">{app.icon}</span>
                   <span>{app.label}</span>
-                  <span className="ml-auto opacity-30 text-[10px]">↗</span>
+                  <span className="ml-auto text-[10px] opacity-30 transition-all duration-300 group-hover:translate-x-0.5 group-hover:opacity-100">↗</span>
                 </a>
               ))}
 
@@ -407,22 +428,22 @@ const Navbar = () => {
 
               {/* Controls row */}
               <div className="flex items-center gap-4 py-2">
-                <button onClick={toggleSound} className="text-xs font-mono text-muted-foreground hover:text-electric transition-colors">
+                <button type="button" onClick={toggleSound} className="rounded-md px-2 py-1 text-xs font-mono text-muted-foreground transition-all duration-300 hover:bg-electric/[0.06] hover:text-electric">
                   {soundOn ? "Sound On" : "Sound Off"}
                 </button>
-                <button onClick={toggleTheme} className="text-xs font-mono text-muted-foreground hover:text-electric transition-colors">
+                <button type="button" onClick={toggleTheme} className="rounded-md px-2 py-1 text-xs font-mono text-muted-foreground transition-all duration-300 hover:bg-electric/[0.06] hover:text-electric">
                   {isDark ? "Light Mode" : "Dark Mode"}
                 </button>
               </div>
 
-              {/* Auth + Contact */}
+              {/* Contact then Sign In — Sign In on the right */}
               <div className="flex gap-3 pt-2">
-                <MobileAuthControl onDone={() => setMobileOpen(false)} />
                 <a href="#contact"
                   onClick={() => { playClick(); setMobileOpen(false); }}
-                  className="flex-1 text-center text-xs font-mono uppercase tracking-[0.1em] bg-electric text-background py-2.5 rounded-sm hover:bg-electric/85 transition-colors">
+                  className="flex-1 rounded-md bg-electric py-2.5 text-center text-xs font-mono uppercase tracking-[0.16em] text-background shadow-electric-sm transition-[background-color,box-shadow,transform] duration-300 hover:bg-electric/90 hover:shadow-electric-md active:scale-[0.99]">
                   Contact
                 </a>
+                <MobileAuthControl onDone={() => setMobileOpen(false)} />
               </div>
             </div>
           </motion.div>

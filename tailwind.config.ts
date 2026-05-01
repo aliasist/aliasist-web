@@ -73,6 +73,10 @@ export default {
         md: "calc(var(--radius) - 2px)",
         sm: "calc(var(--radius) - 4px)",
       },
+      maxWidth: {
+        /** Main content + navbar — uses wide desktops without ultra-long measure */
+        site: "min(100%, 92rem)",
+      },
       keyframes: {
         "accordion-down": {
           from: {

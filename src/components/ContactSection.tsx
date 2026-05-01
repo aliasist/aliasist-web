@@ -1,8 +1,8 @@
 
 import { motion, AnimatePresence } from "framer-motion";
-import { playHover, playClick, playSuccess } from "@/hooks/useSound";
+import { playHover, playClick } from "@/hooks/useSound";
 import streetBanner from "@images/aliasist_banner_street.png";
-import mascot from "@/assets/mascot.svg";
+import mascot from "@/assets/mascot.png";
 import { useState, useRef } from "react";
 import { contact, suiteApps } from "@/content/homepage";
 import { readJsonBody, siteEndpoints } from "@/config/api";
@@ -42,7 +42,6 @@ const ContactSection = () => {
     if (formState === "sending") return;
     setFormState("sending");
     setErrorMsg("");
-    playClick();
     try {
       const res = await fetch(CONTACT_API, {
         method: "POST",
@@ -53,7 +52,6 @@ const ContactSection = () => {
       if (!data) throw new Error("Invalid response from server");
       if (!res.ok || !data.ok) throw new Error(data.error ?? `Request failed (${res.status})`);
       setFormState("success");
-      playSuccess();
       setName(""); setEmail(""); setMessage("");
     } catch (err) {
       setFormState("error");
@@ -61,10 +59,11 @@ const ContactSection = () => {
     }
   };
 
-  const inputClass = "w-full bg-background/8 border border-background/15 text-background placeholder:text-background/25 font-mono text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-electric/50 focus:bg-electric/5 transition-all duration-200";
+  const inputClass =
+    "w-full bg-background/8 border border-background/15 text-background placeholder:text-background/25 font-mono text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-electric/50 focus:bg-electric/5 focus:shadow-electric-xs transition-all duration-200";
 
   return (
-    <section id="contact" className="py-28 px-6 bg-foreground text-background relative overflow-hidden">
+    <section id="contact" className="relative overflow-hidden bg-foreground px-4 py-28 text-background sm:px-8 lg:px-12 xl:px-16">
       {/* Street banner background */}
       <div
         className="absolute inset-0 bg-cover bg-center opacity-[0.12] mix-blend-screen pointer-events-none"
@@ -80,7 +79,7 @@ const ContactSection = () => {
         style={{ background: "radial-gradient(circle, hsl(165 90% 42%), transparent 70%)" }}
       />
 
-      <div className="max-w-5xl mx-auto relative z-10">
+      <div className="relative z-10 mx-auto w-full max-w-site">
         <div className="classified-divider mb-16 [&>span]:text-background/35 before:bg-background/10 after:bg-background/10">
           <span>{contact.dividerLabel}</span>
         </div>
@@ -103,7 +102,7 @@ const ContactSection = () => {
                 {contact.headline}
               </h2>
 
-              <p className="text-sm text-background/50 leading-relaxed mb-8 max-w-sm">
+              <p className="mb-8 max-w-sm text-sm leading-relaxed text-background/50 xl:max-w-md">
                 <strong className="text-background/75 font-semibold">
                   {contact.introStrong}
                 </strong>{" "}
@@ -117,7 +116,7 @@ const ContactSection = () => {
                     key="success"
                     initial={{ opacity: 0, y: 12 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="border border-electric/30 bg-electric/8 px-6 py-8 rounded-sm"
+                    className="border border-electric/30 bg-electric/8 px-6 py-8 rounded-sm shadow-electric-xs"
                   >
                     <div className="flex items-center gap-3 mb-3">
                       <span className="w-2 h-2 rounded-full bg-electric animate-pulse" />
@@ -181,8 +180,7 @@ const ContactSection = () => {
                     <button
                       type="submit"
                       disabled={formState === "sending"}
-                      onMouseEnter={() => playHover()}
-                      className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] rounded-sm overflow-hidden transition-all hover:-translate-y-0.5 active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed"
+                      className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] rounded-sm overflow-hidden shadow-electric-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-electric-md active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:shadow-electric-sm"
                     >
                       <span className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                       <span className="relative">
@@ -203,14 +201,12 @@ const ContactSection = () => {
                       href={link.href}
                       target={link.href.startsWith("http") ? "_blank" : undefined}
                       rel="noopener noreferrer"
-                      onMouseEnter={() => playHover()}
-                      onClick={() => playClick()}
                       initial={{ opacity: 0, x: -12 }}
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.3, delay: i * 0.08 }}
                       whileHover={{ x: 4 }}
-                      className="group flex items-center justify-between px-5 py-4 bg-background/5 border border-background/10 hover:bg-electric/10 hover:border-electric/25 transition-all font-mono text-sm text-background/55 hover:text-electric"
+                      className="group flex items-center justify-between px-5 py-4 bg-background/5 border border-background/10 hover:bg-electric/10 hover:border-electric/25 hover:shadow-electric-xs transition-all duration-300 font-mono text-sm text-background/55 hover:text-electric"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-electric/40 group-hover:text-electric transition-colors">
@@ -244,7 +240,7 @@ const ContactSection = () => {
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: i * 0.1 }}
                     whileHover={{ x: 6 }}
-                    className="group flex items-center justify-between px-6 py-5 bg-background/5 border border-background/10 hover:bg-electric/10 hover:border-electric/30 transition-all"
+                    className="group flex items-center justify-between px-6 py-5 bg-background/5 border border-background/10 hover:bg-electric/10 hover:border-electric/30 hover:shadow-electric-xs transition-all duration-300"
                   >
                     <div className="flex items-center gap-4">
                       <span className="text-2xl">{app.icon}</span>

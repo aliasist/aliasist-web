@@ -3,7 +3,7 @@
  * (e.g. staging workers) without editing components.
  */
 
-function trimTrailingSlashes(url: string): string {
+export function trimTrailingSlashes(url: string): string {
   return url.replace(/\/+$/, "");
 }
 
@@ -18,6 +18,11 @@ export const siteEndpoints = {
   contactApi: `${llmBase}/api/contact`,
   /** Floating AI widget → same worker as contact */
   chatApi: `${llmBase}/api/chat`,
+  /**
+   * Pages Function — Clerk-authenticated chat (`functions/api/chat-messages.ts`).
+   * POST requires `Authorization: Bearer <session JWT>` once you switch the widget to this API.
+   */
+  chatMessagesApi: "/api/chat-messages",
   /** Blog / news rail → news worker */
   newsApi: `${newsBase}/api/news`,
 } as const;

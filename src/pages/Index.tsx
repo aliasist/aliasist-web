@@ -1,15 +1,21 @@
-import { useState, useEffect } from "react";
+import { lazy, Suspense, useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
-import AboutSection from "@/components/AboutSection";
-import ProjectsSection from "@/components/ProjectsSection";
-import TransmissionsSection from "@/components/TransmissionsSection";
-import ContactSection from "@/components/ContactSection";
-import Footer from "@/components/Footer";
 import Starfield from "@/components/Starfield";
 import ScrollProgress from "@/components/ScrollProgress";
+import SectionRail from "@/components/SectionRail";
 import AliasistChat from "@/components/AliasistChat";
 import AISplashScreen from "@/components/AISplashScreen";
+
+const AboutSection = lazy(() => import("@/components/AboutSection"));
+const ProjectsSection = lazy(() => import("@/components/ProjectsSection"));
+const TransmissionsSection = lazy(() => import("@/components/TransmissionsSection"));
+const ContactSection = lazy(() => import("@/components/ContactSection"));
+const Footer = lazy(() => import("@/components/Footer"));
+
+function SectionFallback() {
+  return <div className="min-h-[24vh] w-full" aria-hidden />;
+}
 
 // Show the splash screen once per browser session
 function shouldShowSplash(): boolean {
@@ -42,14 +48,17 @@ const Index = () => {
       )}
       <Starfield />
       <ScrollProgress />
+      <SectionRail />
       <Navbar />
-      <main className="relative z-10">
+      <main id="main-content" className="relative z-10" tabIndex={-1}>
         <HeroSection />
-        <AboutSection />
-        <ProjectsSection />
-        <TransmissionsSection />
-        <ContactSection />
-        <Footer />
+        <Suspense fallback={<SectionFallback />}>
+          <AboutSection />
+          <ProjectsSection />
+          <TransmissionsSection />
+          <ContactSection />
+          <Footer />
+        </Suspense>
       </main>
       <AliasistChat />
     </div>

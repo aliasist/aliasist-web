@@ -1,17 +1,16 @@
-import mascot from "@/assets/mascot.svg";
-import { playHover } from "@/hooks/useSound";
+import mascot from "@/assets/aliasist-logo-brand20.svg";
 import { footer } from "@/content/homepage";
 
 const Footer = () => {
   return (
-    <footer className="py-8 px-6 bg-foreground border-t border-background/10">
-      <div className="max-w-5xl mx-auto flex flex-col sm:flex-row items-center justify-between gap-4 relative">
-                {/* Mascot branding, bottom left */}
-                <img
-                  src={mascot}
-                  alt={footer.mascotAlt}
-                  className="hidden sm:block absolute -left-20 bottom-0 w-16 h-16 opacity-30 hover:opacity-60 transition-opacity duration-700 pointer-events-none select-none"
-                />
+    <footer className="border-t border-background/10 bg-foreground px-4 py-8 shadow-footer-glow sm:px-8 lg:px-12 xl:px-16">
+      <div className="relative mx-auto flex w-full max-w-site flex-col items-center justify-between gap-4 sm:flex-row">
+        {/* Mascot branding, bottom left */}
+        <img
+          src={mascot}
+          alt={footer.mascotAlt}
+          className="hidden sm:block absolute -left-20 bottom-0 w-16 h-16 opacity-30 hover:opacity-60 transition-opacity duration-700 pointer-events-none select-none"
+        />
         <p className="font-mono text-xs text-background/30">
           © {new Date().getFullYear()} {footer.brandName}. All rights reserved.
         </p>
@@ -21,15 +20,13 @@ const Footer = () => {
             href={footer.githubHref}
             target="_blank"
             rel="noopener noreferrer"
-            onMouseEnter={() => playHover()}
-            className="font-mono text-[10px] uppercase tracking-[0.15em] text-background/30 hover:text-electric transition-colors"
+            className="font-mono text-[10px] uppercase tracking-[0.15em] text-background/30 hover:text-electric transition-colors duration-200 hover:drop-shadow-[0_0_10px_hsl(165_90%_42%_/_0.45)]"
           >
             {footer.githubLabel}
           </a>
           <a
             href={footer.emailHref}
-            onMouseEnter={() => playHover()}
-            className="font-mono text-[10px] uppercase tracking-[0.15em] text-background/30 hover:text-electric transition-colors"
+            className="font-mono text-[10px] uppercase tracking-[0.15em] text-background/30 hover:text-electric transition-colors duration-200 hover:drop-shadow-[0_0_10px_hsl(165_90%_42%_/_0.45)]"
           >
             {footer.emailLabel}
           </a>

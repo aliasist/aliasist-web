@@ -1,5 +1,4 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { playHover, playTransmit } from "@/hooks/useSound";
 import { useEffect, useRef, useState } from "react";
 import { transmissions } from "@/content/homepage";
 import { readJsonBody, siteEndpoints } from "@/config/api";
@@ -43,17 +42,13 @@ function timeAgo(iso: string): string {
 
 function useTransmitOnView() {
   const ref = useRef<HTMLDivElement>(null);
-  const [fired, setFired] = useState(false);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting && !fired) { playTransmit(); setFired(true); } },
-      { threshold: 0.2 }
-    );
+    const obs = new IntersectionObserver(() => {}, { threshold: 0.2 });
     obs.observe(el);
     return () => obs.disconnect();
-  }, [fired]);
+  }, []);
   return ref;
 }
 
@@ -148,8 +143,7 @@ const BlogCard = ({ article, index }: { article: Article; index: number }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.04 }}
-      onMouseEnter={() => playHover()}
-      className="group bg-background border border-border hover:border-electric/30 transition-all duration-300 relative overflow-hidden hover:-translate-y-0.5 flex flex-col"
+      className="group bg-background border border-border hover:border-electric/30 transition-[transform,border-color,box-shadow] duration-300 hover:shadow-electric-sm relative overflow-hidden hover:-translate-y-0.5 flex flex-col"
     >
       {/* Category thumbnail — always renders */}
       <CardThumbnail article={article} />
@@ -232,8 +226,8 @@ const TransmissionsSection = () => {
   const displayed = filtered.slice(0, 9);
 
   return (
-    <section id="transmissions" className="py-28 px-6 bg-card" ref={sectionRef}>
-      <div className="max-w-5xl mx-auto">
+    <section id="transmissions" ref={sectionRef} className="bg-card px-4 py-28 sm:px-8 lg:px-12 xl:px-16">
+      <div className="mx-auto w-full max-w-site">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -276,7 +270,7 @@ const TransmissionsSection = () => {
               animate={{ opacity: 1 }}
               className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.15em] text-electric"
             >
-              <span className="w-2 h-2 rounded-full bg-electric animate-pulse" />
+              <span className="w-2 h-2 rounded-full bg-electric animate-pulse shadow-electric-dot" />
               Live · Auto-refresh 10m
             </motion.div>
           )}
@@ -293,10 +287,10 @@ const TransmissionsSection = () => {
           {FILTERS.map((f) => (
             <button
               key={f}
-              onClick={() => { setActiveFilter(f); playHover(); }}
-              className={`font-mono text-[11px] uppercase tracking-[0.12em] px-3 py-1.5 border rounded-sm transition-all duration-200 ${
+              onClick={() => { setActiveFilter(f); }}
+              className={`font-mono text-[11px] uppercase tracking-[0.12em] px-3 py-1.5 border rounded-sm transition-[colors,border-color,box-shadow] duration-200 ${
                 activeFilter === f
-                  ? "border-electric text-electric bg-electric/10"
+                  ? "border-electric text-electric bg-electric/10 shadow-electric-xs"
                   : "border-border text-muted-foreground hover:border-electric/40 hover:text-foreground"
               }`}
             >

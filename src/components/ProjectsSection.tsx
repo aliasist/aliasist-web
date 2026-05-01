@@ -17,7 +17,7 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
       viewport={{ once: true }}
       transition={{ duration: 0.55, delay: index * 0.1 }}
       onMouseEnter={() => playHover()}
-      className="relative bg-card border border-border/60 hover:border-electric/40 text-foreground p-8 sm:p-12 overflow-hidden group transition-colors duration-300"
+      className="project-card-shell relative bg-card border border-border/60 hover:border-electric/40 text-foreground p-8 sm:p-12 overflow-hidden group transition-[colors,box-shadow] duration-300 hover:shadow-electric-sm"
     >
       {/* Static banner */}
       {project.banner && (
@@ -53,7 +53,7 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
       <h3 className="relative z-10 text-2xl sm:text-3xl font-bold text-foreground mb-4 font-mono tracking-tight">
         {project.name}
       </h3>
-      <p className="relative z-10 text-sm text-muted-foreground leading-relaxed mb-8 max-w-2xl">
+      <p className="relative z-10 mb-8 max-w-2xl text-sm leading-relaxed text-muted-foreground xl:max-w-3xl">
         {project.description}
       </p>
 
@@ -114,8 +114,8 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
 
 const ProjectsSection = () => {
   return (
-    <section id="projects" className="py-28 px-6">
-      <div className="max-w-5xl mx-auto">
+    <section id="projects" className="px-4 py-28 sm:px-8 lg:px-12 xl:px-16">
+      <div className="mx-auto w-full max-w-site">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -150,7 +150,6 @@ const ProjectsSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                onMouseEnter={() => playHover()}
                 className="relative border border-dashed border-border p-10 flex flex-col items-start justify-between min-h-[180px] bg-card group overflow-hidden hover:border-electric/30 transition-colors"
               >
                 <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none">

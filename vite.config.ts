@@ -42,6 +42,8 @@ export default defineConfig(async ({ mode }) => {
     },
     test: {
       passWithNoTests: true,
+      include: ["src/**/*.{test,spec}.{ts,tsx}"],
+      exclude: ["node_modules", "dist", "apps", "website", "app"],
     },
   };
 });

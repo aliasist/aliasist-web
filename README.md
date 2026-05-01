@@ -1,50 +1,38 @@
-# Aliasist
+# Aliasist (`aliasistabductor`)
 
-Main repository for the Aliasist site, serverless endpoints, active apps, and archived project snapshots.
+Monorepo for the Aliasist portfolio site, Workers, sibling apps under `apps/`, and shared assets.
 
-## Active Layout
+## Public homepage (portfolio)
 
-- `website/` - main Aliasist web app built with Vite, React, and TypeScript
-- `functions/` - serverless API handlers used by the site
-- `apps/` - active sibling apps and services under development
-- `archive/` - preserved older builds, experiments, and prior deployments
+The site at **aliasist.com** is built from the repo root:
 
-## Current Primary App
-
-The main public-facing site lives in `website/`.
-
-Typical local workflow:
+| Path | Purpose |
+|------|---------|
+| `src/` | Vite + React + TypeScript app |
+| `images/` | Marketing / project banners (`@images/` in Vite) |
+| `public/` | Icons, mascot, manifests |
+| `functions/` | Pages Functions (API routes) |
 
 ```bash
-cd website
+cd /path/to/aliasistabductor
 npm install
 npm run dev
 ```
 
-## Apps
-
-- `apps/ecosist/` - environmental intelligence app
-- `apps/datasist/` - DataSist frontend bundle for Cloudflare Pages
-- `apps/datasist-api/` - DataSist Cloudflare Worker API
-- `apps/pulsesist/` - market and finance app
-- `apps/hearthsist-api/` - backend API for HearthSist
-- `apps/space-asist/` - additional app workspace
-
-## Cloudflare CLI Deploys
-
-Primary terminal deploy commands:
+Dev server listens on port **8080** by default (see `vite.config.ts`).
 
 ```bash
-cd website && npm run cf:deploy
-cd apps/ecosist && npm run cf:deploy
-cd apps/pulsesist && npm run cf:deploy
-cd apps/datasist && npm run cf:deploy
-cd apps/datasist-api && npm run cf:deploy
+npm run build       # Production client bundle → dist/
+npm run lint        # ESLint (root homepage only; apps lint in their dirs)
+npm test            # Vitest
+npm run deploy      # Cloudflare Pages (build + wrangler deploy)
 ```
+
+## Apps
+
+Production apps live under `apps/` (each with its own `package.json`): e.g. DataSist, PulseSist, EcoSist, etc. Deploy from inside the relevant app directory per its README.
 
 ## Notes
 
-- `archive/` is intentionally retained for reference and recovery.
-- `apps/datasist-api/` was promoted out of `archive/` because it is still an active deploy target.
-- Root-level `node_modules/` and `package-lock.json` reflect an earlier site setup and should be reviewed before the next cleanup pass.
-- Before pushing, review `git status` carefully because the current restructure is recorded as deletions plus new directories until it is staged and committed.
+- The portfolio uses **Clerk** for Sign In (`src/lib/clerk.tsx`). Configure `VITE_CLERK_*` publishable keys in local env as needed for development.
+- `recover/wip-before-old-checkout` is a rescue tip for obsolete WIP; **canonical homepage source is `master` + committed work**.

@@ -13,7 +13,6 @@ import dataBanner from "@images/aliasist_banner_orbit.png";
 import pulseBanner from "@images/aliasist_banner_command.png";
 import spaceBanner from "@images/a_planet_in_space_with_clouds.jpg";
 import abduction1 from "@images/aliasist-abduction-1774688862693.png";
-import tikaLogo from "@images/aliasist_icon_final.png";
 
 // ── Hero ─────────────────────────────────────────────────────────────────────
 
@@ -22,13 +21,13 @@ export const hero = {
   mascotLabel: "aliasist",
   mascotAlt: "Aliasist mascot",
   mascotTitle: "Aliasist mascot",
-  eyeline: "AI security // adversarial defense",
+  eyeline: "Aliasist Projects // Creating tools for the future.",
   wordmark: "ALIASIST",
-  tagline: "Intelligence for the systems that shape the world.",
+  tagline: "Data tools that help users understand the world.",
   subcopy:
-    "Shipping DataSist (flagship) and SpaceSist (brand-world): data systems, live dashboards, and tooling that turns messy signals into decisions. Portfolio and writing live here; the app hub routes to aliasist.tech.",
+    "Welcome to my portfolio/project page. I'm Blake and this is where I'll share my developer projects.",
   ctaWork: "View work",
-  ctaContact: "Contact",
+  ctaContact: "Hire Me",
   statusRow: ["Open Source", "AI Security", "Live suite"],
 } as const;
 
@@ -37,7 +36,7 @@ export const hero = {
 export const pageNavLinks = [
   { label: "About", href: "#about" },
   { label: "Projects", href: "#projects" },
-  { label: "Blog", href: "#transmissions" },
+  { label: "Tech News", href: "#transmissions" },
 ] as const;
 
 /** Used by Navbar “Suite” menu and Contact section suite list — keep in sync. */
@@ -73,7 +72,7 @@ export const suiteApps = [
 export const footer = {
   brandName: "Aliasist",
   mascotAlt: "Aliasist Mascot UFO",
-  versionLine: "Aliasist v1.1.0 // Signal Active",
+  versionLine: "Aliasist Portfolio // Creating tools for the future.",
   githubLabel: "GitHub",
   emailLabel: "Email",
   githubHref: "https://github.com/aliasist",
@@ -97,19 +96,6 @@ export const projectsSection = {
 } as const;
 
 export const projects = [
-  {
-    name: "TikaSist",
-    description:
-      "TikTok keyword intelligence platform — track hashtags, creators, and topics. Run automated scans, collect matching videos with full engagement metrics (likes, comments, shares, saves), browse results in a searchable grid, and monitor scan history. Built on Cloudflare Workers + D1.",
-    tech: ["Vite", "Cloudflare Workers", "D1", "TikTok", "Keyword AI"],
-    github: "https://github.com/aliasist",
-    downloads: [] as { label: string; href: string }[],
-    status: "Live",
-    icon: "👁️",
-    link: "https://tikasist-api.bchooper0730.workers.dev",
-    linkLabel: "Open TikaSist →",
-    banner: tikaLogo,
-  },
   {
     name: "SpaceSist",
     description:
@@ -170,14 +156,14 @@ export const projects = [
 
 export const comingSoonProjects = [
   {
-    codename: "PROJECT CIPHER",
-    description: "// adversarial_ml_toolkit — pending clearance",
-    eta: "Q3 2026",
+    codename: "PROJECT ClearSight",
+    description: "still deciding on on the next app",
+    eta: "Planning projects for 2027",
   },
   {
-    codename: "PROJECT SPECTER",
-    description: "// ai_threat_modeling_suite — in development",
-    eta: "Q4 2026",
+    codename: "PROJECT Nightfall",
+    description: "still deciding on the next app",
+    eta: "Planning projects for 2027",
   },
 ] as const;
 
@@ -187,8 +173,8 @@ export type ProjectCard = (typeof projects)[number];
 
 export const about = {
   dividerLabel: "About me",
-  headline: "Aliasist origin story.",
-  pathBadge: "◈ Path: AI Security Research",
+  headline: "Aliasist is where I build tools for the AI era.",
+  pathBadge: "◈ Path: AI Security and Toolsmith",
   skillsLabel: "// skill_set",
   skills: [
     "Python",
@@ -199,25 +185,25 @@ export const about = {
     "UI Design",
     "CLI Tools",
     "File Automation",
-    "Security Research",
-    "AiSec (Learning)",
+   
+    
   ],
   bio: {
     p1Before: "I've been interested in coding since I was a kid — started with a simple HTML website for my online clan.",
     p1Strong: "HTML, CSS, Python",
     p1After:
-      ". Always a passion project. The advent of AI changed the trajectory entirely — this is the frontier I want to be on.",
+      ". Always a passion project. The AI database world is where I will be implementing tools to create different ways of gathering data for users.",
     p2Before: "Currently studying ",
-    p2Strong: "Computer Information Systems",
+    p2Strong: "IT and AI",
     p2After:
-      ", learning the adversarial side of machine learning, and building open-source tools. Aliasist is where I ship real things while I work toward that goal.",
+      "Everything is open-source - Aliasist is where I ship real things while I work toward that goal.",
     p3Before: "The tools change. ",
-    p3Strong: "The obsession doesn't.",
+    p3Strong: "The passion & obsession doesn't.",
     p3After: "",
   },
   stats: [
     { num: "4", label: "Live apps in the Aliasist suite", sym: "" as const },
-    { num: "1→", label: "Clear target: AiSec", sym: "→" as const },
+    { num: "1→", label: "Clear target: To Infinity and Beyond", sym: "→" as const },
     // Add new stats here, e.g. { num: "?", label: "Your new stat", sym: "" as const },
   ],
 } as const;

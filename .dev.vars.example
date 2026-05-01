@@ -1,0 +1,6 @@
+# Copy to `.dev.vars` in this folder (gitignored). Wrangler loads it for `npm run preview`
+# and local Pages Functions (`/api/chat-messages`, `/api/mongo-ping`).
+#
+# Clerk Dashboard → Configure → API Keys:
+CLERK_SECRET_KEY=sk_live_or_sk_test_secret_key_here
+CLERK_PUBLISHABLE_KEY=pk_live_or_pk_test_publishable_key_here

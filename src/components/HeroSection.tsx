@@ -1,34 +1,29 @@
 import { motion } from "framer-motion";
 import AlienEye from "./AlienEye";
-import { playClick } from "@/hooks/useSound";
-import heroBanner from "@/assets/hero-banner.png";
-import badge from "@images/aliasist_icon_final.png";
-import aliasistIcon from "@images/aliasist_logo.png";
-import mascot from "@/assets/mascot.svg";
+import badge from "@/assets/aliasist-diff-logo.png";
+import aliasistIcon from "@/assets/aliasist-logo-brand.svg";
+import mascot from "@/assets/blue-logo.svg";
 import { hero } from "@/content/homepage";
 
 const HeroSection = () => {
   return (
-    <section className="relative min-h-screen flex items-center justify-center grid-bg overflow-hidden scanlines">
-      {/* Hero banner — desert/UFO scene at low opacity */}
+    <section id="top" className="relative min-h-screen flex items-center justify-center grid-bg overflow-hidden scanlines">
+      {/* Background photo — was opacity 0.10 (very dim); radials/scanlines sit above; bottom fade also darkens lower third */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.14] pointer-events-none"
-        style={{
-          backgroundImage: `url(${heroBanner})`,
-          filter: "drop-shadow(0 0 28px hsl(165 90% 42% / 0.2))",
-        }}
+        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.26] pointer-events-none"
+        style={{ backgroundImage: "url(/background.png)" }}
       />
 
       {/* Layered radial glows */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_52%_at_50%_32%,_hsl(165_90%_42%_/_0.085)_0%,_transparent_64%)] pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_52%_45%_at_50%_88%,_hsl(165_75%_30%_/_0.065)_0%,_transparent_72%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_35%,_hsl(165_90%_42%_/_0.06)_0%,_transparent_65%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_50%_80%,_hsl(165_90%_42%_/_0.04)_0%,_transparent_70%)] pointer-events-none" />
 
       {/* Top-right signal badge */}
       <motion.div
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 1.2, duration: 0.6 }}
-        className="absolute top-24 right-6 sm:right-12 hidden sm:flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground border border-border/50 px-3 py-1.5 bg-background/30 backdrop-blur-md"
+        className="absolute top-24 right-4 hidden items-center gap-2 rounded-sm border border-electric/20 bg-background/30 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground shadow-electric-xs backdrop-blur-md sm:right-8 sm:flex lg:right-12 xl:right-16"
       >
         <span className="text-electric animate-pulse">▮</span>
         {hero.statusBadge}
@@ -39,7 +34,7 @@ const HeroSection = () => {
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         transition={{ delay: 1.8, duration: 1.5 }}
-        className="absolute bottom-12 right-8 hidden lg:block pointer-events-none"
+        className="pointer-events-none absolute bottom-12 right-4 hidden lg:block xl:right-12 2xl:right-16"
       >
         <img
           src={aliasistIcon}
@@ -48,12 +43,12 @@ const HeroSection = () => {
         />
       </motion.div>
 
-      {/* Mascot: aliasist, the cowboy alien — hero right side (desktop) */}
+      {/* Mascot: aliasist, — logo design ideas (desktop) */}
       <motion.div
         initial={{ opacity: 0, scale: 0.7, rotate: 8 }}
         animate={{ opacity: 1, scale: 1, rotate: 0 }}
         transition={{ delay: 0.9, duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }}
-        className="absolute right-6 xl:right-14 top-1/2 -translate-y-1/2 hidden lg:flex flex-col items-center gap-2 z-20"
+        className="absolute right-4 top-1/2 z-20 hidden -translate-y-1/2 flex-col items-center gap-2 lg:flex xl:right-12 2xl:right-16"
       >
         <motion.div
           animate={{ y: [0, -10, 0] }}
@@ -63,9 +58,9 @@ const HeroSection = () => {
           <div className="absolute -inset-3 rounded-full border border-electric/25 animate-pulse pointer-events-none" />
           <img
             src={mascot}
-            alt="Meet our mascot: aliasist, the cowboy alien!"
-            title="Meet our mascot: aliasist, the cowboy alien!"
-            className="w-44 h-44 xl:w-52 xl:h-52 rounded-full object-cover border-2 border-electric/50 shadow-[0_0_24px_hsl(165_90%_42%_/_0.35)] hover:shadow-[0_0_48px_hsl(165_90%_42%_/_0.55)] hover:scale-105 transition-all duration-500 cursor-pointer select-none"
+            alt="Aliasist Logo Draft Ideas"
+            title="Aliasist Logo Draft Ideas"
+            className="w-44 h-44 xl:w-52 xl:h-52 rounded-full object-cover border-2 border-electric/50 shadow-electric-sm hover:shadow-electric-md hover:scale-105 transition-all duration-500 cursor-pointer select-none"
           />
         </motion.div>
         <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-electric/50 text-center">
@@ -73,7 +68,7 @@ const HeroSection = () => {
         </p>
       </motion.div>
 
-      <div className="relative z-10 max-w-5xl mx-auto px-6 text-center">
+      <div className="relative z-10 mx-auto w-full max-w-site px-4 text-center sm:px-8 lg:px-12 xl:px-16">
 
         {/* Eye */}
         <motion.div
@@ -105,7 +100,7 @@ const HeroSection = () => {
                 src={mascot}
                 alt={hero.mascotAlt}
                 title={hero.mascotTitle}
-                className="w-24 h-24 rounded-full object-cover border-2 border-electric/50 shadow-[0_0_16px_hsl(165_90%_42%_/_0.3)] select-none"
+                className="w-24 h-24 rounded-full object-cover border-2 border-electric/50 shadow-electric-xs select-none"
               />
             </motion.div>
           </motion.div>
@@ -147,7 +142,7 @@ const HeroSection = () => {
 
           {/* Sub copy */}
           <motion.p
-            className="text-base sm:text-lg text-muted-foreground mb-12 max-w-lg mx-auto leading-relaxed"
+            className="mx-auto mb-12 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg xl:max-w-2xl"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.6 }}
@@ -160,20 +155,18 @@ const HeroSection = () => {
             initial={{ opacity: 0, y: 10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.85, duration: 0.6 }}
-            className="flex flex-col sm:flex-row items-center justify-center gap-4"
+            className="hero-cta-group flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <a
               href="#projects"
-              onClick={() => playClick()}
-              className="group relative px-8 py-3.5 bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] rounded-sm overflow-hidden transition-all hover:-translate-y-0.5 active:scale-95"
+              className="group relative px-8 py-3.5 bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] rounded-sm overflow-hidden shadow-electric-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-electric-md active:scale-95"
             >
               <span className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
               <span className="relative">{hero.ctaWork}</span>
             </a>
             <a
               href="#contact"
-              onClick={() => playClick()}
-              className="px-8 py-3.5 border border-border/60 text-foreground/80 font-mono text-xs uppercase tracking-[0.14em] rounded-sm hover:border-electric/60 hover:text-electric hover:bg-electric/5 transition-all hover:-translate-y-0.5 active:scale-95"
+              className="px-8 py-3.5 border border-border/60 text-foreground/80 font-mono text-xs uppercase tracking-[0.14em] rounded-sm hover:border-electric/60 hover:text-electric hover:bg-electric/5 hover:shadow-electric-outline transition-all duration-300 hover:-translate-y-0.5 active:scale-95"
             >
               {hero.ctaContact}
             </a>
@@ -209,8 +202,8 @@ const HeroSection = () => {
         </motion.div>
       </div>
 
-      {/* Bottom fade */}
-      <div className="absolute bottom-0 left-0 right-0 h-48 bg-gradient-to-t from-background via-background/60 to-transparent pointer-events-none" />
+      {/* Bottom fade — softer so it doesn’t crush the scene like full background@60% */}
+      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background/80 via-background/25 to-transparent pointer-events-none z-[2]" />
     </section>
   );
 };

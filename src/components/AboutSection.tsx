@@ -1,7 +1,6 @@
 import { motion } from "framer-motion";
-import { playHover, playScan } from "@/hooks/useSound";
-import { useEffect, useRef, useState } from "react";
-import mascot from "@/assets/mascot.svg";
+import { useEffect, useRef } from "react";
+import mascot from "@/assets/mascot.png";
 import { about } from "@/content/homepage";
 
 const stagger = {
@@ -11,22 +10,23 @@ const stagger = {
 
 const skillItem = {
   hidden: { opacity: 0, scale: 0.8, y: 8 },
-  show:   { opacity: 1, scale: 1, y: 0, transition: { type: "spring", stiffness: 280, damping: 22 } },
+  show: {
+    opacity: 1,
+    scale: 1,
+    y: 0,
+    transition: { type: "spring" as const, stiffness: 280, damping: 22 },
+  },
 };
 
 function useScanOnView() {
   const ref = useRef<HTMLDivElement>(null);
-  const [fired, setFired] = useState(false);
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
-    const obs = new IntersectionObserver(
-      ([entry]) => { if (entry.isIntersecting && !fired) { playScan(); setFired(true); } },
-      { threshold: 0.3 }
-    );
+    const obs = new IntersectionObserver(() => {}, { threshold: 0.3 });
     obs.observe(el);
     return () => obs.disconnect();
-  }, [fired]);
+  }, []);
   return ref;
 }
 
@@ -34,7 +34,7 @@ const AboutSection = () => {
   const skillsRef = useScanOnView();
 
   return (
-    <section id="about" className="py-28 px-6 bg-card relative overflow-hidden">
+    <section id="about" className="relative overflow-hidden bg-card px-4 py-28 sm:px-8 lg:px-12 xl:px-16">
       {/* Atmospheric background image */}
       <div
         className="absolute inset-0 bg-cover bg-center opacity-[0.06] pointer-events-none"
@@ -43,7 +43,7 @@ const AboutSection = () => {
       {/* Subtle gradient overlay */}
       <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-electric/[0.03] pointer-events-none" />
 
-      <div className="max-w-5xl mx-auto relative z-10">
+      <div className="relative z-10 mx-auto w-full max-w-site">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
           whileInView={{ opacity: 1, y: 0 }}
@@ -54,7 +54,7 @@ const AboutSection = () => {
           <span>{about.dividerLabel}</span>
         </motion.div>
 
-        <div className="grid md:grid-cols-2 gap-16 items-start">
+        <div className="grid items-start gap-16 md:grid-cols-2 xl:gap-24">
           {/* Left — bio */}
           <motion.div
             initial={{ opacity: 0, x: -24 }}
@@ -109,8 +109,7 @@ const AboutSection = () => {
                   <motion.span
                     key={skill}
                     variants={skillItem}
-                    onMouseEnter={() => playHover()}
-                    className="px-3 py-1.5 text-xs font-mono bg-background/60 text-foreground/60 border border-border rounded-sm hover:border-electric/60 hover:text-electric hover:bg-electric/5 transition-all duration-200 cursor-default"
+                    className="px-3 py-1.5 text-xs font-mono bg-background/60 text-foreground/60 border border-border rounded-sm hover:border-electric/60 hover:text-electric hover:bg-electric/5 hover:shadow-electric-xs transition-[colors,background-color,border-color,box-shadow] duration-200 cursor-default"
                   >
                     {skill}
                   </motion.span>
@@ -134,22 +133,17 @@ const AboutSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                onMouseEnter={() => playHover()}
-                className="group relative bg-background border-l-2 border-transparent hover:border-electric px-8 py-7 transition-all duration-300 hover:bg-card overflow-hidden"
+                className="group relative bg-background border-l-2 border-transparent hover:border-electric px-8 py-7 transition-all duration-300 hover:bg-card hover:shadow-electric-sm overflow-hidden"
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-electric/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="relative text-5xl font-bold tracking-tight text-foreground mb-1.5">
-                  {s.sym === "∞" ? (
-                    <span className="text-electric">∞</span>
-                  ) : s.sym ? (
+                  {s.sym ? (
                     <>
                       <span>{s.num.replace(/[+×→∞]/g, "")}</span>
                       <span className="text-electric">{s.sym}</span>
                     </>
                   ) : (
-                    <>
-                      <span className="text-electric">{s.num}</span>
-                    </>
+                    <span className="text-electric">{s.num}</span>
                   )}
                 </div>
                 <div className="relative font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground group-hover:text-foreground/70 transition-colors duration-300">
