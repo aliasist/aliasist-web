@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth, useClerk, UserButton } from "@clerk/react";
+import { SignInButton, useAuth, UserButton } from "@clerk/react";
 import newLogo from "@/assets/aliasist-logo-brand.svg";
 import { playHover, playClick, setEnabled } from "@/hooks/useSound";
 import { pageNavLinks, suiteApps } from "@/content/homepage";
-import { openClerkSignIn } from "@/lib/open-clerk-sign-in";
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
 
@@ -113,37 +112,31 @@ const navUserButtonAppearance = {
 };
 
 const DesktopAuthControl = () => {
-  const clerk = useClerk();
   const { isLoaded, isSignedIn } = useAuth();
 
   if (isSignedIn) {
     return <UserButton appearance={navUserButtonAppearance} />;
   }
 
-  const openSignIn = () => {
-    playClick();
-    openClerkSignIn(clerk);
-  };
-
   return (
-    <button
-      type="button"
-      aria-busy={!isLoaded}
-      aria-label={isLoaded ? "Sign in" : "Loading sign-in"}
-      title={!isLoaded ? "Connecting to Clerk…" : "Sign in"}
-      onMouseEnter={() => {
-        playHover();
-      }}
-      onClick={openSignIn}
-      className={`${signInButtonClass} shrink-0 cursor-pointer text-foreground/90 ${!isLoaded ? "opacity-70" : ""}`}
-    >
-      Sign In
-    </button>
+    <SignInButton mode="modal" fallbackRedirectUrl="/" forceRedirectUrl="/">
+      <button
+        type="button"
+        aria-busy={!isLoaded}
+        aria-label={isLoaded ? "Sign in" : "Loading sign-in"}
+        title={!isLoaded ? "Connecting to Clerk…" : "Sign in"}
+        onMouseEnter={() => {
+          playHover();
+        }}
+        className={`${signInButtonClass} shrink-0 cursor-pointer text-foreground/90 ${!isLoaded ? "opacity-70" : ""}`}
+      >
+        Sign In
+      </button>
+    </SignInButton>
   );
 };
 
-const MobileAuthControl = ({ onDone }: { onDone: () => void }) => {
-  const clerk = useClerk();
+const MobileAuthControl = () => {
   const { isLoaded, isSignedIn } = useAuth();
 
   if (isSignedIn) {
@@ -154,23 +147,21 @@ const MobileAuthControl = ({ onDone }: { onDone: () => void }) => {
     );
   }
 
-  const openSignIn = () => {
-    playClick();
-    onDone();
-    openClerkSignIn(clerk);
-  };
-
   return (
-    <button
-      type="button"
-      aria-busy={!isLoaded}
-      aria-label={isLoaded ? "Sign in" : "Loading sign-in"}
-      title={!isLoaded ? "Connecting to Clerk…" : "Sign in"}
-      onClick={openSignIn}
-      className={`${mobileSignInButtonClass} cursor-pointer${!isLoaded ? " opacity-70" : ""}`}
-    >
-      Sign In
-    </button>
+    <SignInButton mode="modal" fallbackRedirectUrl="/" forceRedirectUrl="/">
+      <button
+        type="button"
+        aria-busy={!isLoaded}
+        aria-label={isLoaded ? "Sign in" : "Loading sign-in"}
+        title={!isLoaded ? "Connecting to Clerk…" : "Sign in"}
+        onMouseEnter={() => {
+          playHover();
+        }}
+        className={`${mobileSignInButtonClass} cursor-pointer${!isLoaded ? " opacity-70" : ""}`}
+      >
+        Sign In
+      </button>
+    </SignInButton>
   );
 };
 
@@ -443,7 +434,7 @@ const Navbar = () => {
                   className="flex-1 rounded-md bg-electric py-2.5 text-center text-xs font-mono uppercase tracking-[0.16em] text-background shadow-electric-sm transition-[background-color,box-shadow,transform] duration-300 hover:bg-electric/90 hover:shadow-electric-md active:scale-[0.99]">
                   Contact
                 </a>
-                <MobileAuthControl onDone={() => setMobileOpen(false)} />
+                <MobileAuthControl />
               </div>
             </div>
           </motion.div>

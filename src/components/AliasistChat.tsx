@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth, useClerk, useUser } from "@clerk/react";
+import { SignInButton, useAuth, useUser } from "@clerk/react";
 import { readJsonBody, siteEndpoints } from "@/config/api";
-import { openClerkSignIn } from "@/lib/open-clerk-sign-in";
 
 /** Groq LLM worker vs Clerk-authenticated Pages KV room (`/api/chat-messages`). */
 const USE_PAGES_CHAT_ROOM = import.meta.env.VITE_USE_PAGES_CHAT_ROOM === "true";
@@ -44,7 +43,6 @@ const WELCOME_ROOM =
   "// Room linked — messages persist in KV when configured on Pages. Transmit when signed in.";
 
 const AliasistChat = () => {
-  const clerk = useClerk();
   const { isLoaded, isSignedIn, getToken, userId } = useAuth();
   const { user } = useUser();
   const [open, setOpen] = useState(false);
@@ -281,15 +279,14 @@ const AliasistChat = () => {
                   <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/80 text-center leading-relaxed">
                     Sign in with Clerk to send messages. Same session as the navbar — ready for authenticated chat APIs.
                   </p>
-                  <button
-                    type="button"
-                    className="w-full cursor-pointer py-2.5 rounded-sm bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] hover:bg-electric/90 transition-[colors,box-shadow] shadow-electric-sm hover:shadow-electric-md"
-                    onClick={() => {
-                      openClerkSignIn(clerk);
-                    }}
-                  >
-                    Sign in to chat
-                  </button>
+                  <SignInButton mode="modal" fallbackRedirectUrl="/" forceRedirectUrl="/">
+                    <button
+                      type="button"
+                      className="w-full cursor-pointer py-2.5 rounded-sm bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] hover:bg-electric/90 transition-[colors,box-shadow] shadow-electric-sm hover:shadow-electric-md"
+                    >
+                      Sign in to chat
+                    </button>
+                  </SignInButton>
                 </div>
               ) : (
                 <>
