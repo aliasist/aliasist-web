@@ -1,6 +1,6 @@
 import { Show, useAuth, useClerk } from "@clerk/react";
-import { useCallback, useEffect, useRef } from "react";
 import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
+import { useCallback, useEffect, useRef } from "react";
 
 const GSI_SCRIPT = "https://accounts.google.com/gsi/client";
 
@@ -87,8 +87,8 @@ function loadGsiScript(): Promise<void> {
  * Without that env var, the hero uses the same overlay `<SignIn />` as the navbar.
  */
 export function HomeGoogleAuth() {
-  const clerk = useClerk();
   const openSiteSignIn = useOpenSiteSignIn();
+  const clerk = useClerk();
   const { isLoaded } = useAuth();
   const hostRef = useRef<HTMLDivElement>(null);
   const clientId = import.meta.env.VITE_GOOGLE_WEB_CLIENT_ID?.trim();
@@ -158,26 +158,18 @@ export function HomeGoogleAuth() {
   return (
     <Show when="signed-out">
       <div className="mt-6 flex flex-col items-center justify-center gap-2">
-        {clientId ? (
-          <div
-            id="google-signin-button"
-            ref={hostRef}
-            className="flex min-h-10 items-center justify-center [&_*]:font-sans"
-          />
-        ) : (
-          <div
-            id="google-signin-button"
-            className="flex min-h-10 items-center justify-center"
+        <div
+          id="google-signin-button"
+          className="flex min-h-10 items-center justify-center"
+        >
+          <button
+            type="button"
+            onClick={openSiteSignIn}
+            className="rounded-sm border border-border/60 px-8 py-3 font-mono text-xs uppercase tracking-[0.14em] text-foreground/80 shadow-none transition-all duration-300 hover:border-electric/60 hover:bg-electric/5 hover:text-electric hover:shadow-electric-outline hover:-translate-y-0.5 active:scale-95"
           >
-            <button
-              type="button"
-              className="rounded-sm border border-border/60 px-8 py-3 font-mono text-xs uppercase tracking-[0.14em] text-foreground/80 shadow-none transition-all duration-300 hover:border-electric/60 hover:bg-electric/5 hover:text-electric hover:shadow-electric-outline hover:-translate-y-0.5 active:scale-95"
-              onClick={() => openSiteSignIn()}
-            >
-              Continue with Google
-            </button>
-          </div>
-        )}
+            Continue with Google
+          </button>
+        </div>
       </div>
     </Show>
   );

@@ -1,4 +1,3 @@
-import { ClerkSignInModalRoot } from "@/components/ClerkSignInModalRoot";
 import { ClerkProvider } from "@clerk/react";
 import { useMemo, type ReactNode } from "react";
 
@@ -99,8 +98,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     <ClerkProvider
       publishableKey={PUBLISHABLE_KEY ?? ""}
       afterSignOutUrl="/"
-      signInUrl={CENTRAL_SIGN_IN}
-      signUpUrl={CENTRAL_SIGN_UP}
+      signInFallbackRedirectUrl="/"
+      signUpFallbackRedirectUrl="/"
+      signInForceRedirectUrl="/"
+      signUpForceRedirectUrl="/"
       allowedRedirectOrigins={allowedRedirectOrigins}
       {...(clerkProxyUrl ? { proxyUrl: clerkProxyUrl } : {})}
       {...satellite}
@@ -115,7 +116,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         },
       }}
     >
-      <ClerkSignInModalRoot>{children}</ClerkSignInModalRoot>
+      {children}
     </ClerkProvider>
   );
 }
