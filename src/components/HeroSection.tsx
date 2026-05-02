@@ -8,7 +8,10 @@ import { HomeGoogleAuth } from "@/components/HomeGoogleAuth";
 
 const HeroSection = () => {
   return (
-    <section id="top" className="relative min-h-screen flex items-center justify-center grid-bg overflow-hidden scanlines">
+    <section
+      id="top"
+      className="relative flex min-h-[100dvh] min-h-screen items-center justify-center grid-bg overflow-hidden scanlines"
+    >
       {/* Background photo — was opacity 0.10 (very dim); radials/scanlines sit above; bottom fade also darkens lower third */}
       <div
         className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.26] pointer-events-none"

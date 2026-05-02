@@ -80,7 +80,7 @@ export function ClerkSignInModalRoot({ children }: { children: ReactNode }) {
             <button
               type="button"
               aria-label="Close sign in"
-              className="absolute right-3 top-3 z-10 rounded-full border border-border/50 bg-background/80 px-2 py-1 font-mono text-[10px] uppercase tracking-widest text-muted-foreground hover:border-electric/40 hover:text-electric"
+              className="tap-compact absolute right-2 top-2 z-10 flex h-11 w-11 items-center justify-center rounded-full border border-border/50 bg-background/80 font-mono text-sm leading-none text-muted-foreground hover:border-electric/40 hover:text-electric"
               onClick={() => setOpen(false)}
             >
               ×

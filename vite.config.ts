@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+import { defineConfig, loadEnv } from "vite";
 import react from "@vitejs/plugin-react";
 import path from "path";
 
@@ -6,6 +6,12 @@ import { cloudflare } from "@cloudflare/vite-plugin";
 
 // https://vitejs.dev/config/
 export default defineConfig(async ({ mode }) => {
+  const env = loadEnv(mode, process.cwd(), "");
+  const clerkPublishableKey =
+    env.VITE_CLERK_PUBLISHABLE_KEY?.trim() ||
+    env.CLERK_PUBLISHABLE_KEY?.trim() ||
+    "";
+
   // `lovable-tagger` is optional dev tooling; don't fail production builds
   // if npm couldn't install it (peer-dep conflicts with vite versions).
   const devPlugins = [];
@@ -41,6 +47,15 @@ export default defineConfig(async ({ mode }) => {
       ],
     },
     plugins: [react(), ...devPlugins, ...runtimePlugins],
+    define: clerkPublishableKey
+      ? {
+          // Cloudflare Pages had already been configured with CLERK_PUBLISHABLE_KEY;
+          // expose it to the client build as the Vite-prefixed key the app expects.
+          "import.meta.env.VITE_CLERK_PUBLISHABLE_KEY": JSON.stringify(
+            clerkPublishableKey,
+          ),
+        }
+      : undefined,
     resolve: {
       alias: {
         "@": path.resolve(__dirname, "./src"),

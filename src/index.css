@@ -483,6 +483,11 @@ section {
   position: relative;
 }
 
+/* Hash links + fixed nav (height + notch): section titles stay visible on iOS/Android */
+#main-content > section[id] {
+  scroll-margin-top: calc(4.5rem + env(safe-area-inset-top, 0px));
+}
+
 /* ─── Link hover transitions ─── */
 a {
   transition: color 0.2s ease, opacity 0.2s ease;
@@ -529,12 +534,32 @@ button, a[class*="rounded"] {
   to   { background-position: 100% 50%; }
 }
 
-/* ─── Improved mobile tap areas ─── */
-@media (max-width: 768px) {
-  a, button {
+/*
+ * Mobile tap targets (WCAG-friendly ~44px) — scoped so prose / inline links can use .text-link
+ * Breakpoint matches Tailwind `md` (768px): rules apply below `md` only.
+ */
+@media (max-width: 767px) {
+  button:not(.tap-compact) {
+    min-height: 44px;
+  }
+
+  .site-nav a:not(.text-link),
+  .hero-cta-group > a,
+  footer a:not(.text-link) {
     min-height: 44px;
     display: inline-flex;
     align-items: center;
+  }
+
+  /* Extra minimum size only — keeps flex-col cards (e.g. blog tiles) layout intact */
+  a.tap-target {
+    min-height: 44px;
+  }
+
+  .text-link {
+    min-height: unset !important;
+    display: inline !important;
+    align-items: unset !important;
   }
 
   .hero-cta-group > a {
@@ -542,8 +567,8 @@ button, a[class*="rounded"] {
     justify-content: center;
   }
 
-  .project-card-shell {
-    padding: 1.5rem;
+  .project-card-body {
+    padding: 1.25rem;
   }
 }
 

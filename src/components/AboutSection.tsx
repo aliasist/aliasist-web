@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { useEffect, useRef } from "react";
-import mascot from "@/assets/mascot.png";
 import { about } from "@/content/homepage";
 
 const stagger = {
@@ -32,16 +31,21 @@ function useScanOnView() {
 
 const AboutSection = () => {
   const skillsRef = useScanOnView();
+  const filledAuthorSlots = about.authorSlots.filter((s) => s.body.trim().length > 0);
 
   return (
-    <section id="about" className="relative overflow-hidden bg-card px-4 py-28 sm:px-8 lg:px-12 xl:px-16">
-      {/* Atmospheric background image */}
+    <section
+      id="about"
+      className="relative overflow-hidden px-4 py-28 sm:px-8 lg:px-12 xl:px-16"
+    >
+      {/* Top-only carryover from the hero so the heading scene blends into About */}
       <div
-        className="absolute inset-0 bg-cover bg-center opacity-[0.06] pointer-events-none"
-        style={{ backgroundImage: `url(${mascot})` }}
+        className="absolute inset-x-0 top-0 h-[44%] bg-cover bg-center bg-no-repeat opacity-[0.13] pointer-events-none"
+        style={{ backgroundImage: "url(/background.png)" }}
       />
-      {/* Subtle gradient overlay */}
-      <div className="absolute inset-0 bg-gradient-to-br from-transparent via-transparent to-electric/[0.03] pointer-events-none" />
+      {/* Fade quickly into the same plain field used by the projects section */}
+      <div className="absolute inset-0 bg-gradient-to-b from-background/52 via-background/88 to-background pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_72%_48%_at_50%_14%,_hsl(165_90%_42%_/_0.04)_0%,_transparent_62%)] pointer-events-none" />
 
       <div className="relative z-10 mx-auto w-full max-w-site">
         <motion.div
@@ -62,26 +66,32 @@ const AboutSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
           >
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-8 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-8 tracking-tight text-balance max-w-2xl">
               {about.headline}
             </h2>
 
-            <div className="space-y-5 text-base leading-relaxed text-foreground/60">
-              <p>
-                {about.bio.p1Before}
-                <strong className="text-foreground/90 font-semibold">{about.bio.p1Strong}</strong>
-                {about.bio.p1After}
-              </p>
-              <p>
-                {about.bio.p2Before}
-                <strong className="text-foreground/90 font-semibold">{about.bio.p2Strong}</strong>
-                {about.bio.p2After}
-              </p>
-              <p>
-                {about.bio.p3Before}
-                <strong className="text-foreground/90 font-semibold">{about.bio.p3Strong}</strong>
-                {about.bio.p3After}
-              </p>
+            <div className="space-y-8 text-base leading-relaxed text-foreground/70 max-w-xl">
+              {about.bioBlocks.map((block, i) => (
+                <div key={`bio-${block.kicker}-${i}`} className="space-y-2">
+                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-electric/85">
+                    {block.kicker}
+                  </p>
+                  <p>{block.body}</p>
+                </div>
+              ))}
+
+              {filledAuthorSlots.length > 0 && (
+                <div className="space-y-8 pt-10 mt-2 border-t border-border/40">
+                  {filledAuthorSlots.map((block, i) => (
+                    <div key={`author-${block.kicker}-${i}`} className="space-y-2">
+                      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-electric/85">
+                        {block.kicker}
+                      </p>
+                      <p>{block.body}</p>
+                    </div>
+                  ))}
+                </div>
+              )}
             </div>
 
             {/* Path badge */}

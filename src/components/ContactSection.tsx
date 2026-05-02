@@ -22,8 +22,15 @@ const MailIcon = () => (
   </svg>
 );
 
+const LinkedInIcon = () => (
+  <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
+    <path d="M4.98 3.5a2.49 2.49 0 1 0 0 4.98 2.49 2.49 0 0 0 0-4.98ZM3 8.98h3.96V21H3zM9.75 8.98h3.8v1.64h.05c.53-1 1.83-2.05 3.77-2.05 4.03 0 4.78 2.65 4.78 6.09V21h-3.96v-5.62c0-1.34-.02-3.06-1.87-3.06-1.87 0-2.16 1.46-2.16 2.96V21H9.75z" />
+  </svg>
+);
+
 const linkIcons = {
   github: GitHubIcon,
+  linkedin: LinkedInIcon,
   email: MailIcon,
 } as const;
 
@@ -60,7 +67,7 @@ const ContactSection = () => {
   };
 
   const inputClass =
-    "w-full bg-background/8 border border-background/15 text-background placeholder:text-background/25 font-mono text-sm px-4 py-3 rounded-sm focus:outline-none focus:border-electric/50 focus:bg-electric/5 focus:shadow-electric-xs transition-all duration-200";
+    "w-full bg-background/[0.14] border border-background/30 text-background placeholder:text-background/55 font-[family-name:var(--font-heading)] text-base md:text-sm font-medium leading-normal px-4 py-3 rounded-sm antialiased caret-electric shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] focus:outline-none focus:border-electric focus:bg-background/[0.18] focus:shadow-electric-xs focus:placeholder:text-background/40 transition-all duration-200";
 
   return (
     <section id="contact" className="relative overflow-hidden bg-foreground px-4 py-28 text-background sm:px-8 lg:px-12 xl:px-16">
@@ -206,7 +213,7 @@ const ContactSection = () => {
                       viewport={{ once: true }}
                       transition={{ duration: 0.3, delay: i * 0.08 }}
                       whileHover={{ x: 4 }}
-                      className="group flex items-center justify-between px-5 py-4 bg-background/5 border border-background/10 hover:bg-electric/10 hover:border-electric/25 hover:shadow-electric-xs transition-all duration-300 font-mono text-sm text-background/55 hover:text-electric"
+                      className="tap-target group flex items-center justify-between px-5 py-4 bg-background/5 border border-background/10 hover:bg-electric/10 hover:border-electric/25 hover:shadow-electric-xs transition-all duration-300 font-mono text-sm text-background/55 hover:text-electric"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-electric/40 group-hover:text-electric transition-colors">
@@ -240,7 +247,7 @@ const ContactSection = () => {
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: i * 0.1 }}
                     whileHover={{ x: 6 }}
-                    className="group flex items-center justify-between px-6 py-5 bg-background/5 border border-background/10 hover:bg-electric/10 hover:border-electric/30 hover:shadow-electric-xs transition-all duration-300"
+                    className="tap-target group flex items-center justify-between px-6 py-5 bg-background/5 border border-background/10 hover:bg-electric/10 hover:border-electric/30 hover:shadow-electric-xs transition-all duration-300"
                   >
                     <div className="flex items-center gap-4">
                       <span className="text-2xl">{app.icon}</span>

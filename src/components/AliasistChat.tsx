@@ -1,8 +1,7 @@
 import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth, useUser } from "@clerk/react";
+import { SignInButton, useAuth, useUser } from "@clerk/react";
 import { readJsonBody, siteEndpoints } from "@/config/api";
-import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
 
 /** Groq LLM worker vs Clerk-authenticated Pages KV room (`/api/chat-messages`). */
 const USE_PAGES_CHAT_ROOM = import.meta.env.VITE_USE_PAGES_CHAT_ROOM === "true";
@@ -44,7 +43,6 @@ const WELCOME_ROOM =
   "// Room linked — messages persist in KV when configured on Pages. Transmit when signed in.";
 
 const AliasistChat = () => {
-  const openSiteSignIn = useOpenSiteSignIn();
   const { isLoaded, isSignedIn, getToken, userId } = useAuth();
   const { user } = useUser();
   const [open, setOpen] = useState(false);
@@ -216,7 +214,7 @@ const AliasistChat = () => {
               <button
                 type="button"
                 onClick={() => { setOpen(false); }}
-                className="text-muted-foreground hover:text-foreground transition-colors font-mono text-xs"
+                className="tap-compact -mr-1 min-h-[44px] min-w-[44px] rounded-sm text-muted-foreground hover:text-foreground transition-colors font-mono text-sm"
                 aria-label="Close chat"
               >
                 ✕
@@ -281,13 +279,14 @@ const AliasistChat = () => {
                   <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/80 text-center leading-relaxed">
                     Sign in with Clerk to send messages. Same session as the navbar — ready for authenticated chat APIs.
                   </p>
-                  <button
-                    type="button"
-                    className="w-full cursor-pointer py-2.5 rounded-sm bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] hover:bg-electric/90 transition-[colors,box-shadow] shadow-electric-sm hover:shadow-electric-md"
-                    onClick={() => openSiteSignIn()}
-                  >
-                    Sign in to chat
-                  </button>
+                  <SignInButton mode="modal" fallbackRedirectUrl="/" forceRedirectUrl="/">
+                    <button
+                      type="button"
+                      className="w-full cursor-pointer py-2.5 rounded-sm bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] hover:bg-electric/90 transition-[colors,box-shadow] shadow-electric-sm hover:shadow-electric-md"
+                    >
+                      Sign in to chat
+                    </button>
+                  </SignInButton>
                 </div>
               ) : (
                 <>
@@ -297,7 +296,7 @@ const AliasistChat = () => {
                       onChange={(e) => setInput(e.target.value)}
                       onKeyDown={handleKey}
                       placeholder="// send transmission..."
-                      className="flex-1 bg-muted border border-border px-3 py-2 text-xs font-mono text-foreground placeholder:text-muted-foreground/50 rounded-sm outline-none focus:border-electric/50 transition-colors"
+                      className="flex-1 bg-muted border border-border px-3 py-2 text-base font-mono text-foreground placeholder:text-muted-foreground/50 rounded-sm outline-none focus:border-electric/50 transition-colors sm:text-xs"
                       disabled={loading}
                       aria-label="Chat input"
                     />

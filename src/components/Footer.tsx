@@ -25,6 +25,14 @@ const Footer = () => {
             {footer.githubLabel}
           </a>
           <a
+            href={footer.linkedinHref}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="font-mono text-[10px] uppercase tracking-[0.15em] text-background/30 hover:text-electric transition-colors duration-200 hover:drop-shadow-[0_0_10px_hsl(165_90%_42%_/_0.45)]"
+          >
+            {footer.linkedinLabel}
+          </a>
+          <a
             href={footer.emailHref}
             className="font-mono text-[10px] uppercase tracking-[0.15em] text-background/30 hover:text-electric transition-colors duration-200 hover:drop-shadow-[0_0_10px_hsl(165_90%_42%_/_0.45)]"
           >

@@ -17,28 +17,31 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
       viewport={{ once: true }}
       transition={{ duration: 0.55, delay: index * 0.1 }}
       onMouseEnter={() => playHover()}
-      className="project-card-shell relative bg-card border border-border/60 hover:border-electric/40 text-foreground p-8 sm:p-12 overflow-hidden group transition-[colors,box-shadow] duration-300 hover:shadow-electric-sm"
+      className="project-card-shell relative flex flex-col sm:flex-row bg-card border border-border/60 hover:border-electric/40 text-foreground overflow-hidden group transition-[colors,box-shadow] duration-300 hover:shadow-electric-sm"
     >
-      {/* Static banner */}
-      {project.banner && (
-        <div
-          className="absolute inset-0 bg-cover bg-center opacity-[0.08] mix-blend-screen pointer-events-none"
-          style={{ backgroundImage: `url(${project.banner})` }}
-        />
-      )}
-      {project.banner && (
-        <div className="absolute inset-0 bg-gradient-to-r from-card via-card/85 to-card/55 pointer-events-none" />
-      )}
+      {project.banner ? (
+        <div className="relative w-full sm:w-[42%] sm:max-w-md shrink-0 aspect-[16/10] sm:aspect-auto sm:min-h-[260px] border-b sm:border-b-0 sm:border-r border-border/40">
+          <img
+            src={project.banner}
+            alt={`${project.name} preview`}
+            className="absolute inset-0 size-full object-cover"
+            loading="lazy"
+            decoding="async"
+          />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card/25 via-transparent to-transparent sm:bg-gradient-to-r sm:from-transparent sm:via-card/30 sm:to-card" />
+        </div>
+      ) : null}
 
-      {/* Teal glow on hover */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_hsl(165_90%_42%_/_0.12)_0%,_transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
-      {/* Top edge accent line on hover */}
-      <div className="absolute top-0 left-0 right-0 h-px bg-electric/0 group-hover:bg-electric/50 transition-colors duration-300" />
+      <div className="project-card-body relative flex flex-1 flex-col p-8 sm:p-10 lg:p-12 min-w-0">
+        {/* Teal glow on hover */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_hsl(165_90%_42%_/_0.12)_0%,_transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+        {/* Top edge accent line on hover */}
+        <div className="absolute top-0 left-0 right-0 h-px bg-electric/0 group-hover:bg-electric/50 transition-colors duration-300" />
 
-      {/* Background icon */}
-      <div className="absolute top-8 right-10 text-7xl opacity-[0.07] select-none group-hover:opacity-[0.12] transition-opacity duration-500">
-        {project.icon}
-      </div>
+        {/* Background icon */}
+        <div className="absolute top-8 right-8 sm:right-10 text-7xl opacity-[0.07] select-none group-hover:opacity-[0.12] transition-opacity duration-500 pointer-events-none">
+          {project.icon}
+        </div>
 
       <div className="flex items-center gap-3 mb-6 relative z-10">
         <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-electric">
@@ -70,7 +73,7 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => playClick()}
-          className="font-mono text-xs uppercase tracking-[0.1em] text-electric hover:text-electric/70 transition-colors"
+          className="tap-target font-mono text-xs uppercase tracking-[0.1em] text-electric hover:text-electric/70 transition-colors"
         >
           GitHub ↗
         </a>
@@ -86,7 +89,7 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
               rel="noopener noreferrer"
               onMouseEnter={() => playHover()}
               onClick={() => playClick()}
-              className="font-mono text-xs uppercase tracking-[0.1em] text-muted-foreground hover:text-electric transition-colors"
+              className="tap-target font-mono text-xs uppercase tracking-[0.1em] text-muted-foreground hover:text-electric transition-colors"
             >
               ↧ {d.label}
             </a>
@@ -102,12 +105,13 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
             rel="noopener noreferrer"
             onMouseEnter={() => playHover()}
             onClick={() => playClick()}
-            className="inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] bg-electric text-background px-5 py-2.5 rounded-sm hover:bg-electric/85 transition-all hover:-translate-y-0.5"
+            className="tap-target inline-flex items-center gap-2 font-mono text-xs uppercase tracking-[0.12em] bg-electric text-background px-5 py-2.5 rounded-sm hover:bg-electric/85 transition-all hover:-translate-y-0.5"
           >
             {project.linkLabel}
           </a>
         </div>
       )}
+      </div>
     </motion.div>
   );
 };

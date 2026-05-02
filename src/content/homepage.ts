@@ -9,26 +9,26 @@
  * Backend/API URLs (for developers): see `src/config/api.ts` (`siteEndpoints`).
  */
 
-import dataBanner from "@images/aliasist_banner_orbit.png";
-import pulseBanner from "@images/aliasist_banner_command.png";
-import spaceBanner from "@images/a_planet_in_space_with_clouds.jpg";
-import abduction1 from "@images/aliasist-abduction-1774688862693.png";
+import dataBanner from "@images/datasist_banner_cinematic.png";
+import ecosistBanner from "@images/ecosist_banner_tornado.png";
+import filesAbductorBanner from "@images/files_abductor_banner_cinematic.png";
+import pulseBanner from "@images/pulsesist_banner_cinematic.png";
+import spaceBanner from "@images/spacesist_banner_cinematic.png";
 
 // ── Hero ─────────────────────────────────────────────────────────────────────
 
 export const hero = {
-  statusBadge: "Ready // 2026",
+  statusBadge: "Real-Time Data - 24/7",
   mascotLabel: "aliasist",
   mascotAlt: "Aliasist mascot",
   mascotTitle: "Aliasist mascot",
-  eyeline: "Aliasist Projects // Creating tools for the future.",
+  eyeline: "Aliasist Projects // Creating tools for people.",
   wordmark: "ALIASIST",
-  tagline: "Data tools that help users understand the world.",
-  subcopy:
-    "Welcome to my portfolio/project page. I'm Blake and this is where I'll share my developer projects.",
+  tagline: "Real-time data, real-world tools.",
+  subcopy: "Welcome to the site, My name is Blake and I build data-centric tools for users. This is my portfolio of live projects. Please reach out if you have feedback or want to collbaborate, I'd love to hear from you, thanks. Enjoy the Tools. ^_^",
   ctaWork: "View work",
-  ctaContact: "Hire Me",
-  statusRow: ["Open Source", "AI Security", "Live suite"],
+  ctaContact: "Contact me",
+  statusRow: ["Open Source", "Check out my projects below", "More coming soon!"],
 } as const;
 
 // ── Navbar ───────────────────────────────────────────────────────────────────
@@ -60,7 +60,7 @@ export const suiteApps = [
     icon: "🌌",
   },
   {
-    label: "Ecosist",
+    label: "EcoSist",
     sub: "Ecological Intelligence",
     href: "https://ecosist.aliasist.com",
     icon: "🌱",
@@ -74,15 +74,19 @@ export const footer = {
   mascotAlt: "Aliasist Mascot UFO",
   versionLine: "Aliasist Portfolio // Creating tools for the future.",
   githubLabel: "GitHub",
+  linkedinLabel: "LinkedIn",
   emailLabel: "Email",
   githubHref: "https://github.com/aliasist",
+  linkedinHref: "https://www.linkedin.com/in/blake-hooper-b99899400",
   emailHref: "mailto:dev@aliasist.com",
 } as const;
 
 // ── Projects section ──────────────────────────────────────────────────────────
 
-const releaseTag = "v2.7.0";
-const releaseBaseUrl = `https://github.com/aliasist/aliasistabductor/releases/download/${releaseTag}`;
+// Files Abductor binaries — tag on GitHub includes a leading "#" (see releases/tag/%23v2.7.0).
+const releaseTag = "#v2.7.0";
+const releaseTagEncoded = encodeURIComponent(releaseTag);
+const releaseBaseUrl = `https://github.com/aliasist/aliasistabductor/releases/download/${releaseTagEncoded}`;
 
 const downloadLinks = {
   appImage: `${releaseBaseUrl}/${encodeURIComponent("Aliasist.Files.Abductor-2.7.0.AppImage")}`,
@@ -123,11 +127,31 @@ export const projects = [
     banner: pulseBanner,
   },
   {
+    name: "EcoSist",
+    description:
+      "Live environmental intelligence platform for storm signals, atmospheric conditions, and ecosystem monitoring. EcoSist turns weather and earth-system data into a cleaner operational view with real-time mapping, hazard awareness, and a darker cinematic interface built for environmental situational awareness.",
+    tech: [
+      "React",
+      "Vite",
+      "Environmental APIs",
+      "Geospatial Data",
+      "Cloudflare",
+      "Live Monitoring",
+    ],
+    github: "https://github.com/aliasist/ecosist",
+    downloads: [],
+    status: "Live",
+    icon: "🌱",
+    link: "https://ecosist.aliasist.com",
+    linkLabel: "Open EcoSist →",
+    banner: ecosistBanner,
+  },
+  {
     name: "Aliasist-Files-Abductor",
     description:
-      "A file organization and automation tool that abducts your messy directories and deposits them exactly where they belong. Built with a clean CLI interface and an alien theme that doesn't apologize for itself. Does the work. No questions asked.",
+      "This app can download any file from YouTube.com or any other website or server with a link. Simply Copy, Paste, & Download with your link, this app doesn't apologize for itself. Does the work. No questions asked.",
     tech: ["Python", "CLI", "File Automation"],
-    github: `https://github.com/aliasist/aliasistabductor/releases/tag/${releaseTag}`,
+    github: `https://github.com/aliasist/aliasistabductor/releases/tag/${releaseTagEncoded}`,
     downloads: [
       { label: "AppImage", href: downloadLinks.appImage },
       { label: "Snap", href: downloadLinks.snap },
@@ -137,7 +161,7 @@ export const projects = [
     icon: "🛸",
     link: null as string | null,
     linkLabel: null as string | null,
-    banner: abduction1,
+    banner: filesAbductorBanner,
   },
   {
     name: "DataSist",
@@ -170,41 +194,54 @@ export const comingSoonProjects = [
 export type ProjectCard = (typeof projects)[number];
 
 // ── About ─────────────────────────────────────────────────────────────────────
-
+//
+// Copy is split into short blocks (kicker + paragraph) so it’s easy to edit.
+// Add your own sections in `authorSlots` (same shape); empty `body` = hidden.
+// Typography: body uses Space Grotesk (--font-heading from index.css); mono
+// labels use JetBrains Mono. No font change required — SG reads clean and modern
+// for engineering portfolios; alternatives if you ever switch: IBM Plex Sans, DM Sans.
+//
 export const about = {
-  dividerLabel: "About me",
-  headline: "Aliasist is where I build tools for the AI era.",
-  pathBadge: "◈ Path: AI Security and Toolsmith",
-  skillsLabel: "// skill_set",
+  dividerLabel: "About",
+  headline: "Who am I?",
+  pathBadge: "Path · Cybersecurity × tools",
+  skillsLabel: "// skill_set_learning",
   skills: [
     "Python",
     "JavaScript",
     "HTML / CSS",
     "React / Vite",
     "Node.js",
-    "UI Design",
-    "CLI Tools",
-    "File Automation",
-   
-    
-  ],
-  bio: {
-    p1Before: "I've been interested in coding since I was a kid — started with a simple HTML website for my online clan.",
-    p1Strong: "HTML, CSS, Python",
-    p1After:
-      ". Always a passion project. The AI database world is where I will be implementing tools to create different ways of gathering data for users.",
-    p2Before: "Currently studying ",
-    p2Strong: "IT and AI",
-    p2After:
-      "Everything is open-source - Aliasist is where I ship real things while I work toward that goal.",
-    p3Before: "The tools change. ",
-    p3Strong: "The passion & obsession doesn't.",
-    p3After: "",
-  },
+    "UI design",
+    "CLI tooling",
+    "File automation",
+  ] as const,
+  /**
+   * Each block: optional `kicker` (small label) + `body` (main text).
+   * Same story as before — early start with HTML, stack emphasis, studies, open source, CTA.
+   */
+  bioBlocks: [
+    {
+      kicker: "Where I started",
+      body: "I started building on the web since I was a kid — my first real project was a simple HTML site for an online clan. That early dive into HTML, CSS, set the pattern of work flow.",
+    },
+  ] as const,
+
+  /**
+   * Your own phases — optional space to grow the About column.
+   * • Leave `body` as "" and the slot won’t appear on the site.
+   * • When you’re ready, paste or write your paragraph in `body` and adjust `kicker`.
+   * • Copy a full `{ kicker: "…", body: "" },` line to add more slots.
+   */
+  authorSlots: [
+    { kicker: "Your section title (rename me)", body: "" },
+    { kicker: "Another angle (optional)", body: "" },
+    { kicker: "Third slot (optional)", body: "" },
+  ] as const,
+
   stats: [
-    { num: "4", label: "Live apps in the Aliasist suite", sym: "" as const },
-    { num: "1→", label: "Clear target: To Infinity and Beyond", sym: "→" as const },
-    // Add new stats here, e.g. { num: "?", label: "Your new stat", sym: "" as const },
+    { num: "5", label: "Live apps in the Aliasist suite", sym: "" as const },
+    { num: "OSS", label: "Public repos, documented deploys, verifiable behavior", sym: "" as const },
   ],
 } as const;
 
@@ -212,10 +249,10 @@ export const about = {
 
 export const contact = {
   dividerLabel: "Channel Open // Contact",
-  signalLabel: "Signal open",
+  signalLabel: "Welcome, Earthling.",
   headline: "Make contact.",
-  introStrong: "Open to collaborations, internships, and interesting problems.",
-  introRest: "Building in public, pursuing AiSec.",
+  introStrong: "Open to collaborations, internships, and project work.",
+  introRest: "Creating tools for users.",
   successTitle: "Transmission received",
   successBody:
     "Message logged. Responses prioritized by technical complexity and project alignment.",
@@ -238,6 +275,11 @@ export const contact = {
   ],
   directLinks: [
     { label: "GitHub", href: "https://github.com/aliasist", iconKey: "github" as const },
+    {
+      label: "LinkedIn",
+      href: "https://www.linkedin.com/in/blake-hooper-b99899400",
+      iconKey: "linkedin" as const,
+    },
     { label: "dev@aliasist.com", href: "mailto:dev@aliasist.com", iconKey: "email" as const },
   ],
 } as const;

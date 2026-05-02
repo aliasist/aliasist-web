@@ -3,6 +3,9 @@
   "private": true,
   "version": "0.1.0",
   "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
     "cf:dev": "wrangler pages dev .",
     "deploy": "wrangler pages deploy . --project-name datasist-frontend --branch main --commit-dirty=true",
     "cf:deploy": "wrangler pages deploy . --project-name datasist-frontend --branch main --commit-dirty=true"

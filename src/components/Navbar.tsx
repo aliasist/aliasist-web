@@ -1,10 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth, UserButton } from "@clerk/react";
+import { SignInButton, useAuth, UserButton } from "@clerk/react";
 import newLogo from "@/assets/aliasist-logo-brand.svg";
 import { playHover, playClick, setEnabled } from "@/hooks/useSound";
 import { pageNavLinks, suiteApps } from "@/content/homepage";
-import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
 
@@ -14,12 +13,23 @@ const SuiteDropdown = () => {
   const ref = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    const handler = (e: MouseEvent) => {
-      if (ref.current && !ref.current.contains(e.target as Node)) setOpen(false);
+    if (!open) return;
+
+    let remove: (() => void) | undefined;
+    const frame = requestAnimationFrame(() => {
+      const onPointerDown = (e: PointerEvent) => {
+        if (ref.current?.contains(e.target as Node)) return;
+        setOpen(false);
+      };
+      document.addEventListener("pointerdown", onPointerDown);
+      remove = () => document.removeEventListener("pointerdown", onPointerDown);
+    });
+
+    return () => {
+      cancelAnimationFrame(frame);
+      remove?.();
     };
-    document.addEventListener("mousedown", handler);
-    return () => document.removeEventListener("mousedown", handler);
-  }, []);
+  }, [open]);
 
   return (
     <div ref={ref} className="relative">
@@ -103,7 +113,7 @@ const mobileSignInButtonClass =
   "flex-1 rounded-md border border-electric/35 bg-electric/[0.04] py-2.5 text-center text-xs font-mono uppercase tracking-[0.16em] text-electric shadow-electric-mobile-signin transition-all duration-300 hover:border-electric/50 hover:bg-electric/10 hover:shadow-electric-mobile-signin-hover active:scale-[0.99]";
 
 const utilityButtonClass =
-  "flex h-9 w-9 items-center justify-center rounded-full border border-transparent text-muted-foreground transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-electric/25 hover:bg-electric/[0.08] hover:text-electric hover:shadow-electric-utility-hover active:scale-95";
+  "tap-compact flex h-9 w-9 items-center justify-center rounded-full border border-transparent text-muted-foreground transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-electric/25 hover:bg-electric/[0.08] hover:text-electric hover:shadow-electric-utility-hover active:scale-95";
 
 const navUserButtonAppearance = {
   elements: {
@@ -113,7 +123,6 @@ const navUserButtonAppearance = {
 };
 
 const DesktopAuthControl = () => {
-  const openSiteSignIn = useOpenSiteSignIn();
   const { isLoaded, isSignedIn } = useAuth();
 
   if (isSignedIn) {
@@ -121,27 +130,24 @@ const DesktopAuthControl = () => {
   }
 
   return (
-    <button
-      type="button"
-      aria-busy={!isLoaded}
-      aria-label={isLoaded ? "Sign in" : "Loading sign-in"}
-      title={!isLoaded ? "Connecting to Clerk…" : "Sign in"}
-      onMouseEnter={() => {
-        playHover();
-      }}
-      onClick={() => {
-        playClick();
-        openSiteSignIn();
-      }}
-      className={`${signInButtonClass} shrink-0 cursor-pointer text-foreground/90 ${!isLoaded ? "opacity-70" : ""}`}
-    >
-      Sign In
-    </button>
+    <SignInButton mode="modal" fallbackRedirectUrl="/" forceRedirectUrl="/">
+      <button
+        type="button"
+        aria-busy={!isLoaded}
+        aria-label={isLoaded ? "Sign in" : "Loading sign-in"}
+        title={!isLoaded ? "Connecting to Clerk…" : "Sign in"}
+        onMouseEnter={() => {
+          playHover();
+        }}
+        className={`${signInButtonClass} shrink-0 cursor-pointer text-foreground/90 ${!isLoaded ? "opacity-70" : ""}`}
+      >
+        Sign In
+      </button>
+    </SignInButton>
   );
 };
 
 const MobileAuthControl = () => {
-  const openSiteSignIn = useOpenSiteSignIn();
   const { isLoaded, isSignedIn } = useAuth();
 
   if (isSignedIn) {
@@ -153,22 +159,20 @@ const MobileAuthControl = () => {
   }
 
   return (
-    <button
-      type="button"
-      aria-busy={!isLoaded}
-      aria-label={isLoaded ? "Sign in" : "Loading sign-in"}
-      title={!isLoaded ? "Connecting to Clerk…" : "Sign in"}
-      onMouseEnter={() => {
-        playHover();
-      }}
-      onClick={() => {
-        playClick();
-        openSiteSignIn();
-      }}
-      className={`${mobileSignInButtonClass} cursor-pointer${!isLoaded ? " opacity-70" : ""}`}
-    >
-      Sign In
-    </button>
+    <SignInButton mode="modal" fallbackRedirectUrl="/" forceRedirectUrl="/">
+      <button
+        type="button"
+        aria-busy={!isLoaded}
+        aria-label={isLoaded ? "Sign in" : "Loading sign-in"}
+        title={!isLoaded ? "Connecting to Clerk…" : "Sign in"}
+        onMouseEnter={() => {
+          playHover();
+        }}
+        className={`${mobileSignInButtonClass} cursor-pointer${!isLoaded ? " opacity-70" : ""}`}
+      >
+        Sign In
+      </button>
+    </SignInButton>
   );
 };
 
@@ -186,6 +190,15 @@ const Navbar = () => {
     window.addEventListener("scroll", onScroll, { passive: true });
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
+  useEffect(() => {
+    if (!mobileOpen) return;
+    const prevOverflow = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    return () => {
+      document.body.style.overflow = prevOverflow;
+    };
+  }, [mobileOpen]);
 
   // Scroll-spy — highlight the nav link whose section is in view
   useEffect(() => {
@@ -230,7 +243,7 @@ const Navbar = () => {
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className={`fixed top-0 left-0 right-0 z-[200] transition-all duration-300 ${
+      className={`site-nav fixed top-0 left-0 right-0 z-[200] pt-[env(safe-area-inset-top,0px)] transition-all duration-300 ${
         scrolled
           ? "bg-background/82 backdrop-blur-2xl border-b border-border/50 shadow-electric-bar"
           : "bg-background/[0.03] backdrop-blur-[2px]"

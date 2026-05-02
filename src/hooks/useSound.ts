@@ -48,12 +48,13 @@ function tone(
 }
 
 export function playHover() {
-  tone(880, 'sine', 0.018, 0.08);
+  tone(698.46, "sine", 0.010, 0.09, 0.008, 0.07);
+  setTimeout(() => tone(783.99, "sine", 0.005, 0.07, 0.01, 0.05), 24);
 }
 
 export function playClick() {
-  tone(660, 'square', 0.022, 0.12, 0.002, 0.1);
-  setTimeout(() => tone(990, 'sine', 0.012, 0.08), 40);
+  tone(523.25, "triangle", 0.012, 0.11, 0.006, 0.08);
+  setTimeout(() => tone(659.25, "sine", 0.008, 0.10, 0.01, 0.07), 34);
 }
 
 export function playSuccess() {

@@ -1,6 +1,7 @@
-import { Show, UserButton } from "@clerk/react";
+import { Show, UserButton, useAuth } from "@clerk/react";
 import { Map, BarChart3, Globe, Zap, Shield } from "lucide-react";
 import { hasClerkKey } from "@/lib/clerk";
+import { isDatasistAdmin } from "@/lib/adminAccess";
 import type { ActiveView } from "../App";
 
 interface HeaderProps {
@@ -8,7 +9,68 @@ interface HeaderProps {
   setActiveView: (v: ActiveView) => void;
 }
 
+const NAV_BASE: Array<{
+  view: ActiveView;
+  label: string;
+  icon: typeof Map;
+  activeColor: string;
+  activeBg: string;
+  activeBorder: string;
+}> = [
+  { view: "map", label: "Map", icon: Map, activeColor: "var(--color-green)", activeBg: "rgba(113,255,156,0.08)", activeBorder: "rgba(113,255,156,0.2)" },
+  { view: "dashboard", label: "Intelligence", icon: BarChart3, activeColor: "var(--color-cyan)", activeBg: "rgba(94,246,255,0.08)", activeBorder: "rgba(94,246,255,0.2)" },
+  {
+    view: "admin",
+    label: "Admin",
+    icon: Shield,
+    activeColor: "#ffb347",
+    activeBg: "rgba(255,179,71,0.08)",
+    activeBorder: "rgba(255,179,71,0.2)",
+  },
+];
+
+function NavButtons({
+  activeView,
+  setActiveView,
+  items,
+}: {
+  activeView: ActiveView;
+  setActiveView: (v: ActiveView) => void;
+  items: typeof NAV_BASE;
+}) {
+  return (
+    <>
+      {items.map(({ view, label, icon: Icon, activeColor, activeBg, activeBorder }) => (
+        <button
+          key={view}
+          data-testid={`nav-${view}`}
+          onClick={() => setActiveView(view)}
+          className="flex items-center gap-2 px-3 py-1.5 rounded transition-all text-sm font-medium"
+          style={{
+            background: activeView === view ? activeBg : "transparent",
+            color: activeView === view ? activeColor : "var(--color-text-muted)",
+            border: activeView === view ? `1px solid ${activeBorder}` : "1px solid transparent",
+            fontSize: "13px",
+          }}
+        >
+          <Icon size={14} />
+          {label}
+        </button>
+      ))}
+    </>
+  );
+}
+
+function HeaderNavClerk({ activeView, setActiveView }: HeaderProps) {
+  const { userId } = useAuth();
+  const showAdmin = isDatasistAdmin(userId ?? undefined);
+  const items = showAdmin ? NAV_BASE : NAV_BASE.filter((n) => n.view !== "admin");
+  return <NavButtons activeView={activeView} setActiveView={setActiveView} items={items} />;
+}
+
 export default function Header({ activeView, setActiveView }: HeaderProps) {
+  const publicItems = NAV_BASE.filter((n) => n.view !== "admin");
+
   return (
     <header
       className="flex items-center justify-between px-4 py-2 border-b flex-shrink-0"
@@ -66,27 +128,11 @@ export default function Header({ activeView, setActiveView }: HeaderProps) {
 
       {/* Nav */}
       <nav className="flex items-center gap-1">
-        {[
-          { view: "map" as ActiveView, label: "Map", icon: Map, activeColor: "var(--color-green)", activeBg: "rgba(113,255,156,0.08)", activeBorder: "rgba(113,255,156,0.2)" },
-          { view: "dashboard" as ActiveView, label: "Intelligence", icon: BarChart3, activeColor: "var(--color-cyan)", activeBg: "rgba(94,246,255,0.08)", activeBorder: "rgba(94,246,255,0.2)" },
-          { view: "admin" as ActiveView, label: "Admin", icon: Shield, activeColor: "#ffb347", activeBg: "rgba(255,179,71,0.08)", activeBorder: "rgba(255,179,71,0.2)" },
-        ].map(({ view, label, icon: Icon, activeColor, activeBg, activeBorder }) => (
-          <button
-            key={view}
-            data-testid={`nav-${view}`}
-            onClick={() => setActiveView(view)}
-            className="flex items-center gap-2 px-3 py-1.5 rounded transition-all text-sm font-medium"
-            style={{
-              background: activeView === view ? activeBg : "transparent",
-              color: activeView === view ? activeColor : "var(--color-text-muted)",
-              border: activeView === view ? `1px solid ${activeBorder}` : "1px solid transparent",
-              fontSize: "13px",
-            }}
-          >
-            <Icon size={14} />
-            {label}
-          </button>
-        ))}
+        {hasClerkKey ? (
+          <HeaderNavClerk activeView={activeView} setActiveView={setActiveView} />
+        ) : (
+          <NavButtons activeView={activeView} setActiveView={setActiveView} items={publicItems} />
+        )}
       </nav>
 
       {/* Right side */}
