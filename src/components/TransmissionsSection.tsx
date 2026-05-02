@@ -143,7 +143,7 @@ const BlogCard = ({ article, index }: { article: Article; index: number }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.04 }}
-      className="group bg-background border border-border hover:border-electric/30 transition-[transform,border-color,box-shadow] duration-300 hover:shadow-electric-sm relative overflow-hidden hover:-translate-y-0.5 flex flex-col"
+      className="tap-target group bg-background border border-border hover:border-electric/30 transition-[transform,border-color,box-shadow] duration-300 hover:shadow-electric-sm relative overflow-hidden hover:-translate-y-0.5 flex flex-col"
     >
       {/* Category thumbnail — always renders */}
       <CardThumbnail article={article} />
@@ -226,7 +226,12 @@ const TransmissionsSection = () => {
   const displayed = filtered.slice(0, 9);
 
   return (
-    <section id="transmissions" ref={sectionRef} className="bg-card px-4 py-28 sm:px-8 lg:px-12 xl:px-16">
+    <section
+      id="transmissions"
+      ref={sectionRef}
+      className="relative overflow-hidden px-4 py-28 sm:px-8 lg:px-12 xl:px-16"
+    >
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/[0.04] to-transparent pointer-events-none" />
       <div className="mx-auto w-full max-w-site">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
