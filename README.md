@@ -15,7 +15,7 @@ These are the strongest visuals currently tracked in the repo and they render di
 
 <table>
   <tr>
-    <td><img src="images/aliasist-platform-home-live.png" alt="Aliasist platform homepage capture" /></td>
+    <td><img src="https://raw.githubusercontent.com/aliasist/aliasist-platform/master/.aliasist-home.png" alt="Aliasist platform homepage capture" /></td>
     <td><img src="images/files_abductor_banner_cinematic.png" alt="Files Abductor banner" /></td>
   </tr>
   <tr>
