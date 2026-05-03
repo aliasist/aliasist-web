@@ -15,16 +15,16 @@ These are the strongest visuals currently tracked in the repo and they render di
 
 <table>
   <tr>
+    <td><img src="images/aliasist-platform-home-live.png" alt="Aliasist platform homepage capture" /></td>
     <td><img src="images/files_abductor_banner_cinematic.png" alt="Files Abductor banner" /></td>
-    <td><img src="images/aliasist_banner_street.png" alt="Aliasist street banner" /></td>
   </tr>
   <tr>
-    <td><img src="images/aliasist_brand_vision.png" alt="Aliasist brand vision" /></td>
     <td><img src="images/aliasist-abduction-1774688862693.png" alt="Cow abduction art" /></td>
+    <td><img src="images/aliasist_banner_street.png" alt="Aliasist street banner" /></td>
   </tr>
 </table>
 
-If you want a tighter product-first gallery later, we can swap these for browser screenshots captured from the current build.
+The top-left tile is the live homepage capture from the portal build. The remaining tiles cover the Files Abductor app and supporting brand art.
 
 ## Local development
 
