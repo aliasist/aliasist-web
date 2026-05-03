@@ -1,5 +1,7 @@
 # Aliasist
 
+![Aliasist banner](https://raw.githubusercontent.com/aliasist/aliasistabductor/master/images/aliasist_banner_orbit.png)
+
 Aliasist is the public-facing companion site for the suite.
 
 It gives visitors a quick view of what the platform offers:
