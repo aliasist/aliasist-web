@@ -1,17 +1,32 @@
-# Aliasist (`aliasistabductor`)
+# Aliasist
 
-Monorepo for the Aliasist portfolio site, Workers, sibling apps under `apps/`, and shared assets.
+Aliasist is the public portfolio and product surface for the Aliasist suite. This repo powers the main website at `aliasist.com`, the Files Abductor easter egg, and the surrounding marketing assets and edge functions.
 
-## Public homepage (portfolio)
+## What lives here
 
-The site at **aliasist.com** is built from the repo root:
+- `src/` - the Vite + React homepage and landing experience
+- `images/` - featured art, product banners, and "live action" visuals for GitHub
+- `public/` - icons, metadata, and social preview assets
+- `functions/` - Cloudflare Pages Functions and lightweight API routes
 
-| Path | Purpose |
-|------|---------|
-| `src/` | Vite + React + TypeScript app |
-| `images/` | Marketing / project banners (`@images/` in Vite) |
-| `public/` | Icons, mascot, manifests |
-| `functions/` | Pages Functions (API routes) |
+## Live action gallery
+
+These are the strongest visuals currently tracked in the repo and they render directly in the GitHub README.
+
+<table>
+  <tr>
+    <td><img src="images/files_abductor_banner_cinematic.png" alt="Files Abductor banner" /></td>
+    <td><img src="images/aliasist_banner_street.png" alt="Aliasist street banner" /></td>
+  </tr>
+  <tr>
+    <td><img src="images/aliasist_brand_vision.png" alt="Aliasist brand vision" /></td>
+    <td><img src="images/aliasist-abduction-1774688862693.png" alt="Cow abduction art" /></td>
+  </tr>
+</table>
+
+If you want a tighter product-first gallery later, we can swap these for browser screenshots captured from the current build.
+
+## Local development
 
 ```bash
 cd /path/to/aliasistabductor
@@ -19,20 +34,23 @@ npm install
 npm run dev
 ```
 
-Dev server listens on port **8080** by default (see `vite.config.ts`).
+The homepage dev server listens on port `8080` by default.
+
+## Common commands
 
 ```bash
-npm run build       # Production client bundle → dist/
-npm run lint        # ESLint (root homepage only; apps lint in their dirs)
-npm test            # Vitest
-npm run deploy      # Cloudflare Pages (build + wrangler deploy)
+npm run build
+npm run lint
+npm test
+npm run deploy
 ```
 
-## Apps
+## Product notes
 
-Production apps live under `apps/` (each with its own `package.json`): e.g. DataSist, PulseSist, EcoSist, etc. Deploy from inside the relevant app directory per its README.
+- Clerk powers sign-in on the public site.
+- The homepage is intentionally visual-heavy: starfield, scanlines, motion, and layered art.
+- The Files Abductor easter egg is wired into the top-left Aliasist logo in the navbar.
 
-## Notes
+## GitHub
 
-- The portfolio uses **Clerk** for Sign In (`src/lib/clerk.tsx`). Configure `VITE_CLERK_*` publishable keys in local env as needed for development.
-- `recover/wip-before-old-checkout` is a rescue tip for obsolete WIP; **canonical homepage source is `master` + committed work**.
+Repository: `https://github.com/aliasist/aliasistabductor`
