@@ -12,10 +12,14 @@ const HeroSection = () => {
       id="top"
       className="relative flex min-h-[100dvh] min-h-screen items-center justify-center grid-bg overflow-hidden scanlines"
     >
-      {/* Background photo — was opacity 0.10 (very dim); radials/scanlines sit above; bottom fade also darkens lower third */}
+      {/* Background photo — slow Ken-burns drift + vignette; respects prefers-reduced-motion */}
       <div
-        className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.26] pointer-events-none"
+        className="hero-bg-photo absolute inset-0 bg-cover bg-center bg-no-repeat opacity-[0.28] pointer-events-none motion-safe:animate-hero-photo-drift will-change-transform"
         style={{ backgroundImage: "url(/background.png)" }}
+      />
+      <div
+        className="absolute inset-0 pointer-events-none z-[0] bg-[radial-gradient(ellipse_85%_75%_at_50%_42%,_transparent_0%,_hsl(var(--background)_/_0.72)_88%,_hsl(var(--background)_/_0.95)_100%)]"
+        aria-hidden
       />
 
       {/* Layered radial glows */}
@@ -66,6 +70,10 @@ const HeroSection = () => {
             src={mascot}
             alt="Aliasist Logo Draft Ideas"
             title="Aliasist Logo Draft Ideas"
+            width={208}
+            height={208}
+            decoding="async"
+            fetchPriority="high"
             className="w-44 h-44 xl:w-52 xl:h-52 rounded-full object-cover border-2 border-electric/50 shadow-electric-sm hover:shadow-electric-md hover:scale-105 transition-all duration-500 cursor-pointer select-none"
           />
         </motion.div>
@@ -106,6 +114,10 @@ const HeroSection = () => {
                 src={mascot}
                 alt={hero.mascotAlt}
                 title={hero.mascotTitle}
+                width={96}
+                height={96}
+                decoding="async"
+                fetchPriority="high"
                 className="w-24 h-24 rounded-full object-cover border-2 border-electric/50 shadow-electric-xs select-none"
               />
             </motion.div>

@@ -1,6 +1,15 @@
 /**
  * Homepage copy & navigation — edit this file to change marketing text and suite links.
  *
+ * Images:
+ *   • Project banners + assets live under `./images` (imported via `@images/...`).
+ *   • Hero backdrop uses `public/background.png` (see `HeroSection`).
+ *   • Optional Cloudflare **text-to-image** worker: `apps/phoenix-image-worker`
+ *     calls `@cf/leonardo/phoenix-1.0` (Leonardo Phoenix on Workers AI). It
+ *     generates **new** images from prompts — not automatic “enhancement” of
+ *     these PNGs. To use it for marketing art: deploy the worker, POST a prompt,
+ *     save the JPEG/PNG, then commit under `images/` or `public/`.
+ *
  * Suite apps (live products):
  *   • Navbar: open "Suite" in the top bar — same URLs as `suiteApps` below.
  *   • Contact: scroll to Contact → right column "The Aliasist Suite".

@@ -25,8 +25,9 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
             src={project.banner}
             alt={`${project.name} preview`}
             className="absolute inset-0 size-full object-cover"
-            loading="lazy"
+            loading={index === 0 ? "eager" : "lazy"}
             decoding="async"
+            fetchPriority={index === 0 ? "high" : "low"}
           />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card/25 via-transparent to-transparent sm:bg-gradient-to-r sm:from-transparent sm:via-card/30 sm:to-card" />
         </div>

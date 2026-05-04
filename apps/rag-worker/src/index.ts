@@ -195,7 +195,18 @@ async function handleQuery(request: Request, env: Env, corsH: Record<string, str
   const topK = Math.min(Math.max(Number.isInteger(body.topK) ? body.topK! : 5, 1), 15);
 
   // Embed the question
-  const [[qVec]] = [await embed(env.GEMINI_API_KEY, [question])];
+  let qVec: number[];
+  try {
+    [qVec] = await embed(env.GEMINI_API_KEY, [question]);
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    const isQuota = msg.includes("429") || msg.includes("quota") || msg.includes("RESOURCE_EXHAUSTED");
+    return json(
+      { error: isQuota ? "Embedding quota exhausted — try again later." : `Embedding failed: ${msg}` },
+      isQuota ? 503 : 502,
+      corsH,
+    );
+  }
 
   // Search Vectorize
   const matches = await env.VECTORIZE.query(qVec, {
