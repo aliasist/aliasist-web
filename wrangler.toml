@@ -1,3 +1,11 @@
+# aliasist.com (Cloudflare Pages) — production Clerk for `functions/*` (e.g. chat-messages):
+#   Dashboard → Workers & Pages → aliasistabductor → Settings → Environment variables
+#     CLERK_SECRET_KEY   (secret)
+#     CLERK_PUBLISHABLE_KEY  (optional; public key)
+# Local Pages + Functions: root `.dev.vars.example` → `.dev.vars`
+#
+# Other workers: see apps/llm-chat/.dev.vars.example, apps/datasist-api/.dev.vars.example, etc.
+
 name = "aliasistabductor"
 pages_build_output_dir = "dist"
 compatibility_date = "2025-04-01"

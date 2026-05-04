@@ -73,19 +73,20 @@ export default function Header({ activeView, setActiveView }: HeaderProps) {
 
   return (
     <header
-      className="flex items-center justify-between px-4 py-2 border-b flex-shrink-0"
+      className="flex items-center justify-between px-5 py-3 border-b flex-shrink-0"
       style={{
-        background: "var(--color-surface)",
+        background: "rgba(7, 16, 25, 0.72)",
         borderColor: "var(--color-border)",
-        height: "52px",
+        backdropFilter: "blur(18px)",
+        height: "72px",
       }}
     >
       {/* Logo + Brand */}
-      <div className="flex items-center gap-3">
+      <div className="flex items-center gap-4 min-w-0">
         {/* UFO SVG Logo */}
         <svg
-          width="32"
-          height="32"
+          width="38"
+          height="38"
           viewBox="0 0 32 32"
           fill="none"
           aria-label="DataSist Logo"
@@ -101,33 +102,44 @@ export default function Header({ activeView, setActiveView }: HeaderProps) {
           <circle cx="22" cy="18.5" r="1" fill="var(--color-cyan)" />
         </svg>
 
-        <div className="flex flex-col leading-none">
+        <div className="flex flex-col leading-none min-w-0">
           <span
             className="font-bold tracking-widest text-glow-green"
             style={{
               fontFamily: "'Cabinet Grotesk', sans-serif",
-              fontSize: "15px",
+              fontSize: "18px",
               color: "var(--color-green)",
-              letterSpacing: "0.12em",
+              letterSpacing: "0.14em",
             }}
           >
             DataSist
           </span>
-          <span
-            style={{
-              fontSize: "9px",
-              color: "var(--color-text-muted)",
-              letterSpacing: "0.18em",
-              fontFamily: "'General Sans', sans-serif",
-            }}
-          >
-            ALIASIST.COM · AI INFRASTRUCTURE INTEL
-          </span>
+          <div className="flex items-center gap-2 mt-1 flex-wrap">
+            <span
+              style={{
+                fontSize: "9px",
+                color: "var(--color-text-muted)",
+                letterSpacing: "0.18em",
+                fontFamily: "'General Sans', sans-serif",
+              }}
+            >
+              ALIASIST.COM · AI INFRASTRUCTURE INTELLIGENCE
+            </span>
+            <span className="datasist-tag" style={{ padding: "4px 8px", fontSize: "9px" }}>
+              340+ Facilities Live
+            </span>
+          </div>
         </div>
       </div>
 
       {/* Nav */}
-      <nav className="flex items-center gap-1">
+      <nav
+        className="flex items-center gap-1.5 rounded-full px-2 py-1"
+        style={{
+          background: "rgba(255,255,255,0.02)",
+          border: "1px solid rgba(255,255,255,0.04)",
+        }}
+      >
         {hasClerkKey ? (
           <HeaderNavClerk activeView={activeView} setActiveView={setActiveView} />
         ) : (
@@ -137,16 +149,24 @@ export default function Header({ activeView, setActiveView }: HeaderProps) {
 
       {/* Right side */}
       <div className="flex items-center gap-3">
-        <div className="flex items-center gap-1.5" style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>
+        <div
+          className="hidden lg:flex items-center gap-2 rounded-full px-3 py-1.5"
+          style={{
+            fontSize: "11px",
+            color: "var(--color-text-muted)",
+            background: "rgba(255,255,255,0.03)",
+            border: "1px solid rgba(255,255,255,0.04)",
+          }}
+        >
           <Zap size={11} style={{ color: "var(--color-green)" }} />
-          <span>LIVE DATA</span>
+          <span>Live power, water, and grid signals</span>
         </div>
         <a
           href="https://aliasist.com"
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-1.5 transition-opacity hover:opacity-80"
-          style={{ fontSize: "11px", color: "var(--color-text-muted)", letterSpacing: "0.05em" }}
+          style={{ fontSize: "11px", color: "var(--color-text-muted)", letterSpacing: "0.08em" }}
         >
           <Globe size={11} />
           aliasist.com

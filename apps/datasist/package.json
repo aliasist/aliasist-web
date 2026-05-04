@@ -4,11 +4,11 @@
   "version": "0.1.0",
   "scripts": {
     "dev": "vite",
-    "build": "vite build",
+    "build": "vite build && cp _redirects dist/public/_redirects",
     "preview": "vite preview",
     "cf:dev": "wrangler pages dev .",
-    "deploy": "wrangler pages deploy . --project-name datasist-frontend --branch main --commit-dirty=true",
-    "cf:deploy": "wrangler pages deploy . --project-name datasist-frontend --branch main --commit-dirty=true"
+    "deploy": "wrangler pages deploy dist/public --project-name datasist-frontend --branch main --commit-dirty=true",
+    "cf:deploy": "wrangler pages deploy dist/public --project-name datasist-frontend --branch main --commit-dirty=true"
   },
   "devDependencies": {
     "wrangler": "^4.80.0"

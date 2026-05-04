@@ -46,6 +46,15 @@
     --font-heading: 'Space Grotesk', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
 
+    /* Ambient background system (subtle, behind everything) */
+    --ambient-opacity: 0.22;
+    --ambient-overlay-opacity: 0.22;
+    --ambient-opacity-mobile: 0.18;
+    --ambient-overlay-opacity-mobile: 0.17;
+    --ambient-a: 165 90% 42%;
+    --ambient-b: 198 92% 55%;
+    --ambient-c: 280 70% 60%;
+
     --sidebar-background: 220 18% 9%;
     --sidebar-foreground: 150 10% 90%;
     --sidebar-primary: 165 90% 42%;
@@ -77,6 +86,11 @@
     --input: 220 15% 84%;
     --ring: 165 85% 36%;
     --electric: 165 85% 36%;
+
+    --ambient-opacity: 0.16;
+    --ambient-overlay-opacity: 0.14;
+    --ambient-opacity-mobile: 0.13;
+    --ambient-overlay-opacity-mobile: 0.11;
   }
 }
 
@@ -85,10 +99,17 @@
     @apply border-border;
   }
 
+  html {
+    background-color: hsl(var(--background));
+  }
+
   body {
-    @apply bg-background text-foreground;
+    @apply text-foreground;
+    background-color: transparent;
     font-family: var(--font-heading);
     overflow-x: hidden;
+    position: relative;
+    isolation: isolate;
   }
 
   html, body {
@@ -101,6 +122,66 @@
 
   code, pre {
     font-family: var(--font-mono);
+  }
+}
+
+/* ─── Ambient background layers (fixed behind content) ─── */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -2;
+  opacity: var(--ambient-opacity);
+  background-image:
+    radial-gradient(80% 60% at 20% 20%, hsl(var(--ambient-a) / 0.22) 0%, transparent 65%),
+    radial-gradient(70% 55% at 80% 35%, hsl(var(--ambient-b) / 0.18) 0%, transparent 62%),
+    radial-gradient(65% 55% at 55% 85%, hsl(var(--ambient-c) / 0.12) 0%, transparent 70%),
+    linear-gradient(135deg, hsl(var(--ambient-a) / 0.08) 0%, transparent 55%, hsl(var(--ambient-b) / 0.06) 100%);
+  background-size: 140% 140%, 150% 150%, 160% 160%, 100% 100%;
+  background-position: 10% 10%, 85% 35%, 55% 95%, 50% 50%;
+  transform: translate3d(0, 0, 0);
+  will-change: background-position, opacity;
+  animation: ambient-drift 34s ease-in-out infinite alternate;
+}
+
+body::after {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -1;
+  opacity: var(--ambient-overlay-opacity);
+  background-image:
+    radial-gradient(ellipse 110% 85% at 50% 40%, transparent 0%, rgba(0, 0, 0, 0.42) 72%, rgba(0, 0, 0, 0.82) 100%),
+    url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noise'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noise)' opacity='0.10'/%3E%3C/svg%3E");
+  background-repeat: no-repeat, repeat;
+  background-size: cover, 220px 220px;
+  background-position: center, center;
+  transform: translate3d(0, 0, 0);
+}
+
+@keyframes ambient-drift {
+  0% {
+    background-position: 10% 10%, 85% 35%, 55% 95%, 50% 50%;
+  }
+  100% {
+    background-position: 18% 22%, 72% 18%, 62% 82%, 50% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  body::before {
+    animation: none !important;
+  }
+}
+
+@media (max-width: 640px) {
+  body::before {
+    opacity: var(--ambient-opacity-mobile);
+  }
+  body::after {
+    opacity: var(--ambient-overlay-opacity-mobile);
   }
 }
 
@@ -199,6 +280,17 @@
   100% { transform: translate( 2px, -1px); }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .glitch-text:hover::before,
+  .glitch-text:hover::after {
+    animation: none !important;
+  }
+
+  .electric-pulse {
+    animation: none !important;
+  }
+}
+
 /* ─── Grid background ─── */
 .grid-bg {
   background-image:
@@ -236,11 +328,11 @@
 /* ─── Scroll progress bar ─── */
 #scroll-progress {
   position: fixed;
-  top: 0;
+  top: calc(4.5rem + env(safe-area-inset-top, 0px));
   left: 0;
   height: 2px;
   background: hsl(var(--electric));
-  z-index: 100;
+  z-index: 199;
   transform-origin: left;
   box-shadow: 0 0 8px hsl(165 90% 42% / 0.7);
 }
@@ -594,8 +686,8 @@ button, a[class*="rounded"] {
   #projects,
   #transmissions,
   #contact {
-    padding-top: 4.5rem;
-    padding-bottom: 4.5rem;
+    padding-top: clamp(3.5rem, 10vw, 4.5rem);
+    padding-bottom: clamp(3.5rem, 10vw, 4.5rem);
   }
 }
 
@@ -608,4 +700,10 @@ html, body {
 /* Smooth scroll */
 html {
   scroll-behavior: smooth;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
 }

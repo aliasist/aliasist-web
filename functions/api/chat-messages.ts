@@ -39,7 +39,11 @@ export const onRequestOptions = async () =>
     headers: corsHeaders,
   });
 
-export const onRequestGet = async ({ env }: PagesContext) => {
+export const onRequestGet = async ({ request, env }: PagesContext) => {
+  const auth = await authenticateRequest(request, env);
+  if (!auth.ok) {
+    return json({ error: auth.error }, auth.status);
+  }
   const messages = await readMessages(env);
   return json({ messages }, 200);
 };

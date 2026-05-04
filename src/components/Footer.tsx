@@ -3,19 +3,19 @@ import { footer } from "@/content/homepage";
 
 const Footer = () => {
   return (
-    <footer className="border-t border-background/10 bg-foreground px-4 py-8 shadow-footer-glow sm:px-8 lg:px-12 xl:px-16">
-      <div className="relative mx-auto flex w-full max-w-site flex-col items-center justify-between gap-4 sm:flex-row">
+    <footer className="border-t border-background/10 bg-foreground px-4 py-10 shadow-footer-glow sm:px-8 sm:py-8 lg:px-12 xl:px-16">
+      <div className="relative mx-auto flex w-full max-w-site flex-col items-center justify-between gap-6 sm:flex-row sm:gap-4">
         {/* Mascot branding, bottom left */}
         <img
           src={mascot}
           alt={footer.mascotAlt}
           className="hidden sm:block absolute -left-20 bottom-0 w-16 h-16 opacity-30 hover:opacity-60 transition-opacity duration-700 pointer-events-none select-none"
         />
-        <p className="font-mono text-xs text-background/30">
+        <p className="font-mono text-xs text-background/30 order-2 text-center sm:order-none sm:text-left">
           © {new Date().getFullYear()} {footer.brandName}. All rights reserved.
         </p>
 
-        <div className="flex items-center gap-5">
+        <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 order-1 sm:order-none">
           <a
             href={footer.githubHref}
             target="_blank"
@@ -40,7 +40,7 @@ const Footer = () => {
           </a>
         </div>
 
-        <p className="font-mono text-[10px] text-electric/50 tracking-[0.12em] uppercase flex items-center gap-1.5">
+        <p className="font-mono text-[10px] text-electric/50 tracking-[0.12em] uppercase flex items-center justify-center gap-1.5 order-3 text-center sm:order-none sm:justify-end">
           <span className="w-1.5 h-1.5 rounded-full bg-electric/60 animate-pulse" />
           {footer.versionLine}
         </p>

@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { SignInButton, useAuth, UserButton } from "@clerk/react";
 import newLogo from "@/assets/aliasist-logo-brand.svg";
+import CowAbductionEasterEgg from "@/components/CowAbductionEasterEgg";
 import { playHover, playClick, setEnabled } from "@/hooks/useSound";
 import { pageNavLinks, suiteApps } from "@/content/homepage";
 
@@ -184,6 +185,7 @@ const Navbar = () => {
   const [isDark, setIsDark]             = useState(true);
   const [soundOn, setSoundOn]           = useState(true);
   const [activeSection, setActiveSection] = useState("");
+  const [easterEggOpen, setEasterEggOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -224,6 +226,18 @@ const Navbar = () => {
     document.documentElement.classList.toggle("light", !dark);
   }, []);
 
+  useEffect(() => {
+    try {
+      const stored = localStorage.getItem("aliasist-sound");
+      const on = stored ? stored === "on" : true;
+      setSoundOn(on);
+      setEnabled(on);
+    } catch {
+      setSoundOn(true);
+      setEnabled(true);
+    }
+  }, []);
+
   const toggleTheme = () => {
     playClick();
     setIsDark(prev => {
@@ -235,7 +249,22 @@ const Navbar = () => {
   };
 
   const toggleSound = () => {
-    setSoundOn(prev => { setEnabled(!prev); return !prev; });
+    setSoundOn(prev => {
+      const next = !prev;
+      if (next) {
+        setEnabled(true);
+        playClick();
+      } else {
+        playClick();
+        setEnabled(false);
+      }
+      try {
+        localStorage.setItem("aliasist-sound", next ? "on" : "off");
+      } catch {
+        // ignore
+      }
+      return next;
+    });
   };
 
   return (
@@ -258,16 +287,21 @@ const Navbar = () => {
       <div className="mx-auto flex h-[4.5rem] w-full max-w-site items-center justify-between gap-5 px-4 sm:gap-8 sm:px-8 lg:px-12 xl:px-16">
 
         {/* ── LEFT: Logo ── */}
-        <a
-          href="/"
-          onClick={() => playClick()}
+        <button
+          type="button"
+          onClick={() => {
+            playClick();
+            setEasterEggOpen(true);
+          }}
           onMouseEnter={() => playHover()}
-          className="group flex flex-shrink-0 items-center gap-3 rounded-xl py-1 pr-2 transition-all duration-300 hover:bg-electric/[0.04]"
-          aria-label="Aliasist home"
+          className="group flex flex-shrink-0 items-center gap-3 rounded-xl border-0 bg-transparent py-1 pr-2 text-left transition-all duration-300 hover:bg-electric/[0.04] cursor-pointer outline-none appearance-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
+          aria-label="Aliasist"
+          aria-haspopup="dialog"
+          aria-expanded={easterEggOpen}
         >
           <motion.img
             src={newLogo}
-            alt="Aliasist"
+            alt=""
             className="h-14 w-auto max-h-16 object-contain drop-shadow-electric-logo transition-all duration-300 sm:h-16 sm:max-h-[4.5rem]"
             style={{ minWidth: 56, background: "transparent" }}
             whileHover={{ scale: 1.1, filter: "drop-shadow(0 0 16px hsl(165 90% 42% / 0.8))" }}
@@ -281,7 +315,7 @@ const Navbar = () => {
               Signal Active
             </span>
           </div>
-        </a>
+        </button>
 
         {/* ── CENTER: Page links ── */}
         <div className="hidden md:flex flex-1 items-center justify-center gap-2 rounded-full border border-border/35 bg-background/50 px-2.5 py-1.5 shadow-electric-nav-well backdrop-blur-md">
@@ -327,6 +361,7 @@ const Navbar = () => {
               title={soundOn ? "Mute" : "Unmute"}
               className={utilityButtonClass}
               aria-label={soundOn ? "Mute sounds" : "Enable sounds"}
+              onMouseEnter={() => playHover()}
             >
               {soundOn ? (
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -460,6 +495,8 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
+
+      <CowAbductionEasterEgg open={easterEggOpen} onClose={() => setEasterEggOpen(false)} />
     </motion.nav>
   );
 };

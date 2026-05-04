@@ -31,6 +31,10 @@ function tone(
   if (!enabled) return;
   try {
     const ac = getCtx();
+    // Many browsers start AudioContext suspended until a user gesture.
+    if (ac.state === "suspended") {
+      void ac.resume();
+    }
     const osc = ac.createOscillator();
     const gainNode = ac.createGain();
     osc.connect(gainNode);

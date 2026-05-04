@@ -9,6 +9,11 @@ import { Zap, DollarSign, Droplets, AlertTriangle, Globe, Leaf, Building2 } from
 
 const CHART_COLORS = ["#71ff9c", "#5ef6ff", "#ffb347", "#ff5555", "#a78bfa", "#f97316", "#34d399", "#fb7185"];
 
+type DataCenterWithLiveMetrics = DataCenter & {
+  electricityPriceCentsPerKwh?: number;
+  estimatedAnnualElectricityCostMillions?: number;
+};
+
 const STATUS_COLORS: Record<string, string> = {
   operational: "#71ff9c",
   under_construction: "#ffb347",
@@ -56,7 +61,7 @@ const CustomTooltipStyle = {
 };
 
 export default function DashboardView() {
-  const { data: centers = [], isLoading } = useQuery<DataCenter[]>({
+  const { data: centers = [], isLoading } = useQuery<DataCenterWithLiveMetrics[]>({
     queryKey: ["/api/data-centers"],
     queryFn: () => apiRequest("GET", "/api/data-centers").then((r) => r.json()),
   });
@@ -75,8 +80,30 @@ export default function DashboardView() {
   const totalCapacityMW = centers.reduce((s, c) => s + (c.capacityMW || 0), 0);
   const totalInvestment = centers.reduce((s, c) => s + (c.investmentBillions || 0), 0);
   const totalWater = centers.reduce((s, c) => s + (c.waterUsageMillionGallons || 0), 0);
+  const totalElectricityCostMillions = centers.reduce(
+    (sum, center) => sum + (center.estimatedAnnualElectricityCostMillions || 0),
+    0,
+  );
   const communityResistanceCount = centers.filter((c) => c.communityResistance === 1).length;
   const highRiskCount = centers.filter((c) => c.gridRisk === "high").length;
+  const centersWithElectricity = centers.filter((c) => c.electricityPriceCentsPerKwh !== null && c.electricityPriceCentsPerKwh !== undefined);
+  const avgElectricityPrice = centersWithElectricity.length
+    ? centersWithElectricity.reduce((sum, center) => sum + (center.electricityPriceCentsPerKwh || 0), 0) / centersWithElectricity.length
+    : null;
+  const highestElectricityCenter = centersWithElectricity.reduce<DataCenterWithLiveMetrics | null>(
+    (highest, center) =>
+      !highest || (center.electricityPriceCentsPerKwh || 0) > (highest.electricityPriceCentsPerKwh || 0)
+        ? center
+        : highest,
+    null,
+  );
+  const lowestElectricityCenter = centersWithElectricity.reduce<DataCenterWithLiveMetrics | null>(
+    (lowest, center) =>
+      !lowest || (center.electricityPriceCentsPerKwh || 0) < (lowest.electricityPriceCentsPerKwh || 0)
+        ? center
+        : lowest,
+    null,
+  );
 
   const validRenewable = centers.filter((c) => c.renewablePercent !== null && c.renewablePercent !== undefined);
   const avgRenewable = validRenewable.length
@@ -163,8 +190,78 @@ export default function DashboardView() {
           </div>
         </div>
 
+        <section
+          className="md:hidden flex gap-3 overflow-x-auto pb-2"
+          aria-label="Mobile cinematic intelligence slides"
+          style={{ scrollSnapType: "x mandatory" }}
+        >
+          {[
+            {
+              title: "Global Facility Lattice",
+              detail: "Track the global AI buildout with a cleaner orbital systems view.",
+              kicker: "Mission View",
+              image: "/cinematic/datasist-orbital-infrastructure-hero.png",
+            },
+            {
+              title: "Power + Water Context",
+              detail: "Keep grid pressure, water demand, and regional exposure visible early.",
+              kicker: "Resource Lens",
+              image: "/cinematic/ecosist-environmental-observatory-hero.png",
+            },
+          ].map((slide) => (
+            <article
+              key={slide.title}
+              className="relative min-w-[86%] overflow-hidden rounded-[1.5rem] border"
+              style={{
+                minHeight: "13.5rem",
+                scrollSnapAlign: "start",
+                borderColor: "var(--color-border)",
+                background:
+                  "linear-gradient(180deg, rgba(6,13,20,0.12), rgba(6,13,20,0.88)), var(--color-surface)",
+                boxShadow: "0 18px 50px rgba(0,0,0,0.22)",
+              }}
+            >
+              <div
+                className="absolute inset-0"
+                style={{
+                  backgroundImage: `linear-gradient(180deg, rgba(5,10,14,0.05), rgba(5,10,14,0.86)), url('${slide.image}')`,
+                  backgroundSize: "cover",
+                  backgroundPosition: "center",
+                }}
+              />
+              <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_right,rgba(94,246,255,0.18),transparent_30%),linear-gradient(180deg,rgba(113,255,156,0.04),transparent_35%)]" />
+              <div className="relative z-10 flex h-full flex-col justify-end gap-2 p-4">
+                <span
+                  className="w-fit rounded-full px-2.5 py-1 text-[10px] uppercase tracking-[0.18em]"
+                  style={{
+                    background: "rgba(8, 16, 23, 0.72)",
+                    border: "1px solid var(--color-border-strong)",
+                    color: "var(--color-cyan)",
+                  }}
+                >
+                  {slide.kicker}
+                </span>
+                <h2
+                  style={{
+                    fontFamily: "'Cabinet Grotesk', sans-serif",
+                    fontSize: "1.2rem",
+                    fontWeight: 800,
+                    color: "var(--color-text)",
+                    lineHeight: 1.05,
+                  }}
+                >
+                  {slide.title}
+                </h2>
+                <p style={{ fontSize: "0.8rem", color: "rgba(220,239,228,0.76)", maxWidth: "18rem" }}>
+                  {slide.detail}
+                </p>
+              </div>
+            </article>
+          ))}
+        </section>
+
         {/* KPI Row */}
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
           <KpiCard
             icon={Zap}
             label="TOTAL CAPACITY"
@@ -194,6 +291,21 @@ export default function DashboardView() {
             color="#5ef6ff"
           />
           <KpiCard
+            icon={DollarSign}
+            label="POWER COST"
+            value={
+              totalElectricityCostMillions >= 1000
+                ? `$${(totalElectricityCostMillions / 1000).toFixed(1)}B`
+                : `$${Math.round(totalElectricityCostMillions)}M`
+            }
+            sub={
+              avgElectricityPrice !== null
+                ? `Avg ${avgElectricityPrice.toFixed(1)} c/kWh`
+                : "EIA pricing unavailable"
+            }
+            color="#ffd700"
+          />
+          <KpiCard
             icon={AlertTriangle}
             label="COMMUNITY OPP."
             value={String(communityResistanceCount)}
@@ -207,6 +319,80 @@ export default function DashboardView() {
             sub="Across all facilities"
             color={avgRenewable >= 70 ? "var(--status-operational)" : "var(--status-construction)"}
           />
+        </div>
+
+        <div
+          className="rounded p-4 flex flex-col gap-3"
+          style={{
+            background: "linear-gradient(135deg, rgba(255,215,112,0.10), rgba(94,246,255,0.04) 60%, rgba(10,15,11,0.96))",
+            border: "1px solid rgba(255,215,112,0.18)",
+            boxShadow: "0 10px 30px rgba(0,0,0,0.18)",
+          }}
+        >
+          <div className="flex items-center justify-between">
+            <div>
+              <div style={{ fontSize: "11px", letterSpacing: "0.14em", color: "#ffd76a" }}>
+                POWER MARKET PULSE
+              </div>
+              <div style={{ fontSize: "11px", color: "var(--color-text-muted)", marginTop: "3px" }}>
+                EIA commercial electricity pricing layered onto U.S. facilities
+              </div>
+            </div>
+            <div
+              className="px-2.5 py-1 rounded-full"
+              style={{ border: "1px solid rgba(255,215,112,0.2)", color: "#ffd76a", fontSize: "10px", letterSpacing: "0.1em" }}
+            >
+              LIVE COST SIGNAL
+            </div>
+          </div>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
+            <div
+              className="rounded p-3 flex flex-col gap-1.5"
+              style={{ background: "rgba(5,10,6,0.52)", border: "1px solid rgba(255,215,112,0.12)" }}
+            >
+              <div style={{ fontSize: "9px", color: "var(--color-text-muted)", letterSpacing: "0.12em" }}>AVERAGE U.S. POWER PRICE</div>
+              <div style={{ fontSize: "22px", color: "#ffd76a", fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 800, lineHeight: 1 }}>
+                {avgElectricityPrice !== null ? `${avgElectricityPrice.toFixed(1)} c/kWh` : "—"}
+              </div>
+              <div style={{ fontSize: "10px", color: "var(--color-text-muted)" }}>
+                Across {centersWithElectricity.length} U.S.-priced facilities
+              </div>
+            </div>
+            <div
+              className="rounded p-3 flex flex-col gap-1.5"
+              style={{ background: "rgba(5,10,6,0.52)", border: "1px solid rgba(255,215,112,0.12)" }}
+            >
+              <div style={{ fontSize: "9px", color: "var(--color-text-muted)", letterSpacing: "0.12em" }}>HIGHEST PRICE MARKET</div>
+              <div style={{ fontSize: "16px", color: "var(--color-text)", fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 700, lineHeight: 1.1 }}>
+                {highestElectricityCenter?.state ?? "—"}
+              </div>
+              <div style={{ fontSize: "12px", color: "#ffd76a", fontWeight: 600 }}>
+                {highestElectricityCenter?.electricityPriceCentsPerKwh != null
+                  ? `${highestElectricityCenter.electricityPriceCentsPerKwh.toFixed(1)} c/kWh`
+                  : "—"}
+              </div>
+              <div style={{ fontSize: "10px", color: "var(--color-text-muted)" }}>
+                {highestElectricityCenter?.name ?? "No priced facility available"}
+              </div>
+            </div>
+            <div
+              className="rounded p-3 flex flex-col gap-1.5"
+              style={{ background: "rgba(5,10,6,0.52)", border: "1px solid rgba(255,215,112,0.12)" }}
+            >
+              <div style={{ fontSize: "9px", color: "var(--color-text-muted)", letterSpacing: "0.12em" }}>LOWEST PRICE MARKET</div>
+              <div style={{ fontSize: "16px", color: "var(--color-text)", fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 700, lineHeight: 1.1 }}>
+                {lowestElectricityCenter?.state ?? "—"}
+              </div>
+              <div style={{ fontSize: "12px", color: "var(--color-green)", fontWeight: 600 }}>
+                {lowestElectricityCenter?.electricityPriceCentsPerKwh != null
+                  ? `${lowestElectricityCenter.electricityPriceCentsPerKwh.toFixed(1)} c/kWh`
+                  : "—"}
+              </div>
+              <div style={{ fontSize: "10px", color: "var(--color-text-muted)" }}>
+                {lowestElectricityCenter?.name ?? "No priced facility available"}
+              </div>
+            </div>
+          </div>
         </div>
 
         {/* Charts row 1 */}

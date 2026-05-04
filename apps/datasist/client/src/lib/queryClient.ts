@@ -1,7 +1,19 @@
 import { QueryClient, QueryFunction } from "@tanstack/react-query";
 
-// Route all API calls to the Cloudflare Worker — no backend server needed
-const API_BASE = "https://datasist-worker.bchooper0730.workers.dev";
+const DEFAULT_REMOTE_API_BASE = "https://datasist-api.bchooper0730.workers.dev";
+
+function getApiBase() {
+  const envBase = import.meta.env.VITE_DATASIST_API_BASE?.trim();
+  if (envBase) {
+    return envBase.replace(/\/+$/, "");
+  }
+
+  // Cloudflare Pages _redirects cannot proxy to external domains, so the
+  // frontend should talk to the deployed Worker directly unless overridden.
+  return DEFAULT_REMOTE_API_BASE;
+}
+
+const API_BASE = getApiBase();
 
 let datasistClerkGetToken: (() => Promise<string | null>) | null = null;
 

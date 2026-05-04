@@ -27,10 +27,26 @@ Part of the **[Aliasist](https://aliasist.com)** suite.
 npm install
 npx wrangler d1 migrations apply datasist --remote
 npx wrangler secret put EIA_API_KEY
+npx wrangler secret put ELECTRICITY_MAPS_API_KEY
 npx wrangler secret put GEMINI_API_KEY
 npx wrangler secret put RAG_API_KEY
 npm run cf:deploy
 ```
+
+## Live data providers
+
+The worker can enrich each facility with optional live external signals:
+
+- `EIA_API_KEY` — U.S. commercial electricity pricing
+- `ELECTRICITY_MAPS_API_KEY` — live grid carbon intensity and carbon-free energy
+- `GEMINI_API_KEY` / `ANTHROPIC_API_KEY` / `GROQ_API_KEY` — AI chat
+- `RAG_API_KEY` — retrieval worker auth when used
+
+Free/public sources already used without secrets:
+
+- Open-Meteo forecast API — live weather and cooling conditions
+- Open-Meteo air quality API — AQI and particulate pollution
+- U.S. National Weather Service API — forecast + active alerts for U.S. facilities
 
 ## RAG Integration
 

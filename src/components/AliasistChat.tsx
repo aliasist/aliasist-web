@@ -16,31 +16,20 @@ type RoomMessage = {
   timestamp: string;
 };
 
-const SYSTEM_PROMPT = `You are the Aliasist AI — the intelligent assistant embedded in aliasist.com, the developer portfolio and project hub of Blake, an AI security developer and CS student.
-
-About Aliasist:
-- Tagline: "Adversarial by Nature. Defensive by Design."
-- Focus: AI security (AiSec), adversarial machine learning, open-source security tooling
-- Projects: Aliasist-Files-Abductor (file automation tool), DataSist (AI data center intelligence platform), more coming
-- Stack: Python, JavaScript, React, Vite, Node.js
-- Contact: dev@aliasist.com | github.com/aliasist
-- Blake is self-taught, now formally studying Computer Information Systems, building toward AI security specialization
-
-Your role: Answer questions about Aliasist, Blake's work, AI security, and tech topics. Be concise, technical, and direct. Keep responses under 3 paragraphs. Use the same brand voice — professional, alien-themed but grounded. Do not hallucinate project details.`;
 
 interface Message {
   role: "user" | "assistant";
   content: string;
 }
 
-const WELCOME_SIGNED_IN =
-  "Signal acquired. I'm the Aliasist AI. Ask me about Blake's projects, AI security, or anything in the stack.";
-
-const WELCOME_SIGNED_OUT =
-  "// Secure channel — sign in to transmit. Your Clerk session will power upcoming chat history and authenticated rooms.";
+const WELCOME_AI =
+  "Signal acquired. Ask me about Aliasist, AI security, or anything in the stack.";
 
 const WELCOME_ROOM =
   "// Room linked — messages persist in KV when configured on Pages. Transmit when signed in.";
+
+const WELCOME_SIGN_IN_REQUIRED =
+  "// Secure channel — sign in with Clerk to use the assistant.";
 
 const AliasistChat = () => {
   const { isLoaded, isSignedIn, getToken, userId } = useAuth();
@@ -54,13 +43,18 @@ const AliasistChat = () => {
   useEffect(() => {
     if (!open || !isLoaded) return;
 
-    if (USE_PAGES_CHAT_ROOM && isSignedIn) {
+    if (!isSignedIn) {
+      setMessages([{ role: "assistant", content: WELCOME_SIGN_IN_REQUIRED }]);
+      return;
+    }
+
+    if (USE_PAGES_CHAT_ROOM) {
       void (async () => {
         setLoading(true);
         try {
           const token = await getToken();
           if (!token) {
-            setMessages([{ role: "assistant", content: WELCOME_SIGNED_OUT }]);
+            setMessages([{ role: "assistant", content: WELCOME_SIGN_IN_REQUIRED }]);
             return;
           }
           const res = await fetch(ROOM_CHAT_ENDPOINT, {
@@ -87,12 +81,7 @@ const AliasistChat = () => {
       return;
     }
 
-    setMessages([
-      {
-        role: "assistant",
-        content: isSignedIn ? WELCOME_SIGNED_IN : WELCOME_SIGNED_OUT,
-      },
-    ]);
+    setMessages([{ role: "assistant", content: WELCOME_AI }]);
   }, [open, isLoaded, isSignedIn, getToken, userId]);
 
   useEffect(() => {
@@ -101,7 +90,7 @@ const AliasistChat = () => {
 
   const send = async () => {
     const text = input.trim();
-    if (!text || loading || !isLoaded || !isSignedIn) return;
+    if (!text || loading || !isLoaded) return;
     setInput("");
 
     const next: Message[] = [...messages, { role: "user", content: text }];
@@ -109,9 +98,19 @@ const AliasistChat = () => {
     setLoading(true);
 
     try {
+      if (!isSignedIn) {
+        setMessages((prev) => [...prev, { role: "assistant", content: "// Sign in to chat." }]);
+        setLoading(false);
+        return;
+      }
+
       const token = await getToken();
       if (!token) {
-        setMessages((prev) => [...prev, { role: "assistant", content: "// Missing session token." }]);
+        setMessages((prev) => [
+          ...prev.slice(0, -1),
+          { role: "assistant", content: "// Session expired — sign in again." },
+        ]);
+        setLoading(false);
         return;
       }
 
@@ -121,6 +120,10 @@ const AliasistChat = () => {
           user?.fullName ||
           user?.primaryEmailAddress?.emailAddress?.split("@")[0] ||
           "Anonymous";
+
+        // Optimistic: show the message immediately before the round-trip
+        setMessages(next);
+
         const res = await fetch(ROOM_CHAT_ENDPOINT, {
           method: "POST",
           headers: {
@@ -132,7 +135,11 @@ const AliasistChat = () => {
         const postData = await readJsonBody<{ message?: RoomMessage; error?: string }>(res);
         if (!res.ok || !postData?.message) {
           const err = postData?.error ?? `HTTP ${res.status}`;
-          setMessages((prev) => [...prev, { role: "assistant", content: `// ${err}` }]);
+          // Roll back optimistic message and show error
+          setMessages((prev) => [
+            ...prev.filter((m) => !(m.role === "user" && m.content === text)),
+            { role: "assistant", content: `// ${err}` },
+          ]);
           return;
         }
 
@@ -157,10 +164,7 @@ const AliasistChat = () => {
           Authorization: `Bearer ${token}`,
         },
         body: JSON.stringify({
-          messages: [
-            { role: "system", content: SYSTEM_PROMPT },
-            ...next.map((m) => ({ role: m.role, content: m.content })),
-          ],
+          messages: next.map((m) => ({ role: m.role, content: m.content })),
         }),
       });
 
@@ -196,8 +200,7 @@ const AliasistChat = () => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 16, scale: 0.95 }}
             transition={{ type: "spring", stiffness: 340, damping: 28 }}
-            className="w-[min(22rem,calc(100vw-2rem))] sm:w-96 max-h-[calc(100dvh-7rem)] bg-card border border-border rounded-sm shadow-electric-sm overflow-hidden flex flex-col"
-            style={{ height: 420 }}
+            className="flex w-[min(22rem,calc(100vw-2rem))] sm:w-96 max-h-[min(28rem,calc(100dvh-8rem))] sm:max-h-[min(30rem,calc(100dvh-6rem))] bg-card border border-border rounded-sm shadow-electric-sm overflow-hidden flex flex-col min-h-0"
           >
             <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-background/60 backdrop-blur-sm">
               <div className="flex items-center gap-2">
@@ -207,7 +210,7 @@ const AliasistChat = () => {
                 </span>
                 {isLoaded && !isSignedIn ? (
                   <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground/70 border border-border/60 px-1.5 py-px rounded-sm">
-                    Locked
+                    Sign in
                   </span>
                 ) : null}
               </div>
@@ -221,7 +224,7 @@ const AliasistChat = () => {
               </button>
             </div>
 
-            <div className="flex-1 overflow-y-auto px-4 py-4 space-y-3">
+            <div className="flex-1 min-h-0 overflow-y-auto px-4 py-4 space-y-3">
               {!isLoaded ? (
                 <div className="flex h-full min-h-[120px] items-center justify-center">
                   <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground animate-pulse">
@@ -277,14 +280,14 @@ const AliasistChat = () => {
               ) : !isSignedIn ? (
                 <div className="space-y-3">
                   <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/80 text-center leading-relaxed">
-                    Sign in with Clerk to send messages. Same session as the navbar — ready for authenticated chat APIs.
+                    Sign in with Clerk to chat and protect model responses from automated abuse.
                   </p>
                   <SignInButton mode="modal" fallbackRedirectUrl="/" forceRedirectUrl="/">
                     <button
                       type="button"
                       className="w-full cursor-pointer py-2.5 rounded-sm bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] hover:bg-electric/90 transition-[colors,box-shadow] shadow-electric-sm hover:shadow-electric-md"
                     >
-                      Sign in to chat
+                      Sign in
                     </button>
                   </SignInButton>
                 </div>
@@ -312,8 +315,8 @@ const AliasistChat = () => {
                   </div>
                   <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-muted-foreground/30 mt-2 text-center">
                     {USE_PAGES_CHAT_ROOM
-                      ? "Signed in · Clerk · /api/chat-messages"
-                      : "Signed in · Groq · Aliasist AI"}
+                      ? "Signed in · Clerk · Room"
+                      : "Signed in · Clerk · AI Waterfall"}
                   </p>
                 </>
               )}

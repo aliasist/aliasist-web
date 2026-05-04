@@ -1,5 +1,8 @@
+import { useQuery } from "@tanstack/react-query";
 import { X, Zap, Droplets, DollarSign, AlertTriangle, CheckCircle, Clock, XCircle, Leaf, Sparkles, Scale } from "lucide-react";
+import { apiRequest } from "@/lib/queryClient";
 import type { DataCenter } from "@shared/schema";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Props {
   center: DataCenter;
@@ -7,6 +10,57 @@ interface Props {
   onAskAI?: (center: DataCenter) => void;
   onCompare?: (center: DataCenter) => void;
   isCompareSelected?: boolean;
+}
+
+interface LiveInsights {
+  electricity?: {
+    retailPriceCentsPerKwh?: number | null;
+    estimatedAnnualElectricityCostMillions?: number | null;
+    source?: string;
+  } | null;
+  gridCarbon?: {
+    zone?: string | null;
+    carbonIntensity?: number | null;
+    renewablePercentage?: number | null;
+    fossilFreePercentage?: number | null;
+    carbonFreeEnergyPercentage?: number | null;
+    carbonIntensityLevel?: string | null;
+    isEstimated?: boolean | null;
+    source?: string;
+  } | null;
+  weather?: {
+    temperature2m?: number | null;
+    relativeHumidity2m?: number | null;
+    apparentTemperature?: number | null;
+    precipitation?: number | null;
+    cloudCover?: number | null;
+    windSpeed10m?: number | null;
+    windGusts10m?: number | null;
+    temperatureMaxToday?: number | null;
+    temperatureMinToday?: number | null;
+    precipitationSumToday?: number | null;
+    shortwaveRadiationSumToday?: number | null;
+    evapotranspirationToday?: number | null;
+    source?: string;
+  } | null;
+  airQuality?: {
+    usAqi?: number | null;
+    pm2_5?: number | null;
+    pm10?: number | null;
+    ozone?: number | null;
+    nitrogenDioxide?: number | null;
+    source?: string;
+  } | null;
+  nws?: {
+    forecastHeadline?: string | null;
+    activeAlerts?: Array<{
+      event?: string | null;
+      severity?: string | null;
+      headline?: string | null;
+      expires?: string | null;
+    }>;
+    source?: string;
+  } | null;
 }
 
 const STATUS_CONFIG: Record<string, { label: string; color: string; icon: any }> = {
@@ -37,10 +91,21 @@ function StatBadge({ icon: Icon, label, value, color }: { icon: any; label: stri
   );
 }
 
+function formatMillions(value: number) {
+  if (value >= 1000) return `$${(value / 1000).toFixed(1)}B`;
+  return `$${Math.round(value)}M`;
+}
+
 export default function DataCenterPanel({ center, onClose, onAskAI, onCompare, isCompareSelected }: Props) {
+  const isMobile = useIsMobile();
   const status = STATUS_CONFIG[center.status] || STATUS_CONFIG.operational;
   const gridRisk = center.gridRisk ? GRID_RISK_CONFIG[center.gridRisk] : null;
   const models: string[] = center.primaryModels ? JSON.parse(center.primaryModels) : [];
+  const { data: liveInsights, isLoading: liveInsightsLoading } = useQuery<LiveInsights>({
+    queryKey: ["/api/data-centers", center.id, "live-insights"],
+    queryFn: () => apiRequest("GET", `/api/data-centers/${center.id}/live-insights`).then((r) => r.json()),
+    staleTime: 5 * 60 * 1000,
+  });
 
   return (
     <div
@@ -49,13 +114,24 @@ export default function DataCenterPanel({ center, onClose, onAskAI, onCompare, i
     >
       {/* Panel Header */}
       <div
-        className="flex items-start justify-between p-3 border-b flex-shrink-0"
-        style={{ borderColor: "var(--color-border)" }}
+        className="flex items-start justify-between border-b flex-shrink-0"
+        style={{
+          borderColor: "var(--color-border)",
+          padding: isMobile ? "12px 14px" : "16px",
+          position: "sticky",
+          top: 0,
+          zIndex: 2,
+          background: "var(--color-surface-strong)",
+          backdropFilter: "blur(14px)",
+        }}
       >
         <div className="flex flex-col gap-1 flex-1 min-w-0 pr-2">
+          <span className="datasist-tag w-fit" style={{ padding: "4px 8px", fontSize: "9px", marginBottom: "4px" }}>
+            Facility Dossier
+          </span>
           <h2
             className="font-bold leading-tight"
-            style={{ fontSize: "14px", color: "var(--color-text)", fontFamily: "'Cabinet Grotesk', sans-serif" }}
+            style={{ fontSize: isMobile ? "16px" : "18px", color: "var(--color-text)", fontFamily: "'Cabinet Grotesk', sans-serif" }}
           >
             {center.name}
           </h2>
@@ -89,11 +165,11 @@ export default function DataCenterPanel({ center, onClose, onAskAI, onCompare, i
         </button>
       </div>
 
-      <div className="flex-1 overflow-y-auto p-3 flex flex-col gap-4">
+      <div className="flex-1 overflow-y-auto flex flex-col gap-4" style={{ padding: isMobile ? "12px 14px 14px" : "16px" }}>
         {/* Operator badge */}
         <div className="flex items-center gap-2 flex-wrap">
           <span
-            className="px-2 py-0.5 rounded text-xs font-semibold"
+            className="px-2.5 py-1 rounded-full text-xs font-semibold"
             style={{
               background: "rgba(113,255,156,0.08)",
               border: "1px solid rgba(113,255,156,0.2)",
@@ -105,7 +181,7 @@ export default function DataCenterPanel({ center, onClose, onAskAI, onCompare, i
             {center.company}
           </span>
           <span
-            className="px-2 py-0.5 rounded text-xs"
+            className="px-2.5 py-1 rounded-full text-xs"
             style={{
               background: "rgba(94,246,255,0.06)",
               border: "1px solid rgba(94,246,255,0.15)",
@@ -119,12 +195,13 @@ export default function DataCenterPanel({ center, onClose, onAskAI, onCompare, i
         </div>
 
         {/* Action buttons */}
+        {!isMobile && (
         <div className="flex gap-2">
           {onAskAI && (
             <button
               data-testid="btn-ask-ai"
               onClick={() => onAskAI(center)}
-              className="flex items-center gap-1.5 flex-1 justify-center py-1.5 rounded transition-all"
+              className="flex items-center gap-1.5 flex-1 justify-center py-2 rounded-2xl transition-all"
               style={{
                 background: "rgba(113,255,156,0.08)",
                 border: "1px solid rgba(113,255,156,0.25)",
@@ -142,7 +219,7 @@ export default function DataCenterPanel({ center, onClose, onAskAI, onCompare, i
             <button
               data-testid="btn-compare"
               onClick={() => onCompare(center)}
-              className="flex items-center gap-1.5 flex-1 justify-center py-1.5 rounded transition-all"
+              className="flex items-center gap-1.5 flex-1 justify-center py-2 rounded-2xl transition-all"
               style={{
                 background: isCompareSelected ? "rgba(94,246,255,0.15)" : "rgba(94,246,255,0.06)",
                 border: isCompareSelected ? "1px solid rgba(94,246,255,0.4)" : "1px solid rgba(94,246,255,0.15)",
@@ -157,6 +234,7 @@ export default function DataCenterPanel({ center, onClose, onAskAI, onCompare, i
             </button>
           )}
         </div>
+        )}
 
         {/* Stats grid */}
         <div className="grid grid-cols-2 gap-2">
@@ -212,7 +290,7 @@ export default function DataCenterPanel({ center, onClose, onAskAI, onCompare, i
         {/* Grid risk */}
         {gridRisk && (
           <div
-            className="flex items-center gap-2 p-2 rounded"
+            className="flex items-center gap-2 p-3 rounded-2xl"
             style={{
               background: `${gridRisk.color}0d`,
               border: `1px solid ${gridRisk.color}30`,
@@ -229,7 +307,7 @@ export default function DataCenterPanel({ center, onClose, onAskAI, onCompare, i
         {/* Community resistance */}
         {center.communityResistance === 1 && (
           <div
-            className="flex items-center gap-2 p-2 rounded"
+            className="flex items-center gap-2 p-3 rounded-2xl"
             style={{
               background: "rgba(255,85,85,0.06)",
               border: "1px solid rgba(255,85,85,0.25)",
@@ -319,13 +397,190 @@ export default function DataCenterPanel({ center, onClose, onAskAI, onCompare, i
             )}
           </div>
         )}
+
+        {/* Live insights */}
+        <div className="flex flex-col gap-2">
+          <div style={{ fontSize: "10px", letterSpacing: "0.1em", color: "var(--color-text-muted)" }}>
+            LIVE ENERGY & ENVIRONMENTAL SIGNALS
+          </div>
+          {liveInsightsLoading ? (
+            <div
+              className="p-2 rounded"
+              style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)", fontSize: "11px", color: "var(--color-text-muted)" }}
+            >
+              Pulling live signals...
+            </div>
+          ) : (
+            <>
+              {(liveInsights?.electricity?.retailPriceCentsPerKwh !== null && liveInsights?.electricity?.retailPriceCentsPerKwh !== undefined) || (liveInsights?.electricity?.estimatedAnnualElectricityCostMillions !== null && liveInsights?.electricity?.estimatedAnnualElectricityCostMillions !== undefined) ? (
+                <div
+                  className="flex flex-col gap-2 p-2 rounded"
+                  style={{
+                    background: "linear-gradient(180deg, rgba(255,215,112,0.12), rgba(94,246,255,0.04))",
+                    border: "1px solid rgba(255,215,112,0.18)",
+                  }}
+                >
+                  <div className="flex items-center justify-between">
+                    <div style={{ fontSize: "10px", letterSpacing: "0.1em", color: "#ffd76a" }}>
+                      POWER MARKET PULSE
+                    </div>
+                    <div style={{ fontSize: "9px", color: "var(--color-text-muted)" }}>
+                      {liveInsights.electricity?.source ?? "EIA"}
+                    </div>
+                  </div>
+                  <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-2"} gap-2`}>
+                    {liveInsights?.electricity?.retailPriceCentsPerKwh !== null && liveInsights?.electricity?.retailPriceCentsPerKwh !== undefined && (
+                      <StatBadge
+                        icon={DollarSign}
+                        label="LIVE POWER PRICE"
+                        value={`${liveInsights.electricity.retailPriceCentsPerKwh.toFixed(1)} c/kWh`}
+                        color="#ffd700"
+                      />
+                    )}
+                    {liveInsights?.electricity?.estimatedAnnualElectricityCostMillions !== null && liveInsights?.electricity?.estimatedAnnualElectricityCostMillions !== undefined && (
+                      <StatBadge
+                        icon={Zap}
+                        label="ANNUAL POWER COST"
+                        value={formatMillions(liveInsights.electricity.estimatedAnnualElectricityCostMillions)}
+                        color="var(--color-warning)"
+                      />
+                    )}
+                  </div>
+                  <div
+                    className="rounded px-2 py-1.5"
+                    style={{ background: "rgba(5,10,6,0.45)", border: "1px solid rgba(255,215,112,0.12)" }}
+                  >
+                    <div style={{ fontSize: "10px", color: "var(--color-text-muted)", lineHeight: 1.5 }}>
+                      Retail commercial electricity pricing is mapped by U.S. state and used to estimate yearly facility power spend.
+                    </div>
+                  </div>
+                </div>
+              ) : null}
+
+              {liveInsights?.gridCarbon && (
+                <div
+                  className="p-2 rounded flex flex-col gap-1.5"
+                  style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
+                >
+                  <div style={{ fontSize: "10px", letterSpacing: "0.08em", color: "var(--color-text-muted)" }}>
+                    GRID CARBON · {liveInsights.gridCarbon.source}
+                  </div>
+                  <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-2"} gap-2`} style={{ fontSize: "11px", color: "var(--color-text)" }}>
+                    <div>Carbon intensity: <strong>{liveInsights.gridCarbon.carbonIntensity ? `${liveInsights.gridCarbon.carbonIntensity} gCO2e/kWh` : "—"}</strong></div>
+                    <div>Carbon-free: <strong>{liveInsights.gridCarbon.carbonFreeEnergyPercentage ?? liveInsights.gridCarbon.fossilFreePercentage ?? "—"}{liveInsights.gridCarbon.carbonFreeEnergyPercentage != null || liveInsights.gridCarbon.fossilFreePercentage != null ? "%" : ""}</strong></div>
+                    <div>Renewable: <strong>{liveInsights.gridCarbon.renewablePercentage != null ? `${liveInsights.gridCarbon.renewablePercentage}%` : "—"}</strong></div>
+                    <div>Level: <strong>{liveInsights.gridCarbon.carbonIntensityLevel?.toUpperCase() ?? "—"}</strong></div>
+                  </div>
+                </div>
+              )}
+
+              {liveInsights?.weather && (
+                <div
+                  className="p-2 rounded flex flex-col gap-1.5"
+                  style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
+                >
+                  <div style={{ fontSize: "10px", letterSpacing: "0.08em", color: "var(--color-text-muted)" }}>
+                    WEATHER / COOLING CONDITIONS · {liveInsights.weather.source}
+                  </div>
+                  <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-2"} gap-2`} style={{ fontSize: "11px", color: "var(--color-text)" }}>
+                    <div>Temp: <strong>{liveInsights.weather.temperature2m != null ? `${liveInsights.weather.temperature2m}°C` : "—"}</strong></div>
+                    <div>Feels like: <strong>{liveInsights.weather.apparentTemperature != null ? `${liveInsights.weather.apparentTemperature}°C` : "—"}</strong></div>
+                    <div>Humidity: <strong>{liveInsights.weather.relativeHumidity2m != null ? `${liveInsights.weather.relativeHumidity2m}%` : "—"}</strong></div>
+                    <div>Wind: <strong>{liveInsights.weather.windSpeed10m != null ? `${liveInsights.weather.windSpeed10m} km/h` : "—"}</strong></div>
+                    <div>Cloud cover: <strong>{liveInsights.weather.cloudCover != null ? `${liveInsights.weather.cloudCover}%` : "—"}</strong></div>
+                    <div>Daily solar: <strong>{liveInsights.weather.shortwaveRadiationSumToday != null ? `${Math.round(liveInsights.weather.shortwaveRadiationSumToday)} MJ/m²` : "—"}</strong></div>
+                  </div>
+                </div>
+              )}
+
+              {liveInsights?.airQuality && (
+                <div
+                  className="p-2 rounded flex flex-col gap-1.5"
+                  style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
+                >
+                  <div style={{ fontSize: "10px", letterSpacing: "0.08em", color: "var(--color-text-muted)" }}>
+                    AIR QUALITY · {liveInsights.airQuality.source}
+                  </div>
+                  <div className={`grid ${isMobile ? "grid-cols-1" : "grid-cols-2"} gap-2`} style={{ fontSize: "11px", color: "var(--color-text)" }}>
+                    <div>US AQI: <strong>{liveInsights.airQuality.usAqi ?? "—"}</strong></div>
+                    <div>PM2.5: <strong>{liveInsights.airQuality.pm2_5 != null ? `${liveInsights.airQuality.pm2_5} ug/m3` : "—"}</strong></div>
+                    <div>PM10: <strong>{liveInsights.airQuality.pm10 != null ? `${liveInsights.airQuality.pm10} ug/m3` : "—"}</strong></div>
+                    <div>NO2: <strong>{liveInsights.airQuality.nitrogenDioxide != null ? `${liveInsights.airQuality.nitrogenDioxide} ug/m3` : "—"}</strong></div>
+                  </div>
+                </div>
+              )}
+
+              {liveInsights?.nws?.forecastHeadline && (
+                <div
+                  className="p-2 rounded flex flex-col gap-1.5"
+                  style={{ background: "var(--color-surface)", border: "1px solid var(--color-border)" }}
+                >
+                  <div style={{ fontSize: "10px", letterSpacing: "0.08em", color: "var(--color-text-muted)" }}>
+                    U.S. WEATHER SERVICE
+                  </div>
+                  <div style={{ fontSize: "11px", color: "var(--color-text)" }}>{liveInsights.nws.forecastHeadline}</div>
+                  {(liveInsights.nws.activeAlerts?.length ?? 0) > 0 && (
+                    <div style={{ fontSize: "11px", color: "#ffb347" }}>
+                      Active alerts: {liveInsights.nws.activeAlerts?.map((alert) => alert.event).join(", ")}
+                    </div>
+                  )}
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
 
       {/* Footer */}
       <div
-        className="flex-shrink-0 px-3 py-2 border-t"
-        style={{ borderColor: "var(--color-border)" }}
+        className="flex-shrink-0 border-t"
+        style={{
+          borderColor: "var(--color-border)",
+          padding: isMobile ? "12px 14px calc(12px + env(safe-area-inset-bottom))" : "8px 12px",
+          background: isMobile ? "var(--color-surface-strong)" : "transparent",
+          backdropFilter: isMobile ? "blur(14px)" : undefined,
+        }}
       >
+        {isMobile && (
+          <div className="flex gap-2 mb-3">
+            {onAskAI && (
+              <button
+                data-testid="btn-ask-ai-mobile"
+                onClick={() => onAskAI(center)}
+                className="flex items-center gap-1.5 flex-1 justify-center py-2 rounded-2xl transition-all"
+                style={{
+                  background: "rgba(113,255,156,0.08)",
+                  border: "1px solid rgba(113,255,156,0.25)",
+                  color: "var(--color-green)",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  letterSpacing: "0.05em",
+                }}
+              >
+                <Sparkles size={11} />
+                Ask AI
+              </button>
+            )}
+            {onCompare && (
+              <button
+                data-testid="btn-compare-mobile"
+                onClick={() => onCompare(center)}
+                className="flex items-center gap-1.5 flex-1 justify-center py-2 rounded-2xl transition-all"
+                style={{
+                  background: isCompareSelected ? "rgba(94,246,255,0.15)" : "rgba(94,246,255,0.06)",
+                  border: isCompareSelected ? "1px solid rgba(94,246,255,0.4)" : "1px solid rgba(94,246,255,0.15)",
+                  color: "var(--color-cyan)",
+                  fontSize: "11px",
+                  fontWeight: 600,
+                  letterSpacing: "0.05em",
+                }}
+              >
+                <Scale size={11} />
+                {isCompareSelected ? "Selected" : "Compare"}
+              </button>
+            )}
+          </div>
+        )}
         <p style={{ fontSize: "9px", color: "var(--color-text-muted)", letterSpacing: "0.06em" }}>
           ALIASIST.COM · DataSist · dev@aliasist.com · Data sourced from public reporting
         </p>

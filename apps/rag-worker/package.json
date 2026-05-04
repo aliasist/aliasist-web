@@ -1,0 +1,15 @@
+{
+  "name": "datasist-rag",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "dev": "wrangler dev",
+    "deploy": "wrangler deploy",
+    "seed": "curl -s -X POST https://datasist-rag.bchooper0730.workers.dev/api/v1/seed -H \"Authorization: Bearer $RAG_SECRET\" | python3 -m json.tool"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20250508.0",
+    "typescript": "^5.4.5",
+    "wrangler": "^4.0.0"
+  }
+}

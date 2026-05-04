@@ -3,6 +3,8 @@ main = "src/index.ts"
 compatibility_date = "2024-09-23"
 compatibility_flags = ["nodejs_compat"]
 
+# Local dev: copy `apps/datasist-api/.dev.vars.example` → `.dev.vars` (CLERK_SECRET_KEY + friends).
+
 [[d1_databases]]
 binding = "DB"
 database_name = "datasist"
@@ -11,7 +13,7 @@ database_id = "92a70e0c-819c-4f59-a5ae-a844e3fbb450"
 [vars]
 APP_NAME = "DataSist"
 ALLOWED_ORIGIN = "https://data.aliasist.com"
-RAG_API_URL = ""
+RAG_API_URL = "https://datasist-rag.bchooper0730.workers.dev/api/v1/query"
 # Same Clerk instance as aliasist.com; publishable key is safe to ship.
 CLERK_PUBLISHABLE_KEY = "pk_live_Y2xlcmsuYWxpYXNpc3QuY29tJA"
 

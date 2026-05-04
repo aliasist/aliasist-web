@@ -1,0 +1,26 @@
+# Copy to `.dev.vars` for `wrangler dev`.
+# Set production secrets via: wrangler secret put <KEY>
+
+# Clerk (same application as DataSist web + aliasist.com)
+CLERK_SECRET_KEY=sk_test_or_sk_live_secret_key_here
+CLERK_PUBLISHABLE_KEY=pk_test_or_pk_live_publishable_key_here
+
+# Comma-separated Clerk user ids allowed for admin mutations
+# ADMIN_USER_IDS=user_2abc...,user_2def...
+
+# AI providers (at least one required for /api/ai/chat)
+GEMINI_API_KEY=your_gemini_api_key_here
+GROQ_API_KEY=your_groq_api_key_here
+ANTHROPIC_API_KEY=your_anthropic_api_key_here
+
+# EIA electricity pricing — https://www.eia.gov/opendata/
+EIA_API_KEY=your_eia_api_key_here
+
+# Electricity Maps (optional — carbon intensity / grid carbon data)
+# ELECTRICITY_MAPS_API_KEY=your_electricity_maps_key_here
+
+# Neon PostgreSQL — D1 → Neon sync (optional)
+# NEON_DATABASE_URL=postgresql://user:pass@host/db
+
+# RAG worker — bearer token must match RAG_SECRET set on the datasist-rag worker
+RAG_API_KEY=your_rag_shared_secret_here

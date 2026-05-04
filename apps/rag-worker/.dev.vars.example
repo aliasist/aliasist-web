@@ -1,0 +1,11 @@
+# Copy to `.dev.vars` for `wrangler dev`.
+# Set production secrets via: wrangler secret put <KEY>
+
+# Required — Gemini embeddings (gemini-embedding-2) + generation (gemini-2.0-flash-lite)
+GEMINI_API_KEY=your_gemini_api_key_here
+
+# Optional — bearer token datasist-api sends as RAG_API_KEY; leave blank to open the endpoint
+# RAG_SECRET=your_rag_shared_secret_here
+
+# Optional — Groq llama-3.3-70b-versatile for higher-quality generation (falls back to Gemini)
+# GROQ_API_KEY=your_groq_api_key_here

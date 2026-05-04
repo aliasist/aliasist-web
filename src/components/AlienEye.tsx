@@ -11,14 +11,15 @@ const AlienEye = () => {
   const [blink, setBlink] = useState(false);
 
   useEffect(() => {
-    const onMove = (e: MouseEvent) => {
-      const el = eyeRef.current;
-      if (!el) return;
+    const el = eyeRef.current;
+    if (!el) return;
+
+    const applyLook = (clientX: number, clientY: number) => {
       const rect = el.getBoundingClientRect();
       const cx = rect.left + rect.width / 2;
       const cy = rect.top + rect.height / 2;
-      const dx = e.clientX - cx;
-      const dy = e.clientY - cy;
+      const dx = clientX - cx;
+      const dy = clientY - cy;
       const angle = Math.atan2(dy, dx);
       const dist = Math.min(Math.hypot(dx, dy), 160);
       const maxOffset = 14;
@@ -28,26 +29,36 @@ const AlienEye = () => {
         y: Math.sin(angle) * maxOffset * pct,
       });
     };
-    window.addEventListener("mousemove", onMove);
 
-    // Random blinks
+    const onWindowMouse = (e: MouseEvent) => applyLook(e.clientX, e.clientY);
+    const onEyePointer = (e: PointerEvent) => applyLook(e.clientX, e.clientY);
+
+    window.addEventListener("mousemove", onWindowMouse, { passive: true });
+    el.addEventListener("pointermove", onEyePointer, { passive: true });
+
+    let blinkOuter: ReturnType<typeof setTimeout> | undefined;
+    let blinkInner: ReturnType<typeof setTimeout> | undefined;
     const blinkLoop = () => {
-      const delay = 2500 + Math.random() * 4000;
-      setTimeout(() => {
+      blinkOuter = setTimeout(() => {
         setBlink(true);
-        setTimeout(() => setBlink(false), 140);
+        blinkInner = setTimeout(() => setBlink(false), 140);
         blinkLoop();
-      }, delay);
+      }, 2500 + Math.random() * 4000);
     };
     blinkLoop();
 
-    return () => window.removeEventListener("mousemove", onMove);
+    return () => {
+      window.removeEventListener("mousemove", onWindowMouse);
+      el.removeEventListener("pointermove", onEyePointer);
+      if (blinkOuter) clearTimeout(blinkOuter);
+      if (blinkInner) clearTimeout(blinkInner);
+    };
   }, []);
 
   return (
     <motion.div
       ref={eyeRef}
-      className="relative flex items-center justify-center"
+      className="relative flex touch-manipulation items-center justify-center select-none"
       style={{ width: "clamp(140px, 30vw, 200px)", height: "clamp(140px, 30vw, 200px)" }}
       initial={{ scale: 0.6, opacity: 0 }}
       animate={{ scale: 1, opacity: 1 }}

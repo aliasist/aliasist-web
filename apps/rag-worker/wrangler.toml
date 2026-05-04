@@ -1,0 +1,20 @@
+name = "datasist-rag"
+main = "src/index.ts"
+compatibility_date = "2025-10-08"
+compatibility_flags = ["nodejs_compat"]
+
+[ai]
+binding = "AI"
+
+[[vectorize]]
+binding = "VECTORIZE"
+index_name = "datasist-facilities"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "datasist"
+database_id = "92a70e0c-819c-4f59-a5ae-a844e3fbb450"
+
+[vars]
+# Set auth secret via: wrangler secret put RAG_SECRET
+# datasist-api will send this as Bearer token in RAG_API_KEY

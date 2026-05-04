@@ -27,10 +27,12 @@ const HeroSection = () => {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 1.2, duration: 0.6 }}
-        className="absolute top-24 right-4 hidden items-center gap-2 rounded-sm border border-electric/20 bg-background/30 px-3 py-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground shadow-electric-xs backdrop-blur-md sm:right-8 sm:flex lg:right-12 xl:right-16"
+        className="absolute right-3 top-[calc(4.5rem+env(safe-area-inset-top,0px)+6px)] z-[5] flex max-w-[min(100%-1.5rem,14rem)] items-center gap-1.5 rounded-sm border border-electric/20 bg-background/40 px-2.5 py-1.5 font-mono text-[8px] uppercase tracking-[0.12em] text-muted-foreground shadow-electric-xs backdrop-blur-md sm:right-8 sm:gap-2 sm:px-3 sm:text-[10px] sm:tracking-[0.15em] lg:right-12 xl:right-16"
       >
-        <span className="text-electric animate-pulse">▮</span>
-        {hero.statusBadge}
+        <span className="shrink-0 text-electric animate-pulse" aria-hidden>
+          ▮
+        </span>
+        <span className="leading-snug">{hero.statusBadge}</span>
       </motion.div>
 
       {/* Glossy alien icon — bottom right atmospheric */}

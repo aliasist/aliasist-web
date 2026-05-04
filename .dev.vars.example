@@ -1,6 +1,11 @@
 # Copy to `.dev.vars` in this folder (gitignored). Wrangler loads it for `npm run preview`
 # and local Pages Functions (`/api/chat-messages`, `/api/mongo-ping`).
 #
-# Clerk Dashboard → Configure → API Keys:
+# Clerk Dashboard → Configure → API Keys (same application as auth.aliasist.com):
 CLERK_SECRET_KEY=sk_live_or_sk_test_secret_key_here
 CLERK_PUBLISHABLE_KEY=pk_live_or_pk_test_publishable_key_here
+#
+# Related worker templates (same keys):
+#   apps/llm-chat/.dev.vars.example     — POST /api/chat JWT verification
+#   apps/datasist-api/.dev.vars.example — DataSist API + admin JWTs
+#   website/.dev.vars.example           — standalone Pages with website/functions

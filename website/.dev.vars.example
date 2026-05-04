@@ -1,0 +1,4 @@
+# For Cloudflare Pages (or wrangler pages dev) deployments that include `website/functions/`.
+# Same Clerk instance as auth.aliasist.com / aliasist.com.
+CLERK_SECRET_KEY=sk_test_or_sk_live_secret_key_here
+CLERK_PUBLISHABLE_KEY=pk_test_or_pk_live_publishable_key_here

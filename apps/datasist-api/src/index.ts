@@ -15,6 +15,7 @@ export interface Env {
   ANALYTICS: D1Database;
   ALLOWED_ORIGIN: string;
   EIA_API_KEY: string;
+  ELECTRICITY_MAPS_API_KEY?: string;
   GROQ_API_KEY: string;
   ANTHROPIC_API_KEY: string;
   GEMINI_API_KEY: string;
@@ -66,6 +67,175 @@ async function getEIAPrices(apiKey: string): Promise<Record<string, number>> {
   }
 }
 
+async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
+  const res = await fetch(url, init);
+  if (!res.ok) {
+    const body = await res.text().catch(() => res.statusText);
+    throw new Error(`${res.status} ${res.statusText}: ${body}`);
+  }
+  return await res.json() as T;
+}
+
+async function getElectricityMapInsights(lat: number, lon: number, apiKey: string) {
+  const headers = { "auth-token": apiKey };
+  const base = `https://api.electricitymap.org/v4`;
+  const query = `lat=${encodeURIComponent(String(lat))}&lon=${encodeURIComponent(String(lon))}`;
+
+  const [carbon, carbonFree, level] = await Promise.all([
+    fetchJson<{ zone?: string; carbonIntensity?: number; fossilFreePercentage?: number; renewablePercentage?: number; isEstimated?: boolean; datetime?: string }>(
+      `${base}/carbon-intensity/latest?${query}`,
+      { headers },
+    ),
+    fetchJson<{ carbonFreeEnergyPercentage?: number; datetime?: string }>(
+      `${base}/carbon-free-energy/latest?${query}`,
+      { headers },
+    ),
+    fetchJson<{ level?: string; datetime?: string }>(
+      `${base}/carbon-intensity-level/latest?${query}`,
+      { headers },
+    ),
+  ]);
+
+  return {
+    zone: carbon.zone ?? null,
+    carbonIntensity: carbon.carbonIntensity ?? null,
+    renewablePercentage: carbon.renewablePercentage ?? null,
+    fossilFreePercentage: carbon.fossilFreePercentage ?? null,
+    carbonFreeEnergyPercentage: carbonFree.carbonFreeEnergyPercentage ?? null,
+    carbonIntensityLevel: level.level ?? null,
+    isEstimated: carbon.isEstimated ?? null,
+    datetime: carbon.datetime ?? carbonFree.datetime ?? level.datetime ?? null,
+    source: "Electricity Maps",
+  };
+}
+
+async function getOpenMeteoWeatherInsights(lat: number, lon: number) {
+  const url = new URL("https://api.open-meteo.com/v1/forecast");
+  url.searchParams.set("latitude", String(lat));
+  url.searchParams.set("longitude", String(lon));
+  url.searchParams.set("timezone", "auto");
+  url.searchParams.set(
+    "current",
+    [
+      "temperature_2m",
+      "relative_humidity_2m",
+      "apparent_temperature",
+      "precipitation",
+      "cloud_cover",
+      "wind_speed_10m",
+      "wind_gusts_10m",
+    ].join(","),
+  );
+  url.searchParams.set(
+    "daily",
+    [
+      "temperature_2m_max",
+      "temperature_2m_min",
+      "precipitation_sum",
+      "shortwave_radiation_sum",
+      "wind_speed_10m_max",
+      "et0_fao_evapotranspiration",
+    ].join(","),
+  );
+
+  const data = await fetchJson<{
+    current?: Record<string, number | string | null>;
+    daily?: Record<string, Array<number | string | null>>;
+  }>(url.toString());
+
+  const daily = data.daily ?? {};
+  const current = data.current ?? {};
+
+  return {
+    temperature2m: Number(current.temperature_2m ?? NaN) || null,
+    relativeHumidity2m: Number(current.relative_humidity_2m ?? NaN) || null,
+    apparentTemperature: Number(current.apparent_temperature ?? NaN) || null,
+    precipitation: Number(current.precipitation ?? NaN) || null,
+    cloudCover: Number(current.cloud_cover ?? NaN) || null,
+    windSpeed10m: Number(current.wind_speed_10m ?? NaN) || null,
+    windGusts10m: Number(current.wind_gusts_10m ?? NaN) || null,
+    temperatureMaxToday: Number(daily.temperature_2m_max?.[0] ?? NaN) || null,
+    temperatureMinToday: Number(daily.temperature_2m_min?.[0] ?? NaN) || null,
+    precipitationSumToday: Number(daily.precipitation_sum?.[0] ?? NaN) || null,
+    shortwaveRadiationSumToday: Number(daily.shortwave_radiation_sum?.[0] ?? NaN) || null,
+    evapotranspirationToday: Number(daily.et0_fao_evapotranspiration?.[0] ?? NaN) || null,
+    source: "Open-Meteo",
+  };
+}
+
+async function getOpenMeteoAirQualityInsights(lat: number, lon: number) {
+  const url = new URL("https://air-quality-api.open-meteo.com/v1/air-quality");
+  url.searchParams.set("latitude", String(lat));
+  url.searchParams.set("longitude", String(lon));
+  url.searchParams.set("timezone", "auto");
+  url.searchParams.set(
+    "current",
+    [
+      "us_aqi",
+      "pm2_5",
+      "pm10",
+      "ozone",
+      "nitrogen_dioxide",
+      "sulphur_dioxide",
+      "carbon_monoxide",
+    ].join(","),
+  );
+
+  const data = await fetchJson<{ current?: Record<string, number | string | null> }>(url.toString());
+  const current = data.current ?? {};
+
+  return {
+    usAqi: Number(current.us_aqi ?? NaN) || null,
+    pm2_5: Number(current.pm2_5 ?? NaN) || null,
+    pm10: Number(current.pm10 ?? NaN) || null,
+    ozone: Number(current.ozone ?? NaN) || null,
+    nitrogenDioxide: Number(current.nitrogen_dioxide ?? NaN) || null,
+    sulphurDioxide: Number(current.sulphur_dioxide ?? NaN) || null,
+    carbonMonoxide: Number(current.carbon_monoxide ?? NaN) || null,
+    source: "Open-Meteo Air Quality",
+  };
+}
+
+async function getNwsInsights(lat: number, lon: number) {
+  const headers = { "User-Agent": "aliasist-datasist/1.0 (dev@aliasist.com)" };
+  const point = await fetchJson<{
+    properties?: {
+      forecast?: string;
+      forecastHourly?: string;
+    };
+  }>(`https://api.weather.gov/points/${lat},${lon}`, { headers });
+
+  const forecastUrl = point.properties?.forecast;
+  if (!forecastUrl) {
+    return { forecastHeadline: null, activeAlerts: [], source: "NWS" };
+  }
+
+  const [forecast, alerts] = await Promise.all([
+    fetchJson<{ properties?: { periods?: Array<{ name?: string; shortForecast?: string; temperature?: number; temperatureUnit?: string }> } }>(
+      forecastUrl,
+      { headers },
+    ),
+    fetchJson<{ features?: Array<{ properties?: { event?: string; severity?: string; headline?: string; expires?: string } }> }>(
+      `https://api.weather.gov/alerts/active?point=${lat},${lon}`,
+      { headers },
+    ),
+  ]);
+
+  const firstPeriod = forecast.properties?.periods?.[0];
+  return {
+    forecastHeadline: firstPeriod
+      ? `${firstPeriod.name ?? "Current"}: ${firstPeriod.shortForecast ?? ""}${firstPeriod.temperature ? ` · ${firstPeriod.temperature}°${firstPeriod.temperatureUnit ?? "F"}` : ""}`
+      : null,
+    activeAlerts: (alerts.features ?? []).slice(0, 3).map((feature) => ({
+      event: feature.properties?.event ?? "Alert",
+      severity: feature.properties?.severity ?? null,
+      headline: feature.properties?.headline ?? null,
+      expires: feature.properties?.expires ?? null,
+    })),
+    source: "NWS",
+  };
+}
+
 const CORS = (origin: string) => ({
   "Access-Control-Allow-Origin": origin,
   "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
@@ -77,6 +247,13 @@ const GROQ_MODEL = "llama-3.3-70b-versatile";
 const CLAUDE_URL = "https://api.anthropic.com/v1/messages";
 const CLAUDE_MODEL = "claude-3-5-sonnet-20241022";
 const GEMINI_MODEL = "gemini-2.5-flash";
+
+type ChatMessage = { role: string; content: string };
+type ChatProviderResult = {
+  provider: "gemini" | "anthropic" | "groq";
+  model: string;
+  answer: string;
+};
 
 const DATASIST_SYSTEM = `You are DataSist AI, the intelligence engine for the DataSist platform — part of the Aliasist suite (aliasist.com).
 
@@ -151,9 +328,13 @@ export default {
       const isCollection = p === "/api/data-centers" || p === "/api/facilities";
       const isItem = p.startsWith("/api/data-centers/") || p.startsWith("/api/facilities/");
       const itemId = isItem ? parseInt(p.split("/").pop() ?? "") : NaN;
+      const liveInsightsMatch = p.match(/^\/api\/(?:data-centers|facilities)\/(\d+)\/live-insights$/);
 
       // ── Public reads ────────────────────────────────────────────────────
       if (isCollection && request.method === "GET") return handleGetAll(env.DB, corsHeaders, env);
+      if (liveInsightsMatch && request.method === "GET") {
+        return handleGetLiveInsights(env.DB, Number(liveInsightsMatch[1]), corsHeaders, env);
+      }
       if (isItem && request.method === "GET") return handleGetOne(env.DB, itemId, corsHeaders);
 
       // ── Admin-only mutations (Clerk JWT + ADMIN_USER_IDS allow-list) ────
@@ -218,37 +399,125 @@ export default {
 // ── Handlers ──────────────────────────────────────────────────────────────────
 
 // Convert snake_case DB row to camelCase for the frontend
-function toCamel(row: Record<string, unknown>) {
+interface FacilityRecord {
+  id: number | string;
+  name: string;
+  company: string;
+  companyType: string;
+  lat: number;
+  lng: number;
+  city: string;
+  state: string;
+  country: string;
+  capacityMW: number | null;
+  estimatedAnnualGWh: number | null;
+  waterUsageMillionGallons: number | null;
+  status: string;
+  yearOpened: number | null;
+  yearPlanned: number | null;
+  investmentBillions: number | null;
+  acreage: number | null;
+  primaryModels: string | null;
+  communityImpact: string | null;
+  communityResistance: number | null;
+  gridRisk: string | null;
+  renewablePercent: number | null;
+  notes: string | null;
+  electricityPriceCentsPerKwh?: number;
+  estimatedAnnualElectricityCostMillions?: number;
+}
+
+function toCamel(row: Record<string, unknown>): FacilityRecord {
   return {
-    id: row.id,
-    name: row.name,
-    company: row.company,
-    companyType: row.company_type,
-    lat: row.lat,
-    lng: row.lng,
-    city: row.city,
-    state: row.state,
-    country: row.country,
-    capacityMW: row.capacity_mw,
-    estimatedAnnualGWh: row.estimated_annual_gwh,
-    waterUsageMillionGallons: row.water_usage_million_gallons,
-    status: row.status,
-    yearOpened: row.year_opened,
-    yearPlanned: row.year_planned,
-    investmentBillions: row.investment_billions,
-    acreage: row.acreage,
-    primaryModels: row.primary_models,
-    communityImpact: row.community_impact,
-    communityResistance: row.community_resistance,
-    gridRisk: row.grid_risk,
-    renewablePercent: row.renewable_percent,
-    notes: row.notes,
+    id: (row.id as number | string) ?? "",
+    name: String(row.name ?? ""),
+    company: String(row.company ?? ""),
+    companyType: String(row.company_type ?? ""),
+    lat: Number(row.lat ?? 0),
+    lng: Number(row.lng ?? 0),
+    city: String(row.city ?? ""),
+    state: String(row.state ?? ""),
+    country: String(row.country ?? ""),
+    capacityMW: row.capacity_mw == null ? null : Number(row.capacity_mw),
+    estimatedAnnualGWh: row.estimated_annual_gwh == null ? null : Number(row.estimated_annual_gwh),
+    waterUsageMillionGallons: row.water_usage_million_gallons == null ? null : Number(row.water_usage_million_gallons),
+    status: String(row.status ?? ""),
+    yearOpened: row.year_opened == null ? null : Number(row.year_opened),
+    yearPlanned: row.year_planned == null ? null : Number(row.year_planned),
+    investmentBillions: row.investment_billions == null ? null : Number(row.investment_billions),
+    acreage: row.acreage == null ? null : Number(row.acreage),
+    primaryModels: row.primary_models == null ? null : String(row.primary_models),
+    communityImpact: row.community_impact == null ? null : String(row.community_impact),
+    communityResistance: row.community_resistance == null ? null : Number(row.community_resistance),
+    gridRisk: row.grid_risk == null ? null : String(row.grid_risk),
+    renewablePercent: row.renewable_percent == null ? null : Number(row.renewable_percent),
+    notes: row.notes == null ? null : String(row.notes),
   };
+}
+
+function facilityFieldScore(value: unknown): number {
+  if (value === null || value === undefined) return 0;
+  if (typeof value === "string") return value.trim() ? 1 : 0;
+  return 1;
+}
+
+function facilityCompleteness(facility: FacilityRecord): number {
+  const fields: unknown[] = [
+    facility.capacityMW,
+    facility.estimatedAnnualGWh,
+    facility.waterUsageMillionGallons,
+    facility.investmentBillions,
+    facility.acreage,
+    facility.primaryModels,
+    facility.communityImpact,
+    facility.gridRisk,
+    facility.renewablePercent,
+    facility.notes,
+    facility.electricityPriceCentsPerKwh,
+    facility.estimatedAnnualElectricityCostMillions,
+  ];
+
+  return fields.reduce<number>((score, value) => score + facilityFieldScore(value), 0);
+}
+
+function mergeFacilityRecords(primary: FacilityRecord, secondary: FacilityRecord): FacilityRecord {
+  const merged: FacilityRecord = { ...primary };
+
+  for (const [key, value] of Object.entries(secondary)) {
+    const typedKey = key as keyof FacilityRecord;
+    const current = merged[typedKey];
+    if (current === null || current === undefined || current === "") {
+      merged[typedKey] = value as never;
+    }
+  }
+
+  return merged;
+}
+
+function dedupeFacilities(facilities: FacilityRecord[]): FacilityRecord[] {
+  const deduped = new Map<string, FacilityRecord>();
+
+  for (const facility of facilities) {
+    const key = facility.name.trim().toLowerCase();
+    const existing = deduped.get(key);
+
+    if (!existing) {
+      deduped.set(key, facility);
+      continue;
+    }
+
+    const keepExisting = facilityCompleteness(existing) >= facilityCompleteness(facility);
+    const primary = keepExisting ? existing : facility;
+    const secondary = keepExisting ? facility : existing;
+    deduped.set(key, mergeFacilityRecords(primary, secondary));
+  }
+
+  return Array.from(deduped.values()).sort((a, b) => Number(a.id) - Number(b.id));
 }
 
 async function handleGetAll(db: D1Database, headers: Record<string, string>, env?: Env) {
   const { results } = await db.prepare("SELECT * FROM data_centers ORDER BY id ASC").all();
-  const facilities = results.map(toCamel);
+  const facilities = results.map(toCamel) as FacilityRecord[];
 
   // Enrich with live EIA electricity prices
   if (env?.EIA_API_KEY) {
@@ -257,19 +526,19 @@ async function handleGetAll(db: D1Database, headers: Record<string, string>, env
       const abbr = STATE_ABBR[f.state as string];
       const priceCents = abbr ? prices[abbr] : undefined;
       if (priceCents) {
-        (f as Record<string, unknown>).electricityPriceCentsPerKwh = priceCents;
+        f.electricityPriceCentsPerKwh = priceCents;
         // Estimate annual electricity cost based on capacity
-        const capacityMW = (f as Record<string, unknown>).capacityMW as number;
+        const capacityMW = f.capacityMW;
         if (capacityMW) {
           const annualGWh = capacityMW * 8760 / 1000;
           const annualCostMillions = (annualGWh * 1_000_000 * priceCents) / 100 / 1_000_000;
-          (f as Record<string, unknown>).estimatedAnnualElectricityCostMillions = Math.round(annualCostMillions);
+          f.estimatedAnnualElectricityCostMillions = Math.round(annualCostMillions);
         }
       }
     }
   }
 
-  return json(facilities, 200, headers);
+  return json(dedupeFacilities(facilities), 200, headers);
 }
 
 async function handleGetOne(db: D1Database, id: number, headers: Record<string, string>) {
@@ -277,6 +546,52 @@ async function handleGetOne(db: D1Database, id: number, headers: Record<string, 
   const row = await db.prepare("SELECT * FROM data_centers WHERE id = ?").bind(id).first();
   if (!row) return json({ error: "Not found" }, 404, headers);
   return json(toCamel(row as Record<string, unknown>), 200, headers);
+}
+
+async function handleGetLiveInsights(db: D1Database, id: number, headers: Record<string, string>, env: Env) {
+  if (isNaN(id)) return json({ error: "Invalid ID" }, 400, headers);
+  const row = await db.prepare("SELECT * FROM data_centers WHERE id = ?").bind(id).first();
+  if (!row) return json({ error: "Not found" }, 404, headers);
+
+  const facility = toCamel(row as Record<string, unknown>);
+  const isUs = facility.country === "USA" || facility.country === "United States";
+
+  const electricity = {
+    retailPriceCentsPerKwh: null as number | null,
+    estimatedAnnualElectricityCostMillions: null as number | null,
+    source: "EIA",
+  };
+
+  if (env.EIA_API_KEY) {
+    const prices = await getEIAPrices(env.EIA_API_KEY);
+    const abbr = STATE_ABBR[facility.state];
+    const priceCents = abbr ? prices[abbr] : undefined;
+    if (priceCents) {
+      electricity.retailPriceCentsPerKwh = priceCents;
+      if (facility.capacityMW) {
+        const annualGWh = facility.capacityMW * 8760 / 1000;
+        electricity.estimatedAnnualElectricityCostMillions = Math.round((annualGWh * priceCents) / 100);
+      }
+    }
+  }
+
+  const [gridCarbon, weather, airQuality, nws] = await Promise.all([
+    env.ELECTRICITY_MAPS_API_KEY
+      ? getElectricityMapInsights(facility.lat, facility.lng, env.ELECTRICITY_MAPS_API_KEY).catch(() => null)
+      : Promise.resolve(null),
+    getOpenMeteoWeatherInsights(facility.lat, facility.lng).catch(() => null),
+    getOpenMeteoAirQualityInsights(facility.lat, facility.lng).catch(() => null),
+    isUs ? getNwsInsights(facility.lat, facility.lng).catch(() => null) : Promise.resolve(null),
+  ]);
+
+  return json({
+    facilityId: facility.id,
+    electricity,
+    gridCarbon,
+    weather,
+    airQuality,
+    nws,
+  }, 200, headers);
 }
 
 async function handleCreate(request: Request, db: D1Database, headers: Record<string, string>) {
@@ -347,11 +662,11 @@ async function handleDelete(db: D1Database, id: number, headers: Record<string, 
 
 async function handleStats(db: D1Database, headers: Record<string, string>) {
   const { results } = await db.prepare("SELECT * FROM data_centers").all();
-  const facilities = results as Record<string, unknown>[];
-  const totalCapacity = facilities.reduce((sum, f) => sum + (Number(f.capacity_mw) || 0), 0);
+  const facilities = dedupeFacilities((results as Record<string, unknown>[]).map(toCamel) as FacilityRecord[]);
+  const totalCapacity = facilities.reduce((sum, f) => sum + (Number(f.capacityMW) || 0), 0);
   const operational = facilities.filter((f) => f.status === "operational").length;
   const underConstruction = facilities.filter((f) => f.status === "under_construction").length;
-  const totalInvestment = facilities.reduce((sum, f) => sum + (Number(f.investment_billions) || 0), 0);
+  const totalInvestment = facilities.reduce((sum, f) => sum + (Number(f.investmentBillions) || 0), 0);
   return json({
     totalFacilities: facilities.length,
     operationalCount: operational,
@@ -453,6 +768,39 @@ async function callGeminiData(
     .trim() || "No response received.";
 }
 
+async function callGroqData(
+  apiKey: string,
+  systemPrompt: string,
+  messages: ChatMessage[]
+): Promise<string> {
+  const groqRes = await fetch(GROQ_URL, {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "Authorization": `Bearer ${apiKey}`,
+    },
+    body: JSON.stringify({
+      model: GROQ_MODEL,
+      messages: [{ role: "system", content: systemPrompt }, ...messages],
+      max_tokens: 768,
+      temperature: 0.65,
+    }),
+  });
+
+  if (!groqRes.ok) {
+    const errText = await groqRes.text().catch(() => groqRes.statusText);
+    throw new Error(`Groq API error: ${groqRes.status} — ${errText}`);
+  }
+
+  const data = await groqRes.json() as {
+    choices?: Array<{ message?: { content?: string } }>;
+    error?: { message: string };
+  };
+
+  if (data.error) throw new Error(data.error.message);
+  return data.choices?.[0]?.message?.content?.trim() ?? "No response received.";
+}
+
 async function handleChat(request: Request, headers: Record<string, string>, env: Env) {
   // Accept both legacy { question, facilityId } and modern { messages } payloads
   const body = await request.json() as {
@@ -469,7 +817,7 @@ async function handleChat(request: Request, headers: Record<string, string>, env
   const systemPrompt = DATASIST_SYSTEM + facilityContext;
 
   // Build messages array
-  let chatMessages: Array<{ role: string; content: string }>;
+  let chatMessages: ChatMessage[];
   if (body.question) {
     const history = (body.history ?? []).filter((m) => m.role !== "system");
     chatMessages = [...history, { role: "user", content: body.question }];
@@ -482,63 +830,65 @@ async function handleChat(request: Request, headers: Record<string, string>, env
   }
 
   try {
-    let answer = "";
-    let modelUsed = "";
+    const attemptedProviders: string[] = [];
+    const failures: Array<{ provider: string; error: string }> = [];
 
-    // Gemini primary, Claude/Groq fallback
-    if (env.GEMINI_API_KEY) {
-      try {
-        answer = await callGeminiData(env.GEMINI_API_KEY, systemPrompt, chatMessages);
-        modelUsed = GEMINI_MODEL;
-      } catch (geminiErr) {
-        console.warn("Gemini failed, falling back:", geminiErr);
-      }
-    }
-
-    if (!answer && env.ANTHROPIC_API_KEY) {
-      try {
-        answer = await callClaudeData(env.ANTHROPIC_API_KEY, systemPrompt, chatMessages);
-        modelUsed = CLAUDE_MODEL;
-      } catch (claudeErr) {
-        console.warn("Claude failed, falling back to Groq:", claudeErr);
-        if (!env.GROQ_API_KEY) throw claudeErr;
-        // fall through to Groq below
-        answer = "";
-      }
-    }
-
-    // Use Groq if Claude wasn’t available or failed
-    if (!answer && env.GROQ_API_KEY) {
-      const groqRes = await fetch(GROQ_URL, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${env.GROQ_API_KEY}`,
-        },
-        body: JSON.stringify({
-          model: GROQ_MODEL,
-          messages: [{ role: "system", content: systemPrompt }, ...chatMessages],
-          max_tokens: 768,
-          temperature: 0.65,
+    const attempts: Array<{
+      provider: ChatProviderResult["provider"];
+      run: () => Promise<ChatProviderResult>;
+    }> = [
+      ...(env.GEMINI_API_KEY ? [{
+        provider: "gemini" as const,
+        run: async () => ({
+          provider: "gemini" as const,
+          model: GEMINI_MODEL,
+          answer: await callGeminiData(env.GEMINI_API_KEY, systemPrompt, chatMessages),
         }),
-      });
+      }] : []),
+      ...(env.ANTHROPIC_API_KEY ? [{
+        provider: "anthropic" as const,
+        run: async () => ({
+          provider: "anthropic" as const,
+          model: CLAUDE_MODEL,
+          answer: await callClaudeData(env.ANTHROPIC_API_KEY, systemPrompt, chatMessages),
+        }),
+      }] : []),
+      ...(env.GROQ_API_KEY ? [{
+        provider: "groq" as const,
+        run: async () => ({
+          provider: "groq" as const,
+          model: GROQ_MODEL,
+          answer: await callGroqData(env.GROQ_API_KEY, systemPrompt, chatMessages),
+        }),
+      }] : []),
+    ];
 
-      if (!groqRes.ok) {
-        const errText = await groqRes.text().catch(() => groqRes.statusText);
-        return json({ error: `Groq API error: ${groqRes.status} — ${errText}` }, 502, headers);
+    for (const attempt of attempts) {
+      try {
+        const result = await attempt.run();
+        attemptedProviders.push(result.provider);
+        return json({
+          answer: result.answer,
+          model: result.model,
+          provider: result.provider,
+          attemptedProviders,
+          fallbackUsed: attemptedProviders.length > 1,
+        }, 200, headers);
+      } catch (err) {
+        attemptedProviders.push(attempt.provider);
+        failures.push({
+          provider: attempt.provider,
+          error: err instanceof Error ? err.message : String(err),
+        });
+        console.warn(`AI provider failed (${attempt.provider}), falling back:`, err);
       }
-
-      const data = await groqRes.json() as {
-        choices?: Array<{ message?: { content?: string } }>;
-        error?: { message: string };
-      };
-
-      if (data.error) return json({ error: data.error.message }, 502, headers);
-      answer = data.choices?.[0]?.message?.content?.trim() ?? "No response received.";
-      modelUsed = GROQ_MODEL;
     }
 
-    return json({ answer, model: modelUsed }, 200, headers);
+    return json({
+      error: "All configured AI providers failed.",
+      attemptedProviders,
+      failures,
+    }, 502, headers);
 
   } catch (err) {
     return json({ error: `Failed to reach AI provider: ${String(err)}` }, 502, headers);

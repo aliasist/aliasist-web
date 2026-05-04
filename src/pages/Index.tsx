@@ -6,6 +6,7 @@ import ScrollProgress from "@/components/ScrollProgress";
 import SectionRail from "@/components/SectionRail";
 import AliasistChat from "@/components/AliasistChat";
 import AISplashScreen from "@/components/AISplashScreen";
+import ErrorBoundary from "@/components/ErrorBoundary";
 
 const AboutSection = lazy(() => import("@/components/AboutSection"));
 const ProjectsSection = lazy(() => import("@/components/ProjectsSection"));
@@ -52,13 +53,11 @@ const Index = () => {
       <Navbar />
       <main id="main-content" className="relative z-10" tabIndex={-1}>
         <HeroSection />
-        <Suspense fallback={<SectionFallback />}>
-          <AboutSection />
-          <ProjectsSection />
-          <TransmissionsSection />
-          <ContactSection />
-          <Footer />
-        </Suspense>
+        <ErrorBoundary><Suspense fallback={<SectionFallback />}><AboutSection /></Suspense></ErrorBoundary>
+        <ErrorBoundary><Suspense fallback={<SectionFallback />}><ProjectsSection /></Suspense></ErrorBoundary>
+        <ErrorBoundary><Suspense fallback={<SectionFallback />}><TransmissionsSection /></Suspense></ErrorBoundary>
+        <ErrorBoundary><Suspense fallback={<SectionFallback />}><ContactSection /></Suspense></ErrorBoundary>
+        <ErrorBoundary><Suspense fallback={<SectionFallback />}><Footer /></Suspense></ErrorBoundary>
       </main>
       <AliasistChat />
     </div>

@@ -18,6 +18,7 @@
     "lint": "eslint .",
     "preview": "npm run build && wrangler pages dev dist --compatibility-date 2025-04-01 --compatibility-flag nodejs_compat",
     "tunnel:vite": "vite --host :: --port 8080",
+    "tunnel:quick": "cloudflared tunnel --url http://localhost:8080",
     "test": "vitest run src",
     "test:watch": "vitest src",
     "deploy": "npm run build && wrangler deploy"

@@ -25,7 +25,8 @@ export const hero = {
   eyeline: "Aliasist Projects // Creating tools for people.",
   wordmark: "ALIASIST",
   tagline: "Real-time data, real-world tools.",
-  subcopy: "Welcome to the site, My name is Blake and I build data-centric tools for users. This is my portfolio of live projects. Please reach out if you have feedback or want to collbaborate, I'd love to hear from you, thanks. Enjoy the Tools. ^_^",
+  subcopy:
+    "Welcome to the site. I'm Blake, a freelance developer building data-centric tools. This is my portfolio of live projects. Reach out if you have feedback or want to collaborate — I'd love to hear from you. Enjoy the tools.",
   ctaWork: "View work",
   ctaContact: "Contact me",
   statusRow: ["Open Source", "Check out my projects below", "More coming soon!"],
@@ -180,9 +181,9 @@ export const projects = [
 
 export const comingSoonProjects = [
   {
-    codename: "PROJECT ClearSight",
+    codename: "PROJECT Atomicity *being developed*",
     description: "still deciding on on the next app",
-    eta: "Planning projects for 2027",
+    eta: "Beta release in a couple weeks. - Blake - 5/3/26",
   },
   {
     codename: "PROJECT Nightfall",
@@ -203,7 +204,7 @@ export type ProjectCard = (typeof projects)[number];
 //
 export const about = {
   dividerLabel: "About",
-  headline: "Who am I?",
+  headline: "Meet Aliasist.",
   pathBadge: "Path · Cybersecurity × tools",
   skillsLabel: "// skill_set_learning",
   skills: [
@@ -223,7 +224,7 @@ export const about = {
   bioBlocks: [
     {
       kicker: "Where I started",
-      body: "I started building on the web since I was a kid — my first real project was a simple HTML site for an online clan. That early dive into HTML, CSS, set the pattern of work flow.",
+      body: "I coded my first website in 2004 for my Age of Empires clan/guild, called oXiDe, fast-foward to now; I’m a self-taught developer building practical web tools, AI-assisted workflows, and data-driven applications through Aliasist. My work focuses on clean interfaces, useful automation, API-connected projects, and learning by shipping real systems. I’m currently growing my skills in full-stack development, AI evaluation, and applied AI tools.",
     },
   ] as const,
 

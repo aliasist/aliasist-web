@@ -29,9 +29,10 @@ export default function Marquee() {
     <div
       className="flex-shrink-0 overflow-hidden border-t"
       style={{
-        height: "28px",
-        background: "var(--color-surface)",
+        height: "32px",
+        background: "rgba(7, 16, 25, 0.78)",
         borderColor: "var(--color-border)",
+        backdropFilter: "blur(14px)",
       }}
     >
       <div className="marquee-track flex items-center h-full">
@@ -39,7 +40,7 @@ export default function Marquee() {
           style={{
             fontSize: "10px",
             letterSpacing: "0.12em",
-            color: "var(--color-green)",
+            color: "var(--color-text-muted)",
             fontFamily: "'General Sans', monospace",
             display: "inline-block",
             paddingRight: "60px",
@@ -51,7 +52,7 @@ export default function Marquee() {
           style={{
             fontSize: "10px",
             letterSpacing: "0.12em",
-            color: "var(--color-green)",
+            color: "var(--color-text-muted)",
             fontFamily: "'General Sans', monospace",
             display: "inline-block",
             paddingRight: "60px",

@@ -157,19 +157,22 @@ export function HomeGoogleAuth() {
 
   return (
     <Show when="signed-out">
-      <div className="mt-6 flex flex-col items-center justify-center gap-2">
-        <div
-          id="google-signin-button"
-          className="flex min-h-10 items-center justify-center"
-        >
+      <div className="mt-6 flex w-full max-w-md flex-col items-stretch justify-center gap-3 px-1 sm:px-0">
+        {clientId ? (
+          <div
+            ref={hostRef}
+            id="google-signin-button"
+            className="flex min-h-12 w-full items-center justify-center [&_iframe]:max-w-full"
+          />
+        ) : (
           <button
             type="button"
             onClick={openSiteSignIn}
-            className="rounded-sm border border-border/60 px-8 py-3 font-mono text-xs uppercase tracking-[0.14em] text-foreground/80 shadow-none transition-all duration-300 hover:border-electric/60 hover:bg-electric/5 hover:text-electric hover:shadow-electric-outline hover:-translate-y-0.5 active:scale-95"
+            className="w-full rounded-sm border border-border/60 px-8 py-3 font-mono text-xs uppercase tracking-[0.14em] text-foreground/80 shadow-none transition-all duration-300 hover:border-electric/60 hover:bg-electric/5 hover:text-electric hover:shadow-electric-outline hover:-translate-y-0.5 active:scale-95 sm:w-auto"
           >
             Continue with Google
           </button>
-        </div>
+        )}
       </div>
     </Show>
   );

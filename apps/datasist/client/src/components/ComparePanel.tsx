@@ -1,5 +1,6 @@
 import { X, Zap, Droplets, DollarSign, Leaf, AlertTriangle, Globe, CheckCircle, Scale } from "lucide-react";
 import type { DataCenter } from "@shared/schema";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface Props {
   facilityA: DataCenter;
@@ -73,6 +74,7 @@ function CompareRow({ label, valA, valB, barA, barB, colorA = "var(--color-green
 }
 
 export default function ComparePanel({ facilityA, facilityB, onClose }: Props) {
+  const isMobile = useIsMobile();
   const maxCap = Math.max(facilityA.capacityMW || 0, facilityB.capacityMW || 0);
   const maxWater = Math.max(facilityA.waterUsageMillionGallons || 0, facilityB.waterUsageMillionGallons || 0);
   const maxInvest = Math.max(facilityA.investmentBillions || 0, facilityB.investmentBillions || 0);
@@ -87,14 +89,21 @@ export default function ComparePanel({ facilityA, facilityB, onClose }: Props) {
         background: "var(--color-surface)",
         borderLeft: "1px solid var(--color-border-strong)",
         fontFamily: "'General Sans', sans-serif",
-        minWidth: "320px",
-        maxWidth: "360px",
+        minWidth: isMobile ? "100%" : "320px",
+        maxWidth: isMobile ? "100%" : "360px",
       }}
     >
       {/* Header */}
       <div
         className="flex items-center justify-between px-3 py-2.5 border-b flex-shrink-0"
-        style={{ borderColor: "var(--color-border)" }}
+        style={{
+          borderColor: "var(--color-border)",
+          position: "sticky",
+          top: 0,
+          zIndex: 2,
+          background: "var(--color-surface-strong)",
+          backdropFilter: "blur(14px)",
+        }}
       >
         <div className="flex items-center gap-2">
           <Scale size={14} style={{ color: "var(--color-green)" }} />

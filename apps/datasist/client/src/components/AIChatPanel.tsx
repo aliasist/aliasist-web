@@ -3,10 +3,24 @@ import { X, Send, Bot, Loader2, MessageSquare, Sparkles } from "lucide-react";
 import { apiRequest } from "@/lib/queryClient";
 import type { DataCenter } from "@shared/schema";
 
+interface Citation {
+  id: number;
+  name: string;
+  company: string;
+  score: number;
+}
+
 interface Message {
   role: "user" | "assistant";
   content: string;
+  citations?: Citation[];
+  provider?: string;
+  model?: string;
+  attemptedProviders?: string[];
+  fallbackUsed?: boolean;
 }
+
+const providerWaterfall = ["Gemini", "Claude", "Groq"];
 
 interface Props {
   facility: DataCenter | null; // null = global mode
@@ -53,18 +67,37 @@ export default function AIChatPanel({ facility, onClose }: Props) {
     setLoading(true);
 
     try {
-      // Include conversation history for multi-turn context
       const history = messages.map((m) => ({ role: m.role, content: m.content }));
-      const res = await apiRequest("POST", "/api/ai/chat", {
+      const res = await apiRequest("POST", "/api/ai/rag-chat", {
         question,
         facilityId: facility?.id ?? null,
         history,
+        topK: 5,
       });
-      const data = await res.json();
+      const data = await res.json() as {
+        answer?: string;
+        citations?: Citation[];
+        error?: string;
+        provider?: string;
+        model?: string;
+        attemptedProviders?: string[];
+        fallbackUsed?: boolean;
+      };
       if (data.error) {
         setMessages((prev) => [...prev, { role: "assistant", content: `⚠️ ${data.error}` }]);
       } else {
-        setMessages((prev) => [...prev, { role: "assistant", content: data.answer }]);
+        setMessages((prev) => [
+          ...prev,
+          {
+            role: "assistant",
+            content: data.answer ?? "No response received.",
+            citations: data.citations ?? [],
+            provider: data.provider,
+            model: data.model,
+            attemptedProviders: data.attemptedProviders,
+            fallbackUsed: data.fallbackUsed,
+          },
+        ]);
       }
     } catch (err) {
       setMessages((prev) => [
@@ -148,6 +181,37 @@ export default function AIChatPanel({ facility, onClose }: Props) {
               </p>
             </div>
 
+            <div
+              className="p-2.5 rounded"
+              style={{
+                background: "rgba(94,246,255,0.05)",
+                border: "1px solid rgba(94,246,255,0.14)",
+              }}
+            >
+              <div style={{ fontSize: "9px", letterSpacing: "0.1em", color: "var(--color-cyan)", marginBottom: "6px" }}>
+                AI WATERFALL
+              </div>
+              <div style={{ fontSize: "11px", lineHeight: 1.6, color: "var(--color-text-muted)" }}>
+                If the primary model is unavailable, chat falls through automatically:
+              </div>
+              <div className="flex flex-wrap gap-1.5 mt-2">
+                {providerWaterfall.map((provider) => (
+                  <span
+                    key={provider}
+                    className="px-2 py-0.5 rounded-full"
+                    style={{
+                      fontSize: "10px",
+                      color: "var(--color-text)",
+                      background: "var(--color-surface-2)",
+                      border: "1px solid var(--color-border)",
+                    }}
+                  >
+                    {provider}
+                  </span>
+                ))}
+              </div>
+            </div>
+
             {/* Suggestions */}
             <div style={{ fontSize: "9px", letterSpacing: "0.1em", color: "var(--color-text-muted)" }}>SUGGESTED QUESTIONS</div>
             <div className="flex flex-col gap-1.5">
@@ -198,9 +262,41 @@ export default function AIChatPanel({ facility, onClose }: Props) {
                 <div className="flex items-center gap-1.5 mb-1.5">
                   <Sparkles size={10} style={{ color: "var(--color-green)" }} />
                   <span style={{ fontSize: "9px", color: "var(--color-green)", letterSpacing: "0.1em" }}>DATASIST AI</span>
+                  {msg.provider && (
+                    <span style={{ fontSize: "9px", color: "var(--color-text-muted)", letterSpacing: "0.08em" }}>
+                      · {msg.provider.toUpperCase()}
+                    </span>
+                  )}
                 </div>
               )}
               <span style={{ whiteSpace: "pre-wrap" }}>{msg.content}</span>
+              {msg.role === "assistant" && msg.citations && msg.citations.length > 0 && (
+                <div className="mt-2 pt-2" style={{ borderTop: "1px solid rgba(113,255,156,0.12)" }}>
+                  <div style={{ fontSize: "8px", letterSpacing: "0.12em", color: "var(--color-green)", marginBottom: "4px" }}>
+                    SOURCES
+                  </div>
+                  <div className="flex flex-col gap-1">
+                    {msg.citations.map((c) => (
+                      <div key={c.id} style={{ fontSize: "9px", color: "var(--color-text-muted)", lineHeight: 1.4 }}>
+                        <span style={{ color: "var(--color-text)" }}>{c.name}</span>
+                        <span style={{ opacity: 0.5 }}> · {c.company} · {Math.round(c.score * 100)}% match</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              )}
+              {msg.role === "assistant" && (msg.model || msg.attemptedProviders?.length) && (
+                <div
+                  className="mt-2 flex flex-wrap gap-1.5"
+                  style={{ fontSize: "9px", color: "var(--color-text-muted)", letterSpacing: "0.06em" }}
+                >
+                  {msg.model && <span>MODEL {msg.model}</span>}
+                  {msg.attemptedProviders && msg.attemptedProviders.length > 0 && (
+                    <span>PATH {msg.attemptedProviders.join(" → ").toUpperCase()}</span>
+                  )}
+                  {msg.fallbackUsed && <span>FALLBACK ENGAGED</span>}
+                </div>
+              )}
             </div>
           </div>
         ))}
@@ -273,7 +369,7 @@ export default function AIChatPanel({ facility, onClose }: Props) {
           </button>
         </div>
         <div style={{ fontSize: "9px", color: "var(--color-text-muted)", marginTop: "4px", textAlign: "center", letterSpacing: "0.06em" }}>
-          POWERED BY GROQ · LLAMA-3.3-70B · ALIASIST.COM
+          RAG · VECTORIZE + GEMINI EMBEDDINGS · CF WORKERS AI
         </div>
       </div>
     </div>

@@ -1,10 +1,24 @@
 # DataSist Frontend
 
-Static frontend bundle for the DataSist Pages project.
+![Aliasist banner](https://raw.githubusercontent.com/aliasist/aliasistabductor/master/images/aliasist_banner_orbit.png)
 
-The frontend calls relative `/api/*` paths. `_redirects` proxies those requests to
-the `datasist-api` Worker so the static Pages app and API stay deployable as
-separate Cloudflare projects.
+Aliasist uses this repo for the public DataSist application.
+
+It provides:
+
+- a data-center intelligence interface
+- curated records and views
+- a clear product shell
+- the public app experience for the DataSist surface
+
+This repo stays focused on the front-end product layer.
+
+## API behavior
+
+The frontend talks directly to the `datasist-api` Worker by default.
+Cloudflare Pages `_redirects` cannot proxy to an external Worker domain, so
+production and local development both use the Worker origin unless you provide
+an explicit override.
 
 ## Fast local editing
 
@@ -14,8 +28,14 @@ For normal frontend editing, use Vite:
 npm run dev
 ```
 
-This is the easiest local workflow because the frontend already talks to the
-remote DataSist API directly from `client/src/lib/queryClient.ts`.
+This is the easiest local workflow because the frontend can talk directly to the
+deployed DataSist API worker during localhost development.
+
+Optional local override:
+
+```bash
+VITE_DATASIST_API_BASE=https://datasist-api.bchooper0730.workers.dev npm run dev
+```
 
 ## Cloudflare Pages
 
@@ -31,6 +51,7 @@ frontend editing loop.
 Manual deploy from this directory:
 
 ```bash
+npm run build
 npm run cf:deploy
 ```
 

@@ -42,3 +42,6 @@ coverage/
 
 .dev.vars*
 !.dev.vars.example
+
+# Local backups — large archives, not for version control
+backups/
