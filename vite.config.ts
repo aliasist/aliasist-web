@@ -44,6 +44,7 @@ export default defineConfig(async ({ mode }) => {
       allowedHosts: [
         "debian-cursor-precipitation-really.trycloudflare.com",
         ".trycloudflare.com",
+        "orbital-sky-q6utk.ondigitalocean.app",
       ],
     },
     plugins: [react(), ...devPlugins, ...runtimePlugins],
