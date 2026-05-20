@@ -103,6 +103,22 @@
     background-color: hsl(var(--background));
   }
 
+  @media (prefers-reduced-motion: no-preference) {
+    html {
+      scroll-behavior: smooth;
+    }
+  }
+
+  ::selection {
+    background-color: hsl(var(--primary) / 0.38);
+    color: hsl(var(--foreground));
+  }
+
+  .light ::selection {
+    background-color: hsl(var(--primary) / 0.28);
+    color: hsl(var(--foreground));
+  }
+
   body {
     @apply text-foreground;
     background-color: transparent;
@@ -123,9 +139,55 @@
   code, pre {
     font-family: var(--font-mono);
   }
+
+  /* Fixed navbar — anchor links land with readable section headers */
+  #main-content,
+  section[id] {
+    scroll-margin-top: calc(4.5rem + env(safe-area-inset-top, 0px) + 12px);
+  }
 }
 
 /* ─── Ambient background layers (fixed behind content) ─── */
+/* Rotating hero backgrounds (behind ambient gradients + starfield). */
+.bg-rotator {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: -3;
+  overflow: hidden;
+}
+
+.bg-rotator__layer {
+  position: absolute;
+  inset: -6%;
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat;
+  transition: opacity 1400ms ease-in-out;
+  will-change: opacity;
+  filter: saturate(1.05) contrast(1.05) brightness(0.82);
+  transform: scale(1.04);
+}
+
+/* Subtle vignette so text stays readable on bright center beams. */
+.bg-rotator::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: radial-gradient(
+    ellipse 115% 90% at 50% 35%,
+    rgba(0, 0, 0, 0.35) 0%,
+    rgba(0, 0, 0, 0.66) 60%,
+    rgba(0, 0, 0, 0.92) 100%
+  );
+}
+
+@media (max-width: 640px) {
+  .bg-rotator__layer {
+    filter: saturate(1.02) contrast(1.04) brightness(0.76);
+  }
+}
+
 body::before {
   content: '';
   position: fixed;

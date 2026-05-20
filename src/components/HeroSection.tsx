@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import AlienEye from "./AlienEye";
 import badge from "@/assets/aliasist-diff-logo.png";
 import aliasistIcon from "@/assets/aliasist-logo-brand.svg";
-import mascot from "@/assets/blue-logo.svg";
+import mascot from "@/assets/aliasist-diff-logo.png";
 import { hero } from "@/content/homepage";
 import { HomeGoogleAuth } from "@/components/HomeGoogleAuth";
 
@@ -73,8 +73,7 @@ const HeroSection = () => {
             width={208}
             height={208}
             decoding="async"
-            fetchPriority="high"
-            className="w-44 h-44 xl:w-52 xl:h-52 rounded-full object-cover border-2 border-electric/50 shadow-electric-sm hover:shadow-electric-md hover:scale-105 transition-all duration-500 cursor-pointer select-none"
+            className="w-44 h-44 xl:w-52 xl:h-52 rounded-full object-cover border-2 border-electric/50 shadow-electric-sm hover:shadow-electric-md hover:scale-105 transition-all duration-500 cursor-pointer select-none bg-transparent"
           />
         </motion.div>
         <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-electric/50 text-center">
@@ -117,8 +116,7 @@ const HeroSection = () => {
                 width={96}
                 height={96}
                 decoding="async"
-                fetchPriority="high"
-                className="w-24 h-24 rounded-full object-cover border-2 border-electric/50 shadow-electric-xs select-none"
+                className="w-24 h-24 rounded-full object-cover border-2 border-electric/50 shadow-electric-xs select-none bg-transparent"
               />
             </motion.div>
           </motion.div>
@@ -177,14 +175,14 @@ const HeroSection = () => {
           >
             <a
               href="#projects"
-              className="group relative px-8 py-3.5 bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] rounded-sm overflow-hidden shadow-electric-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-electric-md active:scale-95"
+              className="group relative px-8 py-3.5 bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] rounded-sm overflow-hidden shadow-electric-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-electric-md active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <span className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
               <span className="relative">{hero.ctaWork}</span>
             </a>
             <a
               href="#contact"
-              className="px-8 py-3.5 border border-border/60 text-foreground/80 font-mono text-xs uppercase tracking-[0.14em] rounded-sm hover:border-electric/60 hover:text-electric hover:bg-electric/5 hover:shadow-electric-outline transition-all duration-300 hover:-translate-y-0.5 active:scale-95"
+              className="px-8 py-3.5 border border-border/60 text-foreground/80 font-mono text-xs uppercase tracking-[0.14em] rounded-sm hover:border-electric/60 hover:text-electric hover:bg-electric/5 hover:shadow-electric-outline transition-all duration-300 hover:-translate-y-0.5 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               {hero.ctaContact}
             </a>

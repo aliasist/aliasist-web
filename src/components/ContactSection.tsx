@@ -67,10 +67,10 @@ const ContactSection = () => {
   };
 
   const inputClass =
-    "w-full bg-background/[0.14] border border-background/30 text-background placeholder:text-background/55 font-[family-name:var(--font-heading)] text-base md:text-sm font-medium leading-normal px-4 py-3 rounded-sm antialiased caret-electric shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] focus:outline-none focus:border-electric focus:bg-background/[0.18] focus:shadow-electric-xs focus:placeholder:text-background/40 transition-all duration-200";
+    "w-full bg-background/[0.14] border border-background/30 text-background placeholder:text-background/55 font-[family-name:var(--font-heading)] text-base md:text-sm font-medium leading-normal px-4 py-3 rounded-sm antialiased caret-electric shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] focus:outline-none focus-visible:border-electric focus-visible:bg-background/[0.18] focus-visible:shadow-electric-xs focus-visible:placeholder:text-background/40 focus-visible:ring-2 focus-visible:ring-electric/45 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground transition-all duration-200";
 
   return (
-    <section id="contact" className="relative overflow-hidden bg-foreground px-4 py-28 text-background sm:px-8 lg:px-12 xl:px-16">
+    <section id="contact" aria-labelledby="contact-heading" className="relative overflow-hidden bg-foreground px-4 py-28 text-background sm:px-8 lg:px-12 xl:px-16">
       {/* Street banner background */}
       <div
         className="absolute inset-0 bg-cover bg-center opacity-[0.12] mix-blend-screen pointer-events-none"
@@ -105,7 +105,7 @@ const ContactSection = () => {
                 {contact.signalLabel}
               </div>
 
-              <h2 className="text-3xl sm:text-4xl font-bold text-background mb-4 tracking-tight leading-tight">
+              <h2 id="contact-heading" className="text-3xl sm:text-4xl font-bold text-background mb-4 tracking-tight leading-tight">
                 {contact.headline}
               </h2>
 
@@ -133,8 +133,9 @@ const ContactSection = () => {
                       {contact.successBody}
                     </p>
                     <button
+                      type="button"
                       onClick={() => setFormState("idle")}
-                      className="mt-5 font-mono text-[11px] uppercase tracking-[0.1em] text-background/35 hover:text-electric transition-colors"
+                      className="mt-5 rounded-sm font-mono text-[11px] uppercase tracking-[0.1em] text-background/35 outline-none transition-colors hover:text-electric focus-visible:text-electric focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
                     >
                       {contact.sendAnother}
                     </button>
@@ -187,7 +188,7 @@ const ContactSection = () => {
                     <button
                       type="submit"
                       disabled={formState === "sending"}
-                      className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] rounded-sm overflow-hidden shadow-electric-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-electric-md active:scale-95 disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:shadow-electric-sm"
+                      className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] rounded-sm outline-none overflow-hidden shadow-electric-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-electric-md active:scale-95 focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:shadow-electric-sm"
                     >
                       <span className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                       <span className="relative">
@@ -213,7 +214,7 @@ const ContactSection = () => {
                       viewport={{ once: true }}
                       transition={{ duration: 0.3, delay: i * 0.08 }}
                       whileHover={{ x: 4 }}
-                      className="tap-target group flex items-center justify-between px-5 py-4 bg-background/5 border border-background/10 hover:bg-electric/10 hover:border-electric/25 hover:shadow-electric-xs transition-all duration-300 font-mono text-sm text-background/55 hover:text-electric"
+                      className="tap-target group flex items-center justify-between px-5 py-4 bg-background/5 border border-background/10 outline-none transition-all duration-300 hover:bg-electric/10 hover:border-electric/25 hover:shadow-electric-xs focus-visible:z-10 focus-visible:border-electric/40 focus-visible:bg-electric/10 focus-visible:shadow-electric-xs focus-visible:ring-2 focus-visible:ring-white/45 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground font-mono text-sm text-background/55 hover:text-electric"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-electric/40 group-hover:text-electric transition-colors">
@@ -247,7 +248,7 @@ const ContactSection = () => {
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: i * 0.1 }}
                     whileHover={{ x: 6 }}
-                    className="tap-target group flex items-center justify-between px-6 py-5 bg-background/5 border border-background/10 hover:bg-electric/10 hover:border-electric/30 hover:shadow-electric-xs transition-all duration-300"
+                    className="tap-target group flex items-center justify-between px-6 py-5 bg-background/5 border border-background/10 outline-none transition-all duration-300 hover:bg-electric/10 hover:border-electric/30 hover:shadow-electric-xs focus-visible:z-10 focus-visible:border-electric/40 focus-visible:bg-electric/10 focus-visible:shadow-electric-xs focus-visible:ring-2 focus-visible:ring-white/45 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
                   >
                     <div className="flex items-center gap-4">
                       <span className="text-2xl">{app.icon}</span>

@@ -27,18 +27,18 @@ import spaceBanner from "@images/spacesist_banner_cinematic.png";
 // ── Hero ─────────────────────────────────────────────────────────────────────
 
 export const hero = {
-  statusBadge: "Real-Time Data - 24/7",
+  statusBadge: "GitHub Developer Member",
   mascotLabel: "aliasist",
-  mascotAlt: "Aliasist mascot",
-  mascotTitle: "Aliasist mascot",
+  mascotAlt: "Aliasist",
+  mascotTitle: "Aliasist",
   eyeline: "Aliasist Projects // Creating tools for people.",
-  wordmark: "ALIASIST",
+  wordmark: "A L I A S I S T",
   tagline: "Real-time data, real-world tools.",
   subcopy:
-    "Welcome to the site. I'm Blake, a freelance developer building data-centric tools. This is my portfolio of live projects. Reach out if you have feedback or want to collaborate — I'd love to hear from you. Enjoy the tools.",
+    "Hey, welcome to the site, I'm Blake(Aliasist) I'm a freelance worker building data-centric tools. This is my portfolio of live projects. Reach out if you have feedback or want to collaborate — I'd love to hear from you. Enjoy the tools.",
   ctaWork: "View work",
   ctaContact: "Contact me",
-  statusRow: ["Open Source", "Check out my projects below", "More coming soon!"],
+  statusRow: ["Open Source", "Check out my projects below", "More coming later this year"] as const,
 } as const;
 
 // ── Navbar ───────────────────────────────────────────────────────────────────
@@ -53,13 +53,13 @@ export const pageNavLinks = [
 export const suiteApps = [
   {
     label: "DataSist",
-    sub: "AI Data Center Intel",
+    sub: "AI Data Center WebApp",
     href: "https://datasist-frontend.pages.dev",
     icon: "🌐",
   },
   {
     label: "PulseSist",
-    sub: "Stock Market Intelligence",
+    sub: "Stock Market Dashboard",
     href: "https://pulse.aliasist.com",
     icon: "📈",
   },
@@ -71,7 +71,7 @@ export const suiteApps = [
   },
   {
     label: "EcoSist",
-    sub: "Ecological Intelligence",
+    sub: "**UNDER CONSTRUCTION** project paused.",
     href: "https://ecosist.aliasist.com",
     icon: "🌱",
   },
@@ -81,8 +81,8 @@ export const suiteApps = [
 
 export const footer = {
   brandName: "Aliasist",
-  mascotAlt: "Aliasist Mascot UFO",
-  versionLine: "Aliasist Portfolio // Creating tools for the future.",
+  mascotAlt: "",
+  versionLine: "The Aliasist Project",
   githubLabel: "GitHub",
   linkedinLabel: "LinkedIn",
   emailLabel: "Email",
@@ -139,7 +139,7 @@ export const projects = [
   {
     name: "EcoSist",
     description:
-      "Live environmental intelligence platform for storm signals, atmospheric conditions, and ecosystem monitoring. EcoSist turns weather and earth-system data into a cleaner operational view with real-time mapping, hazard awareness, and a darker cinematic interface built for environmental situational awareness.",
+      "Code being revamped.",
     tech: [
       "React",
       "Vite",
@@ -160,7 +160,7 @@ export const projects = [
     name: "Aliasist-Files-Abductor",
     description:
       "This app can download any file from YouTube.com or any other website or server with a link. Simply Copy, Paste, & Download with your link, this app doesn't apologize for itself. Does the work. No questions asked.",
-    tech: ["Python", "CLI", "File Automation"],
+    tech: ["Python", "CLI", "File Automation", "This was my first program I coded, 3 years ago. I have been improving it ever since, and it is now a full fledged app with a GUI, and support for downloading from any website, not just YouTube."],
     github: `https://github.com/aliasist/aliasistabductor/releases/tag/${releaseTagEncoded}`,
     downloads: [
       { label: "AppImage", href: downloadLinks.appImage },
@@ -233,25 +233,21 @@ export const about = {
   bioBlocks: [
     {
       kicker: "Where I started",
-      body: "I coded my first website in 2004 for my Age of Empires clan/guild, called oXiDe, fast-foward to now; I’m a self-taught developer building practical web tools, AI-assisted workflows, and data-driven applications through Aliasist. My work focuses on clean interfaces, useful automation, API-connected projects, and learning by shipping real systems. I’m currently growing my skills in full-stack development, AI evaluation, and applied AI tools.",
+      body: "I coded my first website in 2004, it was for my Age of Empires clan, oXiDe and it started from dabbling in making banners/forum signatures. Fast-forward to today, and I'm a self-taught developer building practical web tools, AI-assisted workflows, and data-driven applications through Aliasist. I'm providing a way to organize and make sense of all the data out there.",
     },
   ] as const,
 
   /**
-   * Your own phases — optional space to grow the About column.
-   * • Leave `body` as "" and the slot won’t appear on the site.
-   * • When you’re ready, paste or write your paragraph in `body` and adjust `kicker`.
-   * • Copy a full `{ kicker: "…", body: "" },` line to add more slots.
    */
   authorSlots: [
-    { kicker: "Your section title (rename me)", body: "" },
-    { kicker: "Another angle (optional)", body: "" },
-    { kicker: "Third slot (optional)", body: "" },
+    { kicker: "AGSC Updates", body: "" },
+    { kicker: "implementing features and improvements", body: "" },
+    { kicker: "deploying soon.", body: "" },
   ] as const,
 
   stats: [
-    { num: "5", label: "Live apps in the Aliasist suite", sym: "" as const },
-    { num: "OSS", label: "Public repos, documented deploys, verifiable behavior", sym: "" as const },
+    { num: "5", label: "Open Source", sym: "" as const },
+    { num: "OSS", label: "Public repos, documented deploys, verifiable behavior, github.com/aliasist", sym: "" as const },
   ],
 } as const;
 

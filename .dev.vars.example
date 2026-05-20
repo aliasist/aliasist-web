@@ -2,8 +2,12 @@
 # and local Pages Functions (`/api/chat-messages`, `/api/mongo-ping`).
 #
 # Clerk Dashboard → Configure → API Keys (same application as auth.aliasist.com):
-CLERK_SECRET_KEY=sk_live_or_sk_test_secret_key_here
-CLERK_PUBLISHABLE_KEY=pk_live_or_pk_test_publishable_key_here
+CLERK_SECRET_KEY=sk_live_H91l63tEFaCRLKO3pyRvGTa8iBfF2YBTv5zDDlxjvc
+CLERK_PUBLISHABLE_KEY=pk_live_Y2xlcmsuYWxpYXNpc3QuY29tJA
+#
+# Optional: upstream LLM worker base for `/api/chat` proxy (no trailing slash).
+# Defaults to https://llm-chat.bchooper0730.workers.dev if omitted.
+# LLM_CHAT_BASE_URL=https://llm-chat.your-worker.workers.dev
 #
 # Related worker templates (same keys):
 #   apps/llm-chat/.dev.vars.example     — POST /api/chat JWT verification
