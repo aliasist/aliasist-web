@@ -202,7 +202,7 @@ const CowAbductionEasterEgg = ({ open, onClose }: CowAbductionEasterEggProps) =>
                 id="easter-egg-title"
                 className="font-mono text-sm font-semibold uppercase tracking-[0.2em] text-foreground"
               >
-                Specimen upload complete
+                Hooman Specimen upload complete
               </h2>
               <p className="mt-2 font-mono text-[11px] leading-relaxed text-muted-foreground/80">
                 One pasture cow successfully routed off-world. No folders were harmed — only mildly inconvenienced.

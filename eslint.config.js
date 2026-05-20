@@ -17,6 +17,7 @@ export default tseslint.config(
       "website/**",
       "app/**",
       "replicate-1/**",
+      "recovery/**",
       ".codex/**",
       "functions/**",
       "tailwind.config.ts",

@@ -36,6 +36,7 @@ const AboutSection = () => {
   return (
     <section
       id="about"
+      aria-labelledby="about-heading"
       className="relative overflow-hidden px-4 py-28 sm:px-8 lg:px-12 xl:px-16"
     >
       {/* Top-only carryover from the hero so the heading scene blends into About */}
@@ -66,7 +67,7 @@ const AboutSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
           >
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground mb-8 tracking-tight text-balance max-w-2xl">
+            <h2 id="about-heading" className="text-3xl sm:text-4xl font-bold text-foreground mb-8 tracking-tight text-balance max-w-2xl">
               {about.headline}
             </h2>
 

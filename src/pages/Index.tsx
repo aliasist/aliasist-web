@@ -2,6 +2,7 @@ import { lazy, Suspense, useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import Starfield from "@/components/Starfield";
+import BackgroundRotator from "@/components/BackgroundRotator";
 import ScrollProgress from "@/components/ScrollProgress";
 import SectionRail from "@/components/SectionRail";
 import AliasistChat from "@/components/AliasistChat";
@@ -18,19 +19,15 @@ function SectionFallback() {
   return <div className="min-h-[24vh] w-full" aria-hidden />;
 }
 
-// Show the splash screen once per browser session
-function shouldShowSplash(): boolean {
-  try {
-    if (sessionStorage.getItem("aliasist-splash-shown")) return false;
-    sessionStorage.setItem("aliasist-splash-shown", "1");
-    return true;
-  } catch {
-    return false;
-  }
-}
+
+const INTRO_SEEN_KEY = "aliasist-intro-seen";
 
 const Index = () => {
-  const [showSplash, setShowSplash] = useState(shouldShowSplash);
+  // Only show intro splash if not seen before
+  const [showSplash, setShowSplash] = useState(() => {
+    if (typeof window === "undefined") return true;
+    return !localStorage.getItem(INTRO_SEEN_KEY);
+  });
 
   // Prevent background scroll while splash is up
   useEffect(() => {
@@ -42,11 +39,18 @@ const Index = () => {
     return () => { document.body.style.overflow = ""; };
   }, [showSplash]);
 
+  // When splash is dismissed, mark intro as seen
+  const handleSplashDismiss = () => {
+    localStorage.setItem(INTRO_SEEN_KEY, "1");
+    setShowSplash(false);
+  };
+
   return (
     <div className="min-h-screen relative">
       {showSplash && (
-        <AISplashScreen onDismiss={() => setShowSplash(false)} />
+        <AISplashScreen onDismiss={handleSplashDismiss} />
       )}
+      <BackgroundRotator />
       <Starfield />
       <ScrollProgress />
       <SectionRail />

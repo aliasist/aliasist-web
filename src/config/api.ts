@@ -16,8 +16,11 @@ const newsBase = trimTrailingSlashes(import.meta.env.VITE_NEWS_WORKER_BASE_URL |
 export const siteEndpoints = {
   /** Contact form → llm-chat worker */
   contactApi: `${llmBase}/api/contact`,
-  /** Floating AI widget → same worker as contact */
-  chatApi: `${llmBase}/api/chat`,
+  /**
+   * Floating AI widget → Pages Function proxy (`functions/api/chat.ts`).
+   * Requires `Authorization: Bearer <Clerk session JWT>` (enforced server-side).
+   */
+  chatApi: "/api/chat",
   /**
    * Pages Function — Clerk-authenticated chat (`functions/api/chat-messages.ts`).
    * POST requires `Authorization: Bearer <session JWT>` once you switch the widget to this API.

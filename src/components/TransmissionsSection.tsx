@@ -143,7 +143,7 @@ const BlogCard = ({ article, index }: { article: Article; index: number }) => {
       initial={{ opacity: 0, y: 20 }}
       animate={{ opacity: 1, y: 0 }}
       transition={{ duration: 0.4, delay: index * 0.04 }}
-      className="tap-target group bg-background border border-border hover:border-electric/30 transition-[transform,border-color,box-shadow] duration-300 hover:shadow-electric-sm relative overflow-hidden hover:-translate-y-0.5 flex flex-col"
+      className="tap-target group bg-background border border-border outline-none transition-[transform,border-color,box-shadow] duration-300 hover:border-electric/30 hover:shadow-electric-sm focus-visible:z-10 focus-visible:border-electric/45 focus-visible:shadow-electric-sm focus-visible:ring-2 focus-visible:ring-electric/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background relative overflow-hidden hover:-translate-y-0.5 flex flex-col"
     >
       {/* Category thumbnail — always renders */}
       <CardThumbnail article={article} />
@@ -228,6 +228,7 @@ const TransmissionsSection = () => {
   return (
     <section
       id="transmissions"
+      aria-labelledby="transmissions-heading"
       ref={sectionRef}
       className="relative overflow-hidden px-4 py-28 sm:px-8 lg:px-12 xl:px-16"
     >
@@ -251,7 +252,7 @@ const TransmissionsSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.6 }}
           >
-            <h2 className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
+            <h2 id="transmissions-heading" className="text-3xl sm:text-4xl font-bold text-foreground tracking-tight">
               {transmissions.headline}
             </h2>
             <p className="font-mono text-xs text-muted-foreground/50 mt-2 tracking-[0.1em]">
@@ -293,7 +294,7 @@ const TransmissionsSection = () => {
             <button
               key={f}
               onClick={() => { setActiveFilter(f); }}
-              className={`font-mono text-[11px] uppercase tracking-[0.12em] px-3 py-1.5 border rounded-sm transition-[colors,border-color,box-shadow] duration-200 ${
+              className={`font-mono text-[11px] uppercase tracking-[0.12em] px-3 py-1.5 border rounded-sm outline-none transition-[colors,border-color,box-shadow] duration-200 focus-visible:ring-2 focus-visible:ring-electric/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                 activeFilter === f
                   ? "border-electric text-electric bg-electric/10 shadow-electric-xs"
                   : "border-border text-muted-foreground hover:border-electric/40 hover:text-foreground"

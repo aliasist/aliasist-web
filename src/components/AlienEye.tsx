@@ -84,11 +84,30 @@ const AlienEye = () => {
         style={{
           width: 160,
           height: 160,
-          background: "radial-gradient(circle at 40% 35%, hsl(220 18% 18%), hsl(220 18% 8%))",
+          background: "radial-gradient(circle at 38% 34%, hsl(220 18% 20%), hsl(220 18% 8%) 62%, hsl(220 18% 5%) 100%)",
           boxShadow: "0 0 40px 8px hsl(165 90% 42% / 0.3), inset 0 0 30px hsl(165 90% 42% / 0.08)",
           border: "1.5px solid hsl(165 90% 42% / 0.5)",
         }}
       >
+        {/* Globe sheen / atmosphere */}
+        <div
+          className="absolute inset-0 rounded-full pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle at 30% 26%, hsl(165 90% 70% / 0.18) 0%, hsl(165 90% 55% / 0.08) 20%, transparent 42%), radial-gradient(circle at 58% 72%, transparent 0%, transparent 62%, hsl(0 0% 0% / 0.28) 100%)",
+          }}
+        />
+
+        {/* Latitude / longitude hint so the mark reads more like a globe */}
+        <div
+          className="absolute inset-0 rounded-full pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle at center, transparent 0 43%, hsl(165 90% 42% / 0.14) 44% 45%, transparent 46% 100%), radial-gradient(circle at center, transparent 0 27%, hsl(165 90% 42% / 0.12) 28% 29%, transparent 30% 100%), radial-gradient(circle at center, transparent 0 61%, hsl(165 90% 42% / 0.08) 62% 63%, transparent 64% 100%), linear-gradient(90deg, transparent 0 48%, hsl(165 90% 42% / 0.08) 49% 51%, transparent 52% 100%)",
+            mixBlendMode: "screen",
+          }}
+        />
+
         {/* Iris */}
         <motion.div
           className="absolute"
@@ -142,6 +161,17 @@ const AlienEye = () => {
             />
           </motion.div>
         </motion.div>
+
+        {/* Orbital ring for a more literal globe silhouette */}
+        <motion.div
+          className="absolute rounded-full border border-electric/18 pointer-events-none"
+          style={{
+            inset: 10,
+            transform: "rotate(18deg)",
+          }}
+          animate={{ rotate: [18, 24, 18] }}
+          transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
+        />
 
         {/* Blink eyelid */}
         <motion.div

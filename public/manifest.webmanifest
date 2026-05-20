@@ -2,8 +2,12 @@
   "name": "Aliasist",
   "short_name": "Aliasist",
   "description": "Aliasist portfolio — adversarial security, shipped products, writing.",
+  "lang": "en",
+  "dir": "ltr",
   "start_url": "/",
   "display": "standalone",
+  "orientation": "any",
+  "categories": ["business", "productivity"],
   "background_color": "#0a0f0a",
   "theme_color": "#0a0f0a",
   "icons": [

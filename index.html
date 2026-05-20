@@ -2,12 +2,12 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="shortcut icon" href="/favicon.ico" />
-    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
-    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
-    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="dns-prefetch" href="https://scripts.simpleanalyticscdn.com" />
+    <link rel="icon" type="image/svg+xml" href="/aliasist_logo_transparent.svg" />
+    <link rel="icon" type="image/png" href="/aliasist_logo_transparent.png" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/aliasist_logo_transparent.png" />
     <link rel="manifest" href="/manifest.webmanifest" />
     <link rel="canonical" href="https://www.aliasist.com/" />
     <meta name="theme-color" content="#0a0f0a" />
@@ -39,6 +39,7 @@
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta property="og:site_name" content="Aliasist" />
+    <meta property="og:locale" content="en_US" />
 
     <!-- Twitter / X -->
     <meta name="twitter:card" content="summary_large_image" />
@@ -48,6 +49,45 @@
       content="Portfolio and writing — DataSist, SpaceSist, PulseSist, and more. App hub at aliasist.tech."
     />
     <meta name="twitter:image" content="https://www.aliasist.com/og-image.png" />
+
+    <script type="application/ld+json">
+      {
+        "@context": "https://schema.org",
+        "@graph": [
+          {
+            "@type": "WebSite",
+            "@id": "https://www.aliasist.com/#website",
+            "url": "https://www.aliasist.com/",
+            "name": "Aliasist",
+            "description": "Developer portfolio — DataSist, SpaceSist, PulseSist, EcoSist, and applied AI security.",
+            "inLanguage": "en-US",
+            "publisher": { "@id": "https://www.aliasist.com/#organization" }
+          },
+          {
+            "@type": "Organization",
+            "@id": "https://www.aliasist.com/#organization",
+            "name": "Aliasist",
+            "url": "https://www.aliasist.com/",
+            "logo": "https://www.aliasist.com/aliasist_logo_transparent.png",
+            "sameAs": [
+              "https://github.com/aliasist",
+              "https://www.linkedin.com/in/blake-hooper-b99899400"
+            ]
+          },
+          {
+            "@type": "Person",
+            "@id": "https://www.aliasist.com/#person",
+            "name": "Blake",
+            "url": "https://www.aliasist.com/",
+            "worksFor": { "@id": "https://www.aliasist.com/#organization" },
+            "sameAs": [
+              "https://github.com/aliasist",
+              "https://www.linkedin.com/in/blake-hooper-b99899400"
+            ]
+          }
+        ]
+      }
+    </script>
   </head>
 
   <body>
