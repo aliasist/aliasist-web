@@ -1,12 +1,13 @@
 /**
- * Logo Easter egg — cow abduction splash (image-first).
- * If we ever add a large clip later, it should live in `public/` so Vite does not bundle it.
+ * Logo Easter egg — cow abduction splash first, then the intro clip on command.
+ * Large clips live in `public/` so Vite does not bundle them.
  */
 
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { playClick, playScan } from "@/hooks/useSound";
 
+const EASTER_EGG_VIDEO = "/intro-homepage.mp4";
 const STATUS_MESSAGES = [
   "Locating nearest cow… I mean file…",
   "Calibrating tractor beam… standby…",
@@ -23,10 +24,12 @@ interface CowAbductionEasterEggProps {
 
 const CowAbductionEasterEgg = ({ open, onClose }: CowAbductionEasterEggProps) => {
   const [statusIdx, setStatusIdx] = useState(0);
+  const [showVideo, setShowVideo] = useState(false);
 
   useEffect(() => {
     if (!open) {
       setStatusIdx(0);
+      setShowVideo(false);
       return;
     }
     playScan();
@@ -81,6 +84,21 @@ const CowAbductionEasterEgg = ({ open, onClose }: CowAbductionEasterEggProps) =>
             <div className="absolute inset-0 scanlines opacity-[0.12] pointer-events-none z-20" />
 
             <div className="relative w-full min-h-[180px] max-sm:aspect-auto max-sm:flex-1 max-sm:min-h-0 max-sm:max-h-[46vh] aspect-video max-h-[min(56vh,480px)] overflow-hidden bg-black">
+              {showVideo ? (
+                <motion.video
+                  key="intro-homepage"
+                  className="h-full w-full bg-black object-contain"
+                  src={EASTER_EGG_VIDEO}
+                  controls
+                  autoPlay
+                  playsInline
+                  preload="metadata"
+                  initial={{ opacity: 0, scale: 1.02 }}
+                  animate={{ opacity: 1, scale: 1 }}
+                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
+                  onEnded={onClose}
+                />
+              ) : (
               <div className="fae absolute inset-0">
                 <style>{`
                   .fae{
@@ -188,12 +206,13 @@ const CowAbductionEasterEgg = ({ open, onClose }: CowAbductionEasterEggProps) =>
                   </div>
                 </motion.div>
               </div>
+              )}
 
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/35 z-10" />
               <div className="pointer-events-none absolute inset-0 scanlines opacity-[0.08] z-10" />
 
               <div className="pointer-events-none absolute left-4 top-4 z-10 font-mono text-[8px] uppercase tracking-[0.25em] text-electric/55 drop-shadow-[0_1px_8px_rgba(0,0,0,0.85)]">
-                FILES ABDUCTOR // PASTURE.CAPTURED
+                {showVideo ? "ALIASIST // INTRO.PLAYBACK" : "FILES ABDUCTOR // PASTURE.CAPTURED"}
               </div>
             </div>
 
@@ -214,11 +233,15 @@ const CowAbductionEasterEgg = ({ open, onClose }: CowAbductionEasterEggProps) =>
                 type="button"
                 onClick={() => {
                   playClick();
-                  onClose();
+                  if (showVideo) {
+                    onClose();
+                    return;
+                  }
+                  setShowVideo(true);
                 }}
                 className="mt-4 w-full rounded-full border border-electric/35 bg-electric/[0.08] py-2.5 font-mono text-[11px] uppercase tracking-[0.18em] text-electric transition-all hover:bg-electric/15 hover:shadow-electric-sm active:scale-[0.99]"
               >
-                Beam me back
+                {showVideo ? "Close transmission" : "Beam me back"}
               </button>
             </div>
           </motion.div>
