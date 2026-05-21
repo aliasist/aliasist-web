@@ -10,7 +10,21 @@ export function trimTrailingSlashes(url: string): string {
 const DEFAULT_LLM_BASE = "https://llm-chat.bchooper0730.workers.dev";
 const DEFAULT_NEWS_BASE = "https://aliasist-news.bchooper0730.workers.dev";
 
-const llmBase = trimTrailingSlashes(import.meta.env.VITE_LLM_CHAT_BASE_URL || DEFAULT_LLM_BASE);
+function pointsAtCurrentSite(url: string): boolean {
+  if (typeof window === "undefined") return false;
+  try {
+    return new URL(url, window.location.origin).origin === window.location.origin;
+  } catch {
+    return false;
+  }
+}
+
+const configuredLlmBase = trimTrailingSlashes(
+  import.meta.env.VITE_LLM_CHAT_BASE_URL || DEFAULT_LLM_BASE,
+);
+const llmBase = pointsAtCurrentSite(configuredLlmBase)
+  ? DEFAULT_LLM_BASE
+  : configuredLlmBase;
 const newsBase = trimTrailingSlashes(import.meta.env.VITE_NEWS_WORKER_BASE_URL || DEFAULT_NEWS_BASE);
 
 export const siteEndpoints = {
