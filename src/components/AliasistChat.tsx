@@ -34,7 +34,18 @@ const WELCOME_SIGN_IN_REQUIRED =
   "// Secure channel — sign in with Clerk to use the assistant.";
 
 function shouldRetryViaWorker(res: Response, data: { error?: string } | null) {
-  return (res.status === 404 || res.status === 405) && !data?.error;
+  if (res.ok) return false;
+  if (res.status === 401 || res.status === 403) return false;
+
+  const error = data?.error?.toLowerCase() ?? "";
+  if (error.includes("session") || error.includes("unauthorized")) return false;
+
+  return (
+    res.status === 404 ||
+    res.status === 405 ||
+    error.includes("upstream chat error") ||
+    error.includes("clerk_secret_key is not configured")
+  );
 }
 
 const AliasistChat = () => {
