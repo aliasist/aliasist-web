@@ -33,7 +33,7 @@ const WELCOME_ROOM =
 const WELCOME_SIGN_IN_REQUIRED =
   "// Secure channel — sign in with Clerk to use the assistant.";
 
-function shouldRetryViaWorker(res: Response) {
+function shouldRetryViaProxy(res: Response) {
   return !res.ok && res.status !== 429;
 }
 
@@ -180,18 +180,18 @@ const AliasistChat = () => {
       let res: Response;
       let data: { response?: string; error?: string } | null = null;
       try {
-        res = await fetch(LLM_CHAT_ENDPOINT, requestInit);
+        res = await fetch(LLM_CHAT_WORKER_ENDPOINT, requestInit);
         data = await readJsonBody<{ response?: string; error?: string }>(res);
       } catch {
-        res = await fetch(LLM_CHAT_WORKER_ENDPOINT, requestInit);
+        res = await fetch(LLM_CHAT_ENDPOINT, requestInit);
         data = await readJsonBody<{ response?: string; error?: string }>(res);
       }
 
-      if (shouldRetryViaWorker(res)) {
-        const workerRes = await fetch(LLM_CHAT_WORKER_ENDPOINT, requestInit);
-        const workerData = await readJsonBody<{ response?: string; error?: string }>(workerRes);
-        res = workerRes;
-        data = workerData;
+      if (shouldRetryViaProxy(res)) {
+        const proxyRes = await fetch(LLM_CHAT_ENDPOINT, requestInit);
+        const proxyData = await readJsonBody<{ response?: string; error?: string }>(proxyRes);
+        res = proxyRes;
+        data = proxyData;
       }
 
       const reply =
