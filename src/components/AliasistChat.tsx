@@ -1,7 +1,8 @@
 import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { SignInButton, useAuth, useUser } from "@clerk/react";
+import { useAuth, useUser } from "@clerk/react";
 import { readJsonBody, siteEndpoints } from "@/config/api";
+import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
 
 /** Groq LLM worker vs Clerk-authenticated Pages KV room (`/api/chat-messages`). */
 const USE_PAGES_CHAT_ROOM = import.meta.env.VITE_USE_PAGES_CHAT_ROOM === "true";
@@ -34,6 +35,7 @@ const WELCOME_SIGN_IN_REQUIRED =
 const AliasistChat = () => {
   const { isLoaded, isSignedIn, getToken, userId } = useAuth();
   const { user } = useUser();
+  const openSiteSignIn = useOpenSiteSignIn();
   const [open, setOpen] = useState(false);
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
@@ -282,14 +284,13 @@ const AliasistChat = () => {
                   <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/80 text-center leading-relaxed">
                     Sign in with Clerk to chat and protect model responses from automated abuse.
                   </p>
-                  <SignInButton mode="modal" fallbackRedirectUrl="/" forceRedirectUrl="/">
-                    <button
-                      type="button"
-                      className="w-full cursor-pointer py-2.5 rounded-sm bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] hover:bg-electric/90 transition-[colors,box-shadow] shadow-electric-sm hover:shadow-electric-md"
-                    >
-                      Sign in
-                    </button>
-                  </SignInButton>
+                  <button
+                    type="button"
+                    onClick={openSiteSignIn}
+                    className="w-full cursor-pointer py-2.5 rounded-sm bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] hover:bg-electric/90 transition-[colors,box-shadow] shadow-electric-sm hover:shadow-electric-md"
+                  >
+                    Sign in
+                  </button>
                 </div>
               ) : (
                 <>
