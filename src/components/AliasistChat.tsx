@@ -33,19 +33,8 @@ const WELCOME_ROOM =
 const WELCOME_SIGN_IN_REQUIRED =
   "// Secure channel — sign in with Clerk to use the assistant.";
 
-function shouldRetryViaWorker(res: Response, data: { error?: string } | null) {
-  if (res.ok) return false;
-  if (res.status === 401 || res.status === 403) return false;
-
-  const error = data?.error?.toLowerCase() ?? "";
-  if (error.includes("session") || error.includes("unauthorized")) return false;
-
-  return (
-    res.status === 404 ||
-    res.status === 405 ||
-    error.includes("upstream chat error") ||
-    error.includes("clerk_secret_key is not configured")
-  );
+function shouldRetryViaWorker(res: Response) {
+  return !res.ok && res.status !== 429;
 }
 
 const AliasistChat = () => {
@@ -179,27 +168,30 @@ const AliasistChat = () => {
         messages: next.map((m) => ({ role: m.role, content: m.content })),
       });
 
-      let res = await fetch(LLM_CHAT_ENDPOINT, {
+      const requestInit: RequestInit = {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
         body: requestBody,
-      });
+      };
 
-      let data = await readJsonBody<{ response?: string; error?: string }>(res);
-
-      if (shouldRetryViaWorker(res, data)) {
-        res = await fetch(LLM_CHAT_WORKER_ENDPOINT, {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${token}`,
-          },
-          body: requestBody,
-        });
+      let res: Response;
+      let data: { response?: string; error?: string } | null = null;
+      try {
+        res = await fetch(LLM_CHAT_ENDPOINT, requestInit);
         data = await readJsonBody<{ response?: string; error?: string }>(res);
+      } catch {
+        res = await fetch(LLM_CHAT_WORKER_ENDPOINT, requestInit);
+        data = await readJsonBody<{ response?: string; error?: string }>(res);
+      }
+
+      if (shouldRetryViaWorker(res)) {
+        const workerRes = await fetch(LLM_CHAT_WORKER_ENDPOINT, requestInit);
+        const workerData = await readJsonBody<{ response?: string; error?: string }>(workerRes);
+        res = workerRes;
+        data = workerData;
       }
 
       const reply =
