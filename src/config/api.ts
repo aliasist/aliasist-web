@@ -22,6 +22,11 @@ export const siteEndpoints = {
    */
   chatApi: "/api/chat",
   /**
+   * Secured LLM worker fallback for static previews where Pages Functions are absent.
+   * The worker also requires the Clerk `Authorization` header.
+   */
+  chatWorkerApi: `${llmBase}/api/chat`,
+  /**
    * Pages Function — Clerk-authenticated chat (`functions/api/chat-messages.ts`).
    * POST requires `Authorization: Bearer <session JWT>` once you switch the widget to this API.
    */

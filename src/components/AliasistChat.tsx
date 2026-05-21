@@ -7,6 +7,7 @@ import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
 /** Groq LLM worker vs Clerk-authenticated Pages KV room (`/api/chat-messages`). */
 const USE_PAGES_CHAT_ROOM = import.meta.env.VITE_USE_PAGES_CHAT_ROOM === "true";
 const LLM_CHAT_ENDPOINT = siteEndpoints.chatApi;
+const LLM_CHAT_WORKER_ENDPOINT = siteEndpoints.chatWorkerApi;
 const ROOM_CHAT_ENDPOINT = siteEndpoints.chatMessagesApi;
 
 type RoomMessage = {
@@ -31,6 +32,10 @@ const WELCOME_ROOM =
 
 const WELCOME_SIGN_IN_REQUIRED =
   "// Secure channel — sign in with Clerk to use the assistant.";
+
+function shouldRetryViaWorker(res: Response, data: { error?: string } | null) {
+  return (res.status === 404 || res.status === 405) && !data?.error;
+}
 
 const AliasistChat = () => {
   const { isLoaded, isSignedIn, getToken, userId } = useAuth();
@@ -159,18 +164,33 @@ const AliasistChat = () => {
         return;
       }
 
-      const res = await fetch(LLM_CHAT_ENDPOINT, {
+      const requestBody = JSON.stringify({
+        messages: next.map((m) => ({ role: m.role, content: m.content })),
+      });
+
+      let res = await fetch(LLM_CHAT_ENDPOINT, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({
-          messages: next.map((m) => ({ role: m.role, content: m.content })),
-        }),
+        body: requestBody,
       });
 
-      const data = await readJsonBody<{ response?: string; error?: string }>(res);
+      let data = await readJsonBody<{ response?: string; error?: string }>(res);
+
+      if (shouldRetryViaWorker(res, data)) {
+        res = await fetch(LLM_CHAT_WORKER_ENDPOINT, {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: requestBody,
+        });
+        data = await readJsonBody<{ response?: string; error?: string }>(res);
+      }
+
       const reply =
         data?.error && !data.response
           ? `// ${data.error}`
