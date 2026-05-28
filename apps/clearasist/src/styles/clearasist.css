@@ -1,0 +1,90 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600&family=JetBrains+Mono:wght@400;500&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+
+  /* Aliasist-inspired dark theme */
+  --background: 220 18% 7%;
+  --foreground: 150 10% 94%;
+
+  --card: 220 18% 10%;
+  --card-foreground: 150 10% 94%;
+
+  --primary: 165 90% 42%; /* Electric teal */
+  --primary-foreground: 220 18% 7%;
+
+  --secondary: 220 15% 16%;
+  --secondary-foreground: 150 10% 85%;
+
+  --muted: 220 15% 14%;
+  --muted-foreground: 220 12% 55%;
+
+  --accent: 165 90% 42%;
+  --accent-foreground: 220 18% 7%;
+
+  --border: 220 15% 17%;
+  --input: 220 15% 17%;
+  --ring: 165 90% 42%;
+
+  --radius: 0.6rem;
+
+  --electric: 165 90% 42%;
+
+  --font-heading: 'Space Grotesk', sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+}
+
+body {
+  font-family: var(--font-heading);
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+.font-mono {
+  font-family: var(--font-mono);
+}
+
+/* Minimalist utility styles for Clearasist */
+.dropzone {
+  transition: all 0.2s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+.dropzone:hover {
+  border-color: hsl(var(--electric) / 0.5);
+  background-color: hsl(var(--card) / 0.6);
+}
+
+.dropzone.dragover {
+  border-color: hsl(var(--electric));
+  background-color: hsl(var(--electric) / 0.05);
+}
+
+.metadata-row {
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+/* Better styling for detailed removal view */
+.removed-category {
+  font-size: 10px;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: hsl(var(--electric));
+  margin-bottom: 6px;
+}
+
+/* Simple fade in for result cards */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}

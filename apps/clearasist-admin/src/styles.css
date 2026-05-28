@@ -1,0 +1,22 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: dark;
+  --background: 220 18% 7%;
+  --foreground: 150 10% 94%;
+  --card: 220 18% 10%;
+  --border: 220 15% 17%;
+  --electric: 165 90% 42%;
+}
+
+body {
+  font-family: 'Space Grotesk', sans-serif;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+}
+
+pre {
+  font-family: 'JetBrains Mono', monospace;
+}

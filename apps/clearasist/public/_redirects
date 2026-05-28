@@ -1,0 +1,5 @@
+# SPA fallback (in case we ever add client-side routing)
+/*    /index.html   200
+
+# Optional: Force HTTPS (Cloudflare usually handles this)
+/*    https://:splat   301!
