@@ -49,8 +49,6 @@ const publishableKey =
 const secretKey =
   process.env.CLERK_SECRET_KEY || devVars.CLERK_SECRET_KEY || "";
 
-const splashVideoPath = path.join(cwd, "public", "aliasist_video.mp4");
-
 const issues = [];
 const notes = [];
 
@@ -76,13 +74,6 @@ if (!secretKey) {
   notes.push(
     "Clerk secret key not set (`CLERK_SECRET_KEY`) — `/api/*` auth routes will reject requests.",
   );
-}
-
-if (!fs.existsSync(splashVideoPath)) {
-  issues.push("Missing splash video `public/aliasist_video.mp4`.");
-} else {
-  const size = fs.statSync(splashVideoPath).size;
-  if (size < 50_000) notes.push("Splash video looks unusually small; verify the asset.");
 }
 
 const ok = issues.length === 0;
