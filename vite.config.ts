@@ -32,8 +32,7 @@ function loadDevVarsFile(cwd: string): Record<string, string> {
 export default defineConfig(async ({ mode }) => {
   const cwd = process.cwd();
   const baseEnv = loadEnv(mode, cwd, "");
-  const devVars = mode === "development" ? loadDevVarsFile(cwd) : {};
-  const env = { ...devVars, ...baseEnv };
+  const devVars = loadDevVarsFile(cwd);
 
   // Make `.dev.vars` also available to runtime plugins that read `process.env` (e.g. Cloudflare Vite runtime).
   // Never rely on this for production: Pages should inject secrets/vars at build/runtime.
@@ -43,8 +42,12 @@ export default defineConfig(async ({ mode }) => {
     }
   }
   const clerkPublishableKey =
-    env.VITE_CLERK_PUBLISHABLE_KEY?.trim() ||
-    env.CLERK_PUBLISHABLE_KEY?.trim() ||
+    process.env.VITE_CLERK_PUBLISHABLE_KEY?.trim() ||
+    baseEnv.VITE_CLERK_PUBLISHABLE_KEY?.trim() ||
+    devVars.VITE_CLERK_PUBLISHABLE_KEY?.trim() ||
+    process.env.CLERK_PUBLISHABLE_KEY?.trim() ||
+    baseEnv.CLERK_PUBLISHABLE_KEY?.trim() ||
+    devVars.CLERK_PUBLISHABLE_KEY?.trim() ||
     "";
 
   // `lovable-tagger` is optional dev tooling; don't fail production builds
