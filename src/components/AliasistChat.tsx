@@ -48,6 +48,12 @@ const AliasistChat = () => {
   const bottomRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
+    if (isLoaded && !isSignedIn && open) {
+      setOpen(false);
+    }
+  }, [isLoaded, isSignedIn, open]);
+
+  useEffect(() => {
     if (!open || !isLoaded) return;
 
     if (!isSignedIn) {
@@ -216,6 +222,15 @@ const AliasistChat = () => {
     }
   };
 
+  const handleLauncherClick = () => {
+    if (!isLoaded) return;
+    if (!isSignedIn) {
+      openSiteSignIn();
+      return;
+    }
+    setOpen((o) => !o);
+  };
+
   return (
     <div className="fixed bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] z-[210] flex flex-col items-end gap-3 sm:bottom-6 sm:right-6">
       <AnimatePresence>
@@ -351,11 +366,14 @@ const AliasistChat = () => {
 
       <motion.button
         type="button"
-        onClick={() => { setOpen((o) => !o); }}
+        onClick={handleLauncherClick}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.94 }}
         className="w-14 h-14 rounded-full bg-electric text-background flex items-center justify-center shadow-electric-sm hover:shadow-electric-md transition-shadow duration-300"
-        aria-label={open ? "Close AI chat" : "Open AI chat"}
+        aria-label={
+          open ? "Close AI chat" : isLoaded && !isSignedIn ? "Sign in to open AI chat" : "Open AI chat"
+        }
+        aria-busy={!isLoaded}
       >
         <AnimatePresence mode="wait">
           {open ? (
