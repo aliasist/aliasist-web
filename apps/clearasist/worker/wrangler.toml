@@ -1,0 +1,12 @@
+name = "clearasist-metadata"
+main = "src/index.ts"
+compatibility_date = "2025-04-01"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "clearasist-meta"
+database_id = "e4be8156-27da-4d50-9385-d4afb8d8d196"
+
+[vars]
+# ADMIN_SECRET = "your-super-secret-key-here"   # Used to protect /admin routes
+# Set this in Cloudflare Worker settings (Environment variables)
