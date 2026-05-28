@@ -1,9 +1,12 @@
 import { ClerkProvider } from "@clerk/react";
 import { useMemo, type ReactNode } from "react";
 
+const PRODUCTION_PUBLISHABLE_KEY = "pk_live_Y2xlcmsuYWxpYXNpc3QuY29tJA";
+
 /**
- * Publishable key must come from env — never embed production keys in source.
- * Cloudflare Pages: set `VITE_CLERK_PUBLISHABLE_KEY` for Production (and Preview if previews should sign in).
+ * Cloudflare Pages should set `VITE_CLERK_PUBLISHABLE_KEY` for Production and Preview.
+ * The production fallback is safe to ship because Clerk publishable keys are public client IDs;
+ * keep `CLERK_SECRET_KEY` env-only.
  */
 function resolvePublishableKey(): string {
   const primary = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY?.trim();
@@ -18,11 +21,10 @@ function resolvePublishableKey(): string {
     return "";
   }
 
-  // Production build without key at build time — Pages should inject VITE_* before `vite build`
-  console.error(
-    "[Clerk] Missing VITE_CLERK_PUBLISHABLE_KEY — sign-in will not work until Pages env is set.",
+  console.warn(
+    "[Clerk] Missing VITE_CLERK_PUBLISHABLE_KEY — using the production publishable key fallback.",
   );
-  return "";
+  return PRODUCTION_PUBLISHABLE_KEY;
 }
 
 const PUBLISHABLE_KEY = resolvePublishableKey();
