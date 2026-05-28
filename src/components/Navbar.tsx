@@ -39,7 +39,7 @@ const SuiteDropdown = () => {
         type="button"
         onClick={() => { setOpen(o => !o); playClick(); }}
         onMouseEnter={() => playHover()}
-        className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-mono uppercase tracking-[0.16em] outline-none transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] focus-visible:ring-2 focus-visible:ring-electric/55 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+        className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-mono uppercase tracking-[0.16em] outline-none transition-all duration-300 ease-out focus-visible:ring-2 focus-visible:ring-electric/55 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
           open
             ? "bg-electric/10 text-electric shadow-electric-xs"
             : "text-muted-foreground hover:bg-electric/[0.06] hover:text-foreground hover:shadow-electric-ring-inset"
@@ -109,13 +109,13 @@ const SuiteDropdown = () => {
 };
 
 const signInButtonClass =
-  "border border-border/50 bg-background/40 px-3.5 py-2 text-xs font-mono uppercase tracking-[0.16em] text-muted-foreground backdrop-blur-sm transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-electric/35 hover:bg-electric/[0.07] hover:text-electric hover:shadow-electric-glass-hover active:scale-[0.98] rounded-full";
+  "border border-border/50 bg-background/40 px-3.5 py-2 text-xs font-mono uppercase tracking-[0.16em] text-muted-foreground backdrop-blur-sm transition-all duration-300 ease-out hover:border-electric/35 hover:bg-electric/[0.07] hover:text-electric hover:shadow-electric-glass-hover active:scale-[0.98] rounded-full";
 
 const mobileSignInButtonClass =
   "flex-1 rounded-md border border-electric/35 bg-electric/[0.04] py-2.5 text-center text-xs font-mono uppercase tracking-[0.16em] text-electric shadow-electric-mobile-signin transition-all duration-300 hover:border-electric/50 hover:bg-electric/10 hover:shadow-electric-mobile-signin-hover active:scale-[0.99]";
 
 const utilityButtonClass =
-  "tap-compact flex h-9 w-9 items-center justify-center rounded-full border border-transparent text-muted-foreground transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:border-electric/25 hover:bg-electric/[0.08] hover:text-electric hover:shadow-electric-utility-hover active:scale-95";
+  "tap-compact flex h-9 w-9 items-center justify-center rounded-full border border-transparent text-muted-foreground transition-all duration-300 ease-out hover:border-electric/25 hover:bg-electric/[0.08] hover:text-electric hover:shadow-electric-utility-hover active:scale-95";
 
 const navUserButtonAppearance = {
   elements: {
@@ -136,9 +136,7 @@ const DesktopAuthControl = () => {
     <button
       type="button"
       aria-busy={!isLoaded}
-      aria-label={isLoaded ? "Sign in" : "Loading sign-in"}
-      title={!isLoaded ? "Connecting to Clerk…" : "Sign in"}
-      disabled={!isLoaded}
+      aria-label="Sign in"
       onClick={() => {
         playClick();
         openSiteSignIn();
@@ -146,7 +144,7 @@ const DesktopAuthControl = () => {
       onMouseEnter={() => {
         playHover();
       }}
-      className={`${signInButtonClass} shrink-0 cursor-pointer text-foreground/90 disabled:pointer-events-none ${!isLoaded ? "opacity-70" : ""}`}
+      className={`${signInButtonClass} shrink-0 cursor-pointer text-foreground/90 ${!isLoaded ? "opacity-70" : ""}`}
     >
       Sign In
     </button>
@@ -169,9 +167,7 @@ const MobileAuthControl = () => {
     <button
       type="button"
       aria-busy={!isLoaded}
-      aria-label={isLoaded ? "Sign in" : "Loading sign-in"}
-      title={!isLoaded ? "Connecting to Clerk…" : "Sign in"}
-      disabled={!isLoaded}
+      aria-label="Sign in"
       onClick={() => {
         playClick();
         openSiteSignIn();
@@ -179,7 +175,7 @@ const MobileAuthControl = () => {
       onMouseEnter={() => {
         playHover();
       }}
-      className={`${mobileSignInButtonClass} cursor-pointer disabled:pointer-events-none${!isLoaded ? " opacity-70" : ""}`}
+      className={`${mobileSignInButtonClass} cursor-pointer${!isLoaded ? " opacity-70" : ""}`}
     >
       Sign In
     </button>
@@ -335,7 +331,7 @@ const Navbar = () => {
                 key={link.href}
                 href={link.href}
                 onMouseEnter={() => playHover()}
-                className={`group relative overflow-hidden rounded-full px-4 py-2 text-xs font-mono uppercase tracking-[0.16em] transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                className={`group relative overflow-hidden rounded-full px-4 py-2 text-xs font-mono uppercase tracking-[0.16em] transition-all duration-300 ease-out outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                   isActive
                     ? "bg-electric/[0.12] text-electric shadow-electric-xs"
                     : "text-muted-foreground hover:bg-electric/[0.06] hover:text-foreground hover:tracking-[0.2em] hover:shadow-electric-ring-inset-soft"
@@ -347,7 +343,7 @@ const Navbar = () => {
                   aria-hidden
                 />
                 <span
-                  className={`absolute bottom-1 left-1/2 h-[2px] -translate-x-1/2 rounded-full bg-electric shadow-electric-accent-line transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] ${
+                  className={`absolute bottom-1 left-1/2 h-[2px] -translate-x-1/2 rounded-full bg-electric shadow-electric-accent-line transition-all duration-300 ease-out ${
                     isActive ? "w-[calc(100%-1.25rem)] opacity-100" : "w-0 opacity-0 group-hover:w-[calc(100%-1.25rem)] group-hover:opacity-100"
                   }`}
                 />
@@ -410,7 +406,7 @@ const Navbar = () => {
               href="#contact"
               onMouseEnter={() => playHover()}
               onClick={() => playClick()}
-              className="rounded-full bg-electric px-5 py-2 text-xs font-mono uppercase tracking-[0.16em] text-background shadow-electric-sm transition-[background-color,box-shadow,transform] duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-electric/90 hover:shadow-electric-md active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="rounded-full bg-electric px-5 py-2 text-xs font-mono uppercase tracking-[0.16em] text-background shadow-electric-sm transition-[background-color,box-shadow,transform] duration-300 ease-out hover:bg-electric/90 hover:shadow-electric-md active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               Contact
             </a>
@@ -450,7 +446,7 @@ const Navbar = () => {
                   key={link.href}
                   href={link.href}
                   onClick={() => { playClick(); setMobileOpen(false); }}
-                  className="-mx-1 flex h-12 items-center rounded-lg px-3 text-xs font-mono uppercase tracking-[0.15em] text-muted-foreground transition-all duration-300 ease-[cubic-bezier(0.16,1,0.3,1)] hover:bg-electric/[0.06] hover:pl-4 hover:text-foreground hover:shadow-[inset_3px_0_0_hsl(165_90%_42%_/_0.65)] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="-mx-1 flex h-12 items-center rounded-lg px-3 text-xs font-mono uppercase tracking-[0.15em] text-muted-foreground transition-all duration-300 ease-out hover:bg-electric/[0.06] hover:pl-4 hover:text-foreground hover:shadow-[inset_3px_0_0_hsl(165_90%_42%_/_0.65)] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   {link.label}
                 </a>

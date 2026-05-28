@@ -6,6 +6,7 @@ import {
   projectsSection,
   type ProjectCard,
 } from "@/content/homepage";
+import { AdUnit, AD_SLOTS } from "@/components/AdUnit";
 
 // Per-card component
 const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }) => {
@@ -182,6 +183,9 @@ const ProjectsSection = () => {
               </motion.div>
             ))}
           </div>
+        </div>
+        <div className="mt-8">
+          <AdUnit slot={AD_SLOTS.banner} format="auto" />
         </div>
       </div>
     </section>

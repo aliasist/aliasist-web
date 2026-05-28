@@ -94,7 +94,7 @@ export function ClerkSignInModalRoot({ children }: { children: ReactNode }) {
                   routing="hash"
                   forceRedirectUrl="/"
                   fallbackRedirectUrl="/"
-                  oauthFlow="popup"
+                  oauthFlow="redirect"
                   withSignUp
                 />
               </ClerkLoaded>

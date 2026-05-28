@@ -2,6 +2,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { transmissions } from "@/content/homepage";
 import { readJsonBody, siteEndpoints } from "@/config/api";
+import { AdUnit, AD_SLOTS } from "@/components/AdUnit";
 
 const NEWS_API = siteEndpoints.newsApi;
 
@@ -330,9 +331,17 @@ const TransmissionsSection = () => {
               transition={{ duration: 0.3 }}
               className="grid sm:grid-cols-2 lg:grid-cols-3 gap-0.5"
             >
-              {displayed.map((article, i) => (
-                <BlogCard key={article.id} article={article} index={i} />
-              ))}
+              {displayed.flatMap((article, i) => {
+                const card = <BlogCard key={article.id} article={article} index={i} />;
+                if (i === 2 && displayed.length > 3) {
+                  return [card, (
+                    <div key="ad-transmissions" className="sm:col-span-2 lg:col-span-3">
+                      <AdUnit slot={AD_SLOTS.inFeed} format="auto" />
+                    </div>
+                  )];
+                }
+                return [card];
+              })}
             </motion.div>
           </AnimatePresence>
         )}
