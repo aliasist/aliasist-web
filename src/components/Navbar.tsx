@@ -317,7 +317,7 @@ const Navbar = () => {
               Aliasist
             </span>
             <span className="mt-1 font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground/45 transition-colors duration-300 group-hover:text-muted-foreground/65">
-              Signal Active
+              Aliasist Project
             </span>
           </div>
         </button>
