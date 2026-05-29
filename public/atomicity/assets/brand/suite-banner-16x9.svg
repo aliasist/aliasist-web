@@ -1,0 +1,34 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1280 720" preserveAspectRatio="xMidYMid slice" fill="none" role="img" aria-labelledby="bannerTitle">
+  <title id="bannerTitle">Aliasist suite backdrop</title>
+  <defs>
+    <linearGradient id="bn-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop stop-color="#0b1628"/>
+      <stop offset="0.45" stop-color="#0b0f14"/>
+      <stop offset="1" stop-color="#05070c"/>
+    </linearGradient>
+    <linearGradient id="bn-glow" x1="420" y1="120" x2="900" y2="520">
+      <stop stop-color="#22D3EE" stop-opacity="0.14"/>
+      <stop offset="0.55" stop-color="#A78BFA" stop-opacity="0.08"/>
+      <stop offset="1" stop-color="#22C55E" stop-opacity="0.06"/>
+    </linearGradient>
+    <radialGradient id="bn-vignette" cx="50%" cy="50%" r="70%">
+      <stop stop-color="#000" stop-opacity="0"/>
+      <stop offset="1" stop-color="#030508" stop-opacity="0.75"/>
+    </radialGradient>
+  </defs>
+  <rect width="1280" height="720" fill="url(#bn-bg)"/>
+  <ellipse cx="520" cy="310" rx="420" ry="280" fill="url(#bn-glow)"/>
+  <g opacity="0.45" stroke="#22D3EE" stroke-width="1.2" stroke-linecap="round">
+    <ellipse cx="420" cy="320" rx="180" ry="78" transform="rotate(-14 420 320)"/>
+    <ellipse cx="420" cy="320" rx="180" ry="78" transform="rotate(62 420 320)"/>
+    <ellipse cx="420" cy="320" rx="180" ry="78" transform="rotate(118 420 320)"/>
+  </g>
+  <g fill="#f8fafc" opacity="0.04">
+    <circle cx="820" cy="140" r="1.25"/>
+    <circle cx="1100" cy="220" r="1"/><circle cx="980" cy="380" r="1.35"/>
+    <circle cx="740" cy="160" r="0.85"/><circle cx="1020" cy="480" r="1.1"/>
+  </g>
+  <circle cx="420" cy="320" r="72" stroke="rgba(148,163,184,0.12)" stroke-width="1"/>
+  <circle cx="420" cy="320" r="38" fill="url(#bn-glow)" opacity="0.35"/>
+  <rect width="1280" height="720" fill="url(#bn-vignette)"/>
+</svg>

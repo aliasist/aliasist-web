@@ -1,2 +1,3 @@
 # Cloudflare Pages — SPA fallback (Vite client routing)
+/atomicity    /atomicity/    301
 /*    /index.html   200

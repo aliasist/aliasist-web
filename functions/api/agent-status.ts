@@ -29,15 +29,16 @@ export const onRequestGet = async ({ request, env }: PagesContext) => {
   }
 
   try {
+    // "Latest snapshot per project" in D1/SQLite.
     const result = await env.ANALYTICS.prepare(
       `SELECT project, branch, dirty, framework, risk_level, warnings, raw_json, pushed_at
-       FROM agent_snapshots
-       WHERE id IN (
-         SELECT id FROM agent_snapshots s2
-         WHERE s2.project = agent_snapshots.project
-         ORDER BY pushed_at DESC
-         LIMIT 1
+       FROM (
+         SELECT
+           project, branch, dirty, framework, risk_level, warnings, raw_json, pushed_at,
+           ROW_NUMBER() OVER (PARTITION BY project ORDER BY pushed_at DESC) AS rn
+         FROM agent_snapshots
        )
+       WHERE rn = 1
        ORDER BY pushed_at DESC`
     ).all<{
       project: string;

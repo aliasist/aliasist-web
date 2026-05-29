@@ -1,0 +1,37 @@
+{
+  "name": "Atomicity",
+  "short_name": "Atomicity",
+  "description": "Focused work timer — sessions stay on this device, offline-ready.",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "any",
+  "background_color": "#080A0F",
+  "theme_color": "#0B0F14",
+  "icons": [
+    {
+      "src": "icons/ufo.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/brand/aliasist-ufo-logo-professional.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/brand/png/aliasist-github-192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any"
+    },
+    {
+      "src": "assets/brand/png/aliasist-github-512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "maskable"
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-labelledby="spaceTitle">
+  <title id="spaceTitle">Spacesist</title>
+  <defs>
+    <linearGradient id="sp-orbit" x1="14" y1="52" x2="50" y2="14" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22D3EE"/>
+      <stop offset="1" stop-color="#A78BFA"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#0B0F14"/>
+  <ellipse cx="32" cy="32" rx="22" ry="9" stroke="url(#sp-orbit)" stroke-width="1.35" opacity="0.55" transform="rotate(-22 32 32)"/>
+  <ellipse cx="32" cy="32" rx="22" ry="9" stroke="url(#sp-orbit)" stroke-width="1.15" opacity="0.72" transform="rotate(52 32 32)"/>
+  <circle cx="32" cy="32" r="10" stroke="url(#sp-orbit)" stroke-width="1.2" opacity="0.35" fill="none"/>
+  <circle cx="32" cy="32" r="5.5" fill="url(#sp-orbit)" opacity="0.35"/>
+  <circle cx="32" cy="32" r="2.8" fill="#22C55E" opacity="0.92"/>
+</svg>
