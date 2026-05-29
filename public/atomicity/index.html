@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0B0F14" />
+    <meta name="description" content="Atomicity — simple stopwatch (Aliasist)." />
+    <title>Atomicity</title>
+    <link rel="manifest" href="manifest.json" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <link rel="icon" href="icons/ufo.svg" type="image/svg+xml" />
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/brand/png/aliasist-github-192.png" />
+    <link rel="apple-touch-icon" href="assets/brand/png/aliasist-github-512.png" />
+    <link rel="stylesheet" href="styles.css" />
+    <script>
+      (function () {
+        try {
+          if (sessionStorage.getItem("atomicity-intro-done")) {
+            document.documentElement.classList.add("ax-intro-skip");
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body class="ax-root ax-simple-root">
+    <div
+      id="axIntro"
+      class="ax-intro"
+      role="dialog"
+      aria-modal="true"
+      aria-labelledby="axIntroTitle"
+      aria-describedby="axIntroDesc"
+    >
+      <div class="ax-intro-vignette" aria-hidden="true"></div>
+      <div class="ax-intro-sky" aria-hidden="true"></div>
+      <div class="ax-intro-grid" aria-hidden="true"></div>
+      <canvas id="axIntroFx" class="ax-intro-canvas" aria-hidden="true"></canvas>
+
+      <div class="ax-intro-parallax" id="axIntroParallax">
+        <img
+          class="ax-intro-ufo"
+          src="icons/ufo.svg"
+          alt=""
+          width="168"
+          height="168"
+          decoding="async"
+        />
+      </div>
+
+      <div class="ax-intro-toys" id="axIntroToys" aria-label="Interactive elements"></div>
+
+      <aside class="ax-intro-sidebar">
+        <div class="ax-intro-hud">
+          <span class="ax-intro-hud-label">Secrets</span>
+          <div class="ax-intro-hud-num">
+            <span id="axIntroScore">0</span><span class="ax-intro-hud-slash">/</span><span id="axIntroTotal">12</span>
+          </div>
+        </div>
+        <div id="axIntroTicker" class="ax-intro-ticker" role="status" aria-live="polite"></div>
+      </aside>
+
+      <header class="ax-intro-header">
+        <p class="ax-intro-kicker" id="axIntroDesc">Flash energy · click everything · nothing is saved</p>
+        <h1 id="axIntroTitle" class="ax-intro-title">
+          <span class="ax-intro-title-flash">ALIASIST</span> launch deck
+        </h1>
+        <p class="ax-intro-tagline" aria-hidden="true">
+          <span class="ax-intro-cursor">▮</span> FLASH_MODE · explore
+        </p>
+      </header>
+
+      <footer class="ax-intro-cta">
+        <button type="button" class="ax-primary ax-intro-enter" id="axIntroEnter">
+          Enter Atomicity <span class="ax-intro-arr" aria-hidden="true">▶</span>
+        </button>
+        <button type="button" class="ax-secondary ax-intro-skip" id="axIntroSkip">Skip intro</button>
+        <p class="ax-intro-hint">
+          <kbd>Esc</kbd> closes · <kbd>Space</kbd> random line · click the void for sparks
+        </p>
+      </footer>
+    </div>
+
+    <main class="ax-simple" id="axAppMain">
+      <div class="ax-simple-brand">
+        <img
+          class="ax-simple-logo"
+          src="icons/ufo.svg"
+          width="56"
+          height="56"
+          alt="Aliasist"
+          decoding="async"
+        />
+      </div>
+      <output id="display" class="ax-simple-time" aria-live="off">00:00:00.000</output>
+      <div class="ax-simple-actions" role="toolbar" aria-label="Stopwatch controls">
+        <button type="button" class="ax-primary" id="btnStart">
+          <span class="ax-btn-content"><span class="ax-btn-icon" aria-hidden="true"></span><span>Start</span></span>
+        </button>
+        <button type="button" class="ax-secondary" id="btnStop" disabled aria-disabled="true">
+          <span class="ax-btn-content"><span class="ax-btn-icon" aria-hidden="true"></span><span>Stop</span></span>
+        </button>
+        <button type="button" class="ax-secondary" id="btnReset">
+          <span class="ax-btn-content"><span class="ax-btn-icon" aria-hidden="true"></span><span>Reset</span></span>
+        </button>
+      </div>
+    </main>
+    <script type="module" src="app.mjs"></script>
+  </body>
+</html>

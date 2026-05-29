@@ -37,6 +37,10 @@ function shouldRetryViaProxy(res: Response) {
   return !res.ok && res.status !== 429;
 }
 
+function shouldRetryViaWorker(res: Response) {
+  return !res.ok && res.status !== 429;
+}
+
 const AliasistChat = () => {
   const { isLoaded, isSignedIn, getToken, userId } = useAuth();
   const { user } = useUser();
@@ -185,19 +189,20 @@ const AliasistChat = () => {
 
       let res: Response;
       let data: { response?: string; error?: string } | null = null;
-      try {
-        res = await fetch(LLM_CHAT_WORKER_ENDPOINT, requestInit);
-        data = await readJsonBody<{ response?: string; error?: string }>(res);
-      } catch {
-        res = await fetch(LLM_CHAT_ENDPOINT, requestInit);
-        data = await readJsonBody<{ response?: string; error?: string }>(res);
-      }
+      // Prefer same-origin Pages Function proxy to avoid browser CORS blocks.
+      res = await fetch(LLM_CHAT_ENDPOINT, requestInit);
+      data = await readJsonBody<{ response?: string; error?: string }>(res);
 
-      if (shouldRetryViaProxy(res)) {
-        const proxyRes = await fetch(LLM_CHAT_ENDPOINT, requestInit);
-        const proxyData = await readJsonBody<{ response?: string; error?: string }>(proxyRes);
-        res = proxyRes;
-        data = proxyData;
+      // Fallback: try the worker directly (useful for static previews without Functions).
+      if (shouldRetryViaWorker(res)) {
+        try {
+          const workerRes = await fetch(LLM_CHAT_WORKER_ENDPOINT, requestInit);
+          const workerData = await readJsonBody<{ response?: string; error?: string }>(workerRes);
+          res = workerRes;
+          data = workerData;
+        } catch {
+          // ignore; keep proxy response
+        }
       }
 
       const reply =

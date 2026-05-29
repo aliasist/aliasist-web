@@ -2,6 +2,7 @@ import { useAuth } from "@clerk/react";
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import Navbar from "@/components/Navbar";
+import { readJsonBody } from "@/config/api";
 
 interface Snapshot {
   project: string;
@@ -124,9 +125,12 @@ export default function AgentDashboard() {
       const res = await fetch("/api/agent-status", {
         headers: { Authorization: `Bearer ${token}` },
       });
-      const data = await res.json() as { snapshots?: Snapshot[]; error?: string };
-      if (!res.ok) throw new Error(data.error ?? `HTTP ${res.status}`);
-      setSnapshots(data.snapshots ?? []);
+      const data = await readJsonBody<{ snapshots?: Snapshot[]; error?: string }>(res);
+      if (!res.ok) {
+        const msg = data?.error ?? `HTTP ${res.status}`;
+        throw new Error(msg);
+      }
+      setSnapshots(data?.snapshots ?? []);
       setLastFetch(Date.now());
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to load status");

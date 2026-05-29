@@ -58,6 +58,12 @@ export const suiteApps = [
     icon: "🌐",
   },
   {
+    label: "Atomicity",
+    sub: "Stopwatch",
+    href: "/atomicity/",
+    icon: "⏱️",
+  },
+  {
     label: "PulseSist",
     sub: "Stock Market Dashboard",
     href: "https://pulse.aliasist.com",
@@ -122,6 +128,19 @@ export const projects = [
     link: "https://space.aliasist.com",
     linkLabel: "Open SpaceSist →",
     banner: spaceBanner,
+  },
+  {
+    name: "Atomicity",
+    description:
+      "Simple, fast stopwatch. No tasks, no accounts, no data saved. Just start/stop/reset, plus a lightweight intro.",
+    tech: ["Vanilla JS", "PWA", "No storage"],
+    github: "https://github.com/aliasist/atomicity",
+    downloads: [],
+    status: "Live",
+    icon: "⏱️",
+    link: "/atomicity/",
+    linkLabel: "Open Atomicity →",
+    banner: null,
   },
   {
     name: "PulseSist",
@@ -189,11 +208,6 @@ export const projects = [
 ] as const;
 
 export const comingSoonProjects = [
-  {
-    codename: "PROJECT Atomicity *being developed*",
-    description: "still deciding on on the next app",
-    eta: "Beta release in a couple weeks. - Blake - 5/3/26",
-  },
   {
     codename: "PROJECT Nightfall",
     description: "still deciding on the next app",

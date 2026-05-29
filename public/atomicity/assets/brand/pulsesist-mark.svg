@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" fill="none" role="img" aria-labelledby="pulsesistTitle">
+  <title id="pulsesistTitle">Pulsesist</title>
+  <defs>
+    <linearGradient id="pulse-line" x1="12" y1="32" x2="52" y2="32" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22D3EE"/>
+      <stop offset="0.5" stop-color="#A78BFA"/>
+      <stop offset="1" stop-color="#22C55E"/>
+    </linearGradient>
+  </defs>
+  <rect width="64" height="64" rx="14" fill="#0B0F14"/>
+  <path
+    d="M12 38 L22 38 L26 26 L32 42 L37 28 L43 39 L52 39"
+    stroke="url(#pulse-line)"
+    stroke-width="2.2"
+    stroke-linejoin="round"
+    stroke-linecap="round"
+    fill="none"
+    opacity="0.92"
+  />
+  <circle cx="26" cy="26" r="2.35" fill="#22D3EE" opacity="0.95"/>
+  <circle cx="37" cy="28" r="2.15" fill="#A78BFA" opacity="0.9"/>
+</svg>

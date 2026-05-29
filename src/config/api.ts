@@ -28,8 +28,13 @@ const llmBase = pointsAtCurrentSite(configuredLlmBase)
 const newsBase = trimTrailingSlashes(import.meta.env.VITE_NEWS_WORKER_BASE_URL || DEFAULT_NEWS_BASE);
 
 export const siteEndpoints = {
-  /** Contact form → llm-chat worker */
-  contactApi: `${llmBase}/api/contact`,
+  /** Contact form → Pages Function proxy (`functions/api/contact.ts`). */
+  contactApi: "/api/contact",
+  /**
+   * Contact worker fallback for static previews where Pages Functions are absent.
+   * (Worker must allow CORS for browser calls; prefer `contactApi`.)
+   */
+  contactWorkerApi: `${llmBase}/api/contact`,
   /**
    * Floating AI widget → Pages Function proxy (`functions/api/chat.ts`).
    * Requires `Authorization: Bearer <Clerk session JWT>` (enforced server-side).
