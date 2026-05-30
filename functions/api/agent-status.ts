@@ -1,8 +1,10 @@
 import type { ClerkEnv } from "../_lib/clerk-auth";
 import { authenticateRequest, corsHeaders, json } from "../_lib/clerk-auth";
 
+const AGENT_CHAT_URL = "https://aliasist-chat.bchooper0730.workers.dev/api/agent/snapshots";
+
 interface Env extends ClerkEnv {
-  ANALYTICS?: D1Database;
+  AGENT_PUSH_SECRET?: string;
 }
 
 type PagesContext = {
@@ -16,7 +18,7 @@ export const onRequestOptions = async () =>
 /**
  * GET /api/agent-status
  * Returns the latest snapshot per project pushed by aliasist-agent.
- * Requires a valid Clerk session token.
+ * Requires a valid Clerk session token — proxies to aliasist-chat Worker.
  */
 export const onRequestGet = async ({ request, env }: PagesContext) => {
   const auth = await authenticateRequest(request, env);
@@ -24,46 +26,46 @@ export const onRequestGet = async ({ request, env }: PagesContext) => {
     return json({ error: auth.error }, auth.status);
   }
 
-  if (!env.ANALYTICS) {
-    return json({ error: "Analytics DB not configured." }, 503);
+  const secret = env.AGENT_PUSH_SECRET;
+  if (!secret) {
+    return json({ error: "Agent not configured." }, 503);
   }
 
   try {
-    // "Latest snapshot per project" in D1/SQLite.
-    const result = await env.ANALYTICS.prepare(
-      `SELECT project, branch, dirty, framework, risk_level, warnings, raw_json, pushed_at
-       FROM (
-         SELECT
-           project, branch, dirty, framework, risk_level, warnings, raw_json, pushed_at,
-           ROW_NUMBER() OVER (PARTITION BY project ORDER BY pushed_at DESC) AS rn
-         FROM agent_snapshots
-       )
-       WHERE rn = 1
-       ORDER BY pushed_at DESC`
-    ).all<{
-      project: string;
-      branch: string | null;
-      dirty: number;
-      framework: string | null;
-      risk_level: string | null;
-      warnings: number;
-      raw_json: string | null;
-      pushed_at: number;
-    }>();
+    const upstream = await fetch(AGENT_CHAT_URL, {
+      headers: { "X-Agent-Secret": secret },
+    });
 
-    const snapshots = (result.results ?? []).map((row) => ({
+    if (!upstream.ok) {
+      const text = await upstream.text().catch(() => "");
+      return json({ error: `Upstream error: ${upstream.status} ${text.slice(0, 200)}` }, 502);
+    }
+
+    const data = await upstream.json() as { snapshots?: unknown[] };
+
+    // Normalise DO snapshot shape → frontend Snapshot shape
+    const snapshots = (data.snapshots ?? []).map((row: any) => ({
       project: row.project,
-      branch: row.branch,
-      dirty: row.dirty === 1,
-      framework: row.framework,
-      riskLevel: row.risk_level,
-      warnings: row.warnings,
-      pushedAt: row.pushed_at,
+      branch: row.branch ?? null,
+      dirty: row.dirty === 1 || row.dirty === true,
+      framework: row.framework ?? null,
+      riskLevel: row.risk_level ?? row.riskLevel ?? null,
+      warnings: row.warnings ?? 0,
+      pushedAt: row.pushed_at ? new Date(row.pushed_at).getTime() : Date.now(),
     }));
 
-    return json({ snapshots });
+    // Latest snapshot per project
+    const latest = new Map<string, typeof snapshots[number]>();
+    for (const snap of snapshots) {
+      const existing = latest.get(snap.project);
+      if (!existing || snap.pushedAt > existing.pushedAt) {
+        latest.set(snap.project, snap);
+      }
+    }
+
+    return json({ snapshots: [...latest.values()].sort((a, b) => b.pushedAt - a.pushedAt) });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    return json({ error: `DB error: ${msg}` }, 500);
+    return json({ error: `Failed to fetch snapshots: ${msg}` }, 500);
   }
 };
