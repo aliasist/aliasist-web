@@ -20,6 +20,7 @@ Part of the **[Aliasist](https://aliasist.com)** suite.
 - `POST /api/ai/chat` — AI chat proxy
 - `POST /api/ai/rag-chat` — RAG chat proxy to a separate retrieval worker
 - `GET /api/stats` — aggregate statistics
+- `GET /api/observations/status` — saved external-provider observation counts and latest timestamp
 - `GET /api/health` — health check
 
 ## Deploy
@@ -47,6 +48,15 @@ Free/public sources already used without secrets:
 - Open-Meteo forecast API — live weather and cooling conditions
 - Open-Meteo air quality API — AQI and particulate pollution
 - U.S. National Weather Service API — forecast + active alerts for U.S. facilities
+
+Fetched provider payloads are registered in the append-only D1
+`external_api_observations` table. Repeated reads update the current hourly bucket
+instead of inserting an unbounded row for every page refresh. The facility registry
+remains in `data_centers` and continues to sync to Neon separately.
+
+Successful DataSist AI and RAG responses are also logged to the shared
+`aliasist-analytics` D1 database using its existing `chat_sessions`,
+`chat_messages`, and `usage_events` tables.
 
 ## RAG Integration
 

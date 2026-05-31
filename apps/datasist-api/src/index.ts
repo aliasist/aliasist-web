@@ -76,6 +76,40 @@ async function fetchJson<T>(url: string, init?: RequestInit): Promise<T> {
   return await res.json() as T;
 }
 
+async function registerExternalApiObservation(
+  db: D1Database,
+  source: string,
+  scope: string,
+  payload: unknown,
+  facilityId?: number | string,
+  bucketMs = 60 * 60 * 1000,
+): Promise<void> {
+  try {
+    const observedAt = Date.now();
+    const bucket = Math.floor(observedAt / bucketMs);
+    const id = `${source}:${scope}:${bucket}`;
+    await db.prepare(`
+      INSERT INTO external_api_observations
+        (id, source, scope, facility_id, payload_json, observed_at, registered_at)
+      VALUES (?, ?, ?, ?, ?, ?, ?)
+      ON CONFLICT(id) DO UPDATE SET
+        payload_json=excluded.payload_json,
+        observed_at=excluded.observed_at,
+        registered_at=excluded.registered_at
+    `).bind(
+      id,
+      source,
+      scope,
+      facilityId ?? null,
+      JSON.stringify(payload),
+      observedAt,
+      observedAt,
+    ).run();
+  } catch (err) {
+    console.warn(`External API observation registration failed (${source}/${scope}):`, err);
+  }
+}
+
 async function getElectricityMapInsights(lat: number, lon: number, apiKey: string) {
   const headers = { "auth-token": apiKey };
   const base = `https://api.electricitymap.org/v4`;
@@ -332,6 +366,9 @@ export default {
 
       // ── Public reads ────────────────────────────────────────────────────
       if (isCollection && request.method === "GET") return handleGetAll(env.DB, corsHeaders, env);
+      if (p === "/api/observations/status" && request.method === "GET") {
+        return handleObservationStatus(env.DB, corsHeaders);
+      }
       if (liveInsightsMatch && request.method === "GET") {
         return handleGetLiveInsights(env.DB, Number(liveInsightsMatch[1]), corsHeaders, env);
       }
@@ -522,6 +559,7 @@ async function handleGetAll(db: D1Database, headers: Record<string, string>, env
   // Enrich with live EIA electricity prices
   if (env?.EIA_API_KEY) {
     const prices = await getEIAPrices(env.EIA_API_KEY);
+    await registerExternalApiObservation(env.DB, "eia", "commercial-electricity-prices", prices, undefined, 24 * 60 * 60 * 1000);
     for (const f of facilities) {
       const abbr = STATE_ABBR[f.state as string];
       const priceCents = abbr ? prices[abbr] : undefined;
@@ -584,14 +622,27 @@ async function handleGetLiveInsights(db: D1Database, id: number, headers: Record
     isUs ? getNwsInsights(facility.lat, facility.lng).catch(() => null) : Promise.resolve(null),
   ]);
 
-  return json({
+  const insights = {
     facilityId: facility.id,
     electricity,
     gridCarbon,
     weather,
     airQuality,
     nws,
-  }, 200, headers);
+  };
+
+  await Promise.all([
+    registerExternalApiObservation(db, "eia", `facility:${facility.id}`, electricity, facility.id, 24 * 60 * 60 * 1000),
+    ...(gridCarbon ? [registerExternalApiObservation(db, "electricity-maps", `facility:${facility.id}`, gridCarbon, facility.id)] : []),
+    ...(weather ? [registerExternalApiObservation(db, "open-meteo-weather", `facility:${facility.id}`, weather, facility.id)] : []),
+    ...(airQuality ? [registerExternalApiObservation(db, "open-meteo-air-quality", `facility:${facility.id}`, airQuality, facility.id)] : []),
+    ...(nws ? [registerExternalApiObservation(db, "nws", `facility:${facility.id}`, nws, facility.id)] : []),
+    logUsage(env.ANALYTICS, "datasist-api", "live-insights", "read", String(facility.id), {
+      sources: ["eia", gridCarbon?.source, weather?.source, airQuality?.source, nws?.source].filter(Boolean),
+    }),
+  ]);
+
+  return json(insights, 200, headers);
 }
 
 async function handleCreate(request: Request, db: D1Database, headers: Record<string, string>) {
@@ -673,6 +724,24 @@ async function handleStats(db: D1Database, headers: Record<string, string>) {
     underConstructionCount: underConstruction,
     totalCapacityMW: Math.round(totalCapacity),
     totalInvestmentBillions: Math.round(totalInvestment * 10) / 10,
+  }, 200, headers);
+}
+
+async function handleObservationStatus(db: D1Database, headers: Record<string, string>) {
+  const [{ results }, latest] = await Promise.all([
+    db.prepare(`
+      SELECT source, COUNT(*) AS records, MAX(observed_at) AS latest_observed_at
+      FROM external_api_observations
+      GROUP BY source
+      ORDER BY source ASC
+    `).all(),
+    db.prepare("SELECT MAX(observed_at) AS latest_observed_at FROM external_api_observations").first(),
+  ]);
+
+  return json({
+    registered: true,
+    latestObservedAt: (latest as { latest_observed_at?: number | null } | null)?.latest_observed_at ?? null,
+    sources: results,
   }, 200, headers);
 }
 
@@ -867,6 +936,14 @@ async function handleChat(request: Request, headers: Record<string, string>, env
       try {
         const result = await attempt.run();
         attemptedProviders.push(result.provider);
+        const userMessage = chatMessages.filter((message) => message.role === "user").at(-1)?.content ?? "";
+        await Promise.all([
+          logChat(env.ANALYTICS, "datasist", userMessage, result.answer, result.model),
+          logUsage(env.ANALYTICS, "datasist-api", "ai-chat", result.provider, body.facilityId ? String(body.facilityId) : undefined, {
+            model: result.model,
+            fallbackUsed: attemptedProviders.length > 1,
+          }),
+        ]);
         return json({
           answer: result.answer,
           model: result.model,
@@ -958,6 +1035,13 @@ async function handleRagChat(request: Request, headers: Record<string, string>, 
     }
 
     if (ragRes.ok && responseJson?.answer) {
+      await Promise.all([
+        logChat(env.ANALYTICS, "datasist-rag", question, responseJson.answer, "rag-core"),
+        logUsage(env.ANALYTICS, "datasist-api", "rag-chat", "query", body.facilityId ? String(body.facilityId) : undefined, {
+          sourceType: body.sourceType ?? null,
+          topK: ragPayload.topK,
+        }),
+      ]);
       return json({
         answer: responseJson.answer,
         citations: responseJson.citations ?? [],
@@ -1146,6 +1230,15 @@ async function syncFromIndexAPI(db: D1Database): Promise<number> {
   }
 
   if (all.length === 0) return 0;
+
+  await registerExternalApiObservation(
+    db,
+    "ai-data-center-index",
+    "facility-registry-sync",
+    { continents: INDEX_CONTINENTS, facilities: all },
+    undefined,
+    24 * 60 * 60 * 1000,
+  );
 
   // Clear existing seeded data and replace with fresh Index data
   // Keep any admin-created rows (id > threshold set at seed time)
