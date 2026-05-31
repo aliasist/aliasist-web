@@ -1,0 +1,37 @@
+name: Deploy Clearasist (Public)
+
+on:
+  push:
+    branches: [master, main]
+    paths:
+      - 'apps/clearasist/**'
+      - '.github/workflows/deploy-clearasist.yml'
+  workflow_dispatch:   # Allow manual trigger
+
+jobs:
+  deploy:
+    name: Deploy Public Site
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies (root)
+        run: npm ci
+
+      - name: Build Clearasist
+        run: npm run build:clearasist
+
+      - name: Deploy to Cloudflare Pages
+        uses: cloudflare/wrangler-action@v3
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          command: pages deploy apps/clearasist/dist --project-name=clearasist --commit-dirty=true
+        env:
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

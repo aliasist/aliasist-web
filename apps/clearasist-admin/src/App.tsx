@@ -1,57 +1,67 @@
 import { useState, useEffect } from 'react'
 
+const CURATION_TAGS = ['Good for training', 'Bad data', 'Review later', 'High quality']
+
 interface Report {
   id: number
   timestamp: string
   filename: string | null
   file_type: string | null
-  extension: string | null
-  original_size: number | null
-  cleaned_size: number | null
   removed_count: number | null
+  partials?: string | null   // JSON string containing thumbnail or text excerpt
 }
 
 interface FullReport extends Report {
   removed_items: string | null
   raw_metadata: string | null
   cleaned_metadata: string | null
-  user_agent: string | null
+  tags: string | null
+  notes: string | null
+  partials?: string | null
 }
 
 const WORKER_URL = import.meta.env.VITE_METADATA_WORKER_URL || ''
 const ADMIN_SECRET = import.meta.env.VITE_ADMIN_SECRET || ''
 
-function App() {
+function parseTags(value: string | null): string[] {
+  if (!value) return []
+
+  try {
+    const parsed = JSON.parse(value)
+    return Array.isArray(parsed) ? parsed.filter((tag): tag is string => typeof tag === 'string') : []
+  } catch {
+    return []
+  }
+}
+
+export default function Admin() {
   const [reports, setReports] = useState<Report[]>([])
   const [selected, setSelected] = useState<FullReport | null>(null)
   const [loading, setLoading] = useState(false)
   const [search, setSearch] = useState('')
-  const [fileTypeFilter, setFileTypeFilter] = useState('')
+  const [fetchError, setFetchError] = useState<string | null>(null)
+
+  const envMissing = !WORKER_URL || !ADMIN_SECRET
 
   const fetchReports = async () => {
-    if (!WORKER_URL || !ADMIN_SECRET) {
-      alert('Missing VITE_METADATA_WORKER_URL or VITE_ADMIN_SECRET in .env')
-      return
-    }
-
+    if (envMissing) return
     setLoading(true)
+    setFetchError(null)
     try {
       const params = new URLSearchParams()
-      if (fileTypeFilter) params.set('file_type', fileTypeFilter)
       if (search) params.set('search', search)
-
       const res = await fetch(`${WORKER_URL}/admin/reports?${params}`, {
-        headers: {
-          'Authorization': `Bearer ${ADMIN_SECRET}`
-        }
+        headers: { Authorization: `Bearer ${ADMIN_SECRET}` }
       })
-
-      if (!res.ok) throw new Error('Failed to fetch')
-
+      if (!res.ok) {
+        const text = await res.text().catch(() => '')
+        throw new Error(`HTTP ${res.status}${text ? `: ${text}` : ''}`)
+      }
       const data = await res.json()
       setReports(data.reports || [])
-    } catch (e) {
-      alert('Failed to load reports')
+    } catch (e: any) {
+      console.error(e)
+      setFetchError(e?.message || 'Failed to load reports')
     } finally {
       setLoading(false)
     }
@@ -60,156 +70,291 @@ function App() {
   const loadReport = async (id: number) => {
     try {
       const res = await fetch(`${WORKER_URL}/admin/reports/${id}`, {
-        headers: {
-          'Authorization': `Bearer ${ADMIN_SECRET}`
-        }
+        headers: { Authorization: `Bearer ${ADMIN_SECRET}` }
       })
+      if (!res.ok) throw new Error(`Failed to fetch report: ${res.status}`)
       const data = await res.json()
       setSelected(data)
     } catch (e) {
-      alert('Failed to load report details')
+      console.error(e)
+    }
+  }
+
+  const updateReport = async (id: number, patch: { tags?: string[]; notes?: string }) => {
+    const res = await fetch(`${WORKER_URL}/admin/reports/${id}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: `Bearer ${ADMIN_SECRET}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(patch)
+    })
+
+    if (!res.ok) throw new Error(`Failed to update report: ${res.status}`)
+
+    const updated = await res.json()
+    setSelected(updated)
+    setReports((current) =>
+      current.map((report) =>
+        report.id === id
+          ? {
+              ...report,
+              timestamp: updated.timestamp,
+              filename: updated.filename,
+              file_type: updated.file_type,
+              removed_count: updated.removed_count
+            }
+          : report
+      )
+    )
+  }
+
+  const toggleTag = async (id: number, tag: string) => {
+    if (!selected) return
+
+    const currentTags = parseTags(selected.tags)
+    const nextTags = currentTags.includes(tag)
+      ? currentTags.filter((current) => current !== tag)
+      : [...currentTags, tag]
+
+    try {
+      await updateReport(id, { tags: nextTags })
+    } catch (e) {
+      console.error(e)
+    }
+  }
+
+  const updateNotes = async (id: number, notes: string) => {
+    try {
+      await updateReport(id, { notes })
+    } catch (e) {
+      console.error(e)
     }
   }
 
   useEffect(() => {
-    fetchReports()
-  }, [fileTypeFilter]) // refetch when filter changes
+    const t = setTimeout(fetchReports, 300)
+    return () => clearTimeout(t)
+  }, [search])
+
+  // Prominent missing-config banner (prevents the "completely empty screen" problem)
+  if (envMissing) {
+    return (
+      <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-6">
+        <div className="max-w-[620px] w-full border border-border rounded-2xl bg-card p-8">
+          <div className="text-center mb-6">
+            <div className="inline-block px-3 py-1 rounded-full bg-electric/10 text-electric text-xs font-mono tracking-[0.16em] mb-4">
+              CONFIGURATION REQUIRED
+            </div>
+            <h1 className="text-3xl font-semibold tracking-tight mb-2">Clearasist Admin</h1>
+            <p className="text-muted-foreground">This admin portal needs two environment variables.</p>
+          </div>
+
+          <div className="bg-[#0F1117] border border-border rounded-xl p-5 mb-6 font-mono text-sm">
+            <div className="text-electric mb-2 text-xs tracking-[0.16em] uppercase">Create this file</div>
+            <div className="text-foreground mb-3">apps/clearasist-admin/.env.local</div>
+            <pre className="text-xs text-muted-foreground leading-relaxed">VITE_METADATA_WORKER_URL=https://clearasist-metadata.your-domain.workers.dev
+VITE_ADMIN_SECRET=the-exact-secret-you-set-in-cloudflare</pre>
+          </div>
+
+          <div className="text-sm text-muted-foreground space-y-2">
+            <div>1. Create the file above in the clearasist-admin folder</div>
+            <div>2. Paste the real Worker URL and the ADMIN_SECRET you set on the Worker</div>
+            <div className="text-electric">3. Fully restart the dev server (npm run dev) after saving</div>
+          </div>
+
+          <div className="mt-6 pt-6 border-t border-border text-xs text-muted-foreground">
+            The screen will stay blank until these vars are present — Vite only reads .env at startup.
+          </div>
+        </div>
+      </div>
+    )
+  }
 
   return (
-    <div className="min-h-screen bg-[#0F1117] text-white p-6">
-      <div className="max-w-6xl mx-auto">
-        <div className="flex justify-between items-center mb-8">
-          <div>
-            <h1 className="text-3xl font-semibold">Clearasist Admin</h1>
-            <p className="text-sm text-gray-400">Metadata Reports Viewer</p>
-          </div>
-          <button 
-            onClick={fetchReports}
-            className="px-4 py-2 bg-[#00E5A0] text-black rounded-lg font-medium hover:bg-white transition-colors"
-          >
-            Refresh
-          </button>
+    <div className="min-h-screen bg-background text-foreground">
+      <div className="max-w-[1100px] mx-auto p-6">
+        {/* Header - Exact Clearasist style */}
+        <div className="mb-8">
+          <h1 className="text-3xl font-semibold tracking-tight">Clearasist Admin</h1>
+          <p className="text-muted-foreground text-sm mt-1">Review stripped metadata</p>
         </div>
 
-        {/* Filters */}
-        <div className="flex gap-4 mb-6">
+        {/* Search - Clean like Clearasist */}
+        <div className="mb-6">
           <input
             type="text"
             placeholder="Search filename..."
             value={search}
             onChange={(e) => setSearch(e.target.value)}
-            onKeyDown={(e) => e.key === 'Enter' && fetchReports()}
-            className="flex-1 bg-[#1A1D24] border border-gray-700 rounded-lg px-4 py-2 text-sm"
+            className="w-full max-w-md bg-card border border-border rounded-lg px-4 py-2 text-sm focus:border-electric"
           />
-          <select 
-            value={fileTypeFilter} 
-            onChange={(e) => setFileTypeFilter(e.target.value)}
-            className="bg-[#1A1D24] border border-gray-700 rounded-lg px-4 py-2 text-sm"
-          >
-            <option value="">All types</option>
-            <option value="image">Image</option>
-            <option value="pdf">PDF</option>
-            <option value="office">Office</option>
-          </select>
-          <button 
-            onClick={fetchReports}
-            className="px-6 py-2 bg-gray-800 rounded-lg hover:bg-gray-700"
-          >
-            Search
-          </button>
         </div>
 
-        {/* Table */}
-        <div className="bg-[#1A1D24] rounded-xl border border-gray-800 overflow-hidden">
-          <table className="w-full text-sm">
-            <thead className="bg-[#111318] text-gray-400">
-              <tr>
-                <th className="text-left p-4">Timestamp</th>
-                <th className="text-left p-4">Filename</th>
-                <th className="text-left p-4">Type</th>
-                <th className="text-right p-4">Removed</th>
-                <th className="text-right p-4">Size</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody>
-              {reports.length === 0 && (
-                <tr>
-                  <td colSpan={6} className="p-8 text-center text-gray-500">
-                    No reports found
-                  </td>
-                </tr>
-              )}
-              {reports.map(report => (
-                <tr 
-                  key={report.id} 
-                  onClick={() => loadReport(report.id)}
-                  className="border-t border-gray-800 hover:bg-[#252932] cursor-pointer"
-                >
-                  <td className="p-4 font-mono text-xs text-gray-400">
-                    {new Date(report.timestamp).toLocaleString()}
-                  </td>
-                  <td className="p-4 font-medium">{report.filename || '—'}</td>
-                  <td className="p-4 capitalize text-gray-300">{report.file_type || '—'}</td>
-                  <td className="p-4 text-right text-[#00E5A0] font-medium">
-                    {report.removed_count || 0}
-                  </td>
-                  <td className="p-4 text-right text-gray-400 font-mono text-xs">
-                    {report.original_size ? Math.round(report.original_size / 1024) : '?'} KB
-                  </td>
-                  <td className="p-4 text-right">
-                    <button className="text-[#00E5A0] hover:underline text-xs">VIEW</button>
-                  </td>
-                </tr>
-              ))}
-            </tbody>
-          </table>
-        </div>
-
-        {/* Detail Modal */}
-        {selected && (
-          <div className="fixed inset-0 bg-black/70 flex items-center justify-center p-4 z-50" onClick={() => setSelected(null)}>
-            <div className="bg-[#1A1D24] rounded-2xl max-w-4xl w-full max-h-[85vh] overflow-auto p-6" onClick={e => e.stopPropagation()}>
-              <div className="flex justify-between mb-4">
-                <h2 className="text-xl font-semibold">{selected.filename}</h2>
-                <button onClick={() => setSelected(null)} className="text-gray-400 hover:text-white">✕</button>
-              </div>
-
-              <div className="grid grid-cols-2 gap-4 text-sm mb-6">
-                <div><strong>Type:</strong> {selected.file_type}</div>
-                <div><strong>Removed:</strong> {selected.removed_count} items</div>
-                <div><strong>Original Size:</strong> {selected.original_size ? Math.round(selected.original_size/1024) : '?'} KB</div>
-                <div><strong>Cleaned Size:</strong> {selected.cleaned_size ? Math.round(selected.cleaned_size/1024) : '?'} KB</div>
-              </div>
-
-              <div className="space-y-6">
-                <div>
-                  <h3 className="font-semibold mb-2 text-[#00E5A0]">Removed Items</h3>
-                  <pre className="bg-[#111318] p-4 rounded-xl text-xs overflow-auto max-h-64">
-                    {selected.removed_items ? JSON.stringify(JSON.parse(selected.removed_items), null, 2) : 'None'}
-                  </pre>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold mb-2">Raw Metadata (Before)</h3>
-                  <pre className="bg-[#111318] p-4 rounded-xl text-xs overflow-auto max-h-96">
-                    {selected.raw_metadata ? JSON.stringify(JSON.parse(selected.raw_metadata), null, 2) : 'None'}
-                  </pre>
-                </div>
-
-                <div>
-                  <h3 className="font-semibold mb-2">Metadata After Cleaning</h3>
-                  <pre className="bg-[#111318] p-4 rounded-xl text-xs overflow-auto max-h-64">
-                    {selected.cleaned_metadata ? JSON.stringify(JSON.parse(selected.cleaned_metadata), null, 2) : 'None'}
-                  </pre>
-                </div>
-              </div>
-            </div>
+        {/* Error banner */}
+        {fetchError && (
+          <div className="mb-4 px-4 py-3 rounded-xl border border-red-500/30 bg-red-500/10 text-sm text-red-400 font-mono">
+            {fetchError}
           </div>
         )}
+
+        {/* Lazygit-style vertical list + detail */}
+        <div className="flex gap-4 h-[calc(100vh-260px)]">
+          {/* Left: Lazygit-style file list */}
+          <div className="w-2/5 border border-border rounded-2xl bg-card overflow-hidden flex flex-col">
+            <div className="px-3 py-2 text-[10px] font-mono uppercase tracking-[0.16em] text-muted-foreground border-b border-border flex items-center justify-between shrink-0">
+              <span>REPORTS // newest first</span>
+              {loading && <span className="text-electric">loading...</span>}
+            </div>
+
+            <div
+              className="flex-1 overflow-auto font-mono text-xs focus:outline-none"
+              tabIndex={0}
+              onKeyDown={(e) => {
+                if (!reports.length) return;
+                const currentIndex = selected ? reports.findIndex(r => r.id === selected.id) : 0;
+                if (e.key === 'ArrowDown') {
+                  e.preventDefault();
+                  const next = Math.min(currentIndex + 1, reports.length - 1);
+                  loadReport(reports[next].id);
+                }
+                if (e.key === 'ArrowUp') {
+                  e.preventDefault();
+                  const prev = Math.max(currentIndex - 1, 0);
+                  loadReport(reports[prev].id);
+                }
+              }}
+            >
+              {reports.length === 0 && !loading && (
+                <div className="px-4 py-12 text-center text-muted-foreground text-sm">
+                  No reports yet.<br />
+                  Process files on the public Clearasist site first.
+                </div>
+              )}
+
+              {reports.map((report, index) => {
+                const isSelected = selected?.id === report.id;
+                return (
+                  <button
+                    key={report.id}
+                    onClick={() => loadReport(report.id)}
+                    className={`w-full flex items-center gap-3 px-3 py-1.5 text-left border-l-2 transition-all ${
+                      isSelected
+                        ? "bg-electric/10 border-electric text-foreground"
+                        : "border-transparent hover:bg-background/40 text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <div className="w-6 shrink-0 text-[10px] text-electric/60 tabular-nums">
+                      {String(index + 1).padStart(2, '0')}
+                    </div>
+                    <div className="flex-1 min-w-0 flex items-center justify-between gap-2">
+                      <span className="truncate font-medium">{report.filename || 'Unknown file'}</span>
+                      <span className="shrink-0 text-electric tabular-nums text-[10px]">
+                        -{report.removed_count || 0}
+                      </span>
+                    </div>
+                  </button>
+                );
+              })}
+            </div>
+          </div>
+
+          {/* Detail - clean, high signal, like Clearasist cards */}
+          <div className="flex-1 border border-border rounded-2xl bg-card overflow-hidden flex flex-col">
+            {!selected ? (
+              <div className="flex-1 flex items-center justify-center text-muted-foreground text-sm">
+                Select a report from the list
+              </div>
+            ) : (
+              <div className="p-5 overflow-auto">
+                <div className="mb-4">
+                  <div className="font-medium text-lg">{selected.filename}</div>
+                  <div className="text-xs text-muted-foreground font-mono mt-0.5">
+                    {new Date(selected.timestamp).toLocaleString()} • {selected.file_type} • {selected.removed_count} removed
+                  </div>
+                </div>
+
+                {/* Lightweight partial preview (thumbnail or text excerpt) for training data */}
+                {selected.partials && (() => {
+                  try {
+                    const p = JSON.parse(selected.partials)
+                    if (p?.type === 'thumbnail' && p.data) {
+                      return (
+                        <div className="mb-5">
+                          <div className="text-[10px] uppercase tracking-[0.16em] text-electric mb-1.5">Thumbnail (partial)</div>
+                          <img
+                            src={`data:image/jpeg;base64,${p.data}`}
+                            alt="Thumbnail"
+                            className="max-w-[180px] rounded border border-border"
+                          />
+                          <div className="text-[10px] text-muted-foreground mt-1 font-mono">{p.width}×{p.height}</div>
+                        </div>
+                      )
+                    }
+                    if (p?.type === 'text' && p.data) {
+                      return (
+                        <div className="mb-5">
+                          <div className="text-[10px] uppercase tracking-[0.16em] text-electric mb-1.5">Text excerpt (partial)</div>
+                          <pre className="bg-[#0F1117] p-3 rounded text-xs border border-border overflow-auto max-h-32">{p.data}</pre>
+                        </div>
+                      )
+                    }
+                  } catch {}
+                  return null
+                })()}
+
+                {/* Tags & Notes */}
+                <div className="mb-5">
+                  <div className="text-[10px] uppercase tracking-[0.16em] text-electric mb-1.5">Tags</div>
+                  <div className="flex flex-wrap gap-2 mb-3">
+                    {CURATION_TAGS.map(tag => (
+                      <button
+                        key={tag}
+                        onClick={() => toggleTag(selected.id, tag)}
+                        className={`px-2.5 py-0.5 text-xs rounded border transition-colors ${
+                          parseTags(selected.tags).includes(tag)
+                            ? 'bg-electric text-[#0F1117] border-electric'
+                            : 'border-border hover:border-electric/50'
+                        }`}
+                      >
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+
+                  <textarea
+                    placeholder="Notes..."
+                    defaultValue={selected.notes || ''}
+                    onBlur={(e) => updateNotes(selected.id, e.target.value)}
+                    className="w-full bg-[#0F1117] border border-border rounded p-3 text-sm h-20 font-mono resize-y"
+                  />
+                </div>
+
+                <details open>
+                  <summary className="text-sm text-electric cursor-pointer mb-1">Removed Items</summary>
+                  <pre className="bg-[#0F1117] p-3 rounded text-xs border border-border overflow-auto max-h-40">
+                    {selected.removed_items ? JSON.stringify(JSON.parse(selected.removed_items), null, 2) : '[]'}
+                  </pre>
+                </details>
+
+                <details>
+                  <summary className="text-sm text-electric cursor-pointer mb-1">Raw Metadata (Before)</summary>
+                  <pre className="bg-[#0F1117] p-3 rounded text-xs border border-border overflow-auto max-h-48">
+                    {selected.raw_metadata ? JSON.stringify(JSON.parse(selected.raw_metadata), null, 2) : '{}'}
+                  </pre>
+                </details>
+
+                <details>
+                  <summary className="text-sm text-electric cursor-pointer mb-1">After Cleaning</summary>
+                  <pre className="bg-[#0F1117] p-3 rounded text-xs border border-border overflow-auto max-h-32">
+                    {selected.cleaned_metadata ? JSON.stringify(JSON.parse(selected.cleaned_metadata), null, 2) : '{}'}
+                  </pre>
+                </details>
+              </div>
+            )}
+          </div>
+        </div>
       </div>
     </div>
   )
 }
-
-export default App

@@ -6,12 +6,12 @@ This Worker receives stripped metadata reports from the Clearasist frontend and 
 
 ## Setup
 
-1. **Run the schema on your existing database**
+1. **Run the schema when initializing a new database**
    ```bash
    npx wrangler d1 execute clearasist-meta --file=./schema.sql
    ```
 
-   (You already created the database called `clearasist-meta`)
+   For an existing database, apply the additive SQL files in `migrations/` instead.
 
 3. **Update `wrangler.toml`**
    - Replace `database_id` with the ID returned from the `create` command.

@@ -4,13 +4,15 @@ You have already created the D1 database called `clearasist-meta`.
 
 ## Step-by-step
 
-### 1. Apply the database schema
+### 1. Apply the database schema on a new database
 
-From the `worker` folder:
+From the `worker` folder, run this only when initializing a new database:
 
 ```bash
 npx wrangler d1 execute clearasist-meta --file=./schema.sql
 ```
+
+For an existing database, apply the additive SQL files in `migrations/` instead.
 
 ### 2. Get your database ID
 
