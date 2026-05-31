@@ -3,6 +3,7 @@ import { authenticateRequest, corsHeaders, json } from "../_lib/clerk-auth";
 
 interface Env extends ClerkEnv {
   CHATROOM?: KVNamespace;
+  ANALYTICS?: D1Database;
 }
 
 type PagesContext = {
@@ -89,25 +90,54 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
 
   const messages = await readMessages(env);
   const nextMessages = [...messages, message].slice(-MAX_MESSAGES);
-  await writeMessages(env, nextMessages);
+  await writeMessages(env, nextMessages, message);
 
   return json({ message }, 201);
 };
 
 async function readMessages(env: Env): Promise<ChatMessage[]> {
-  if (!env.CHATROOM) {
-    return inMemoryMessages;
+  if (env.CHATROOM) {
+    const stored = await env.CHATROOM.get(CHATROOM_MESSAGES_KEY, "json");
+    return Array.isArray(stored) ? (stored as ChatMessage[]) : [];
   }
 
-  const stored = await env.CHATROOM.get(CHATROOM_MESSAGES_KEY, "json");
-  return Array.isArray(stored) ? (stored as ChatMessage[]) : [];
+  if (env.ANALYTICS) {
+    const { results } = await env.ANALYTICS.prepare(`
+      SELECT content
+      FROM chat_messages
+      WHERE app = 'homepage-room'
+      ORDER BY timestamp DESC
+      LIMIT ?
+    `).bind(MAX_MESSAGES).all<{ content: string }>();
+
+    return results
+      .map((row) => {
+        try {
+          return JSON.parse(row.content) as ChatMessage;
+        } catch {
+          return null;
+        }
+      })
+      .filter((message): message is ChatMessage => message !== null)
+      .reverse();
+  }
+
+  return inMemoryMessages;
 }
 
-async function writeMessages(env: Env, messages: ChatMessage[]) {
-  if (!env.CHATROOM) {
-    inMemoryMessages = messages;
+async function writeMessages(env: Env, messages: ChatMessage[], message: ChatMessage) {
+  if (env.CHATROOM) {
+    await env.CHATROOM.put(CHATROOM_MESSAGES_KEY, JSON.stringify(messages));
     return;
   }
 
-  await env.CHATROOM.put(CHATROOM_MESSAGES_KEY, JSON.stringify(messages));
+  if (env.ANALYTICS) {
+    await env.ANALYTICS.prepare(`
+      INSERT INTO chat_messages (id, session_id, app, role, content, timestamp)
+      VALUES (?, 'homepage-room', 'homepage-room', 'user', ?, ?)
+    `).bind(message.id, JSON.stringify(message), Date.parse(message.timestamp)).run();
+    return;
+  }
+
+  inMemoryMessages = messages;
 }
