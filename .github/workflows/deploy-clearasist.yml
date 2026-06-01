@@ -26,7 +26,7 @@ jobs:
         run: npm ci
 
       - name: Build Clearasist
-        run: npm run build:clearasist
+        run: npm --prefix apps/clearasist run build
 
       - name: Deploy to Cloudflare Pages
         uses: cloudflare/wrangler-action@v3
