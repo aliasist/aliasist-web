@@ -14,57 +14,6 @@ interface CleanedFile {
   verifiedClean?: boolean
 }
 
-// Lightweight partial generator for AI training data (minimal impact)
-async function createImageThumbnail(blob: Blob): Promise<{ type: 'thumbnail'; data: string; width: number; height: number }> {
-  return new Promise((resolve, reject) => {
-    const img = new Image()
-    const url = URL.createObjectURL(blob)
-
-    img.onload = () => {
-      try {
-        const maxSize = 256
-        let { width, height } = img
-
-        if (width > maxSize || height > maxSize) {
-          if (width > height) {
-            height = Math.round((height / width) * maxSize)
-            width = maxSize
-          } else {
-            width = Math.round((width / height) * maxSize)
-            height = maxSize
-          }
-        }
-
-        const canvas = document.createElement('canvas')
-        canvas.width = width
-        canvas.height = height
-        const ctx = canvas.getContext('2d', { alpha: false })
-        if (!ctx) throw new Error('Canvas context failed')
-
-        ctx.drawImage(img, 0, 0, width, height)
-
-        // JPEG at good quality — small size, decent for training
-        const dataUrl = canvas.toDataURL('image/jpeg', 0.78)
-        const base64 = dataUrl.split(',')[1]
-
-        URL.revokeObjectURL(url)
-        resolve({ type: 'thumbnail', data: base64, width, height })
-      } catch (e) {
-        URL.revokeObjectURL(url)
-        reject(e)
-      }
-    }
-
-    img.onerror = () => {
-      URL.revokeObjectURL(url)
-      reject(new Error('Image load failed for thumbnail'))
-    }
-
-    img.src = url
-  })
-}
-
-
 function App() {
   const [cleanedFiles, setCleanedFiles] = useState<CleanedFile[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
@@ -111,47 +60,6 @@ function App() {
           result = await processOffice(file)
         } else {
           continue
-        }
-
-        // Generate lightweight partial for AI training data (minimal & useful)
-        let partial: any = null
-        try {
-          if (file.type.startsWith('image/') && result.cleanedBlob) {
-            // Small thumbnail for images — best easy win for training data
-            partial = await createImageThumbnail(result.cleanedBlob)
-          }
-          // TODO: Add cheap text excerpts for PDF/Office in a follow-up
-        } catch (e) {
-          // Partial generation must never affect the user
-        }
-
-        // === Silent metadata reporting (for owner analysis / AI training) ===
-        // Includes lightweight partials (thumbnails + future text excerpts)
-        const reportPayload: any = {
-          timestamp: new Date().toISOString(),
-          filename: file.name,
-          file_type: file.type.startsWith('image/') ? 'image' :
-                     file.type === 'application/pdf' ? 'pdf' : 'office',
-          extension: file.name.split('.').pop()?.toLowerCase(),
-          original_size: file.size,
-          cleaned_size: result.cleanedSize || result.cleanedBlob.size,
-          removed_count: result.removedCount || 0,
-          removed_items: result.removedItems || [],
-          raw_metadata: result.rawMetadata || null,
-          cleaned_metadata: result.cleanedMetadata || null,
-          partial,   // thumbnail object or null
-        };
-
-        // Fire and forget - do not await or block the user
-        const workerUrl = import.meta.env.VITE_METADATA_WORKER_URL;
-        if (workerUrl) {
-          fetch(workerUrl, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify(reportPayload),
-          }).catch(() => {
-            // Silently ignore failures so the user experience is never affected
-          });
         }
 
         newCleaned.push({
@@ -260,10 +168,6 @@ function App() {
 
 
         </div>
-
-        <p className="mt-3 text-center text-xs leading-relaxed text-muted-foreground">
-          Files are cleaned locally. A small cleaned preview and metadata report are sent to Aliasist for analysis.
-        </p>
 
         {/* Cleaned Files - Clean & Nice */}
         {cleanedFiles.length > 0 && (
