@@ -2,10 +2,8 @@
 
 This document explains how to deploy updates to Clearasist-related projects:
 - **Public site**: `clearasist` (user-facing metadata cleaner)
-- **Clearasist Admin**: homepage `/agent` dashboard (reports + thumbnails)
-- **Master Admin**: `master-admin` (central control for the entire Aliasist platform)
 
-The public app and the local diagnostic admin helper live inside this monorepo under `apps/`.
+The public app lives inside this monorepo under `apps/`.
 
 ---
 
@@ -53,21 +51,12 @@ You no longer need to run manual `wrangler pages deploy` commands for the public
 
 7. Click **Save and Deploy**
 
-#### For Administration
-
-Use the authenticated homepage `/agent` dashboard in production. It forwards requests to the Worker through a server-side Pages Function, so `CLEARASIST_ADMIN_SECRET` is never embedded in browser JavaScript.
-
-`apps/clearasist-admin` remains available for local diagnostics only. Its Vite build uses `VITE_ADMIN_SECRET`, which is visible to the browser and must not be deployed as a public security boundary.
-
----
-
 ## Making Updates (Day-to-Day Workflow)
 
 ### For Small Changes (UI, text, styling, etc.)
 
 1. Make your changes locally in the correct folder:
    - Public site → `apps/clearasist/`
-   - Local admin helper → `apps/clearasist-admin/`
 
 2. Commit and push to `master` or `main`:
 
@@ -85,18 +74,6 @@ Use the authenticated homepage `/agent` dashboard in production. It forwards req
 
 - Test locally first: `npm run dev` inside the specific app folder.
 - After pushing, always check the new preview deployment before promoting to production.
-
----
-
-## Environment Variables
-
-Environment variables like `VITE_METADATA_WORKER_URL` are **not** stored in Git.
-
-- Go to the Pages project → **Settings → Environment variables**
-- Add them under both **Production** and **Preview**
-- You must redeploy after changing variables for them to take effect.
-
-Set `CLEARASIST_ADMIN_SECRET` on the homepage Pages Functions runtime and set the same secret on the Worker. Do not place that production secret in a public Vite build.
 
 ---
 
@@ -121,30 +98,9 @@ From the repo root:
 # Build public site only
 npm run build:clearasist
 
-# Build admin only
-npm run build:clearasist-admin
-
 # Run public site locally
 cd apps/clearasist && npm run dev
-
-# Run admin locally
-cd apps/clearasist-admin && npm run dev
 ```
-
----
-
-## Worker (Backend)
-
-The metadata collection Worker lives in `apps/clearasist/worker/`.
-
-It is deployed separately:
-
-```bash
-cd apps/clearasist/worker
-npx wrangler deploy
-```
-
-We can add GitHub Actions for this later if desired.
 
 ---
 
@@ -152,6 +108,5 @@ We can add GitHub Actions for this later if desired.
 
 - Add GitHub Actions for more control (e.g. only deploy on specific paths)
 - Add a root-level `deploy:clearasist` script
-- Set up preview environments with different Worker URLs for testing
 
 Let me know if you want any of these set up.

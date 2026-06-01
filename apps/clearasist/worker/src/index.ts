@@ -1,8 +1,8 @@
 /**
- * Clearasist Metadata Collection Worker
+ * Clearasist metadata Worker (internal only)
  *
- * Receives stripped metadata reports from the frontend
- * and stores them in D1 for later analysis / AI training.
+ * This worker exists only for internal administrative review of metadata removal statistics.
+ * No user files are stored. The only data retained is the count of metadata fields removed.
  */
 
 export interface Env {
@@ -10,7 +10,6 @@ export interface Env {
   ADMIN_SECRET?: string;
 }
 
-const MAX_REPORT_BODY_CHARS = 512_000;
 const MAX_NOTES_CHARS = 4_000;
 const MAX_BULK_DELETE_IDS = 200;
 
@@ -254,61 +253,12 @@ export default {
       return new Response('Not Found', { status: 404 });
     }
 
-    // === PUBLIC INGESTION (from Clearasist frontend) ===
+    // Public collection has been retired. Reject submissions from stale clients.
     if (request.method === 'POST') {
-      try {
-        const rawBody = await request.text();
-        if (rawBody.length > MAX_REPORT_BODY_CHARS) {
-          return new Response('Payload too large', { status: 413 });
-        }
-
-        let report;
-        try {
-          report = JSON.parse(rawBody);
-        } catch {
-          return new Response('Invalid payload', { status: 400 });
-        }
-
-        if (!report || typeof report !== 'object') {
-          return new Response('Invalid payload', { status: 400 });
-        }
-
-        const now = new Date().toISOString();
-
-        await env.DB.prepare(`
-          INSERT INTO metadata_reports (
-            timestamp, filename, file_type, extension,
-            original_size, cleaned_size, removed_count,
-            removed_items, raw_metadata, cleaned_metadata, partials, user_agent
-          ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
-        `)
-          .bind(
-            report.timestamp || now,
-            report.filename || null,
-            report.file_type || null,
-            report.extension || null,
-            report.original_size || null,
-            report.cleaned_size || null,
-            report.removed_count || 0,
-            report.removed_items ? JSON.stringify(report.removed_items) : null,
-            report.raw_metadata ? JSON.stringify(report.raw_metadata) : null,
-            report.cleaned_metadata ? JSON.stringify(report.cleaned_metadata) : null,
-            report.partial ? JSON.stringify(report.partial) : null,
-            request.headers.get('User-Agent') || null
-          )
-          .run();
-
-        return new Response('OK', {
-          status: 200,
-          headers: { 'Access-Control-Allow-Origin': '*' },
-        });
-      } catch (err) {
-        console.error('Worker error:', err);
-        return new Response('Internal Server Error', {
-          status: 500,
-          headers: { 'Access-Control-Allow-Origin': '*' },
-        });
-      }
+      return new Response('Gone', {
+        status: 410,
+        headers: { 'Access-Control-Allow-Origin': '*' },
+      });
     }
 
     return new Response('Not Found', { status: 404 });
