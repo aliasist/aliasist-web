@@ -51,9 +51,6 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
           <span className="w-1.5 h-1.5 rounded-full bg-electric animate-pulse" />
           {project.status}
         </span>
-        <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/50">
-          — Featured
-        </span>
       </div>
 
       <h3 id={headingId} className="relative z-10 text-2xl sm:text-3xl font-bold text-foreground mb-4 font-mono tracking-tight">
@@ -138,10 +135,20 @@ const ProjectsSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="text-3xl sm:text-4xl font-bold text-foreground mb-12 tracking-tight"
+          className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
         >
           {projectsSection.headline}
         </motion.h2>
+
+        <motion.p
+          initial={{ opacity: 0, y: 12 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, delay: 0.05 }}
+          className="mb-12 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base"
+        >
+          {projectsSection.subcopy}
+        </motion.p>
 
         <div className="grid gap-0.5">
           {projects.map((project, i) => (

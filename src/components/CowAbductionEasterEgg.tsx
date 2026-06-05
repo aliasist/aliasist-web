@@ -1,13 +1,7 @@
-/**
- * Logo Easter egg — cow abduction splash first, then the intro clip on command.
- * Large clips live in `public/` so Vite does not bundle them.
- */
-
 import { useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { playClick, playScan } from "@/hooks/useSound";
 
-const EASTER_EGG_VIDEO = "/intro-homepage.mp4";
 const STATUS_MESSAGES = [
   "Locating nearest cow… I mean file…",
   "Calibrating tractor beam… standby…",
@@ -24,12 +18,10 @@ interface CowAbductionEasterEggProps {
 
 const CowAbductionEasterEgg = ({ open, onClose }: CowAbductionEasterEggProps) => {
   const [statusIdx, setStatusIdx] = useState(0);
-  const [showVideo, setShowVideo] = useState(false);
 
   useEffect(() => {
     if (!open) {
       setStatusIdx(0);
-      setShowVideo(false);
       return;
     }
     playScan();
@@ -58,7 +50,7 @@ const CowAbductionEasterEgg = ({ open, onClose }: CowAbductionEasterEggProps) =>
           role="dialog"
           aria-modal="true"
           aria-labelledby="easter-egg-title"
-          className="fixed inset-0 z-[250] flex items-stretch justify-center sm:items-center p-0 sm:p-6 max-sm:pt-[max(0.75rem,env(safe-area-inset-top))] max-sm:pb-[max(0.75rem,env(safe-area-inset-bottom))]"
+          className="fixed inset-0 z-[250] flex items-stretch justify-center sm:items-center p-0 sm:p-3 max-sm:pt-[max(0.75rem,env(safe-area-inset-top))] max-sm:pb-[max(0.75rem,env(safe-area-inset-bottom))]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0, transition: { duration: 0.35 } }}
@@ -83,22 +75,8 @@ const CowAbductionEasterEgg = ({ open, onClose }: CowAbductionEasterEggProps) =>
           >
             <div className="absolute inset-0 scanlines opacity-[0.12] pointer-events-none z-20" />
 
-            <div className="relative w-full min-h-[180px] max-sm:aspect-auto max-sm:flex-1 max-sm:min-h-0 max-sm:max-h-[46vh] aspect-video max-h-[min(56vh,480px)] overflow-hidden bg-black">
-              {showVideo ? (
-                <motion.video
-                  key="intro-homepage"
-                  className="h-full w-full bg-black object-contain"
-                  src={EASTER_EGG_VIDEO}
-                  controls
-                  autoPlay
-                  playsInline
-                  preload="metadata"
-                  initial={{ opacity: 0, scale: 1.02 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                  onEnded={onClose}
-                />
-              ) : (
+            {/* Cow abduction splash */}
+            <div className="relative w-full min-h-[180px] max-sm:aspect-auto max-sm:flex-1 max-sm:min-h-0 max-sm:max-h-[60vh] aspect-video max-h-[min(76vh,720px)] overflow-hidden bg-black">
               <div className="fae absolute inset-0">
                 <style>{`
                   .fae{
@@ -206,13 +184,11 @@ const CowAbductionEasterEgg = ({ open, onClose }: CowAbductionEasterEggProps) =>
                   </div>
                 </motion.div>
               </div>
-              )}
 
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/35 z-10" />
               <div className="pointer-events-none absolute inset-0 scanlines opacity-[0.08] z-10" />
-
               <div className="pointer-events-none absolute left-4 top-4 z-10 font-mono text-[8px] uppercase tracking-[0.25em] text-electric/55 drop-shadow-[0_1px_8px_rgba(0,0,0,0.85)]">
-                {showVideo ? "ALIASIST // INTRO.PLAYBACK" : "FILES ABDUCTOR // PASTURE.CAPTURED"}
+                FILES ABDUCTOR // PASTURE.CAPTURED
               </div>
             </div>
 
@@ -226,22 +202,18 @@ const CowAbductionEasterEgg = ({ open, onClose }: CowAbductionEasterEggProps) =>
               <p className="mt-2 font-mono text-[11px] leading-relaxed text-muted-foreground/80">
                 One pasture cow successfully routed off-world. No folders were harmed — only mildly inconvenienced.
                 <span className="mt-1 block text-muted-foreground/60">
-                  Tip: click the logo again for another “sample.”
+                  Tip: click the logo again for another "sample."
                 </span>
               </p>
               <button
                 type="button"
                 onClick={() => {
                   playClick();
-                  if (showVideo) {
-                    onClose();
-                    return;
-                  }
-                  setShowVideo(true);
+                  onClose();
                 }}
                 className="mt-4 w-full rounded-full border border-electric/35 bg-electric/[0.08] py-2.5 font-mono text-[11px] uppercase tracking-[0.18em] text-electric transition-all hover:bg-electric/15 hover:shadow-electric-sm active:scale-[0.99]"
               >
-                {showVideo ? "Close transmission" : "Beam me back"}
+                Release specimen
               </button>
             </div>
           </motion.div>

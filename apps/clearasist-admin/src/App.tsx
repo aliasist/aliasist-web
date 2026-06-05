@@ -143,28 +143,23 @@ export default function Admin() {
       <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-6">
         <div className="max-w-[620px] w-full border border-border rounded-2xl bg-card p-8">
           <div className="text-center mb-6">
-            <div className="inline-block px-3 py-1 rounded-full bg-electric/10 text-electric text-xs font-mono tracking-[0.16em] mb-4">
-              CONFIGURATION REQUIRED
-            </div>
             <h1 className="text-3xl font-semibold tracking-tight mb-2">Clearasist Admin</h1>
-            <p className="text-muted-foreground">This admin portal needs two environment variables.</p>
+            <p className="text-muted-foreground">Configuration required to connect to the metadata worker.</p>
           </div>
 
           <div className="bg-[#0F1117] border border-border rounded-xl p-5 mb-6 font-mono text-sm">
-            <div className="text-electric mb-2 text-xs tracking-[0.16em] uppercase">Create this file</div>
-            <div className="text-foreground mb-3">apps/clearasist-admin/.env.local</div>
+            <div className="text-electric mb-2 text-xs tracking-[0.16em] uppercase">Create apps/clearasist-admin/.env.local</div>
             <pre className="text-xs text-muted-foreground leading-relaxed">VITE_METADATA_WORKER_URL=https://clearasist-metadata.your-domain.workers.dev
-VITE_ADMIN_SECRET=the-exact-secret-you-set-in-cloudflare</pre>
+VITE_ADMIN_SECRET=your-secret-here</pre>
           </div>
 
           <div className="text-sm text-muted-foreground space-y-2">
-            <div>1. Create the file above in the clearasist-admin folder</div>
-            <div>2. Paste the real Worker URL and the ADMIN_SECRET you set on the Worker</div>
-            <div className="text-electric">3. Fully restart the dev server (npm run dev) after saving</div>
+            <div>1. Add the .env.local file with the Worker URL and admin secret.</div>
+            <div>2. Restart the dev server after saving.</div>
           </div>
 
           <div className="mt-6 pt-6 border-t border-border text-xs text-muted-foreground">
-            The screen will stay blank until these vars are present — Vite only reads .env at startup.
+            This is an internal tool. The UI requires valid credentials to fetch reports.
           </div>
         </div>
       </div>

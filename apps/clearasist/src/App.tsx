@@ -18,6 +18,7 @@ function App() {
   const [cleanedFiles, setCleanedFiles] = useState<CleanedFile[]>([])
   const [isProcessing, setIsProcessing] = useState(false)
   const [dragCounter, setDragCounter] = useState(0) // better drag detection
+  const [errors, setErrors] = useState<string[]>([])
 
   const isActuallyDragging = dragCounter > 0
 
@@ -34,7 +35,9 @@ function App() {
 
   const processFiles = async (fileList: FileList | File[]) => {
     setIsProcessing(true)
+    setErrors([]) // clear previous errors on new batch
     const newCleaned: CleanedFile[] = []
+    const newErrors: string[] = []
 
     for (const file of Array.from(fileList)) {
       try {
@@ -49,9 +52,9 @@ function App() {
           }
           result = await processPdf(file)
         } else if (
-          file.name.endsWith('.docx') ||
-          file.name.endsWith('.pptx') ||
-          file.name.endsWith('.xlsx')
+          file.name.toLowerCase().endsWith('.docx') ||
+          file.name.toLowerCase().endsWith('.pptx') ||
+          file.name.toLowerCase().endsWith('.xlsx')
         ) {
           if (!processOffice) {
             const mod = await import('./lib/office-processor')
@@ -59,22 +62,34 @@ function App() {
           }
           result = await processOffice(file)
         } else {
+          newErrors.push(`Unsupported format: ${file.name} (${file.type || 'unknown type'}) — supported: JPEG/PNG/WebP/HEIC, PDF, DOCX/PPTX/XLSX`)
           continue
         }
 
-        newCleaned.push({
-          id: crypto.randomUUID(),
-          originalName: file.name,
-          cleanedBlob: result.cleanedBlob,
-          removedCount: result.removedCount,
-          verifiedClean: result.verifiedClean,
-        })
+        if (result && result.cleanedBlob) {
+          newCleaned.push({
+            id: crypto.randomUUID(),
+            originalName: file.name,
+            cleanedBlob: result.cleanedBlob,
+            removedCount: result.removedCount || 0,
+            verifiedClean: result.verifiedClean,
+          })
+        } else {
+          newErrors.push(`No output produced for ${file.name}`)
+        }
       } catch (err) {
-        console.error('Failed to process', file.name)
+        const message = err instanceof Error ? err.message : 'Unknown error'
+        newErrors.push(`Failed to clean ${file.name}: ${message}`)
+        console.error('Failed to process', file.name, err)
       }
     }
 
-    setCleanedFiles(prev => [...newCleaned, ...prev])
+    if (newCleaned.length > 0) {
+      setCleanedFiles(prev => [...newCleaned, ...prev])
+    }
+    if (newErrors.length > 0) {
+      setErrors(newErrors)
+    }
     setIsProcessing(false)
   }
 
@@ -177,7 +192,7 @@ function App() {
                 {cleanedFiles.length} file{cleanedFiles.length > 1 ? 's' : ''} cleaned
               </div>
               <button
-                onClick={() => setCleanedFiles([])}
+                onClick={() => { setCleanedFiles([]); setErrors([]); }}
                 className="text-xs text-muted-foreground hover:text-foreground transition-colors"
               >
                 Clear all
@@ -196,7 +211,9 @@ function App() {
                     {file.originalName}
                   </div>
                   <div className="text-xs text-muted-foreground mt-0.5">
-                    Cleaned
+                    {file.removedCount && file.removedCount > 0
+                      ? `${file.removedCount} metadata item${file.removedCount === 1 ? '' : 's'} removed`
+                      : 'Cleaned (no metadata found)'}
                   </div>
                 </div>
                 <div className="flex items-center gap-2 text-electric group-hover:text-white transition-colors">
@@ -205,6 +222,38 @@ function App() {
               </div>
             ))}
           </div>
+        )}
+
+        {/* Errors / Skipped feedback */}
+        {errors.length > 0 && (
+          <div className="mt-6 space-y-2">
+            <div className="flex items-center justify-between px-1">
+              <div className="text-xs font-mono uppercase tracking-[0.16em] text-amber-400">
+                {errors.length} issue{errors.length > 1 ? 's' : ''}
+              </div>
+              <button
+                onClick={() => setErrors([])}
+                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
+              >
+                Dismiss
+              </button>
+            </div>
+            {errors.map((err, i) => (
+              <div key={i} className="text-xs bg-amber-950/50 border border-amber-900/50 text-amber-300 rounded-lg px-3 py-2">
+                {err}
+              </div>
+            ))}
+            <p className="text-[10px] text-muted-foreground px-1">
+              Supported: JPEG, PNG, WebP, HEIC/HEIF, PDF, .docx/.pptx/.xlsx
+            </p>
+          </div>
+        )}
+
+        {/* Hint when nothing happened */}
+        {cleanedFiles.length === 0 && errors.length === 0 && !isProcessing && (
+          <p className="mt-3 text-center text-[10px] text-muted-foreground">
+            Tip: Try JPEG, PNG, PDF or Office files. All processing happens in your browser.
+          </p>
         )}
       </div>
     </div>

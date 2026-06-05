@@ -1,22 +1,24 @@
 import 'package:flutter/material.dart';
 
-const Color spaceBlack = Color(0xFF060712);
-const Color spaceNavy = Color(0xFF12162B);
-const Color neonCyan = Color(0xFF22E3FF);
-const Color neonViolet = Color(0xFF936CFF);
-const Color ufoGreen = Color(0xFF68F7A1);
-const Color surfaceDeep = Color(0xFF151A33);
-const Color surfaceField = Color(0xFF0E1227);
-const Color surfaceBar = Color(0xFF0D1022);
-const Color textPrimary = Color(0xFFEAF7FF);
+const Color deepPurple = Color(0xFF1C1833);
+const Color midPurple = Color(0xFF2A2642);
+const Color softViolet = Color(0xFF9B8FCF);
+const Color lavender = Color(0xFFD4C4F0);
+const Color lightLavender = Color(0xFFEDE7F6);
+const Color accentPurple = Color(0xFF7E57C2);
+const Color surfaceDeep = Color(0xFF221E3A);
+const Color surfaceField = Color(0xFF1A1625);
+const Color surfaceBar = Color(0xFF2A2642);
+const Color textPrimary = Color(0xFFF3E5F5);
+const Color textMuted = Color(0xFFB39DDB);
 
 ThemeData buildCosmicTheme() {
   final base = ThemeData(
     useMaterial3: true,
     colorScheme: const ColorScheme.dark(
-      primary: neonCyan,
-      secondary: neonViolet,
-      tertiary: ufoGreen,
+      primary: softViolet,
+      secondary: lavender,
+      tertiary: accentPurple,
       surface: surfaceDeep,
       onSurface: textPrimary,
     ),
@@ -28,28 +30,41 @@ ThemeData buildCosmicTheme() {
       backgroundColor: Colors.transparent,
       foregroundColor: textPrimary,
       centerTitle: false,
+      elevation: 0,
     ),
     cardTheme: CardThemeData(
-      color: surfaceDeep.withValues(alpha: 0.82),
+      color: midPurple.withValues(alpha: 0.9),
       elevation: 0,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(18),
-        side: BorderSide(color: neonCyan.withValues(alpha: 0.16)),
+        borderRadius: BorderRadius.circular(20),
+        side: BorderSide(color: softViolet.withValues(alpha: 0.2)),
       ),
     ),
     navigationBarTheme: NavigationBarThemeData(
-      backgroundColor: surfaceBar.withValues(alpha: 0.95),
-      indicatorColor: neonCyan.withValues(alpha: 0.24),
+      backgroundColor: surfaceBar.withValues(alpha: 0.98),
+      indicatorColor: softViolet.withValues(alpha: 0.25),
       labelTextStyle: WidgetStateProperty.all(
-        const TextStyle(fontWeight: FontWeight.w600),
+        const TextStyle(fontWeight: FontWeight.w600, fontSize: 12),
       ),
     ),
     inputDecorationTheme: InputDecorationTheme(
       filled: true,
-      fillColor: surfaceField.withValues(alpha: 0.85),
+      fillColor: surfaceField.withValues(alpha: 0.9),
       border: OutlineInputBorder(
-        borderRadius: BorderRadius.circular(14),
-        borderSide: BorderSide(color: neonCyan.withValues(alpha: 0.25)),
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: softViolet.withValues(alpha: 0.3)),
+      ),
+      focusedBorder: OutlineInputBorder(
+        borderRadius: BorderRadius.circular(16),
+        borderSide: BorderSide(color: softViolet, width: 2),
+      ),
+    ),
+    filledButtonTheme: FilledButtonThemeData(
+      style: FilledButton.styleFrom(
+        backgroundColor: accentPurple,
+        foregroundColor: textPrimary,
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(14)),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 14),
       ),
     ),
   );
@@ -67,25 +82,25 @@ class CosmicBackdrop extends StatelessWidget {
         gradient: LinearGradient(
           begin: Alignment.topLeft,
           end: Alignment.bottomRight,
-          colors: <Color>[spaceBlack, spaceNavy],
+          colors: <Color>[deepPurple, midPurple],
         ),
       ),
       child: Stack(
         children: <Widget>[
           Positioned(
-            top: -90,
-            left: -40,
-            child: _Orb(color: neonViolet.withValues(alpha: 0.22), size: 230),
+            top: -100,
+            left: -60,
+            child: _Orb(color: softViolet.withValues(alpha: 0.18), size: 260),
           ),
           Positioned(
-            right: -70,
-            top: 80,
-            child: _Orb(color: neonCyan.withValues(alpha: 0.2), size: 210),
+            right: -80,
+            top: 60,
+            child: _Orb(color: lavender.withValues(alpha: 0.15), size: 220),
           ),
           Positioned(
-            bottom: -90,
-            left: 100,
-            child: _Orb(color: ufoGreen.withValues(alpha: 0.16), size: 200),
+            bottom: -70,
+            left: 80,
+            child: _Orb(color: accentPurple.withValues(alpha: 0.12), size: 180),
           ),
           child,
         ],
@@ -110,7 +125,7 @@ class _Orb extends StatelessWidget {
           shape: BoxShape.circle,
           color: color,
           boxShadow: <BoxShadow>[
-            BoxShadow(color: color, blurRadius: 85, spreadRadius: 8),
+            BoxShadow(color: color, blurRadius: 90, spreadRadius: 10),
           ],
         ),
       ),

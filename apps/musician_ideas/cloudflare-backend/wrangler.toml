@@ -4,15 +4,16 @@ compatibility_date = "2026-04-21"
 compatibility_flags = ["nodejs_compat"]
 workers_dev = true
 
-# R2 bucket for audio files.
-[[r2_buckets]]
-binding = "AUDIO_BUCKET"
-bucket_name = "musician-ideas-audio"
+# R2 bucket for audio files. (disabled for initial deploy - enable in dashboard and uncomment)
+# [[r2_buckets]]
+# binding = "AUDIO_BUCKET"
+# bucket_name = "musician-ideas-audio"
 
 # D1 database for idea metadata.
 [[d1_databases]]
 binding = "IDEAS_DB"
 database_name = "musician_ideas_metadata"
+database_id = "cf8657d2-842c-41c6-bce8-daacc8ad0783"
 
 # Durable Object for real-time chat/notifications.
 [[durable_objects.bindings]]

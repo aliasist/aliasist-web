@@ -1,5 +1,5 @@
 name: musician_ideas
-description: "A new Flutter project."
+description: "Musician Ideas - Capture ideas, practice pitch, share with collaborators. For Android & iOS musicians."
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
 publish_to: 'none' # Remove this line if you wish to publish to pub.dev
@@ -50,6 +50,7 @@ dependencies:
   mic_stream: ^0.7.2
   pitch_detector_dart: ^0.0.7
   permission_handler: ^11.4.0
+  http: ^1.2.2
 
 dev_dependencies:
   flutter_test:

@@ -25,7 +25,7 @@ interface Message {
 }
 
 const WELCOME_AI =
-  "Signal acquired. Ask me about Aliasist, AI security, or anything in the stack.";
+  "Ask me about AI consulting, Aliasist projects, or how Blake builds software.";
 
 const WELCOME_ROOM =
   "// Room linked — messages persist in KV when configured on Pages. Transmit when signed in.";
@@ -33,11 +33,11 @@ const WELCOME_ROOM =
 const WELCOME_SIGN_IN_REQUIRED =
   "// Secure channel — sign in with Clerk to use the assistant.";
 
-function shouldRetryViaProxy(res: Response) {
-  return !res.ok && res.status !== 429;
-}
+const WELCOME_PUBLIC_AI =
+  "Ask me about AI consulting, projects, or what Blake can help build.";
 
-function shouldRetryViaWorker(res: Response) {
+/** Retry the request via the other endpoint when the first one fails (but don't retry on 429 rate-limits). */
+function shouldRetry(res: Response) {
   return !res.ok && res.status !== 429;
 }
 
@@ -50,9 +50,18 @@ const AliasistChat = () => {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const bottomRef = useRef<HTMLDivElement>(null);
+  const pendingOpenRef = useRef(false);
+
+  // Auto-open after sign-in if the user clicked the launcher while signed out
+  useEffect(() => {
+    if (isLoaded && isSignedIn && pendingOpenRef.current) {
+      pendingOpenRef.current = false;
+      setOpen(true);
+    }
+  }, [isLoaded, isSignedIn]);
 
   useEffect(() => {
-    if (isLoaded && !isSignedIn && open) {
+    if (USE_PAGES_CHAT_ROOM && isLoaded && !isSignedIn && open) {
       setOpen(false);
     }
   }, [isLoaded, isSignedIn, open]);
@@ -60,7 +69,7 @@ const AliasistChat = () => {
   useEffect(() => {
     if (!open || !isLoaded) return;
 
-    if (!isSignedIn) {
+    if (!isSignedIn && USE_PAGES_CHAT_ROOM) {
       setMessages([{ role: "assistant", content: WELCOME_SIGN_IN_REQUIRED }]);
       return;
     }
@@ -98,7 +107,7 @@ const AliasistChat = () => {
       return;
     }
 
-    setMessages([{ role: "assistant", content: WELCOME_AI }]);
+    setMessages([{ role: "assistant", content: isSignedIn ? WELCOME_AI : WELCOME_PUBLIC_AI }]);
   }, [open, isLoaded, isSignedIn, getToken, userId]);
 
   useEffect(() => {
@@ -115,14 +124,14 @@ const AliasistChat = () => {
     setLoading(true);
 
     try {
-      if (!isSignedIn) {
+      if (!isSignedIn && USE_PAGES_CHAT_ROOM) {
         setMessages((prev) => [...prev, { role: "assistant", content: "// Sign in to chat." }]);
         setLoading(false);
         return;
       }
 
-      const token = await getToken();
-      if (!token) {
+      const token = isSignedIn ? await getToken() : null;
+      if (isSignedIn && !token) {
         setMessages((prev) => [
           ...prev.slice(0, -1),
           { role: "assistant", content: "// Session expired — sign in again." },
@@ -182,7 +191,7 @@ const AliasistChat = () => {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          ...(token ? { Authorization: `Bearer ${token}` } : {}),
         },
         body: requestBody,
       };
@@ -194,7 +203,7 @@ const AliasistChat = () => {
       data = await readJsonBody<{ response?: string; error?: string }>(res);
 
       // Fallback: try the worker directly (useful for static previews without Functions).
-      if (shouldRetryViaWorker(res)) {
+      if (shouldRetry(res)) {
         try {
           const workerRes = await fetch(LLM_CHAT_WORKER_ENDPOINT, requestInit);
           const workerData = await readJsonBody<{ response?: string; error?: string }>(workerRes);
@@ -229,7 +238,8 @@ const AliasistChat = () => {
 
   const handleLauncherClick = () => {
     if (!isLoaded) return;
-    if (!isSignedIn) {
+    if (!isSignedIn && USE_PAGES_CHAT_ROOM) {
+      pendingOpenRef.current = true;
       openSiteSignIn();
       return;
     }
@@ -253,7 +263,7 @@ const AliasistChat = () => {
                 <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-electric">
                   {USE_PAGES_CHAT_ROOM ? "Aliasist Room" : "Aliasist AI"}
                 </span>
-                {isLoaded && !isSignedIn ? (
+                {isLoaded && !isSignedIn && USE_PAGES_CHAT_ROOM ? (
                   <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground/70 border border-border/60 px-1.5 py-px rounded-sm">
                     Sign in
                   </span>
@@ -322,7 +332,7 @@ const AliasistChat = () => {
             <div className="border-t border-border p-3 bg-background/40 backdrop-blur-sm">
               {!isLoaded ? (
                 <div className="h-10 rounded-sm bg-muted/50 border border-border animate-pulse" aria-hidden />
-              ) : !isSignedIn ? (
+              ) : !isSignedIn && USE_PAGES_CHAT_ROOM ? (
                 <div className="space-y-3">
                   <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/80 text-center leading-relaxed">
                     Sign in with Clerk to chat and protect model responses from automated abuse.
@@ -360,7 +370,9 @@ const AliasistChat = () => {
                   <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-muted-foreground/30 mt-2 text-center">
                     {USE_PAGES_CHAT_ROOM
                       ? "Signed in · Clerk · Room"
-                      : "Signed in · Clerk · AI Waterfall"}
+                      : isSignedIn
+                        ? "Signed in · AI Waterfall"
+                        : "Public demo · AI Waterfall"}
                   </p>
                 </>
               )}
@@ -376,7 +388,7 @@ const AliasistChat = () => {
         whileTap={{ scale: 0.94 }}
         className="w-14 h-14 rounded-full bg-electric text-background flex items-center justify-center shadow-electric-sm hover:shadow-electric-md transition-shadow duration-300"
         aria-label={
-          open ? "Close AI chat" : isLoaded && !isSignedIn ? "Sign in to open AI chat" : "Open AI chat"
+          open ? "Close AI chat" : isLoaded && !isSignedIn && USE_PAGES_CHAT_ROOM ? "Sign in to open AI chat" : "Open AI chat"
         }
         aria-busy={!isLoaded}
       >
@@ -402,7 +414,7 @@ const AliasistChat = () => {
               className="text-2xl leading-none"
               style={{ filter: "drop-shadow(0 0 4px rgba(0,0,0,0.3))" }}
             >
-              🛸
+              ⌖
             </motion.span>
           )}
         </AnimatePresence>

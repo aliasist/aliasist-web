@@ -28,6 +28,39 @@ function loadDevVarsFile(cwd: string): Record<string, string> {
   return out;
 }
 
+function devSpaFallbackPlugin() {
+  return {
+    name: "aliasist-dev-spa-fallback",
+    configureServer(server: import("vite").ViteDevServer) {
+      server.middlewares.use(async (req, res, next) => {
+        const pathname = req.url?.split("?")[0] ?? "/";
+        const isAssetRequest =
+          pathname.includes(".") ||
+          pathname.startsWith("/@") ||
+          pathname.startsWith("/src/") ||
+          pathname.startsWith("/node_modules/") ||
+          pathname.startsWith("/atomicity/");
+
+        if (pathname === "/" || isAssetRequest) {
+          next();
+          return;
+        }
+
+        try {
+          const htmlPath = path.resolve(__dirname, "index.html");
+          const rawHtml = await fs.promises.readFile(htmlPath, "utf8");
+          const html = await server.transformIndexHtml(req.url ?? "/", rawHtml);
+          res.statusCode = 200;
+          res.setHeader("Content-Type", "text/html");
+          res.end(html);
+        } catch (err) {
+          next(err);
+        }
+      });
+    },
+  };
+}
+
 // https://vitejs.dev/config/
 export default defineConfig(async ({ mode }) => {
   const cwd = process.cwd();
@@ -73,6 +106,7 @@ export default defineConfig(async ({ mode }) => {
   }
 
   return {
+    appType: "spa",
     server: {
       host: "::",
       port: 8080,
@@ -85,7 +119,7 @@ export default defineConfig(async ({ mode }) => {
         "orbital-sky-q6utk.ondigitalocean.app",
       ],
     },
-    plugins: [react(), ...devPlugins, ...runtimePlugins],
+    plugins: [react(), devSpaFallbackPlugin(), ...devPlugins, ...runtimePlugins],
     define: clerkPublishableKey
       ? {
           // Cloudflare Pages had already been configured with CLERK_PUBLISHABLE_KEY;
