@@ -7,6 +7,8 @@ class MusicalIdea {
     this.tags = const [],
     this.inviteCode,
     this.shared = false,
+    this.description,
+    this.pitchData,
   });
 
   final String id;
@@ -16,12 +18,16 @@ class MusicalIdea {
   final List<String> tags;
   final String? inviteCode;
   final bool shared;
+  final String? description;
+  final Map<String, dynamic>? pitchData;
 
   MusicalIdea copyWith({
     String? title,
     List<String>? tags,
     String? inviteCode,
     bool? shared,
+    String? description,
+    Map<String, dynamic>? pitchData,
   }) {
     return MusicalIdea(
       id: id,
@@ -31,6 +37,8 @@ class MusicalIdea {
       tags: tags ?? this.tags,
       inviteCode: inviteCode ?? this.inviteCode,
       shared: shared ?? this.shared,
+      description: description ?? this.description,
+      pitchData: pitchData ?? this.pitchData,
     );
   }
 
@@ -43,6 +51,8 @@ class MusicalIdea {
       'tags': tags,
       'inviteCode': inviteCode,
       'shared': shared,
+      'description': description,
+      'pitchData': pitchData,
     };
   }
 
@@ -57,6 +67,8 @@ class MusicalIdea {
           .toList(),
       inviteCode: json['inviteCode'] as String?,
       shared: json['shared'] as bool? ?? false,
+      description: json['description'] as String?,
+      pitchData: json['pitchData'] as Map<String, dynamic>?,
     );
   }
 }

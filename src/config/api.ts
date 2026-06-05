@@ -52,6 +52,12 @@ export const siteEndpoints = {
   chatMessagesApi: "/api/chat-messages",
   /** Blog / news rail → news worker */
   newsApi: `${newsBase}/api/news`,
+  /** GitHub PR Reviewer → Pages Function proxy. */
+  githubPrReviewApi: "/api/github-pr-review",
+  /** GitHub Companion Project Guide → Pages Function proxy. */
+  githubRepoGuideApi: "/api/github-repo-guide",
+  /** GitHub App repository installation status → Pages Function. */
+  githubInstallStatusApi: "/api/github/install-status",
 } as const;
 
 /** Safe JSON parse for worker responses (avoids throw on HTML error pages). */

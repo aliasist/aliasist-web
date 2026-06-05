@@ -11,23 +11,22 @@ const SectionRail = () => {
   const [activeSection, setActiveSection] = useState("top");
 
   useEffect(() => {
-    const ids = sections.map((section) => section.href.replace("#", ""));
-    const observers: IntersectionObserver[] = [];
+    const ids = sections.map((s) => s.href.replace("#", ""));
 
-    ids.forEach((id) => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const obs = new IntersectionObserver(
-        ([entry]) => {
-          if (entry.isIntersecting) setActiveSection(id);
-        },
-        { threshold: 0.25, rootMargin: "-35% 0px -45% 0px" },
-      );
-      obs.observe(el);
-      observers.push(obs);
-    });
+    const update = () => {
+      const midpoint = window.innerHeight * 0.5;
+      let active = ids[0];
+      for (const id of ids) {
+        const el = document.getElementById(id);
+        if (!el) continue;
+        if (el.getBoundingClientRect().top <= midpoint) active = id;
+      }
+      setActiveSection(active);
+    };
 
-    return () => observers.forEach((observer) => observer.disconnect());
+    window.addEventListener("scroll", update, { passive: true });
+    update();
+    return () => window.removeEventListener("scroll", update);
   }, []);
 
   return (

@@ -1,43 +1,53 @@
 # Apps Workspace
 
-This repo contains both user-facing apps and backend/support projects.
+This directory contains the user-facing applications and supporting backend projects for the Aliasist suite.
 
-## User-facing apps
+## Primary User-Facing Apps
 
-These are the main products you will most likely edit and prepare for GitHub:
+| App          | Folder                  | Local Command              | Description |
+|--------------|-------------------------|----------------------------|-------------|
+| Aliasist Auth | `apps/aliasist-auth`   | `npm run app:auth`        | Authentication surfaces |
+| DataSist     | `apps/datasist`        | `npm run app:datasist`    | Data center intelligence |
+| EcoSist      | `apps/ecosist`         | `npm run app:ecosist`     | Environmental intelligence |
+| PulseSist    | `apps/pulsesist`       | `npm run app:pulsesist`   | Market signals |
+| SpaceSist    | `apps/spacesist`       | `npm run app:spacesist`   | Orbital mission tools |
 
-| App | Folder | Run locally |
-|---|---|---|
-| Aliasist Auth | `apps/aliasist-auth` | `npm run app:auth` |
-| DataSist frontend | `apps/datasist` | `npm run app:datasist` |
-| EcoSist | `apps/ecosist` | `npm run app:ecosist` |
-| PulseSist | `apps/pulsesist` | `npm run app:pulsesist` |
-| SpaceSist | `apps/spacesist` | `npm run app:spacesist` |
+## Backend & Support Projects
 
-## Backend / worker / support projects
+| Project                  | Folder                         | Purpose |
+|--------------------------|--------------------------------|---------|
+| DataSist API             | `apps/datasist-api`            | Cloudflare Worker API |
+| LLM Chat                 | `apps/llm-chat`                | AI chat / orchestration worker |
+| News Worker              | `apps/news-worker`             | News aggregation |
+| Phoenix Image Worker     | `apps/phoenix-image-worker`    | Image generation worker |
+| Chatroom                 | `apps/chatroom`                | Real-time chat |
 
-These support the suite but are not the primary end-user apps:
+## Other / Experimental
 
-| Project | Folder | Purpose |
-|---|---|---|
-| DataSist API | `apps/datasist-api` | Worker API for DataSist |
-| News Worker | `apps/news-worker` | News aggregation worker |
-| Phoenix Image Worker | `apps/phoenix-image-worker` | Text-to-image worker |
-| LLM Chat | `apps/llm-chat` | AI chat worker |
-| Chatroom | `apps/chatroom` | Real-time chat worker/app |
+- `apps/musician_ideas` — Mobile app experiments (Flutter)
+- `apps/clearasist` — Privacy-focused metadata stripping tool (fully local, client-side only)
+- `apps/clearasist-admin` & `apps/master-admin` — Internal admin tooling
 
-## Not part of the active suite app lineup
+## Local Development
 
-| Project | Folder | Notes |
-|---|---|---|
-| SWOT | `apps/swot` | External JetBrains repo, not an Aliasist suite app |
-| Musician Ideas | `apps/musician_ideas` | Side project / mobile app scaffold |
+Use the root shortcuts for convenience:
 
-## Notes
+```bash
+npm run app:datasist
+npm run app:pulsesist
+# etc.
+```
 
-- Some app folders are separate git repos/submodules.
-- Cloudflare-based apps may require `.dev.vars` or `.env` files inside their own app folders.
-- The root repo shortcuts are intended to make local startup easier without remembering every app's custom command.
-- `DataSist` now has two local paths:
-  - `npm run app:datasist` for fast frontend editing with Vite
-  - `npm run app:datasist:cf` for Cloudflare Pages-style preview
+For Cloudflare-style local preview on supported apps:
+
+```bash
+npm run app:datasist:cf
+```
+
+## Important Notes
+
+- Most apps use their own `.env` / `.dev.vars` files.
+- The Clearasist tool performs **all processing locally in the browser**. No user data is ever sent to or stored by Aliasist.
+- Some folders may be symlinked or managed as separate concerns within the monorepo.
+
+See individual app READMEs for specific setup instructions.

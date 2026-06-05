@@ -180,9 +180,18 @@ const ContactSection = () => {
                     />
 
                     {formState === "error" && (
-                      <p className="font-mono text-[11px] text-red-400/80">
-                        {contact.errorPrefix} {errorMsg || contact.errorFallback}
-                      </p>
+                      <div className="flex items-center justify-between gap-4">
+                        <p className="font-mono text-[11px] text-red-400/80">
+                          {contact.errorPrefix} {errorMsg || contact.errorFallback}
+                        </p>
+                        <button
+                          type="button"
+                          onClick={() => { setFormState("idle"); setErrorMsg(""); }}
+                          className="shrink-0 font-mono text-[11px] uppercase tracking-[0.1em] text-background/40 hover:text-electric transition-colors outline-none focus-visible:text-electric"
+                        >
+                          Try again ↩
+                        </button>
+                      </div>
                     )}
 
                     <button

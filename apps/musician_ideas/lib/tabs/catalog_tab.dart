@@ -11,6 +11,7 @@ class CatalogTab extends StatelessWidget {
     required this.onSearchChanged,
     required this.onPlay,
     required this.onShare,
+    required this.onLoadShared,
   });
 
   final bool isLoading;
@@ -20,6 +21,7 @@ class CatalogTab extends StatelessWidget {
   final VoidCallback onSearchChanged;
   final void Function(MusicalIdea idea) onPlay;
   final void Function(MusicalIdea idea) onShare;
+  final Future<void> Function() onLoadShared;
 
   @override
   Widget build(BuildContext context) {
@@ -48,6 +50,17 @@ class CatalogTab extends StatelessWidget {
               prefixIcon: Icon(Icons.search),
               hintText: 'Search ideas by title or tag',
               border: OutlineInputBorder(),
+            ),
+          ),
+        ),
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: Align(
+            alignment: Alignment.centerRight,
+            child: TextButton.icon(
+              onPressed: onLoadShared,
+              icon: const Icon(Icons.cloud_download, size: 18),
+              label: const Text('Load shared by code'),
             ),
           ),
         ),

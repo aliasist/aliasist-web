@@ -27,18 +27,20 @@ import spaceBanner from "@images/spacesist_banner_cinematic.png";
 // ── Hero ─────────────────────────────────────────────────────────────────────
 
 export const hero = {
-  statusBadge: "GitHub Developer Member",
+  statusBadge: "Aliasist · AI Consulting",
   mascotLabel: "aliasist",
   mascotAlt: "Aliasist",
   mascotTitle: "Aliasist",
-  eyeline: "Aliasist Projects // Creating tools for people.",
+  eyeline: "AI consulting // developer portfolio // projects",
   wordmark: "A L I A S I S T",
-  tagline: "Real-time data, real-world tools.",
+  tagline: "Practical AI tools and software builds.",
   subcopy:
-    "Hey, welcome to the site, I'm Blake(Aliasist) I'm a freelance worker building data-centric tools. This is my portfolio of live projects. Reach out if you have feedback or want to collaborate — I'd love to hear from you. Enjoy the tools.",
-  ctaWork: "View work",
-  ctaContact: "Contact me",
-  statusRow: ["Open Source", "Check out my projects below", "More coming later this year"] as const,
+    "I'm Blake. I help turn ideas, workflows, and business problems into useful AI tools. The projects below show the work.",
+  ctaWork: "Consulting",
+  ctaWorkHref: "/consulting",
+  ctaContact: "Projects",
+  ctaContactHref: "#projects",
+  statusRow: ["AI Consulting", "Developer Portfolio", "Projects"] as const,
 } as const;
 
 // ── Navbar ───────────────────────────────────────────────────────────────────
@@ -55,31 +57,43 @@ export const suiteApps = [
     label: "DataSist",
     sub: "AI Data Center WebApp",
     href: "https://datasist-frontend.pages.dev",
-    icon: "🌐",
+    icon: "🌐📊",
   },
   {
     label: "Atomicity",
     sub: "Stopwatch",
     href: "/atomicity/",
-    icon: "⏱️",
+    icon: "⏱️🔥",
   },
   {
     label: "PulseSist",
     sub: "Stock Market Dashboard",
     href: "https://pulse.aliasist.com",
-    icon: "📈",
+    icon: "📈🤖",
   },
   {
     label: "SpaceSist",
     sub: "Live Space Portal",
     href: "https://space.aliasist.com",
-    icon: "🌌",
+    icon: "🌌🛰️",
   },
   {
     label: "EcoSist",
     sub: "**UNDER CONSTRUCTION** project paused.",
     href: "https://ecosist.aliasist.com",
-    icon: "🌱",
+    icon: "🌱🛠️",
+  },
+  {
+    label: "Clearasist",
+    sub: "Metadata Cleaner",
+    href: "https://clearasist.pages.dev",
+    icon: "🧹🔒",
+  },
+  {
+    label: "GitHub Companion",
+    sub: "Guided GitHub project tools",
+    href: "/tools/github",
+    icon: "🔎🛸",
   },
 ] as const;
 
@@ -111,20 +125,34 @@ const downloadLinks = {
 };
 
 export const projectsSection = {
-  dividerLabel: "Artifacts // Projects",
-  headline: "Deployed tools.",
+  dividerLabel: "Projects // Proof of work",
+  headline: "Built projects, not ideas.",
+  subcopy: "These are side projects and live tools that show how I think, design, and ship.",
 } as const;
 
 export const projects = [
   {
+    name: "GitHub Companion",
+    description:
+      "A GitHub toolkit that explains repositories and reviews pull requests in plain language.",
+    tech: ["React", "GitHub API", "Project Guidance", "Review Heuristics"],
+    github: "https://github.com/aliasist/aliasistabductor",
+    downloads: [],
+    status: "Live",
+    icon: "🔎🛸",
+    link: "/tools/github",
+    linkLabel: "Open GitHub Companion →",
+    banner: null,
+  },
+  {
     name: "SpaceSist",
     description:
-      "Live space intelligence portal — NASA APOD daily images, real-time ISS tracking (5s updates), SpaceX mission control, near-Earth asteroid radar, 6,000+ exoplanet archive, and NASA image gallery. 7 live APIs. The universe, in real time.",
+      "A live space dashboard using NASA, SpaceX, ISS, asteroid, and exoplanet data.",
     tech: ["React", "Vite", "NASA APIs", "SpaceX API", "Leaflet", "Cloudflare"],
     github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
-    icon: "🌌",
+    icon: "🌌🛰️👽",
     link: "https://space.aliasist.com",
     linkLabel: "Open SpaceSist →",
     banner: spaceBanner,
@@ -145,12 +173,12 @@ export const projects = [
   {
     name: "PulseSist",
     description:
-      "Real-time stock market intelligence platform. Live candlestick charts, portfolio tracking, AI-powered market analysis, and multi-ticker surveillance. Built for traders who think the market is being watched — because it is.",
+      "A market dashboard with live charts, portfolio tools, and AI-assisted analysis.",
     tech: ["React", "Vite", "Cloudflare Workers", "D1", "FMP API", "AI"],
     github: "https://github.com/aliasist/stockmarket",
     downloads: [],
     status: "Live",
-    icon: "📈",
+    icon: "📈🤖⚡",
     link: "https://pulse.aliasist.com",
     linkLabel: "Open PulseSist →",
     banner: pulseBanner,
@@ -158,7 +186,7 @@ export const projects = [
   {
     name: "EcoSist",
     description:
-      "Code being revamped.",
+      "An environmental dashboard for air quality, climate signals, and geospatial data.",
     tech: [
       "React",
       "Vite",
@@ -176,10 +204,23 @@ export const projects = [
     banner: ecosistBanner,
   },
   {
+    name: "Clearasist",
+    description:
+      "A browser-based metadata cleaner for images, PDFs, and Office files.",
+    tech: ["React", "Vite", "TypeScript", "pdf-lib", "JSZip", "Cloudflare Pages", "D1"],
+    github: "https://github.com/aliasist/aliasistabductor",
+    downloads: [],
+    status: "Live",
+    icon: "🧹🔒📊",
+    link: "https://clearasist.pages.dev",
+    linkLabel: "Open Clearasist →",
+    banner: null,
+  },
+  {
     name: "Aliasist-Files-Abductor",
     description:
-      "This app can download any file from YouTube.com or any other website or server with a link. Simply Copy, Paste, & Download with your link, this app doesn't apologize for itself. Does the work. No questions asked.",
-    tech: ["Python", "CLI", "File Automation", "This was my first program I coded, 3 years ago. I have been improving it ever since, and it is now a full fledged app with a GUI, and support for downloading from any website, not just YouTube."],
+      "My first full app: a GUI tool for downloading files from YouTube and direct URLs.",
+    tech: ["Python", "GUI", "CLI", "File Automation", "yt-dlp"],
     github: `https://github.com/aliasist/aliasistabductor/releases/tag/${releaseTagEncoded}`,
     downloads: [
       { label: "AppImage", href: downloadLinks.appImage },
@@ -195,7 +236,7 @@ export const projects = [
   {
     name: "DataSist",
     description:
-      "Live AI data center intelligence platform — 48 facilities tracked across 13 countries. Real-time EIA electricity prices, power consumption, water usage, investment data, community resistance, and grid stress risk. Groq AI analysis, facility comparison, region filters, and full admin CRUD panel.",
+      "An AI data center intelligence platform for facilities, power, water, risk, and investment data.",
     tech: ["React", "Vite", "D1", "Groq AI", "Leaflet", "EIA API"],
     github: "https://github.com/aliasist/datasist",
     downloads: [],
@@ -210,8 +251,8 @@ export const projects = [
 export const comingSoonProjects = [
   {
     codename: "PROJECT Nightfall",
-    description: "still deciding on the next app",
-    eta: "Planning projects for 2027",
+    description: "Signal intercepted. Classification level: Eyes only. Details redacted pending operational clearance.",
+    eta: "ETA: 2027",
   },
 ] as const;
 
@@ -253,15 +294,13 @@ export const about = {
 
   /**
    */
-  authorSlots: [
-    { kicker: "AGSC Updates", body: "" },
-    { kicker: "implementing features and improvements", body: "" },
-    { kicker: "deploying soon.", body: "" },
-  ] as const,
+  authorSlots: [] as unknown as readonly { kicker: string; body: string }[],
 
   stats: [
-    { num: "5", label: "Open Source", sym: "" as const },
-    { num: "OSS", label: "Public repos, documented deploys, verifiable behavior, github.com/aliasist", sym: "" as const },
+    { num: "5",  label: "Live apps deployed", sym: "+" as const },
+    { num: "7",  label: "External APIs integrated", sym: "+" as const },
+    { num: "3",  label: "Years building in public", sym: "" as const },
+    { num: "100", label: "Open source · github.com/aliasist", sym: "%" as const },
   ],
 } as const;
 

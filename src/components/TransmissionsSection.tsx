@@ -1,5 +1,5 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { transmissions } from "@/content/homepage";
 import { readJsonBody, siteEndpoints } from "@/config/api";
 import { AdUnit, AD_SLOTS } from "@/components/AdUnit";
@@ -41,17 +41,6 @@ function timeAgo(iso: string): string {
   return "just now";
 }
 
-function useTransmitOnView() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(() => {}, { threshold: 0.2 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-  return ref;
-}
 
 const FALLBACK_POSTS = [
   {
@@ -187,7 +176,6 @@ const BlogCard = ({ article, index }: { article: Article; index: number }) => {
 };
 
 const TransmissionsSection = () => {
-  const sectionRef = useTransmitOnView();
   const [news, setNews] = useState<Article[]>([]);
   const [lastUpdated, setLastUpdated] = useState<string>("");
   const [loading, setLoading] = useState(true);
@@ -230,7 +218,6 @@ const TransmissionsSection = () => {
     <section
       id="transmissions"
       aria-labelledby="transmissions-heading"
-      ref={sectionRef}
       className="relative overflow-hidden px-4 py-28 sm:px-8 lg:px-12 xl:px-16"
     >
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/[0.04] to-transparent pointer-events-none" />

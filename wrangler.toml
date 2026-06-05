@@ -3,13 +3,32 @@
 #     CLERK_SECRET_KEY   (secret)
 #     CLERK_PUBLISHABLE_KEY  (optional; public key)
 # Local Pages + Functions: root `.dev.vars.example` → `.dev.vars`
+# GitHub PR Reviewer integration:
+#     GITHUB_TOKEN  (optional secret; read-only GitHub token for higher limits while GitHub App auth is wired)
+#     GITHUB_APP_ID  (GitHub App settings page)
+#     GITHUB_APP_CLIENT_ID  (GitHub App settings page; preferred JWT issuer)
+#     GITHUB_APP_PRIVATE_KEY  (secret; generated PEM private key)
+#     GITHUB_WEBHOOK_SECRET  (secret; must match GitHub App webhook configuration)
+# Agent Dashboard:
+#     ALIASIST_ADMIN_USER_IDS  (comma-separated Clerk user IDs permitted to view owner-only reports)
+#     AGENT_PUSH_SECRET  (secret; must match aliasist-chat so /api/agent-status can read snapshots)
+#     CLEARASIST_ADMIN_SECRET  (secret; must match the clearasist-metadata Worker ADMIN_SECRET)
+#     CLEARASIST_METADATA_WORKER_URL  (optional; defaults to the production Worker URL)
 #
 # Other workers: see apps/llm-chat/.dev.vars.example, apps/datasist-api/.dev.vars.example, etc.
+# Public homepage AI demo:
+#     PUBLIC_CHAT_ENABLED=true  (plain env var)
+#     GROQ_API_KEY              (secret; required for unsigned visitor chat)
 
 name = "aliasistabductor"
 pages_build_output_dir = "dist"
 compatibility_date = "2025-04-01"
 compatibility_flags = ["nodejs_compat"]
+
+[vars]
+GITHUB_APP_ID = "3909945"
+GITHUB_APP_CLIENT_ID = "Iv23liyNQyBoBOh6IROQ"
+PUBLIC_CHAT_ENABLED = "true"
 
 [[d1_databases]]
 binding = "ANALYTICS"

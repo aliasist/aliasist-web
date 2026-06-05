@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth, UserButton } from "@clerk/react";
+import { useAuth, useUser, UserButton } from "@clerk/react";
 import newLogo from "@/assets/aliasist-logo-brand.svg";
 import CowAbductionEasterEgg from "@/components/CowAbductionEasterEgg";
 import { playHover, playClick, setEnabled } from "@/hooks/useSound";
@@ -101,10 +101,70 @@ const SuiteDropdown = () => {
                 <span className="translate-x-0.5 font-mono text-xs text-electric opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">↗</span>
               </motion.a>
             ))}
+            
+            {/* Internal Tools - Only visible to aliasist@proton.me when signed in */}
+            <InternalAgentLink onClose={() => setOpen(false)} />
           </motion.div>
         )}
       </AnimatePresence>
     </div>
+  );
+};
+
+const InternalAgentLink = ({ onClose }: { onClose: () => void }) => {
+  const { isLoaded, isSignedIn } = useAuth();
+  const { user } = useUser();
+
+  if (!isLoaded || !isSignedIn || !user) return null;
+
+  const primaryEmail = user.primaryEmailAddress?.emailAddress;
+
+  if (primaryEmail !== "aliasist@proton.me") {
+    return null;
+  }
+
+  return (
+    <div className="border-t border-border/60">
+      <a
+        href="/agent"
+        onClick={() => {
+          playClick();
+          onClose();
+        }}
+        className="group flex items-center gap-3 px-4 py-3 text-sm font-mono tracking-[0.16em] text-electric hover:bg-electric/10 transition-colors"
+      >
+        <span className="text-lg">◆</span>
+        <div>
+          <div className="font-medium">Agent Dashboard</div>
+          <div className="text-[10px] text-electric/60">Internal • aliasist@proton.me</div>
+        </div>
+      </a>
+    </div>
+  );
+};
+
+const InternalAgentLinkMobile = ({ onClose }: { onClose: () => void }) => {
+  const { isLoaded, isSignedIn } = useAuth();
+  const { user } = useUser();
+
+  if (!isLoaded || !isSignedIn || !user) return null;
+
+  const primaryEmail = user.primaryEmailAddress?.emailAddress;
+
+  if (primaryEmail !== "aliasist@proton.me") {
+    return null;
+  }
+
+  return (
+    <a
+      href="/agent"
+      onClick={() => { playClick(); onClose(); }}
+      className="group -mx-1 flex h-12 items-center gap-3 rounded-lg px-3 text-xs font-mono uppercase tracking-[0.15em] text-electric transition-all duration-300 hover:bg-electric/[0.08] hover:pl-4"
+    >
+      <span>◆</span>
+      <span>Agent Dashboard</span>
+      <span className="ml-auto text-[10px] opacity-50 group-hover:opacity-100">Internal</span>
+    </a>
   );
 };
 
@@ -292,17 +352,10 @@ const Navbar = () => {
       <div className="mx-auto flex h-[4.5rem] w-full max-w-site items-center justify-between gap-5 px-4 sm:gap-8 sm:px-8 lg:px-12 xl:px-16">
 
         {/* ── LEFT: Logo ── */}
-        <button
-          type="button"
-          onClick={() => {
-            playClick();
-            setEasterEggOpen(true);
-          }}
-          onMouseEnter={() => playHover()}
+        <a
+          href="/"
           className="group flex flex-shrink-0 items-center gap-3 rounded-xl border-0 bg-transparent py-1 pr-2 text-left transition-all duration-300 hover:bg-electric/[0.04] cursor-pointer outline-none appearance-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label="Aliasist"
-          aria-haspopup="dialog"
-          aria-expanded={easterEggOpen}
+          aria-label="Back to Aliasist homepage"
         >
           <motion.img
             src={newLogo}
@@ -320,10 +373,35 @@ const Navbar = () => {
               Aliasist Project
             </span>
           </div>
+        </a>
+
+        {/* Small easter egg trigger (kept available) */}
+        <button
+          type="button"
+          onClick={() => { playClick(); setEasterEggOpen(true); }}
+          onMouseEnter={() => playHover()}
+          className="hidden sm:block text-[10px] text-muted-foreground/40 hover:text-electric px-1"
+          aria-label="Open easter egg"
+          title="Easter egg"
+        >
+          ✧
         </button>
 
         {/* ── CENTER: Page links ── */}
         <div className="hidden md:flex flex-1 items-center justify-center gap-2 rounded-full border border-border/35 bg-background/50 px-2.5 py-1.5 shadow-electric-nav-well backdrop-blur-md">
+          <a
+            href="/consulting"
+            onMouseEnter={() => playHover()}
+            className="group relative overflow-hidden rounded-full px-4 py-2 text-xs font-mono uppercase tracking-[0.16em] text-electric transition-all duration-300 ease-out outline-none hover:bg-electric/[0.08] hover:text-electric hover:tracking-[0.2em] hover:shadow-electric-ring-inset-soft focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+          >
+            <span className="relative z-10">Consulting</span>
+            <span
+              className="pointer-events-none absolute inset-x-2 top-1/2 h-full -translate-y-1/2 rounded-full bg-gradient-to-r from-transparent via-electric/10 to-transparent opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100"
+              aria-hidden
+            />
+            <span className="absolute bottom-1 left-1/2 h-[2px] w-0 -translate-x-1/2 rounded-full bg-electric opacity-0 shadow-electric-accent-line transition-all duration-300 ease-out group-hover:w-[calc(100%-1.25rem)] group-hover:opacity-100" />
+          </a>
+
           {pageNavLinks.map(link => {
             const isActive = activeSection === link.href.replace("#", "");
             return (
@@ -441,6 +519,14 @@ const Navbar = () => {
             <div className="space-y-1 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-5 sm:px-8 lg:px-12 xl:px-16">
 
               {/* Page links */}
+              <a
+                href="/consulting"
+                onClick={() => { playClick(); setMobileOpen(false); }}
+                className="-mx-1 flex h-12 items-center rounded-lg px-3 text-xs font-mono uppercase tracking-[0.15em] text-electric transition-all duration-300 ease-out hover:bg-electric/[0.08] hover:pl-4 hover:text-electric hover:shadow-[inset_3px_0_0_hsl(165_90%_42%_/_0.65)] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              >
+                Consulting
+              </a>
+
               {pageNavLinks.map(link => (
                 <a
                   key={link.href}
@@ -473,6 +559,12 @@ const Navbar = () => {
                   <span className="ml-auto text-[10px] opacity-30 transition-all duration-300 group-hover:translate-x-0.5 group-hover:opacity-100">↗</span>
                 </a>
               ))}
+
+              {/* Divider */}
+              <div className="h-px bg-border/50 my-3" />
+
+              {/* Internal Agent Dashboard - only for aliasist@proton.me */}
+              <InternalAgentLinkMobile onClose={() => setMobileOpen(false)} />
 
               {/* Divider */}
               <div className="h-px bg-border/50 my-3" />

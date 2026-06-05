@@ -211,6 +211,16 @@ class _HomeScreenState extends State<HomeScreen> {
     });
     await _saveIdeas();
 
+    // Cloud share (MVP - stores in backend for cross-device)
+    try {
+      final cloudCode = await _ideaRepository.shareIdea(updated);
+      if (cloudCode != null && mounted) {
+        _showMessage('Idea shared to cloud! Code: $cloudCode');
+      }
+    } catch (_) {
+      // Fallback to local only
+    }
+
     await SharePlus.instance.share(
       ShareParams(
         text:
@@ -219,6 +229,42 @@ class _HomeScreenState extends State<HomeScreen> {
             'Open Musician Ideas and enter this code to collaborate.',
       ),
     );
+  }
+
+  Future<void> _loadSharedIdea() async {
+    final controller = TextEditingController();
+    final code = await showDialog<String>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Load Shared Idea'),
+        content: TextField(
+          controller: controller,
+          decoration: const InputDecoration(hintText: 'Enter invite code'),
+          autofocus: true,
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Cancel')),
+          FilledButton(
+            onPressed: () => Navigator.pop(context, controller.text.trim()),
+            child: const Text('Load'),
+          ),
+        ],
+      ),
+    );
+    if (code == null || code.isEmpty) return;
+
+    final shared = await _ideaRepository.fetchSharedIdea(code);
+    if (shared != null) {
+      setState(() {
+        if (!_ideas.any((i) => i.id == shared.id)) {
+          _ideas = [shared, ..._ideas];
+        }
+      });
+      await _saveIdeas();
+      _showMessage('Loaded shared idea!');
+    } else {
+      _showMessage('Could not load idea (invalid code or not shared).');
+    }
   }
 
   Future<void> _togglePitchCoach() async {
@@ -301,9 +347,30 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   void _showMessage(String message) {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text(message)));
+    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
+  }
+
+  void _showProDialog() {
+    showDialog<void>(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text('Unlock Pro'),
+        content: const Text(
+          'Pro features:\n• Unlimited cloud shares\n• AI idea suggestions (RAG)\n• Advanced pitch analytics & history\n• Export to MIDI / PDF\n\n$4.99/mo or $29/year (placeholder - connect real IAP)',
+        ),
+        actions: [
+          TextButton(onPressed: () => Navigator.pop(context), child: const Text('Later')),
+          FilledButton(
+            onPressed: () {
+              Navigator.pop(context);
+              _showMessage('Thanks! (In real app: launch in_app_purchase flow)');
+            },
+            child: const Text('Subscribe'),
+          ),
+        ],
+      ),
+    );
   }
 
   @override
@@ -329,8 +396,15 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ],
         ),
-        actions: const <Widget>[
+        actions: <Widget>[
           Padding(
+            padding: const EdgeInsets.only(right: 8),
+            child: TextButton(
+              onPressed: _showProDialog,
+              child: const Text('PRO', style: TextStyle(color: Colors.amber, fontWeight: FontWeight.bold)),
+            ),
+          ),
+          const Padding(
             padding: EdgeInsets.only(right: 12),
             child: Icon(Icons.auto_awesome),
           ),
@@ -348,6 +422,7 @@ class _HomeScreenState extends State<HomeScreen> {
               onSearchChanged: () => setState(() {}),
               onPlay: _playIdea,
               onShare: _shareIdea,
+              onLoadShared: _loadSharedIdea,
             ),
             CaptureTab(
               titleController: _titleController,

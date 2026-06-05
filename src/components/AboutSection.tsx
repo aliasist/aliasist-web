@@ -1,5 +1,4 @@
 import { motion } from "framer-motion";
-import { useEffect, useRef } from "react";
 import { about } from "@/content/homepage";
 
 const stagger = {
@@ -17,20 +16,8 @@ const skillItem = {
   },
 };
 
-function useScanOnView() {
-  const ref = useRef<HTMLDivElement>(null);
-  useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-    const obs = new IntersectionObserver(() => {}, { threshold: 0.3 });
-    obs.observe(el);
-    return () => obs.disconnect();
-  }, []);
-  return ref;
-}
 
 const AboutSection = () => {
-  const skillsRef = useScanOnView();
   const filledAuthorSlots = about.authorSlots.filter((s) => s.body.trim().length > 0);
 
   return (
@@ -105,7 +92,7 @@ const AboutSection = () => {
             </motion.div>
 
             {/* Skills */}
-            <div className="mt-10" ref={skillsRef}>
+            <div className="mt-10">
               <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground/60 mb-5">
                 {about.skillsLabel}
               </p>

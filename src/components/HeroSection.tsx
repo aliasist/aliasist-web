@@ -137,7 +137,7 @@ const HeroSection = () => {
 
           {/* Wordmark */}
           <motion.h1
-            className="glitch-text text-6xl sm:text-8xl md:text-[9rem] font-bold tracking-tight text-foreground mb-5 leading-none select-none"
+            className="glitch-text mb-5 select-none text-6xl font-bold leading-none tracking-tight text-foreground sm:text-8xl md:text-[9rem]"
             data-text={hero.wordmark}
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -158,7 +158,7 @@ const HeroSection = () => {
 
           {/* Sub copy */}
           <motion.p
-            className="mx-auto mb-12 max-w-xl text-base leading-relaxed text-muted-foreground sm:text-lg xl:max-w-2xl"
+            className="mx-auto mb-12 max-w-xl rounded-sm border border-electric/20 bg-background/75 px-5 py-4 text-base leading-relaxed text-foreground/85 shadow-electric-xs backdrop-blur-md sm:px-7 sm:py-5 sm:text-lg xl:max-w-2xl"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.6 }}
@@ -174,14 +174,14 @@ const HeroSection = () => {
             className="hero-cta-group flex flex-col sm:flex-row items-center justify-center gap-4"
           >
             <a
-              href="#projects"
+              href={hero.ctaWorkHref}
               className="group relative px-8 py-3.5 bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] rounded-sm overflow-hidden shadow-electric-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-electric-md active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               <span className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
               <span className="relative">{hero.ctaWork}</span>
             </a>
             <a
-              href="#contact"
+              href={hero.ctaContactHref}
               className="px-8 py-3.5 border border-border/60 text-foreground/80 font-mono text-xs uppercase tracking-[0.14em] rounded-sm hover:border-electric/60 hover:text-electric hover:bg-electric/5 hover:shadow-electric-outline transition-all duration-300 hover:-translate-y-0.5 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               {hero.ctaContact}

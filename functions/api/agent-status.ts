@@ -1,9 +1,9 @@
-import type { ClerkEnv } from "../_lib/clerk-auth";
-import { authenticateRequest, corsHeaders, json } from "../_lib/clerk-auth";
+import type { AliasistAdminEnv, ClerkEnv } from "../_lib/clerk-auth";
+import { authenticateRequest, corsHeaders, json, requireAliasistAdmin } from "../_lib/clerk-auth";
 
 const AGENT_CHAT_URL = "https://aliasist-chat.bchooper0730.workers.dev/api/agent/snapshots";
 
-interface Env extends ClerkEnv {
+interface Env extends ClerkEnv, AliasistAdminEnv {
   AGENT_PUSH_SECRET?: string;
 }
 
@@ -24,6 +24,11 @@ export const onRequestGet = async ({ request, env }: PagesContext) => {
   const auth = await authenticateRequest(request, env);
   if (!auth.ok) {
     return json({ error: auth.error }, auth.status);
+  }
+
+  const admin = requireAliasistAdmin(auth.userId, env);
+  if (!admin.ok) {
+    return json({ error: admin.error }, admin.status);
   }
 
   const secret = env.AGENT_PUSH_SECRET;
