@@ -34,7 +34,30 @@ const WELCOME_SIGN_IN_REQUIRED =
   "// Secure channel — sign in with Clerk to use the assistant.";
 
 const WELCOME_PUBLIC_AI =
-  "Ask me about AI consulting, projects, or what Blake can help build.";
+  "Ask me about AI consulting, projects, or what Blake can help build. (A couple of free messages — sign in to keep the conversation going.)";
+
+const SIGN_IN_PROMPT =
+  "// Free preview used up — sign in with Google, GitHub, or email to keep chatting.";
+
+/** Anonymous visitors get this many AI replies before we prompt sign-in. */
+const FREE_MESSAGE_LIMIT = 2;
+const FREE_MESSAGE_COUNT_KEY = "aliasist-chat-free-count";
+
+function readFreeMessageCount(): number {
+  try {
+    return Number(localStorage.getItem(FREE_MESSAGE_COUNT_KEY) ?? "0") || 0;
+  } catch {
+    return 0;
+  }
+}
+
+function writeFreeMessageCount(count: number) {
+  try {
+    localStorage.setItem(FREE_MESSAGE_COUNT_KEY, String(count));
+  } catch {
+    // ignore — private browsing / storage disabled
+  }
+}
 
 /** Retry the request via the other endpoint when the first one fails (but don't retry on 429 rate-limits). */
 function shouldRetry(res: Response) {
@@ -49,6 +72,7 @@ const AliasistChat = () => {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
+  const [freeMessageCount, setFreeMessageCount] = useState(readFreeMessageCount);
   const bottomRef = useRef<HTMLDivElement>(null);
   const pendingOpenRef = useRef(false);
 
@@ -127,6 +151,15 @@ const AliasistChat = () => {
       if (!isSignedIn && USE_PAGES_CHAT_ROOM) {
         setMessages((prev) => [...prev, { role: "assistant", content: "// Sign in to chat." }]);
         setLoading(false);
+        return;
+      }
+
+      // Anonymous visitors get a short free preview, then we prompt sign-in.
+      if (!isSignedIn && !USE_PAGES_CHAT_ROOM && freeMessageCount >= FREE_MESSAGE_LIMIT) {
+        setMessages((prev) => [...prev, { role: "assistant", content: SIGN_IN_PROMPT }]);
+        setLoading(false);
+        pendingOpenRef.current = true;
+        openSiteSignIn();
         return;
       }
 
@@ -219,6 +252,15 @@ const AliasistChat = () => {
           ? `// ${data.error}`
           : data?.response ?? (res.ok ? "// signal_lost — try again" : `// signal_lost — ${res.status}`);
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
+
+      // Count successful free replies toward the anonymous preview limit.
+      if (!isSignedIn && data?.response) {
+        setFreeMessageCount((c) => {
+          const next = c + 1;
+          writeFreeMessageCount(next);
+          return next;
+        });
+      }
     } catch {
       setMessages((prev) => [
         ...prev,

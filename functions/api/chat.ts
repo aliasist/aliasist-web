@@ -174,11 +174,9 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
     }
   }
 
-  if (!hasSessionToken) {
-    return json({ error: "GROQ_API_KEY is required for public chat." }, 503);
-  }
-
-  // Fallback: proxy to llm-chat worker (user must have CLERK_SECRET_KEY set there too)
+  // Fallback: proxy to llm-chat worker. It has its own GROQ_API_KEY and, when
+  // PUBLIC_CHAT_ENABLED is set there too, accepts anonymous (rate-limited) requests —
+  // so unsigned visitors aren't dead-ended just because this Pages deployment lacks a key.
   const base = trimTrailingSlashes(env.LLM_CHAT_BASE_URL?.trim() || DEFAULT_LLM_CHAT_BASE_URL);
   const upstreamUrl = `${base}/api/chat`;
 
