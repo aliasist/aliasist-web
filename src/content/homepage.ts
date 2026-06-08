@@ -95,6 +95,12 @@ export const suiteApps = [
     href: "/tools/github",
     icon: "🔎🛸",
   },
+  {
+    label: "Literacy Assistant",
+    sub: "AI-powered writing assistant",
+    href: "https://github.com/aliasist/aliasist-literacy-assistant",
+    icon: "✍️✨",
+  },
 ] as const;
 
 // ── Footer ────────────────────────────────────────────────────────────────────
@@ -245,6 +251,19 @@ export const projects = [
     link: "https://datasist-frontend.pages.dev",
     linkLabel: "Open DataSist →",
     banner: dataBanner,
+  },
+  {
+    name: "Literacy Assistant",
+    description:
+      "A glassmorphic browser extension that helps with grammar, professional rephrasing, and summarization using an AI agent waterfall.",
+    tech: ["React", "Vite", "Cloudflare Workers", "Gemini", "Groq", "Ollama"],
+    github: "https://github.com/aliasist/aliasist-literacy-assistant",
+    downloads: [],
+    status: "Live",
+    icon: "✍️✨",
+    link: "https://github.com/aliasist/aliasist-literacy-assistant",
+    linkLabel: "View on GitHub →",
+    banner: null,
   },
 ] as const;
 
