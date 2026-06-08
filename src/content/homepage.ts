@@ -18,6 +18,7 @@
  * Backend/API URLs (for developers): see `src/config/api.ts` (`siteEndpoints`).
  */
 
+import blackMesaBanner from "@images/black_mesa_terminal_dashboard.png";
 import dataBanner from "@images/datasist_banner_cinematic.png";
 import ecosistBanner from "@images/ecosist_banner_tornado.png";
 import filesAbductorBanner from "@images/files_abductor_banner_cinematic.png";
@@ -238,6 +239,19 @@ export const projects = [
     link: null as string | null,
     linkLabel: null as string | null,
     banner: filesAbductorBanner,
+  },
+  {
+    name: "Black Mesa Terminal",
+    description:
+      "A Half-Life themed full-stack dev dashboard — sector status, live resonance charts, an HEV suit calibration panel, and a streaming AI assistant.",
+    tech: ["React", "Vite", "Hono", "Drizzle", "SQLite", "Recharts", "Claude AI"],
+    github: "https://github.com/aliasist/black-mesa-terminal",
+    downloads: [],
+    status: "Demo",
+    icon: "☣️🖥️",
+    link: "https://github.com/aliasist/black-mesa-terminal",
+    linkLabel: "View on GitHub →",
+    banner: blackMesaBanner,
   },
   {
     name: "DataSist",
