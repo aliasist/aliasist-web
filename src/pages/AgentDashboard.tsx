@@ -551,7 +551,7 @@ export default function AgentDashboard() {
   const { toast } = useToast();
 
   // Website Customization State (persisted to localStorage for demo)
-  const [heroHeadline, setHeroHeadline] = useState("The Aliasist Project");
+  const [heroHeadline, setHeroHeadline] = useState("Aliasist");
   const [heroSubheadline, setHeroSubheadline] = useState("Tools, intelligence, and agents for the modern world.");
   const [maintenanceMode, setMaintenanceMode] = useState(false);
   const [announcementText, setAnnouncementText] = useState("");

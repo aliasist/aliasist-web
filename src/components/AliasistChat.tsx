@@ -25,7 +25,7 @@ interface Message {
 }
 
 const WELCOME_AI =
-  "Ask me about AI consulting, Aliasist projects, or how Blake builds software.";
+  "Ask me about Aliasist projects, what Blake is building, or how the software works.";
 
 const WELCOME_ROOM =
   "// Room linked — messages persist in KV when configured on Pages. Transmit when signed in.";
@@ -34,7 +34,7 @@ const WELCOME_SIGN_IN_REQUIRED =
   "// Secure channel — sign in with Clerk to use the assistant.";
 
 const WELCOME_PUBLIC_AI =
-  "Ask me about AI consulting, projects, or what Blake can help build. (A couple of free messages — sign in to keep the conversation going.)";
+  "Ask me about projects or what Blake can help build. (A couple of free messages — sign in to keep the conversation going.)";
 
 const SIGN_IN_PROMPT =
   "// Free preview used up — sign in with Google, GitHub, or email to keep chatting.";
