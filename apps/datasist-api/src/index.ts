@@ -9,6 +9,7 @@
 import { logChat, logUsage } from "./analytics";
 import { requireAdmin } from "./auth";
 import { neon } from "@neondatabase/serverless";
+import { WATER_STRESS_DATA } from "./risk";
 
 export interface Env {
   DB: D1Database;
@@ -107,6 +108,70 @@ async function registerExternalApiObservation(
     ).run();
   } catch (err) {
     console.warn(`External API observation registration failed (${source}/${scope}):`, err);
+  }
+}
+
+async function syncGlobalGridIntensity(env: Env) {
+  if (!env.ELECTRICITY_MAPS_API_KEY) return null;
+  const headers = { "auth-token": env.ELECTRICITY_MAPS_API_KEY };
+  const base = "https://api.electricitymap.org/v4";
+  
+  try {
+    // Premium bulk endpoint for all zones
+    const data = await fetchJson<any>(`${base}/carbon-intensity/latest`, { headers });
+    await registerExternalApiObservation(env.DB, "electricitymaps", "global-intensity", data, undefined, 60 * 60 * 1000);
+    return data;
+  } catch (err) {
+    console.error("Global grid sync failed:", err);
+    return null;
+  }
+}
+
+async function handleGridSnapshot(db: D1Database, headers: Record<string, string>) {
+  const row = await db.prepare(`
+    SELECT payload_json FROM external_api_observations 
+    WHERE source = 'electricitymaps' AND scope = 'global-intensity'
+    ORDER BY observed_at DESC LIMIT 1
+  `).first();
+  
+  if (!row) return json({ error: "No grid snapshot available" }, 404, headers);
+  return new Response(row.payload_json as string, {
+    status: 200,
+    headers: { "Content-Type": "application/json", ...headers },
+  });
+}
+
+async function handleSubmarineCables(headers: Record<string, string>) {
+  // TeleGeography official GitHub GeoJSON
+  const url = "https://raw.githubusercontent.com/telegeography/www.submarinecablemap.com/master/public/api/v2/cable/cable-geo.json";
+  try {
+    const data = await fetchJson<any>(url);
+    return json(data, 200, headers);
+  } catch (err) {
+    return json({ error: "Failed to fetch cables" }, 500, headers);
+  }
+}
+
+async function handlePeeringDB(type: "fac" | "ix", query: URLSearchParams, headers: Record<string, string>) {
+  const url = new URL(`https://www.peeringdb.com/api/${type}`);
+  query.forEach((val, key) => url.searchParams.set(key, val));
+  
+  try {
+    const data = await fetchJson<any>(url.toString());
+    return json(data, 200, headers);
+  } catch (err) {
+    return json({ error: `Failed to fetch PeeringDB ${type}` }, 500, headers);
+  }
+}
+
+async function handleOpenSky(headers: Record<string, string>) {
+  // Free public feed without login (limited)
+  const url = "https://opensky-network.org/api/states/all";
+  try {
+    const data = await fetchJson<any>(url, { headers: { "Accept": "application/json" } });
+    return json(data, 200, headers);
+  } catch (err) {
+    return json({ error: "Failed to fetch OpenSky states" }, 500, headers);
   }
 }
 
@@ -339,9 +404,12 @@ function cors(_request: Request, _env: Env) {
 // ── Router ────────────────────────────────────────────────────────────────────
 
 export default {
-  // Cron trigger — runs every hour, syncs D1 → Neon
+  // Cron trigger — runs every hour, syncs D1 → Neon and Electricity Maps
   async scheduled(_event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
-    ctx.waitUntil(syncD1ToNeon(env));
+    ctx.waitUntil(Promise.all([
+      syncD1ToNeon(env),
+      syncGlobalGridIntensity(env)
+    ]));
   },
 
   async fetch(request: Request, env: Env): Promise<Response> {
@@ -366,6 +434,24 @@ export default {
 
       // ── Public reads ────────────────────────────────────────────────────
       if (isCollection && request.method === "GET") return handleGetAll(env.DB, corsHeaders, env);
+      if (p === "/api/grid/snapshot" && request.method === "GET") {
+        return handleGridSnapshot(env.DB, corsHeaders);
+      }
+      if (p === "/api/infrastructure/cables" && request.method === "GET") {
+        return handleSubmarineCables(corsHeaders);
+      }
+      if (p === "/api/infrastructure/peeringdb/fac" && request.method === "GET") {
+        return handlePeeringDB("fac", url.searchParams, corsHeaders);
+      }
+      if (p === "/api/infrastructure/peeringdb/ix" && request.method === "GET") {
+        return handlePeeringDB("ix", url.searchParams, corsHeaders);
+      }
+      if (p === "/api/opensky/api/states/all" && request.method === "GET") {
+        return handleOpenSky(corsHeaders);
+      }
+      if (p === "/api/risk/water-stress" && request.method === "GET") {
+        return json(WATER_STRESS_DATA, 200, corsHeaders);
+      }
       if (p === "/api/observations/status" && request.method === "GET") {
         return handleObservationStatus(env.DB, corsHeaders);
       }
@@ -412,6 +498,15 @@ export default {
         if (!env.NEON_DATABASE_URL) return json({ error: "NEON_DATABASE_URL not configured" }, 500, corsHeaders);
         const result = await syncD1ToNeon(env);
         return json(result, 200, corsHeaders);
+      }
+
+      // POST /api/grid/sync — manually trigger Electricity Maps sync (admin only)
+      if (p === "/api/grid/sync" && request.method === "POST") {
+        const auth = await requireAdmin(request, env, corsHeaders);
+        if (!auth.ok) return auth.response;
+        if (!env.ELECTRICITY_MAPS_API_KEY) return json({ error: "ELECTRICITY_MAPS_API_KEY not configured" }, 500, corsHeaders);
+        const data = await syncGlobalGridIntensity(env);
+        return json({ ok: !!data }, 200, corsHeaders);
       }
 
       // Force re-sync from Index API (admin only — this wipes a chunk of the table)
