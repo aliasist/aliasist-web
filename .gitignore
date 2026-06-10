@@ -48,3 +48,4 @@ backups/
 
 # Local AI tool config
 .claude/
+.aider*

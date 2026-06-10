@@ -73,6 +73,10 @@ export default defineConfig(async ({ mode }) => {
     for (const [k, v] of Object.entries(devVars)) {
       if (!(k in process.env)) process.env[k] = v;
     }
+    // Help Clerk token validation in local dev (authorizedParties / azp claims)
+    const existing = process.env.CLERK_AUTHORIZED_PARTIES || "";
+    const locals = "http://localhost:8080,http://127.0.0.1:8080,http://localhost:5173,http://[::]:8080";
+    process.env.CLERK_AUTHORIZED_PARTIES = existing ? `${existing},${locals}` : locals;
   }
   const clerkPublishableKey =
     process.env.VITE_CLERK_PUBLISHABLE_KEY?.trim() ||
