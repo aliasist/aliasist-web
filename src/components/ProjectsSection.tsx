@@ -8,6 +8,8 @@ import {
 } from "@/content/homepage";
 import { AdUnit, AD_SLOTS } from "@/components/AdUnit";
 
+import { MagicGlow } from "./MagicGlow";
+
 // Per-card component
 const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }) => {
   const headingId = `project-heading-${index}`;
@@ -22,22 +24,23 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
       aria-labelledby={headingId}
       className="project-card-shell relative flex flex-col sm:flex-row bg-card border border-border/60 hover:border-electric/40 text-foreground overflow-hidden group transition-[colors,box-shadow] duration-300 hover:shadow-electric-sm rounded-sm"
     >
+      <MagicGlow className="absolute inset-0 pointer-events-none" glowOpacity={0.08} />
       {project.banner ? (
-        <div className="relative w-full sm:w-[42%] sm:max-w-md shrink-0 aspect-[16/10] sm:aspect-auto sm:min-h-[260px] border-b sm:border-b-0 sm:border-r border-border/40">
+        <div className="relative w-full sm:w-[42%] sm:max-w-md shrink-0 aspect-[16/10] sm:aspect-auto sm:min-h-[260px] border-b sm:border-b-0 sm:border-r border-border/40 overflow-hidden">
           <img
             src={project.banner}
             alt={`${project.name} preview`}
-            className="absolute inset-0 size-full object-cover"
+            className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105"
             loading={index === 0 ? "eager" : "lazy"}
             decoding="async"
           />
+          {/* Shimmer sheen on hover */}
+          <div className="absolute inset-0 -translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card/25 via-transparent to-transparent sm:bg-gradient-to-r sm:from-transparent sm:via-card/30 sm:to-card" />
         </div>
       ) : null}
 
       <div className="project-card-body relative flex flex-1 flex-col p-8 sm:p-10 lg:p-12 min-w-0">
-        {/* Teal glow on hover */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top_right,_hsl(165_90%_42%_/_0.12)_0%,_transparent_60%)] opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
         {/* Top edge accent line on hover */}
         <div className="absolute top-0 left-0 right-0 h-px bg-electric/0 group-hover:bg-electric/50 transition-colors duration-300" />
 

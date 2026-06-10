@@ -66,25 +66,6 @@ const Index = () => {
         <HeroSection />
         <ErrorBoundary><Suspense fallback={<SectionFallback />}><AboutSection /></Suspense></ErrorBoundary>
 
-        {/* Featured Tool - GitHub Companion (prominent link after intro) */}
-        <div className="mx-auto w-full max-w-site px-4 sm:px-8 lg:px-12 xl:px-16 py-4">
-          <div className="rounded-2xl border border-border bg-card px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-electric">Featured Tool</div>
-              <h3 className="text-xl font-semibold tracking-tight mt-1">GitHub Companion</h3>
-              <p className="text-sm text-muted-foreground mt-1 max-w-md">
-                Guided repository understanding + advanced pull request reviews with risk signals.
-              </p>
-            </div>
-            <a 
-              href="/tools/github" 
-              className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-electric px-5 py-2.5 text-sm font-medium text-black hover:bg-white transition-colors"
-            >
-              Open GitHub Companion →
-            </a>
-          </div>
-        </div>
-
         <div className="mx-auto w-full max-w-site px-4 sm:px-8 lg:px-12 xl:px-16 py-2">
           <AdUnit slot={AD_SLOTS.banner} format="auto" />
         </div>

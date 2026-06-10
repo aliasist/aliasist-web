@@ -110,6 +110,9 @@ export default {
           from: { transform: "scale(1) translate(0, 0)" },
           to: { transform: "scale(1.08) translate(-0.6%, -0.35%)" },
         },
+        shimmer: {
+          "100%": { transform: "translateX(100%)" },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -118,6 +121,7 @@ export default {
         "iris-rotate": "iris-rotate 12s linear infinite",
         "cursor-blink": "blink 1s step-end infinite",
         "hero-photo-drift": "hero-photo-drift 85s ease-in-out infinite alternate",
+        shimmer: "shimmer 2s infinite",
       },
     },
   },

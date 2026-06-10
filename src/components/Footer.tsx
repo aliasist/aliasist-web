@@ -41,7 +41,15 @@ const Footer = () => {
         </div>
 
         <p className="font-mono text-[10px] text-electric/50 tracking-[0.12em] uppercase flex items-center justify-center gap-1.5 order-3 text-center sm:order-none sm:justify-end">
-          <span className="w-1.5 h-1.5 rounded-full bg-electric/60 animate-pulse" />
+          <a
+            href="https://www.aliasist.tech"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="flex items-center"
+            aria-label="Aliasist Signal"
+          >
+            <span className="w-1.5 h-1.5 rounded-full bg-electric/60 animate-pulse cursor-pointer" />
+          </a>
           {footer.versionLine}
         </p>
       </div>

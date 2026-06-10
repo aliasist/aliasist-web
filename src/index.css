@@ -652,6 +652,16 @@ button, a[class*="rounded"] {
   -webkit-tap-highlight-color: transparent;
 }
 
+/* Mobile Touch Glow Effect */
+@media (max-width: 1024px) {
+  .project-card-shell:active,
+  button:active,
+  a.tap-target:active {
+    background: radial-gradient(circle at center, hsl(var(--electric) / 0.15), transparent 70%);
+    transition: background 0.1s ease;
+  }
+}
+
 /* ─── Gradient text utility ─── */
 .text-gradient {
   background: linear-gradient(135deg, hsl(var(--electric)), hsl(165 90% 65%));

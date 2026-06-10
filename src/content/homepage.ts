@@ -18,8 +18,8 @@
  * Backend/API URLs (for developers): see `src/config/api.ts` (`siteEndpoints`).
  */
 
-import blackMesaBanner from "@images/black_mesa_terminal_dashboard.png";
 import dataBanner from "@images/datasist_banner_cinematic.png";
+import audiosistBanner from "@images/cinematic-suite/audiosist-cinematic-audio-intelligence-hero.png";
 import ecosistBanner from "@images/ecosist_banner_tornado.png";
 import filesAbductorBanner from "@images/files_abductor_banner_cinematic.png";
 import pulseBanner from "@images/pulsesist_banner_cinematic.png";
@@ -28,20 +28,20 @@ import spaceBanner from "@images/spacesist_banner_cinematic.png";
 // ── Hero ─────────────────────────────────────────────────────────────────────
 
 export const hero = {
-  statusBadge: "Aliasist · AI Consulting",
+  statusBadge: "Aliasist · AI Tools",
   mascotLabel: "aliasist",
   mascotAlt: "Aliasist",
   mascotTitle: "Aliasist",
-  eyeline: "AI consulting // developer portfolio // projects",
+  eyeline: "AI tools // developer portfolio // projects",
   wordmark: "A L I A S I S T",
   tagline: "Practical AI tools and software builds.",
   subcopy:
-    "I'm Blake. I help turn ideas, workflows, and business problems into useful AI tools. The projects below show the work.",
-  ctaWork: "Consulting",
-  ctaWorkHref: "/consulting",
+    "I'm Blake. I build useful AI tools and software that solves real problems. The projects below show the work.",
+  ctaWork: "About",
+  ctaWorkHref: "#about",
   ctaContact: "Projects",
   ctaContactHref: "#projects",
-  statusRow: ["AI Consulting", "Developer Portfolio", "Projects"] as const,
+  statusRow: ["AI Tools", "Developer Portfolio", "Projects"] as const,
 } as const;
 
 // ── Navbar ───────────────────────────────────────────────────────────────────
@@ -56,15 +56,15 @@ export const pageNavLinks = [
 export const suiteApps = [
   {
     label: "DataSist",
-    sub: "AI Data Center WebApp",
+    sub: "Data center intelligence",
     href: "https://datasist-frontend.pages.dev",
-    icon: "🌐📊",
+    icon: "🧠🏢",
   },
   {
-    label: "Atomicity",
-    sub: "Stopwatch",
-    href: "/atomicity/",
-    icon: "⏱️🔥",
+    label: "SpaceSist",
+    sub: "Orbital mission tools",
+    href: "https://space.aliasist.com",
+    icon: "🌌🛰️",
   },
   {
     label: "PulseSist",
@@ -73,34 +73,22 @@ export const suiteApps = [
     icon: "📈🤖",
   },
   {
-    label: "SpaceSist",
-    sub: "Live Space Portal",
-    href: "https://space.aliasist.com",
-    icon: "🌌🛰️",
-  },
-  {
     label: "EcoSist",
-    sub: "**UNDER CONSTRUCTION** project paused.",
+    sub: "Under construction · Partially finished",
     href: "https://ecosist.aliasist.com",
     icon: "🌱🛠️",
   },
   {
-    label: "Clearasist",
-    sub: "Metadata Cleaner",
-    href: "https://clearasist.pages.dev",
-    icon: "🧹🔒",
+    label: "Aliasist Files Abductor",
+    sub: "File automation and downloads",
+    href: "https://github.com/aliasist/aliasistabductor/releases/tag/%23v2.7.0",
+    icon: "🛸📦",
   },
   {
-    label: "GitHub Companion",
-    sub: "Guided GitHub project tools",
-    href: "/tools/github",
-    icon: "🔎🛸",
-  },
-  {
-    label: "Literacy Assistant",
-    sub: "AI-powered writing assistant",
-    href: "https://github.com/aliasist/aliasist-literacy-assistant",
-    icon: "✍️✨",
+    label: "Audiosist",
+    sub: "Cinematic audio intelligence",
+    href: "https://audiosist.online",
+    icon: "🎧🌌",
   },
 ] as const;
 
@@ -109,7 +97,7 @@ export const suiteApps = [
 export const footer = {
   brandName: "Aliasist",
   mascotAlt: "",
-  versionLine: "The Aliasist Project",
+  versionLine: "Aliasist",
   githubLabel: "GitHub",
   linkedinLabel: "LinkedIn",
   emailLabel: "Email",
@@ -139,17 +127,17 @@ export const projectsSection = {
 
 export const projects = [
   {
-    name: "GitHub Companion",
+    name: "DataSist",
     description:
-      "A GitHub toolkit that explains repositories and reviews pull requests in plain language.",
-    tech: ["React", "GitHub API", "Project Guidance", "Review Heuristics"],
-    github: "https://github.com/aliasist/aliasistabductor",
+      "A live data center intelligence platform with facility intelligence, environmental context, and AI-assisted analysis.",
+    tech: ["React", "Vite", "Cloudflare Pages", "D1", "APIs", "AI"],
+    github: "https://github.com/aliasist/datasist",
     downloads: [],
     status: "Live",
-    icon: "🔎🛸",
-    link: "/tools/github",
-    linkLabel: "Open GitHub Companion →",
-    banner: null,
+    icon: "🧠🏢",
+    link: "https://datasist-frontend.pages.dev",
+    linkLabel: "Open DataSist →",
+    banner: dataBanner,
   },
   {
     name: "SpaceSist",
@@ -165,19 +153,6 @@ export const projects = [
     banner: spaceBanner,
   },
   {
-    name: "Atomicity",
-    description:
-      "Simple, fast stopwatch. No tasks, no accounts, no data saved. Just start/stop/reset, plus a lightweight intro.",
-    tech: ["Vanilla JS", "PWA", "No storage"],
-    github: "https://github.com/aliasist/atomicity",
-    downloads: [],
-    status: "Live",
-    icon: "⏱️",
-    link: "/atomicity/",
-    linkLabel: "Open Atomicity →",
-    banner: null,
-  },
-  {
     name: "PulseSist",
     description:
       "A market dashboard with live charts, portfolio tools, and AI-assisted analysis.",
@@ -191,42 +166,9 @@ export const projects = [
     banner: pulseBanner,
   },
   {
-    name: "EcoSist",
+    name: "Aliasist Files Abductor",
     description:
-      "An environmental dashboard for air quality, climate signals, and geospatial data.",
-    tech: [
-      "React",
-      "Vite",
-      "Environmental APIs",
-      "Geospatial Data",
-      "Cloudflare",
-      "Live Monitoring",
-    ],
-    github: "https://github.com/aliasist/ecosist",
-    downloads: [],
-    status: "Live",
-    icon: "🌱",
-    link: "https://ecosist.aliasist.com",
-    linkLabel: "Open EcoSist →",
-    banner: ecosistBanner,
-  },
-  {
-    name: "Clearasist",
-    description:
-      "A browser-based metadata cleaner for images, PDFs, and Office files.",
-    tech: ["React", "Vite", "TypeScript", "pdf-lib", "JSZip", "Cloudflare Pages", "D1"],
-    github: "https://github.com/aliasist/aliasistabductor",
-    downloads: [],
-    status: "Live",
-    icon: "🧹🔒📊",
-    link: "https://clearasist.pages.dev",
-    linkLabel: "Open Clearasist →",
-    banner: null,
-  },
-  {
-    name: "Aliasist-Files-Abductor",
-    description:
-      "My first full app: a GUI tool for downloading files from YouTube and direct URLs.",
+      "A GUI tool for downloading files from YouTube and direct URLs with a desktop-first workflow.",
     tech: ["Python", "GUI", "CLI", "File Automation", "yt-dlp"],
     github: `https://github.com/aliasist/aliasistabductor/releases/tag/${releaseTagEncoded}`,
     downloads: [
@@ -241,43 +183,37 @@ export const projects = [
     banner: filesAbductorBanner,
   },
   {
-    name: "Black Mesa Terminal",
+    name: "EcoSist",
     description:
-      "A Half-Life themed full-stack dev dashboard — sector status, live resonance charts, an HEV suit calibration panel, and a streaming AI assistant.",
-    tech: ["React", "Vite", "Hono", "Drizzle", "SQLite", "Recharts", "Claude AI"],
-    github: "https://github.com/aliasist/black-mesa-terminal",
+      "An environmental dashboard for air quality, climate signals, and geospatial data. It is still under construction and partially finished.",
+    tech: [
+      "React",
+      "Vite",
+      "Environmental APIs",
+      "Geospatial Data",
+      "Cloudflare",
+      "Live Monitoring",
+    ],
+    github: "https://github.com/aliasist/ecosist",
     downloads: [],
-    status: "Demo",
-    icon: "☣️🖥️",
-    link: "https://github.com/aliasist/black-mesa-terminal",
-    linkLabel: "View on GitHub →",
-    banner: blackMesaBanner,
+    status: "Under Construction",
+    icon: "🌱",
+    link: "https://ecosist.aliasist.com",
+    linkLabel: "Open EcoSist →",
+    banner: ecosistBanner,
   },
   {
-    name: "DataSist",
+    name: "Audiosist",
     description:
-      "An AI data center intelligence platform for facilities, power, water, risk, and investment data.",
-    tech: ["React", "Vite", "D1", "Groq AI", "Leaflet", "EIA API"],
-    github: "https://github.com/aliasist/datasist",
+      "An epic cinematic audio intelligence scene for signal analysis, waveform motion, and futuristic sound design.",
+    tech: ["Audio Intelligence", "Cinematic UI", "Signal Analysis", "Waveforms"],
+    github: "https://audiosist.online",
     downloads: [],
     status: "Live",
-    icon: "🌐",
-    link: "https://datasist-frontend.pages.dev",
-    linkLabel: "Open DataSist →",
-    banner: dataBanner,
-  },
-  {
-    name: "Literacy Assistant",
-    description:
-      "A glassmorphic browser extension that helps with grammar, professional rephrasing, and summarization using an AI agent waterfall.",
-    tech: ["React", "Vite", "Cloudflare Workers", "Gemini", "Groq", "Ollama"],
-    github: "https://github.com/aliasist/aliasist-literacy-assistant",
-    downloads: [],
-    status: "Live",
-    icon: "✍️✨",
-    link: "https://github.com/aliasist/aliasist-literacy-assistant",
-    linkLabel: "View on GitHub →",
-    banner: null,
+    icon: "🎧🌌",
+    link: "https://audiosist.online",
+    linkLabel: "Open Audiosist →",
+    banner: audiosistBanner,
   },
 ] as const;
 
@@ -330,7 +266,7 @@ export const about = {
   authorSlots: [] as unknown as readonly { kicker: string; body: string }[],
 
   stats: [
-    { num: "5",  label: "Live apps deployed", sym: "+" as const },
+    { num: "6",  label: "Live apps deployed", sym: "+" as const },
     { num: "7",  label: "External APIs integrated", sym: "+" as const },
     { num: "3",  label: "Years building in public", sym: "" as const },
     { num: "100", label: "Open source · github.com/aliasist", sym: "%" as const },
@@ -361,7 +297,7 @@ export const contact = {
   suiteColumnLabel: "// The Aliasist Suite",
   liveBadge: "Live",
   suiteStats: [
-    { n: "5", l: "Live Apps" },
+    { n: "6", l: "Live Apps" },
     { n: "7+", l: "APIs" },
     { n: "340+", l: "Data Centers" },
   ],

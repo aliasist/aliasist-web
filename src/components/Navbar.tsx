@@ -369,9 +369,6 @@ const Navbar = () => {
             <span className="font-bold text-sm uppercase tracking-[0.16em] text-foreground transition-all duration-300 group-hover:text-electric group-hover:[text-shadow:0_0_28px_hsl(165_90%_42%_/_0.25)]">
               Aliasist
             </span>
-            <span className="mt-1 font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground/45 transition-colors duration-300 group-hover:text-muted-foreground/65">
-              The Aliasist Project by Blake
-            </span>
           </div>
         </a>
 
@@ -389,19 +386,6 @@ const Navbar = () => {
 
         {/* ── CENTER: Page links ── */}
         <div className="hidden md:flex flex-1 items-center justify-center gap-2 rounded-full border border-border/35 bg-background/50 px-2.5 py-1.5 shadow-electric-nav-well backdrop-blur-md">
-          <a
-            href="/consulting"
-            onMouseEnter={() => playHover()}
-            className="group relative overflow-hidden rounded-full px-4 py-2 text-xs font-mono uppercase tracking-[0.16em] text-electric transition-all duration-300 ease-out outline-none hover:bg-electric/[0.08] hover:text-electric hover:tracking-[0.2em] hover:shadow-electric-ring-inset-soft focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
-            <span className="relative z-10">Consulting</span>
-            <span
-              className="pointer-events-none absolute inset-x-2 top-1/2 h-full -translate-y-1/2 rounded-full bg-gradient-to-r from-transparent via-electric/10 to-transparent opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100"
-              aria-hidden
-            />
-            <span className="absolute bottom-1 left-1/2 h-[2px] w-0 -translate-x-1/2 rounded-full bg-electric opacity-0 shadow-electric-accent-line transition-all duration-300 ease-out group-hover:w-[calc(100%-1.25rem)] group-hover:opacity-100" />
-          </a>
-
           {pageNavLinks.map(link => {
             const isActive = activeSection === link.href.replace("#", "");
             return (
@@ -517,15 +501,6 @@ const Navbar = () => {
             className="md:hidden bg-background/98 backdrop-blur-xl border-b border-border overflow-hidden"
           >
             <div className="space-y-1 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-5 sm:px-8 lg:px-12 xl:px-16">
-
-              {/* Page links */}
-              <a
-                href="/consulting"
-                onClick={() => { playClick(); setMobileOpen(false); }}
-                className="-mx-1 flex h-12 items-center rounded-lg px-3 text-xs font-mono uppercase tracking-[0.15em] text-electric transition-all duration-300 ease-out hover:bg-electric/[0.08] hover:pl-4 hover:text-electric hover:shadow-[inset_3px_0_0_hsl(165_90%_42%_/_0.65)] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              >
-                Consulting
-              </a>
 
               {pageNavLinks.map(link => (
                 <a
