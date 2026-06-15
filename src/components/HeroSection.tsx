@@ -137,8 +137,7 @@ const HeroSection = () => {
 
           {/* Wordmark */}
           <motion.h1
-            className="glitch-text mb-5 select-none text-6xl font-bold leading-none tracking-tight text-foreground sm:text-8xl md:text-[9rem]"
-            data-text={hero.wordmark}
+            className="mb-5 select-none text-6xl font-bold leading-none tracking-tight text-foreground sm:text-8xl md:text-[9rem]"
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
@@ -186,6 +185,24 @@ const HeroSection = () => {
             >
               {hero.ctaContact}
             </a>
+          </motion.div>
+
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 1, duration: 0.7 }}
+            className="mx-auto mt-7 flex max-w-3xl flex-wrap items-center justify-center gap-x-6 gap-y-2"
+            aria-label="Platform principles"
+          >
+            {hero.trustSignals.map((signal) => (
+              <span
+                key={signal}
+                className="flex items-center gap-2 font-mono text-[9px] uppercase tracking-[0.14em] text-foreground/55 sm:text-[10px]"
+              >
+                <span className="size-1 rounded-full bg-electric shadow-electric-dot" aria-hidden />
+                {signal}
+              </span>
+            ))}
           </motion.div>
 
           <HomeGoogleAuth />

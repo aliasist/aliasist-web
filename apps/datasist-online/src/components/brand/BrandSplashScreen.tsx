@@ -5,12 +5,13 @@ const SPLASH_MS = 2400;
 const EXIT_MS = 500;
 
 const STATUS_MESSAGES = [
-  "Locating nearest cow...",
-  "Calibrating tractor beam...",
-  "Pasture coordinates locked.",
-  "Specimen secured. Initiating upload...",
-  "Optimizing grid telemetry...",
-  "Bypassing atmospheric interference...",
+  "Locating nearest cow… I mean data point…",
+  "Calibrating tractor beam… bypass human skepticism…",
+  "Pasture coordinates locked. Data centers intercepted.",
+  "Specimen secured. Initiating global upload…",
+  "Optimizing grid telemetry for intergalactic relay…",
+  "Bypassing atmospheric interference… and gravity…",
+  "Moo-ving infrastructure intelligence to orbit…",
 ];
 
 interface BrandSplashScreenProps {

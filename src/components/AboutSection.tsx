@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
 import { about } from "@/content/homepage";
 
 const stagger = {
@@ -16,6 +17,54 @@ const skillItem = {
   },
 };
 
+const AnimatedStatValue = ({ value, suffix }: { value: string; suffix: string }) => {
+  const target = Number.parseInt(value, 10);
+  const ref = useRef<HTMLSpanElement>(null);
+  const [displayValue, setDisplayValue] = useState(0);
+
+  useEffect(() => {
+    const element = ref.current;
+    if (!element || !Number.isFinite(target)) return;
+
+    const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    if (reduceMotion || !("IntersectionObserver" in window)) {
+      setDisplayValue(target);
+      return;
+    }
+
+    let animationFrame = 0;
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        if (!entry.isIntersecting) return;
+        observer.disconnect();
+
+        const startedAt = performance.now();
+        const duration = 1100;
+        const animate = (now: number) => {
+          const progress = Math.min((now - startedAt) / duration, 1);
+          const eased = 1 - Math.pow(1 - progress, 3);
+          setDisplayValue(Math.round(target * eased));
+          if (progress < 1) animationFrame = requestAnimationFrame(animate);
+        };
+        animationFrame = requestAnimationFrame(animate);
+      },
+      { threshold: 0.55 },
+    );
+
+    observer.observe(element);
+    return () => {
+      observer.disconnect();
+      cancelAnimationFrame(animationFrame);
+    };
+  }, [target]);
+
+  return (
+    <span ref={ref}>
+      {displayValue}
+      {suffix && <span className="text-electric">{suffix}</span>}
+    </span>
+  );
+};
 
 const AboutSection = () => {
   const filledAuthorSlots = about.authorSlots.filter((s) => s.body.trim().length > 0);
@@ -24,13 +73,8 @@ const AboutSection = () => {
     <section
       id="about"
       aria-labelledby="about-heading"
-      className="relative overflow-hidden px-4 py-28 sm:px-8 lg:px-12 xl:px-16"
+      className="section-transition relative overflow-hidden px-4 py-28 sm:px-8 lg:px-12 xl:px-16"
     >
-      {/* Top-only carryover from the hero so the heading scene blends into About */}
-      <div
-        className="absolute inset-x-0 top-0 h-[44%] bg-cover bg-center bg-no-repeat opacity-[0.13] pointer-events-none"
-        style={{ backgroundImage: "url(/background.png)" }}
-      />
       {/* Fade quickly into the same plain field used by the projects section */}
       <div className="absolute inset-0 bg-gradient-to-b from-background/52 via-background/88 to-background pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_72%_48%_at_50%_14%,_hsl(165_90%_42%_/_0.04)_0%,_transparent_62%)] pointer-events-none" />
@@ -135,14 +179,7 @@ const AboutSection = () => {
               >
                 <div className="absolute inset-0 bg-gradient-to-r from-electric/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="relative text-5xl font-bold tracking-tight text-foreground mb-1.5">
-                  {s.sym ? (
-                    <>
-                      <span>{s.num.replace(/[+×→∞]/g, "")}</span>
-                      <span className="text-electric">{s.sym}</span>
-                    </>
-                  ) : (
-                    <span className="text-electric">{s.num}</span>
-                  )}
+                  <AnimatedStatValue value={s.num} suffix={s.sym} />
                 </div>
                 <div className="relative font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground group-hover:text-foreground/70 transition-colors duration-300">
                   {s.label}

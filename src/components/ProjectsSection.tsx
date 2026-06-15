@@ -1,4 +1,5 @@
 import { motion } from "framer-motion";
+import { useState } from "react";
 import { playHover, playClick } from "@/hooks/useSound";
 import {
   projects,
@@ -13,6 +14,8 @@ import { MagicGlow } from "./MagicGlow";
 // Per-card component
 const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }) => {
   const headingId = `project-heading-${index}`;
+  const [imageLoaded, setImageLoaded] = useState(false);
+
   return (
     <motion.article
       key={project.name}
@@ -27,15 +30,25 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
       <MagicGlow className="absolute inset-0 pointer-events-none" glowOpacity={0.08} />
       {project.banner ? (
         <div className="relative w-full sm:w-[42%] sm:max-w-md shrink-0 aspect-[16/10] sm:aspect-auto sm:min-h-[260px] border-b sm:border-b-0 sm:border-r border-border/40 overflow-hidden">
+          <div
+            className={`project-image-skeleton absolute inset-0 transition-opacity duration-500 ${
+              imageLoaded ? "opacity-0" : "opacity-100"
+            }`}
+            aria-hidden
+          />
           <img
             src={project.banner}
             alt={`${project.name} preview`}
-            className="absolute inset-0 size-full object-cover transition-transform duration-700 group-hover:scale-105"
+            className={`project-card-image absolute inset-0 size-full object-cover transition-[opacity,transform] duration-700 ${
+              imageLoaded ? "opacity-100" : "opacity-0"
+            } group-hover:scale-105`}
             loading={index === 0 ? "eager" : "lazy"}
             decoding="async"
+            onLoad={() => setImageLoaded(true)}
+            onError={() => setImageLoaded(true)}
           />
           {/* Shimmer sheen on hover */}
-          <div className="absolute inset-0 -translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" />
+          <div className="project-card-shimmer absolute inset-0 -translate-x-full group-hover:animate-shimmer bg-gradient-to-r from-transparent via-white/5 to-transparent pointer-events-none" />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-card/25 via-transparent to-transparent sm:bg-gradient-to-r sm:from-transparent sm:via-card/30 sm:to-card" />
         </div>
       ) : null}
@@ -45,7 +58,7 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
         <div className="absolute top-0 left-0 right-0 h-px bg-electric/0 group-hover:bg-electric/50 transition-colors duration-300" />
 
         {/* Background icon */}
-        <div className="absolute top-8 right-8 sm:right-10 text-7xl opacity-[0.07] select-none group-hover:opacity-[0.12] transition-opacity duration-500 pointer-events-none">
+        <div className="absolute right-8 top-8 select-none font-mono text-5xl font-semibold tracking-[-0.08em] text-electric opacity-[0.06] transition-opacity duration-500 pointer-events-none group-hover:opacity-[0.11] sm:right-10">
           {project.icon}
         </div>
 
@@ -121,7 +134,7 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
 
 const ProjectsSection = () => {
   return (
-    <section id="projects" className="px-4 py-28 sm:px-8 lg:px-12 xl:px-16">
+    <section id="projects" className="section-transition px-4 py-28 sm:px-8 lg:px-12 xl:px-16">
       <div className="mx-auto w-full max-w-site">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -175,7 +188,7 @@ const ProjectsSection = () => {
                 </div>
                 <div>
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-electric/60 mb-3">
-                    ▓▓▓ CLASSIFIED ▓▓▓
+                    In development
                   </p>
                   <p className="font-mono text-sm font-bold text-foreground/50 tracking-tight mb-2">
                     {item.codename}
@@ -187,7 +200,7 @@ const ProjectsSection = () => {
                 <div className="flex items-center gap-2 mt-6">
                   <span className="w-1.5 h-1.5 rounded-full bg-electric/40 animate-pulse" />
                   <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/50">
-                    ETA: {item.eta}
+                    {item.eta}
                   </span>
                 </div>
               </motion.div>

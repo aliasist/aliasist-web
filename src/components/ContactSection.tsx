@@ -70,7 +70,7 @@ const ContactSection = () => {
     "w-full bg-background/[0.14] border border-background/30 text-background placeholder:text-background/55 font-[family-name:var(--font-heading)] text-base md:text-sm font-medium leading-normal px-4 py-3 rounded-sm antialiased caret-electric shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] focus:outline-none focus-visible:border-electric focus-visible:bg-background/[0.18] focus-visible:shadow-electric-xs focus-visible:placeholder:text-background/40 focus-visible:ring-2 focus-visible:ring-electric/45 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground transition-all duration-200";
 
   return (
-    <section id="contact" aria-labelledby="contact-heading" className="relative overflow-hidden bg-foreground px-4 py-28 text-background sm:px-8 lg:px-12 xl:px-16">
+    <section id="contact" aria-labelledby="contact-heading" className="section-transition relative overflow-hidden bg-foreground px-4 py-28 text-background sm:px-8 lg:px-12 xl:px-16">
       {/* Street banner background */}
       <div
         className="absolute inset-0 bg-cover bg-center opacity-[0.12] mix-blend-screen pointer-events-none"
@@ -260,7 +260,9 @@ const ContactSection = () => {
                     className="tap-target group flex items-center justify-between px-6 py-5 bg-background/5 border border-background/10 outline-none transition-all duration-300 hover:bg-electric/10 hover:border-electric/30 hover:shadow-electric-xs focus-visible:z-10 focus-visible:border-electric/40 focus-visible:bg-electric/10 focus-visible:shadow-electric-xs focus-visible:ring-2 focus-visible:ring-white/45 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
                   >
                     <div className="flex items-center gap-4">
-                      <span className="text-2xl">{app.icon}</span>
+                      <span className="flex size-10 shrink-0 items-center justify-center rounded-md border border-electric/25 bg-electric/[0.08] font-mono text-[11px] font-semibold tracking-tight text-electric">
+                        {app.icon}
+                      </span>
                       <div>
                         <p className="font-mono text-sm font-semibold text-background/80 group-hover:text-electric transition-colors">
                           {app.label}
@@ -272,8 +274,8 @@ const ContactSection = () => {
                     </div>
                     <div className="flex items-center gap-2">
                       <span className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.1em] text-electric/60">
-                        <span className="w-1.5 h-1.5 rounded-full bg-electric animate-pulse" />
-                        {contact.liveBadge}
+                        <span className="w-1.5 h-1.5 rounded-full bg-electric" />
+                        {app.status}
                       </span>
                       <span className="opacity-20 group-hover:opacity-100 group-hover:text-electric text-background transition-all font-mono">↗</span>
                     </div>

@@ -1,7 +1,7 @@
 import { useAuth, useUser } from "@clerk/react";
 import { useCallback, useEffect, useState } from "react";
 import { motion } from "framer-motion";
-import { FileText, Image, RefreshCw, ShieldCheck, Send, Bot, Settings2, Zap, Target, AlertTriangle, Globe, Brain, Wrench, Users, Star, Database, Palette, Flag, Radio, Lock, Play, Pause, BookOpen, Clock, Eye } from "lucide-react";
+import { FileText, Image as ImageIcon, RefreshCw, ShieldCheck, Send, Bot, Settings2, Zap, Target, AlertTriangle, Globe, Brain, Wrench, Users, Star, Database, Palette, Flag, Radio, Lock, Play, Pause, BookOpen, Clock, Eye } from "lucide-react";
 import { ALIEN_LORE, type TimelineEvent } from "@/content/alienLore";
 import Navbar from "@/components/Navbar";
 import { readJsonBody } from "@/config/api";
@@ -236,7 +236,7 @@ function ReportThumbnail({ report, size = "small" }: { report: ClearasistReport;
 
   return (
     <span className={`${frame} flex shrink-0 items-center justify-center border border-border bg-background/55 text-muted-foreground`}>
-      {report.file_type === "image" ? <Image className="size-4" /> : <FileText className="size-4" />}
+      {report.file_type === "image" ? <ImageIcon className="size-4" /> : <FileText className="size-4" />}
     </span>
   );
 }

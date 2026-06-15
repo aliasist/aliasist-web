@@ -7,9 +7,12 @@ const BG_IMAGES = [
   "/bg/ufo-04.png",
 ] as const;
 
-function readReducedMotion(): boolean {
+function readMotionConstrained(): boolean {
   if (typeof window === "undefined") return false;
-  return window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  return (
+    window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+    window.matchMedia("(hover: none), (pointer: coarse)").matches
+  );
 }
 
 function pickNextIndex(current: number, count: number): number {
@@ -21,7 +24,7 @@ function pickNextIndex(current: number, count: number): number {
 
 export default function BackgroundRotator() {
   const images = useMemo(() => [...BG_IMAGES], []);
-  const [reducedMotion] = useState(readReducedMotion);
+  const [motionConstrained] = useState(readMotionConstrained);
   const [active, setActive] = useState(() => Math.floor(Math.random() * images.length));
   const [next, setNext] = useState(() => pickNextIndex(active, images.length));
   const [showNext, setShowNext] = useState(false);
@@ -30,16 +33,17 @@ export default function BackgroundRotator() {
   const cycleRef = useRef(0);
 
   useEffect(() => {
+    if (motionConstrained) return;
     // Preload to reduce flashes on first swap.
     for (const src of images) {
       const img = new Image();
       img.decoding = "async";
       img.src = src;
     }
-  }, [images]);
+  }, [images, motionConstrained]);
 
   useEffect(() => {
-    if (reducedMotion) return;
+    if (motionConstrained) return;
 
     const schedule = () => {
       const cycle = ++cycleRef.current;
@@ -65,7 +69,7 @@ export default function BackgroundRotator() {
       cycleRef.current++;
       if (timerRef.current) window.clearTimeout(timerRef.current);
     };
-  }, [active, images.length, reducedMotion]);
+  }, [active, images.length, motionConstrained]);
 
   return (
     <div className="bg-rotator" aria-hidden>
@@ -80,4 +84,3 @@ export default function BackgroundRotator() {
     </div>
   );
 }
-

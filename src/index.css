@@ -637,6 +637,32 @@ section {
   position: relative;
 }
 
+.section-transition::before {
+  content: '';
+  position: absolute;
+  inset: 0 0 auto;
+  z-index: 4;
+  height: clamp(2.5rem, 7vw, 5rem);
+  pointer-events: none;
+  background:
+    linear-gradient(180deg, hsl(var(--background) / 0.72), transparent 78%),
+    linear-gradient(90deg, transparent 8%, hsl(var(--electric) / 0.22) 50%, transparent 92%) top / 100% 1px no-repeat;
+  mask-image: linear-gradient(to bottom, black, transparent);
+}
+
+.project-image-skeleton {
+  background:
+    linear-gradient(110deg, transparent 30%, hsl(var(--electric) / 0.09) 45%, transparent 60%),
+    linear-gradient(135deg, hsl(var(--card)), hsl(var(--muted)));
+  background-size: 220% 100%, 100% 100%;
+  animation: project-image-loading 1.6s ease-in-out infinite;
+}
+
+@keyframes project-image-loading {
+  from { background-position: 150% 0, 0 0; }
+  to { background-position: -70% 0, 0 0; }
+}
+
 /* Hash links + fixed nav (height + notch): section titles stay visible on iOS/Android */
 #main-content > section[id] {
   scroll-margin-top: calc(4.5rem + env(safe-area-inset-top, 0px));
@@ -760,6 +786,33 @@ button, a[class*="rounded"] {
   #contact {
     padding-top: clamp(3.5rem, 10vw, 4.5rem);
     padding-bottom: clamp(3.5rem, 10vw, 4.5rem);
+  }
+}
+
+@media (hover: none), (pointer: coarse) {
+  body::before,
+  .hero-bg-photo,
+  .project-image-skeleton {
+    animation: none !important;
+  }
+
+  .bg-rotator__layer {
+    transition: none;
+    transform: none;
+  }
+
+  .project-card-image {
+    transform: none !important;
+    transition-duration: 300ms;
+  }
+
+  .project-card-shimmer {
+    display: none;
+  }
+
+  .project-card-shell,
+  .project-card-shell * {
+    transition-duration: 150ms;
   }
 }
 

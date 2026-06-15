@@ -2,7 +2,6 @@ import React, { useRef, useState, useEffect } from "react";
 import { cn } from "@/lib/utils";
 
 interface MagicGlowProps extends React.HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
   glowColor?: string;
   glowSize?: number;
   glowOpacity?: number;
@@ -22,9 +21,18 @@ export const MagicGlow = ({
 }: MagicGlowProps) => {
   const containerRef = useRef<HTMLDivElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const [canHover, setCanHover] = useState(false);
+
+  useEffect(() => {
+    const query = window.matchMedia("(hover: hover) and (pointer: fine)");
+    const update = () => setCanHover(query.matches);
+    update();
+    query.addEventListener("change", update);
+    return () => query.removeEventListener("change", update);
+  }, []);
 
   const handleMouseMove = (e: React.MouseEvent<HTMLDivElement>) => {
-    if (!containerRef.current) return;
+    if (!canHover || !containerRef.current) return;
     const rect = containerRef.current.getBoundingClientRect();
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
@@ -36,7 +44,7 @@ export const MagicGlow = ({
     <div
       ref={containerRef}
       onMouseMove={handleMouseMove}
-      onMouseEnter={() => setIsHovered(true)}
+      onMouseEnter={() => canHover && setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
       className={cn("relative overflow-hidden group/magic-glow", className)}
       {...props}
@@ -44,7 +52,7 @@ export const MagicGlow = ({
       <div
         className="pointer-events-none absolute inset-0 z-10 transition-opacity duration-300"
         style={{
-          opacity: isHovered ? 1 : 0,
+          opacity: canHover && isHovered ? 1 : 0,
           background: `radial-gradient(${glowSize}px circle at var(--mouse-x) var(--mouse-y), ${glowColor}${Math.round(glowOpacity * 255).toString(16).padStart(2, '0')}, transparent 80%)`,
         }}
       />

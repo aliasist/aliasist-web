@@ -39,7 +39,8 @@ function devSpaFallbackPlugin() {
           pathname.startsWith("/@") ||
           pathname.startsWith("/src/") ||
           pathname.startsWith("/node_modules/") ||
-          pathname.startsWith("/atomicity/");
+          pathname.startsWith("/atomicity/") ||
+          pathname.startsWith("/nexus/");
 
         if (pathname === "/" || isAssetRequest) {
           next();

@@ -19,7 +19,6 @@
  */
 
 import dataBanner from "@images/datasist_banner_cinematic.png";
-import audiosistBanner from "@images/cinematic-suite/audiosist-cinematic-audio-intelligence-hero.png";
 import ecosistBanner from "@images/ecosist_banner_tornado.png";
 import filesAbductorBanner from "@images/files_abductor_banner_cinematic.png";
 import pulseBanner from "@images/pulsesist_banner_cinematic.png";
@@ -28,20 +27,21 @@ import spaceBanner from "@images/spacesist_banner_cinematic.png";
 // ── Hero ─────────────────────────────────────────────────────────────────────
 
 export const hero = {
-  statusBadge: "Aliasist · AI Tools",
+  statusBadge: "Aliasist · Technology Company",
   mascotLabel: "aliasist",
   mascotAlt: "Aliasist",
   mascotTitle: "Aliasist",
-  eyeline: "AI tools // developer portfolio // projects",
+  eyeline: "Intelligent systems · practical software",
   wordmark: "A L I A S I S T",
-  tagline: "Practical AI tools and software builds.",
+  tagline: "Software built for clarity, speed, and scale.",
   subcopy:
-    "I'm Blake. I build useful AI tools and software that solves real problems. The projects below show the work.",
-  ctaWork: "About",
-  ctaWorkHref: "#about",
-  ctaContact: "Projects",
-  ctaContactHref: "#projects",
-  statusRow: ["AI Tools", "Developer Portfolio", "Projects"] as const,
+    "Aliasist develops focused software products that turn complex data and workflows into useful, dependable systems.",
+  ctaWork: "Explore products",
+  ctaWorkHref: "#projects",
+  ctaContact: "About Aliasist",
+  ctaContactHref: "#about",
+  trustSignals: ["Secure by design", "Privacy conscious", "Built on modern cloud infrastructure"] as const,
+  statusRow: ["AI Systems", "Data Intelligence", "Operational Software"] as const,
 } as const;
 
 // ── Navbar ───────────────────────────────────────────────────────────────────
@@ -55,40 +55,46 @@ export const pageNavLinks = [
 /** Used by Navbar “Suite” menu and Contact section suite list — keep in sync. */
 export const suiteApps = [
   {
+    label: "Nexus",
+    sub: "Live planetary intelligence console",
+    href: "/nexus/",
+    icon: "⌘",
+    status: "Live",
+  },
+  {
     label: "DataSist",
     sub: "Data center intelligence",
     href: "https://datasist-frontend.pages.dev",
-    icon: "🧠🏢",
+    icon: "DS",
+    status: "Live",
   },
   {
     label: "SpaceSist",
     sub: "Orbital mission tools",
     href: "https://space.aliasist.com",
-    icon: "🌌🛰️",
+    icon: "SS",
+    status: "Live",
   },
   {
     label: "PulseSist",
     sub: "Stock Market Dashboard",
     href: "https://pulse.aliasist.com",
-    icon: "📈🤖",
+    icon: "PS",
+    status: "Live",
   },
   {
     label: "EcoSist",
     sub: "Under construction · Partially finished",
     href: "https://ecosist.aliasist.com",
-    icon: "🌱🛠️",
+    icon: "ES",
+    status: "In development",
   },
   {
     label: "Aliasist Files Abductor",
     sub: "File automation and downloads",
     href: "https://github.com/aliasist/aliasistabductor/releases/tag/%23v2.7.0",
-    icon: "🛸📦",
-  },
-  {
-    label: "Audiosist",
-    sub: "Cinematic audio intelligence",
-    href: "https://audiosist.online",
-    icon: "🎧🌌",
+    icon: "FA",
+    status: "Available",
   },
 ] as const;
 
@@ -120,9 +126,9 @@ const downloadLinks = {
 };
 
 export const projectsSection = {
-  dividerLabel: "Projects // Proof of work",
-  headline: "Built projects, not ideas.",
-  subcopy: "These are side projects and live tools that show how I think, design, and ship.",
+  dividerLabel: "Products",
+  headline: "Focused software for real-world work.",
+  subcopy: "A growing portfolio of live products across data intelligence, markets, infrastructure, and automation.",
 } as const;
 
 export const projects = [
@@ -134,7 +140,7 @@ export const projects = [
     github: "https://github.com/aliasist/datasist",
     downloads: [],
     status: "Live",
-    icon: "🧠🏢",
+    icon: "DS",
     link: "https://datasist-frontend.pages.dev",
     linkLabel: "Open DataSist →",
     banner: dataBanner,
@@ -147,7 +153,7 @@ export const projects = [
     github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
-    icon: "🌌🛰️👽",
+    icon: "SS",
     link: "https://space.aliasist.com",
     linkLabel: "Open SpaceSist →",
     banner: spaceBanner,
@@ -160,7 +166,7 @@ export const projects = [
     github: "https://github.com/aliasist/stockmarket",
     downloads: [],
     status: "Live",
-    icon: "📈🤖⚡",
+    icon: "PS",
     link: "https://pulse.aliasist.com",
     linkLabel: "Open PulseSist →",
     banner: pulseBanner,
@@ -177,7 +183,7 @@ export const projects = [
       { label: "Windows", href: downloadLinks.windowsExe },
     ],
     status: "Live",
-    icon: "🛸",
+    icon: "FA",
     link: null as string | null,
     linkLabel: null as string | null,
     banner: filesAbductorBanner,
@@ -197,31 +203,18 @@ export const projects = [
     github: "https://github.com/aliasist/ecosist",
     downloads: [],
     status: "Under Construction",
-    icon: "🌱",
+    icon: "ES",
     link: "https://ecosist.aliasist.com",
     linkLabel: "Open EcoSist →",
     banner: ecosistBanner,
-  },
-  {
-    name: "Audiosist",
-    description:
-      "An epic cinematic audio intelligence scene for signal analysis, waveform motion, and futuristic sound design.",
-    tech: ["Audio Intelligence", "Cinematic UI", "Signal Analysis", "Waveforms"],
-    github: "https://audiosist.online",
-    downloads: [],
-    status: "Live",
-    icon: "🎧🌌",
-    link: "https://audiosist.online",
-    linkLabel: "Open Audiosist →",
-    banner: audiosistBanner,
   },
 ] as const;
 
 export const comingSoonProjects = [
   {
-    codename: "PROJECT Nightfall",
-    description: "Signal intercepted. Classification level: Eyes only. Details redacted pending operational clearance.",
-    eta: "ETA: 2027",
+    codename: "Next product",
+    description: "A new Aliasist product is in research and development.",
+    eta: "Planned for 2027",
   },
 ] as const;
 
@@ -236,10 +229,10 @@ export type ProjectCard = (typeof projects)[number];
 // for engineering portfolios; alternatives if you ever switch: IBM Plex Sans, DM Sans.
 //
 export const about = {
-  dividerLabel: "About",
-  headline: "Meet Aliasist.",
-  pathBadge: "Path · Cybersecurity × tools",
-  skillsLabel: "// skill_set_learning",
+  dividerLabel: "Company",
+  headline: "Technology should create leverage.",
+  pathBadge: "Independent technology company",
+  skillsLabel: "Core capabilities",
   skills: [
     "Python",
     "JavaScript",
@@ -257,7 +250,7 @@ export const about = {
   bioBlocks: [
     {
       kicker: "Where I started",
-      body: "I coded my first website in 2004, it was for my Age of Empires clan, oXiDe and it started from dabbling in making banners/forum signatures. Fast-forward to today, and I'm a self-taught developer building practical web tools, AI-assisted workflows, and data-driven applications through Aliasist. I'm providing a way to organize and make sense of all the data out there.",
+      body: "Aliasist is an independent technology company founded by Blake Hooper. It builds practical web products, AI-assisted workflows, and data-driven applications designed to make complex information easier to understand and act on.",
     },
   ] as const,
 
@@ -266,39 +259,38 @@ export const about = {
   authorSlots: [] as unknown as readonly { kicker: string; body: string }[],
 
   stats: [
-    { num: "6",  label: "Live apps deployed", sym: "+" as const },
+    { num: "6",  label: "Products and platforms", sym: "" as const },
     { num: "7",  label: "External APIs integrated", sym: "+" as const },
     { num: "3",  label: "Years building in public", sym: "" as const },
-    { num: "100", label: "Open source · github.com/aliasist", sym: "%" as const },
+    { num: "5", label: "Technology categories", sym: "" as const },
   ],
 } as const;
 
 // ── Contact ─────────────────────────────────────────────────────────────────
 
 export const contact = {
-  dividerLabel: "Channel Open // Contact",
-  signalLabel: "Welcome, Earthling.",
-  headline: "Make contact.",
-  introStrong: "Open to collaborations, internships, and project work.",
-  introRest: "Creating tools for users.",
-  successTitle: "Transmission received",
+  dividerLabel: "Contact",
+  signalLabel: "Business inquiries",
+  headline: "Start a conversation.",
+  introStrong: "Open to strategic partnerships, product opportunities, and selected project work.",
+  introRest: "Tell us what you are building.",
+  successTitle: "Message received",
   successBody:
-    "Message logged. Responses prioritized by technical complexity and project alignment.",
-  sendAnother: "Send another ↩",
+    "Thank you. Your message has been received and will be reviewed.",
+  sendAnother: "Send another message",
   placeholders: {
     name: "Name",
     email: "Email",
     message: "Message — what are you working on?",
   },
   submitIdle: "Send message ↗",
-  submitSending: "// transmitting...",
-  errorPrefix: "// error:",
-  errorFallback: "transmission failed — try dev@aliasist.com",
-  suiteColumnLabel: "// The Aliasist Suite",
-  liveBadge: "Live",
+  submitSending: "Sending...",
+  errorPrefix: "Error:",
+  errorFallback: "Message failed. Email dev@aliasist.com directly.",
+  suiteColumnLabel: "Aliasist products",
   suiteStats: [
-    { n: "6", l: "Live Apps" },
-    { n: "7+", l: "APIs" },
+    { n: "6", l: "Products" },
+    { n: "7+", l: "Integrations" },
     { n: "340+", l: "Data Centers" },
   ],
   directLinks: [
@@ -315,10 +307,10 @@ export const contact = {
 // ── Transmissions (blog) section headers ─────────────────────────────────────
 
 export const transmissions = {
-  dividerLabel: "Blog",
-  headline: "Tech is moving fast.",
-  scanning: "// scanning frequencies...",
-  offline: "// live feed offline — showing archive",
-  liveFeedPrefix: "// live feed · updated ",
+  dividerLabel: "Insights",
+  headline: "Research, technology, and market intelligence.",
+  scanning: "Loading latest updates...",
+  offline: "Live feed unavailable · showing archive",
+  liveFeedPrefix: "Live feed · updated ",
   liveFeedRecent: "recently",
 } as const;

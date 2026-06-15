@@ -70,8 +70,7 @@ const SuiteDropdown = () => {
                 Aliasist Suite
               </span>
               <span className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.1em] text-electric/60">
-                <span className="w-1 h-1 rounded-full bg-electric animate-pulse shadow-electric-dot" />
-                {suiteApps.length} Live
+                {suiteApps.length} Products
               </span>
             </div>
 
@@ -79,8 +78,8 @@ const SuiteDropdown = () => {
               <motion.a
                 key={app.label}
                 href={app.href}
-                target="_blank"
-                rel="noopener noreferrer"
+                target={app.href.startsWith("http") ? "_blank" : undefined}
+                rel={app.href.startsWith("http") ? "noopener noreferrer" : undefined}
                 onClick={() => { playClick(); setOpen(false); }}
                 onMouseEnter={() => playHover()}
                 initial={{ opacity: 0, x: -8 }}
@@ -89,7 +88,9 @@ const SuiteDropdown = () => {
                 className="group relative flex items-center gap-3 border-b border-border/30 px-4 py-3 transition-colors duration-300 last:border-0 hover:bg-[linear-gradient(90deg,hsl(165_90%_42%_/_0.06)_0%,transparent_100%)] outline-none focus-visible:z-10 focus-visible:bg-[linear-gradient(90deg,hsl(165_90%_42%_/_0.12)_0%,transparent_100%)] focus-visible:ring-2 focus-visible:ring-electric/60 focus-visible:ring-inset"
               >
                 <span className="absolute left-0 top-1/2 h-0 w-[3px] -translate-y-1/2 rounded-full bg-electric opacity-0 shadow-electric-accent-line transition-all duration-300 group-hover:h-[60%] group-hover:opacity-100" aria-hidden />
-                <span className="text-xl leading-none transition-transform duration-300 group-hover:scale-110">{app.icon}</span>
+                <span className="flex size-8 shrink-0 items-center justify-center rounded-md border border-electric/20 bg-electric/[0.06] font-mono text-[10px] font-semibold tracking-tight text-electric transition-colors duration-300 group-hover:border-electric/40 group-hover:bg-electric/10">
+                  {app.icon}
+                </span>
                 <div className="flex-1 min-w-0">
                   <p className="font-mono text-xs font-semibold text-foreground transition-colors duration-300 group-hover:text-electric">
                     {app.label}
@@ -248,7 +249,7 @@ const Navbar = () => {
   const [scrolled, setScrolled]         = useState(false);
   const [mobileOpen, setMobileOpen]     = useState(false);
   const [isDark, setIsDark]             = useState(true);
-  const [soundOn, setSoundOn]           = useState(true);
+  const [soundOn, setSoundOn]           = useState(false);
   const [activeSection, setActiveSection] = useState("");
   const [easterEggOpen, setEasterEggOpen] = useState(false);
 
@@ -294,7 +295,7 @@ const Navbar = () => {
   useEffect(() => {
     try {
       const stored = localStorage.getItem("aliasist-sound");
-      const on = stored ? stored === "on" : true;
+      const on = stored ? stored === "on" : false;
       setSoundOn(on);
       setEnabled(on);
     } catch {
@@ -524,8 +525,8 @@ const Navbar = () => {
                 <a
                   key={app.label}
                   href={app.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  target={app.href.startsWith("http") ? "_blank" : undefined}
+                  rel={app.href.startsWith("http") ? "noopener noreferrer" : undefined}
                   onClick={() => { playClick(); setMobileOpen(false); }}
                   className="group -mx-1 flex h-12 items-center gap-3 rounded-lg px-3 text-xs font-mono uppercase tracking-[0.15em] text-muted-foreground transition-all duration-300 hover:bg-electric/[0.06] hover:text-electric hover:shadow-[inset_3px_0_0_hsl(165_90%_42%_/_0.5)] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >

@@ -20,13 +20,12 @@ const Starfield = () => {
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d")!;
+    const motionConstrained =
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches ||
+      window.matchMedia("(hover: none), (pointer: coarse)").matches;
 
-    const resize = () => {
-      canvas.width = window.innerWidth;
-      canvas.height = window.innerHeight;
-    };
-    resize();
-    window.addEventListener("resize", resize);
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
 
     // Seed stars
     starsRef.current = Array.from({ length: NUM_STARS }, () => ({
@@ -56,8 +55,16 @@ const Starfield = () => {
         ctx.fill();
       }
 
-      frameRef.current = requestAnimationFrame(draw);
+      if (!motionConstrained) frameRef.current = requestAnimationFrame(draw);
     };
+
+    const resize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      if (motionConstrained) draw();
+    };
+
+    window.addEventListener("resize", resize);
     draw();
 
     return () => {

@@ -218,7 +218,7 @@ const TransmissionsSection = () => {
     <section
       id="transmissions"
       aria-labelledby="transmissions-heading"
-      className="relative overflow-hidden px-4 py-28 sm:px-8 lg:px-12 xl:px-16"
+      className="section-transition relative overflow-hidden px-4 py-28 sm:px-8 lg:px-12 xl:px-16"
     >
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/[0.04] to-transparent pointer-events-none" />
       <div className="mx-auto w-full max-w-site">
