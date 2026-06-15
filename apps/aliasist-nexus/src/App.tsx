@@ -175,7 +175,20 @@ function NexusOverview({ signals }: { signals: ReturnType<typeof useLiveSignals>
   return (
     <>
       <PanelTitle eyebrow="Central core" title="NEXUS // 01" />
-      <Suspense fallback={<div className="absolute inset-0 grid place-items-center text-[9px] uppercase tracking-[0.3em] text-emerald-300/35">Initializing core...</div>}>
+      <Suspense fallback={
+        <div className="absolute inset-0 grid place-items-center">
+          <div className="flex flex-col items-center gap-4">
+            <div className="relative size-32">
+               <div className="absolute inset-0 rounded-full border border-emerald-500/10 animate-[ping_3s_infinite]" />
+               <div className="absolute inset-4 rounded-full border border-emerald-500/20 animate-[ping_2s_infinite]" />
+               <div className="absolute inset-8 rounded-full border border-emerald-500/30 animate-[spin_4s_linear_infinite] border-t-transparent" />
+            </div>
+            <div className="text-[9px] uppercase tracking-[0.4em] text-emerald-300/40 animate-pulse">
+              Initializing core...
+            </div>
+          </div>
+        </div>
+      }>
         <NexusCore active />
       </Suspense>
       <div className="absolute bottom-5 right-5 z-10 max-w-[250px] text-right">

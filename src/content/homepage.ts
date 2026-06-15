@@ -21,6 +21,7 @@
 import dataBanner from "@images/datasist_banner_cinematic.png";
 import ecosistBanner from "@images/ecosist_banner_tornado.png";
 import filesAbductorBanner from "@images/files_abductor_banner_cinematic.png";
+import nexusBanner from "@images/aliasist_banner_command.png";
 import pulseBanner from "@images/pulsesist_banner_cinematic.png";
 import spaceBanner from "@images/spacesist_banner_cinematic.png";
 
@@ -132,6 +133,19 @@ export const projectsSection = {
 } as const;
 
 export const projects = [
+  {
+    name: "Nexus",
+    description:
+      "A live planetary intelligence console aggregating seismic and space weather signals into a unified dashboard.",
+    tech: ["React", "Vite", "Three.js", "USGS API", "NOAA API", "Cloudflare"],
+    github: "https://github.com/aliasist/aliasistabductor",
+    downloads: [],
+    status: "Live",
+    icon: "NX",
+    link: "/nexus/",
+    linkLabel: "Open Nexus →",
+    banner: nexusBanner,
+  },
   {
     name: "DataSist",
     description:
