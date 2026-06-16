@@ -21,7 +21,9 @@
 import dataBanner from "@images/datasist_banner_cinematic.png";
 import ecosistBanner from "@images/ecosist_banner_tornado.png";
 import filesAbductorBanner from "@images/files_abductor_banner_cinematic.png";
+import audiosistBanner from "@images/cinematic-suite/audiosist-cinematic-audio-intelligence-hero.png";
 import nexusBanner from "@images/aliasist_banner_command.png";
+import clearasistBanner from "@/assets/admin/clearasist-shield.jpg";
 import pulseBanner from "@images/pulsesist_banner_cinematic.png";
 import spaceBanner from "@images/spacesist_banner_cinematic.png";
 
@@ -63,6 +65,13 @@ export const suiteApps = [
     status: "Live",
   },
   {
+    label: "Clearasist",
+    sub: "Privacy-first metadata stripper",
+    href: "https://clearasist.pages.dev",
+    icon: "🛡️",
+    status: "Live",
+  },
+  {
     label: "DataSist",
     sub: "Data center intelligence",
     href: "https://datasist-frontend.pages.dev",
@@ -85,10 +94,17 @@ export const suiteApps = [
   },
   {
     label: "EcoSist",
-    sub: "Under construction · Partially finished",
+    sub: "Environmental intelligence dashboard",
     href: "https://ecosist.aliasist.com",
     icon: "ES",
-    status: "In development",
+    status: "Live",
+  },
+  {
+    label: "Audiosist",
+    sub: "AI-assisted voice and music training",
+    href: "https://play.google.com/store/apps/details?id=com.aliasist.audiosist",
+    icon: "🎵",
+    status: "Available",
   },
   {
     label: "Aliasist Files Abductor",
@@ -147,6 +163,19 @@ export const projects = [
     banner: nexusBanner,
   },
   {
+    name: "Clearasist",
+    description:
+      "A privacy-focused metadata stripping tool for images, PDFs, and Office documents. All processing happens entirely in the browser.",
+    tech: ["React", "TypeScript", "Tailwind", "pdf-lib", "ExifReader"],
+    github: "https://github.com/aliasist/aliasistabductor",
+    downloads: [],
+    status: "Live",
+    icon: "🛡️",
+    link: "https://clearasist.pages.dev",
+    linkLabel: "Open Clearasist →",
+    banner: clearasistBanner,
+  },
+  {
     name: "DataSist",
     description:
       "A live data center intelligence platform with facility intelligence, environmental context, and AI-assisted analysis.",
@@ -171,6 +200,21 @@ export const projects = [
     link: "https://space.aliasist.com",
     linkLabel: "Open SpaceSist →",
     banner: spaceBanner,
+  },
+  {
+    name: "Audiosist",
+    description:
+      "A mobile voice and music training studio with real-time pitch detection, note matching, and instrument tuning.",
+    tech: ["Capacitor", "React", "TypeScript", "Web Audio API", "Android"],
+    github: "https://github.com/aliasist/audiosist",
+    downloads: [
+      { label: "Google Play", href: "https://play.google.com/store/apps/details?id=com.aliasist.audiosist" },
+    ],
+    status: "Live",
+    icon: "🎵",
+    link: "https://play.google.com/store/apps/details?id=com.aliasist.audiosist",
+    linkLabel: "View on Play Store →",
+    banner: audiosistBanner,
   },
   {
     name: "PulseSist",
@@ -205,7 +249,7 @@ export const projects = [
   {
     name: "EcoSist",
     description:
-      "An environmental dashboard for air quality, climate signals, and geospatial data. It is still under construction and partially finished.",
+      "An environmental dashboard for air quality, climate signals, and geospatial data.",
     tech: [
       "React",
       "Vite",
@@ -216,7 +260,7 @@ export const projects = [
     ],
     github: "https://github.com/aliasist/ecosist",
     downloads: [],
-    status: "Under Construction",
+    status: "Live",
     icon: "ES",
     link: "https://ecosist.aliasist.com",
     linkLabel: "Open EcoSist →",
@@ -273,10 +317,10 @@ export const about = {
   authorSlots: [] as unknown as readonly { kicker: string; body: string }[],
 
   stats: [
-    { num: "6",  label: "Products and platforms", sym: "" as const },
-    { num: "7",  label: "External APIs integrated", sym: "+" as const },
+    { num: "8",  label: "Products and platforms", sym: "" as const },
+    { num: "12",  label: "External APIs integrated", sym: "+" as const },
     { num: "3",  label: "Years building in public", sym: "" as const },
-    { num: "5", label: "Technology categories", sym: "" as const },
+    { num: "8", label: "Technology categories", sym: "" as const },
   ],
 } as const;
 
