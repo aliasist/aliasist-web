@@ -56,6 +56,7 @@ export default {
           light: "hsl(var(--sage-light))",
         },
         electric: "hsl(var(--electric))",
+        violet: "hsl(var(--violet))",
         "cool-gray": "hsl(var(--cool-gray))",
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

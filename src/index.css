@@ -42,6 +42,7 @@
     --sage-light: 150 12% 20%;
     --cool-gray: 220 10% 55%;
     --electric: 165 90% 42%;
+    --violet: 278 82% 67%;
 
     --font-heading: 'Space Grotesk', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
@@ -53,7 +54,7 @@
     --ambient-overlay-opacity-mobile: 0.17;
     --ambient-a: 165 90% 42%;
     --ambient-b: 198 92% 55%;
-    --ambient-c: 280 70% 60%;
+    --ambient-c: 278 82% 67%;
 
     --sidebar-background: 220 18% 9%;
     --sidebar-foreground: 150 10% 90%;
@@ -86,6 +87,7 @@
     --input: 220 15% 84%;
     --ring: 165 85% 36%;
     --electric: 165 85% 36%;
+    --violet: 276 68% 52%;
 
     --ambient-opacity: 0.16;
     --ambient-overlay-opacity: 0.14;

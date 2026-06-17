@@ -33,14 +33,14 @@ export const hero = {
   mascotTitle: "Aliasist",
   eyeline: "AI consulting // developer portfolio // projects",
   wordmark: "A L I A S I S T",
-  tagline: "Practical AI tools and software builds.",
+  tagline: "Building things for users, not hype.",
   subcopy:
-    "I'm Blake. I help turn ideas, workflows, and business problems into useful AI tools. The projects below show the work.",
+    "I'm Blake. I help organizations and individuals navigate the AI landscape with knowledge, tools, and integrity to create safer systems that are harder to compromise.",
   ctaWork: "Consulting",
   ctaWorkHref: "/consulting",
   ctaContact: "Projects",
   ctaContactHref: "#projects",
-  statusRow: ["AI Consulting", "Developer Portfolio", "Projects"] as const,
+  statusRow: ["Consulting", "Developer Portfolio", "Projects"] as const,
 } as const;
 
 // ── Navbar ───────────────────────────────────────────────────────────────────
