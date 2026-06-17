@@ -24,6 +24,7 @@ const HeroSection = () => {
 
       {/* Layered radial glows */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_35%,_hsl(165_90%_42%_/_0.06)_0%,_transparent_65%)] pointer-events-none" />
+      <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_42%_at_24%_18%,_hsl(var(--violet)_/_0.08)_0%,_transparent_68%)] pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_50%_80%,_hsl(165_90%_42%_/_0.04)_0%,_transparent_70%)] pointer-events-none" />
 
       {/* Top-right signal badge */}
@@ -31,7 +32,7 @@ const HeroSection = () => {
         initial={{ opacity: 0, x: 20 }}
         animate={{ opacity: 1, x: 0 }}
         transition={{ delay: 1.2, duration: 0.6 }}
-        className="absolute right-3 top-[calc(4.5rem+env(safe-area-inset-top,0px)+6px)] z-[5] flex max-w-[min(100%-1.5rem,14rem)] items-center gap-1.5 rounded-sm border border-electric/20 bg-background/40 px-2.5 py-1.5 font-mono text-[8px] uppercase tracking-[0.12em] text-muted-foreground shadow-electric-xs backdrop-blur-md sm:right-8 sm:gap-2 sm:px-3 sm:text-[10px] sm:tracking-[0.15em] lg:right-12 xl:right-16"
+        className="absolute right-3 top-[calc(4.5rem+env(safe-area-inset-top,0px)+6px)] z-[5] flex max-w-[min(100%-1.5rem,14rem)] items-center gap-1.5 rounded-sm border border-violet/15 bg-background/40 px-2.5 py-1.5 font-mono text-[8px] uppercase tracking-[0.12em] text-muted-foreground shadow-[0_0_24px_hsl(var(--violet)_/_0.08),0_0_22px_hsl(var(--electric)_/_0.08)] backdrop-blur-md sm:right-8 sm:gap-2 sm:px-3 sm:text-[10px] sm:tracking-[0.15em] lg:right-12 xl:right-16"
       >
         <span className="shrink-0 text-electric animate-pulse" aria-hidden>
           ▮
@@ -65,7 +66,7 @@ const HeroSection = () => {
           transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
           className="relative"
         >
-          <div className="absolute -inset-3 rounded-full border border-electric/25 animate-pulse pointer-events-none" />
+          <div className="absolute -inset-3 rounded-full border border-violet/20 animate-pulse pointer-events-none" />
           <img
             src={mascot}
             alt="Aliasist Logo Draft Ideas"
@@ -73,7 +74,7 @@ const HeroSection = () => {
             width={208}
             height={208}
             decoding="async"
-            className="w-44 h-44 xl:w-52 xl:h-52 rounded-full object-cover border-2 border-electric/50 shadow-electric-sm hover:shadow-electric-md hover:scale-105 transition-all duration-500 cursor-pointer select-none bg-transparent"
+            className="w-44 h-44 xl:w-52 xl:h-52 rounded-full object-cover border-2 border-electric/50 shadow-[0_0_38px_hsl(var(--electric)_/_0.18),0_0_56px_hsl(var(--violet)_/_0.1),0_4px_26px_hsl(0_0%_0%_/_0.18)] hover:shadow-[0_0_54px_hsl(var(--electric)_/_0.24),0_0_70px_hsl(var(--violet)_/_0.14),0_8px_42px_hsl(0_0%_0%_/_0.22)] hover:scale-105 transition-all duration-500 cursor-pointer select-none bg-transparent"
           />
         </motion.div>
         <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-electric/50 text-center">
@@ -108,7 +109,7 @@ const HeroSection = () => {
               transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
               className="relative"
             >
-              <div className="absolute -inset-2 rounded-full border border-electric/25 animate-pulse pointer-events-none" />
+              <div className="absolute -inset-2 rounded-full border border-violet/20 animate-pulse pointer-events-none" />
               <img
                 src={mascot}
                 alt={hero.mascotAlt}
@@ -116,7 +117,7 @@ const HeroSection = () => {
                 width={96}
                 height={96}
                 decoding="async"
-                className="w-24 h-24 rounded-full object-cover border-2 border-electric/50 shadow-electric-xs select-none bg-transparent"
+                className="w-24 h-24 rounded-full object-cover border-2 border-electric/50 shadow-[0_0_22px_hsl(var(--electric)_/_0.12),0_0_34px_hsl(var(--violet)_/_0.1),0_2px_14px_hsl(0_0%_0%_/_0.14)] select-none bg-transparent"
               />
             </motion.div>
           </motion.div>
@@ -128,11 +129,11 @@ const HeroSection = () => {
             transition={{ delay: 0.45, duration: 0.6 }}
             className="flex items-center justify-center gap-3 mb-6"
           >
-            <span className="block w-12 h-px bg-gradient-to-r from-transparent to-electric/60" />
+            <span className="block w-12 h-px bg-gradient-to-r from-transparent via-violet/30 to-electric/60" />
             <p className="font-mono text-[11px] tracking-[0.3em] uppercase text-electric/80">
               {hero.eyeline}
             </p>
-            <span className="block w-12 h-px bg-gradient-to-l from-transparent to-electric/60" />
+            <span className="block w-12 h-px bg-gradient-to-l from-transparent via-violet/30 to-electric/60" />
           </motion.div>
 
           {/* Wordmark */}
@@ -158,7 +159,7 @@ const HeroSection = () => {
 
           {/* Sub copy */}
           <motion.p
-            className="mx-auto mb-12 max-w-xl rounded-sm border border-electric/20 bg-background/75 px-5 py-4 text-base leading-relaxed text-foreground/85 shadow-electric-xs backdrop-blur-md sm:px-7 sm:py-5 sm:text-lg xl:max-w-2xl"
+            className="mx-auto mb-12 max-w-xl rounded-sm border border-violet/15 bg-background/75 px-5 py-4 text-base leading-relaxed text-foreground/85 shadow-[0_0_22px_hsl(var(--electric)_/_0.1),0_0_32px_hsl(var(--violet)_/_0.08),0_2px_14px_hsl(0_0%_0%_/_0.14)] backdrop-blur-md sm:px-7 sm:py-5 sm:text-lg xl:max-w-2xl"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ delay: 0.7, duration: 0.6 }}
@@ -182,7 +183,7 @@ const HeroSection = () => {
             </a>
             <a
               href={hero.ctaContactHref}
-              className="px-8 py-3.5 border border-border/60 text-foreground/80 font-mono text-xs uppercase tracking-[0.14em] rounded-sm hover:border-electric/60 hover:text-electric hover:bg-electric/5 hover:shadow-electric-outline transition-all duration-300 hover:-translate-y-0.5 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="px-8 py-3.5 border border-violet/20 text-foreground/80 font-mono text-xs uppercase tracking-[0.14em] rounded-sm hover:border-electric/60 hover:text-electric hover:bg-[linear-gradient(135deg,hsl(var(--electric)_/_0.06),hsl(var(--violet)_/_0.08))] hover:shadow-[0_0_26px_hsl(var(--electric)_/_0.12),0_0_32px_hsl(var(--violet)_/_0.1),inset_0_1px_0_hsl(var(--violet)_/_0.18)] transition-all duration-300 hover:-translate-y-0.5 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               {hero.ctaContact}
             </a>

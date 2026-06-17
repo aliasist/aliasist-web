@@ -26,7 +26,8 @@
     "tunnel:quick": "cloudflared tunnel --url http://localhost:8080",
     "test": "vitest run src",
     "test:watch": "vitest src",
-    "deploy": "npm run build && wrangler deploy"
+    "deploy": "npm run deploy:pages",
+    "deploy:pages": "npm run build && wrangler pages deploy dist --project-name=aliasistabductor --branch=master --commit-dirty=true"
   },
   "dependencies": {
     "@clerk/backend": "^3.4.3",
