@@ -413,6 +413,12 @@ body::after {
       0 0 38px hsl(165 90% 42% / 0.2),
       0 4px 26px hsl(0 0% 0% / 0.18);
   }
+  .shadow-project-violet {
+    box-shadow:
+      0 0 34px hsl(var(--violet) / 0.18),
+      0 0 24px hsl(var(--electric) / 0.1),
+      0 4px 26px hsl(0 0% 0% / 0.18);
+  }
   .shadow-electric-md {
     box-shadow:
       0 0 54px hsl(165 90% 42% / 0.28),
@@ -498,6 +504,12 @@ body::after {
 .light .shadow-electric-sm {
   box-shadow:
     0 0 32px hsl(165 85% 36% / 0.16),
+    0 4px 22px hsl(0 0% 0% / 0.08);
+}
+.light .shadow-project-violet {
+  box-shadow:
+    0 0 28px hsl(var(--violet) / 0.14),
+    0 0 18px hsl(var(--electric) / 0.08),
     0 4px 22px hsl(0 0% 0% / 0.08);
 }
 .light .shadow-electric-md {
