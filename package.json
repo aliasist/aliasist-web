@@ -22,7 +22,7 @@
     "build:master-admin": "npm --prefix apps/master-admin run build",
     "build:ecosist": "npm --prefix apps/ecosist run build",
     "sync:ecosist": "node scripts/sync-ecosist.mjs",
-    "build:functions": "wrangler pages functions build functions --outfile dist/_worker.js --output-routes-path dist/_routes.json --compatibility-date 2025-04-01 --compatibility-flag nodejs_compat",
+    "build:functions": "wrangler pages functions build functions --outdir dist/_worker.js --output-routes-path dist/_routes.json --compatibility-date 2025-04-01 --compatibility-flag nodejs_compat",
     "lint": "eslint .",
     "preview": "npm run build && wrangler pages dev dist --compatibility-date 2025-04-01 --compatibility-flag nodejs_compat",
     "tunnel:vite": "vite --host :: --port 8080",
