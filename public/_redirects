@@ -1,3 +1,5 @@
 # Cloudflare Pages — SPA fallback (Vite client routing)
 /atomicity    /atomicity/    301
+/nexus        /ecosist/      301
+/nexus/       /ecosist/      301
 /*    /index.html   200

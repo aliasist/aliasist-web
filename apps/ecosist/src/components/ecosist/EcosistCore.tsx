@@ -3,7 +3,7 @@ import { useFrame } from '@react-three/fiber';
 import { Float, MeshDistortMaterial, Sphere } from '@react-three/drei';
 import * as THREE from 'three';
 
-export function NexusCore({ active }: { active: boolean }) {
+export function EcosistCore({ active }: { active: boolean }) {
   const meshRef = useRef<THREE.Mesh>(null);
   
   useFrame((state) => {

@@ -2,13 +2,13 @@ import { Suspense } from "react";
 import { Canvas } from "@react-three/fiber";
 import { Bloom, EffectComposer, Noise, Vignette } from "@react-three/postprocessing";
 
-import { NexusCore } from "./NexusCore";
+import { EcosistCore } from "./EcosistCore";
 
 export default function PlanetaryScene({ active }: { active: boolean }) {
   return (
     <Canvas camera={{ position: [0, 0, 8] }}>
       <Suspense fallback={null}>
-        <NexusCore active={active} />
+        <EcosistCore active={active} />
         <EffectComposer>
           <Bloom luminanceThreshold={1} intensity={1.5} levels={9} mipmapBlur />
           <Noise opacity={0.05} />
