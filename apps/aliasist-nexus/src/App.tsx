@@ -1,7 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { Canvas } from "@react-three/fiber";
-import { EffectComposer, Bloom, Noise, Vignette } from "@react-three/postprocessing";
 import { Shield, Database, Activity, Download, Copy, Check } from "lucide-react";
 
 import { useLiveSignals } from "./lib/useLiveSignals";
@@ -11,7 +9,7 @@ import SignalDeck from "./components/nexus/SignalDeck";
 import CommandTerminal from "./components/nexus/CommandTerminal";
 import PatentIntelligence from "./components/nexus/PatentIntelligence";
 
-const NexusCore = lazy(() => import("./components/nexus/NexusCore").then(m => ({ default: m.NexusCore })));
+const PlanetaryScene = lazy(() => import("./components/nexus/PlanetaryScene"));
 
 export default function App() {
   const [booting, setBooting] = useState(true);
@@ -52,20 +50,20 @@ export default function App() {
   };
 
   return (
-    <main className="relative min-h-screen w-full overflow-hidden bg-[#020408] font-mono text-emerald-400 selection:bg-emerald-400/25">
+    <main className="relative min-h-screen w-full overflow-x-hidden bg-[#020408] font-mono text-emerald-400 selection:bg-emerald-400/25">
       <AnimatePresence>{booting && <BootSequence />}</AnimatePresence>
 
       {!booting && (
         <motion.div 
           initial={{ opacity: 0 }} 
           animate={{ opacity: 1 }} 
-          className="relative z-10 flex h-screen flex-col gap-4 p-4 lg:p-6"
+          className="relative z-10 flex min-h-screen flex-col gap-4 p-4 lg:h-screen lg:p-6"
         >
           <OSHeader activeView={activeView} onViewChange={setActiveView} signals={signals} />
           
-          <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 lg:grid-cols-[280px_1fr_320px]">
+          <div className="grid flex-1 grid-cols-1 gap-4 lg:min-h-0 lg:grid-cols-[280px_1fr_320px]">
             {/* Left Sidebar: Live Signals */}
-            <aside className="flex flex-col gap-4 overflow-hidden">
+            <aside className="flex flex-col gap-4 lg:overflow-hidden">
               <div className="flex items-center gap-2 px-2 text-[10px] font-bold uppercase tracking-[0.2em] text-emerald-400/40">
                 <Activity className="size-3" />
                 Live Telemetry
@@ -75,18 +73,11 @@ export default function App() {
             </aside>
 
             {/* Main Viewport */}
-            <section className="relative overflow-hidden rounded-xl border border-emerald-500/20 bg-black/60 shadow-2xl">
+            <section className="relative min-h-[70vh] overflow-hidden rounded-xl border border-emerald-500/20 bg-black/60 shadow-2xl lg:min-h-0">
               <div className="absolute inset-0 z-0">
-                <Canvas camera={{ position: [0, 0, 8] }}>
-                  <Suspense fallback={null}>
-                    <NexusCore active={activeView === 'nexus'} />
-                    <EffectComposer>
-                      <Bloom luminanceThreshold={1} intensity={1.5} levels={9} mipmapBlur />
-                      <Noise opacity={0.05} />
-                      <Vignette eskil={false} offset={0.1} darkness={1.1} />
-                    </EffectComposer>
-                  </Suspense>
-                </Canvas>
+                <Suspense fallback={null}>
+                  <PlanetaryScene active={activeView === 'nexus'} />
+                </Suspense>
               </div>
 
               <div className="relative z-10 h-full">
@@ -138,7 +129,7 @@ export default function App() {
             </section>
 
             {/* Right Sidebar: Ops & Logs */}
-            <aside className="flex flex-col gap-4 overflow-hidden">
+            <aside className="flex flex-col gap-4 lg:overflow-hidden">
               <CommandTerminal onSystemMessage={handleCommandMessage} onCommandAction={handleCommandAction} />
               <div className="flex-1 rounded-lg border border-emerald-500/10 bg-black/40 p-4">
                 <div className="mb-3 flex items-center justify-between text-[9px] uppercase tracking-widest text-emerald-400/30">
@@ -155,7 +146,7 @@ export default function App() {
             </aside>
           </div>
 
-          <footer className="flex items-center justify-between border-t border-emerald-500/10 pt-4 text-[8px] uppercase tracking-[0.3em] text-emerald-400/30">
+          <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-emerald-500/10 pt-4 text-[8px] uppercase tracking-[0.3em] text-emerald-400/30">
             <span>2026 Aliasist // Nexus Prime edition</span>
             <div className="flex gap-6">
               <span>Uptime: 99.999%</span>
