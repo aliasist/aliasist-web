@@ -9,8 +9,8 @@ interface CommandTerminalProps {
 export default function CommandTerminal({ onSystemMessage, onCommandAction }: CommandTerminalProps) {
   const [input, setInput] = useState("");
   const [history, setHistory] = useState<string[]>([
-    "NEXUS PRIME OS v4.0.0",
-    "PLANETARY UPLINK: SECURE",
+    "ECOSIST EARTH OS v1.0.0",
+    "FEDERATED FEEDS: SECURE",
     "TYPE 'HELP' FOR COMMANDS"
   ]);
   const scrollRef = useRef<HTMLDivElement>(null);
@@ -32,6 +32,7 @@ export default function CommandTerminal({ onSystemMessage, onCommandAction }: Co
         "AVAILABLE COMMANDS:",
         "  SCAN  - REFRESH ALL PLANETARY SIGNALS",
         "  BRIEF - VIEW INTELLIGENCE SUMMARY",
+        "  SIGNALS - OPEN EARTH SIGNAL DECK",
         "  EXPORT - DOWNLOAD MD REPORT",
         "  CLEAR - WIPE TERMINAL HISTORY"
       ]);
@@ -41,6 +42,9 @@ export default function CommandTerminal({ onSystemMessage, onCommandAction }: Co
     } else if (cmd === 'brief') {
       onCommandAction('brief');
       setHistory(prev => [...prev, "ROUTING TO INTELLIGENCE DECK..."]);
+    } else if (cmd === 'signals') {
+      onCommandAction('signals');
+      setHistory(prev => [...prev, "OPENING EARTH SIGNAL DECK..."]);
     } else if (cmd === 'export') {
       onCommandAction('export');
       setHistory(prev => [...prev, "GENERATING INTELLIGENCE REPORT..."]);

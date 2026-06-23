@@ -80,7 +80,7 @@ export const suiteApps = [
   {
     label: "EcoSist",
     sub: "**UNDER CONSTRUCTION** project paused.",
-    href: "https://ecosist.aliasist.com",
+    href: "/ecosist/",
     icon: "🌱🛠️",
   },
   {
@@ -215,7 +215,7 @@ export const projects = [
     meta: ["Climate signals", "Air quality", "Geospatial"] as const,
     tone: "green",
     icon: "🌱",
-    link: "https://ecosist.aliasist.com",
+    link: "/ecosist/",
     linkLabel: "Open EcoSist →",
     banner: ecosistBanner,
   },

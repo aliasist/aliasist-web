@@ -5,8 +5,8 @@ on:
     branches: [master]
     paths:
       - 'src/**'
-      - 'apps/aliasist-nexus/**'
-      - 'scripts/sync-nexus.mjs'
+      - 'apps/ecosist/**'
+      - 'scripts/sync-ecosist.mjs'
       - 'public/**'
       - 'functions/**'
       - 'images/**'
@@ -38,8 +38,8 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Install Nexus dependencies
-        run: npm ci --prefix apps/aliasist-nexus
+      - name: Install Ecosist dependencies
+        run: npm ci --prefix apps/ecosist
 
       - name: Build homepage
         run: npm run build
