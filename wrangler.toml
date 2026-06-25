@@ -29,6 +29,15 @@ compatibility_flags = ["nodejs_compat"]
 GITHUB_APP_ID = "3909945"
 GITHUB_APP_CLIENT_ID = "Iv23liyNQyBoBOh6IROQ"
 PUBLIC_CHAT_ENABLED = "true"
+# Current free Workers AI text model. The previous @cf/meta/llama-3.1-8b-instruct
+# was deprecated 2026-05-30 (error 5028) — keep this pointed at a live model
+# (list: `npx wrangler ai models`).
+AI_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
+
+# Cloudflare Workers AI — free-tier edge LLM, no external API key. Powers the
+# homepage chat (functions/api/chat.ts) without needing GROQ_API_KEY.
+[ai]
+binding = "AI"
 
 [[d1_databases]]
 binding = "ANALYTICS"
