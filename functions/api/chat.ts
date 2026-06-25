@@ -1,22 +1,30 @@
 import type { ClerkEnv } from "../_lib/clerk-auth";
 import { authenticateRequest, corsHeaders, json } from "../_lib/clerk-auth";
 
+/** Minimal shape of the Cloudflare Workers AI binding (avoids a workers-types dep). */
+interface WorkersAi {
+  run(
+    model: string,
+    inputs: Record<string, unknown>,
+  ): Promise<{ response?: string } & Record<string, unknown>>;
+}
+
 interface Env extends ClerkEnv {
-  /**
-   * Groq API key — if set, the Pages Function calls Groq directly (no worker hop).
-   * Add via: Cloudflare Pages → Settings → Environment variables → GROQ_API_KEY
-   */
+  AI?: WorkersAi;
+  /** Override the Workers AI text model. Default: @cf/meta/llama-3.1-8b-instruct */
+  AI_MODEL?: string;
+  /** Groq API key — used for LLM generation. */
   GROQ_API_KEY?: string;
-  /**
-   * Fallback: proxy to upstream LLM worker. Only used when GROQ_API_KEY is absent.
-   * Defaults to the production llm-chat worker URL.
-   */
+  /** Fallback: proxy to upstream LLM worker. Defaults to production llm-chat worker URL. */
   LLM_CHAT_BASE_URL?: string;
-  /**
-   * Set to "true" to let unsigned visitors use the homepage AI demo.
-   * Signed-in users can still use the authenticated path.
-   */
+  /** Set to "true" to let unsigned visitors use the homepage AI demo. */
   PUBLIC_CHAT_ENABLED?: string;
+  /**
+   * Base URL for the aliasist RAG worker (api.aliasist.tech).
+   * Used to fetch grounded context before answering.
+   * Defaults to https://api.aliasist.tech
+   */
+  RAG_BASE_URL?: string;
 }
 
 type PagesContext = {
@@ -24,21 +32,175 @@ type PagesContext = {
   env: Env;
 };
 
-const DEFAULT_LLM_CHAT_BASE_URL = "https://llm-chat.bchooper0730.workers.dev";
+// ---------------------------------------------------------------------------
+// RAG
+// ---------------------------------------------------------------------------
 
+const DEFAULT_RAG_BASE_URL = "https://api.aliasist.tech";
+
+/** Valid sist IDs on the RAG worker. */
+const SIST_IDS = ["agsc", "data", "eco", "pulse", "space"] as const;
+type SistId = (typeof SIST_IDS)[number];
+
+/** Shape returned by POST /rag/ask */
+interface RagAskResult {
+  answer: string;
+  model: string;
+  source: string;
+  latencyMs: number;
+  chunks: Array<{ id: string; source: string; score: number; text: string }>;
+  sist: SistId;
+}
+
+/** Map keywords in the user's latest message to a sist ID. */
+export function detectSist(text: string): SistId | null {
+  const t = text.toLowerCase();
+  if (/\b(space|nasa|iss|spacex|asteroid|exoplanet|orbit|rocket|satellite|hubble|james webb|apollo)\b/.test(t)) return "space";
+  if (/\b(data.?center|datacenter|server|hyperscale|colocation|colo|facility|pue|rack|gpu.?cluster)\b/.test(t)) return "data";
+  if (/\b(eco|weather|climate|storm|hurricane|wildfire|flood|air quality|space.?weather|geomagnetic)\b/.test(t)) return "eco";
+  if (/\b(market|stock|ticker|finance|crypto|macro|earnings|gdp|fed|interest rate|inflation)\b/.test(t)) return "pulse";
+  if (/\b(agsc|globe|country|data.?center.?map|undersea.?cable|internet.?exchange|submarine.?cable)\b/.test(t)) return "agsc";
+  return null;
+}
+
+/**
+ * Format a RAG worker result into a compact context block for the system prompt.
+ *
+ * The aliasist RAG worker answers in two modes:
+ *   • vector/LLM mode  → `data.answer` is a synthesized answer worth quoting.
+ *   • `local-rag` mode → `data.answer` is a canned "Closest grounded answer…"
+ *     wrapper, but `data.chunks` still hold real, high-quality source text.
+ * In local-rag mode we drop the wrapper prose and ground purely on the chunks,
+ * so the existing free retrieval backend is usable instead of discarded.
+ */
+export function formatRagContext(sist: SistId, data: RagAskResult): string | null {
+  const isLocal = data?.source === "local-rag";
+  const chunks = data?.chunks ?? [];
+  const chunkSnippets = chunks
+    .slice(0, 3)
+    .map((c) => `- [${c.source}] ${c.text.slice(0, 300)}`)
+    .join("\n");
+
+  // Local-rag mode: ground on chunks only. No chunks → nothing useful to add.
+  if (isLocal) {
+    if (!chunkSnippets) return null;
+    return [
+      `=== RAG Context (${sist.toUpperCase()}) ===`,
+      `Source excerpts from the ${sist.toUpperCase()} corpus:`,
+      chunkSnippets,
+      `=== End RAG Context ===`,
+    ].join("\n");
+  }
+
+  // Vector/LLM mode: quote the synthesized answer plus supporting excerpts.
+  if (!data?.answer) return null;
+  return [
+    `=== RAG Context (${sist.toUpperCase()}) ===`,
+    `Answer from corpus: ${data.answer}`,
+    chunkSnippets ? `\nSource excerpts:\n${chunkSnippets}` : "",
+    `=== End RAG Context ===`,
+  ]
+    .filter(Boolean)
+    .join("\n");
+}
+
+/**
+ * Build a stable cache key for a RAG lookup. Cache API keys must be a full URL,
+ * so we fold the sist + normalized question into the path of a synthetic origin.
+ */
+function ragCacheKey(sist: SistId, question: string): Request {
+  const norm = question.trim().toLowerCase().replace(/\s+/g, " ").slice(0, 256);
+  const key = `https://rag-cache.aliasist.internal/${sist}/${encodeURIComponent(norm)}`;
+  return new Request(key, { method: "GET" });
+}
+
+/** TTL for cached RAG context blocks (seconds). Repeated questions answer instantly. */
+const RAG_CACHE_TTL_SECONDS = 3600;
+
+/**
+ * Fetch grounded RAG context for a question from the aliasist workers-api.
+ * Blocking by design — the LLM system prompt depends on the result — but cached
+ * via the Cloudflare Cache API so repeated questions skip the upstream round-trip.
+ * Returns a formatted context block, or null if RAG is unavailable/irrelevant.
+ */
+async function fetchRagContext(
+  env: Env,
+  question: string,
+): Promise<string | null> {
+  const sist = detectSist(question);
+  if (!sist) return null;
+
+  const cache = (globalThis as { caches?: { default?: Cache } }).caches?.default;
+  const cacheKey = ragCacheKey(sist, question);
+
+  if (cache) {
+    const hit = await cache.match(cacheKey).catch(() => undefined);
+    if (hit) return await hit.text();
+  }
+
+  const base = (env.RAG_BASE_URL?.trim() || DEFAULT_RAG_BASE_URL).replace(/\/+$/, "");
+  let context: string | null = null;
+  try {
+    const res = await fetch(`${base}/rag/ask`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ sist, question, topK: 4 }),
+      signal: AbortSignal.timeout(3500),
+    });
+    if (res.ok) {
+      const data = await res.json() as RagAskResult;
+      context = formatRagContext(sist, data);
+    }
+  } catch {
+    context = null;
+  }
+
+  // Cache only successful lookups — never poison results during a transient
+  // upstream outage by caching a miss.
+  if (cache && context) {
+    await cache
+      .put(
+        cacheKey,
+        new Response(context, {
+          headers: { "Cache-Control": `max-age=${RAG_CACHE_TTL_SECONDS}` },
+        }),
+      )
+      .catch(() => {});
+  }
+
+  return context;
+}
+
+// ---------------------------------------------------------------------------
+// LLM providers
+// ---------------------------------------------------------------------------
+
+const DEFAULT_LLM_CHAT_BASE_URL = "https://llm-chat.bchooper0730.workers.dev";
 const GROQ_MODEL = "llama-3.3-70b-versatile";
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+const DEFAULT_WORKERS_AI_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
-const ALIASIST_SYSTEM = `You are the Aliasist AI — the intelligent assistant embedded in aliasist.com, the developer portfolio and project hub of Blake, an AI security developer and CS student.
+const BASE_SYSTEM = `You are the Aliasist AI — the intelligent assistant embedded in aliasist.com, the developer portfolio and project hub of Blake, an AI security developer and CS student.
 
 About Aliasist:
 - Focus: practical AI consulting, developer portfolio work, AI-assisted workflows, AI security, and useful software builds
-- Suite: DataSist (AI data center intelligence), PulseSist (stock market intelligence), SpaceSist (live space portal), Clearasist (metadata cleaner), GitHub Companion (repository and pull request guidance), Aliasist-Files-Abductor (file automation GUI)
+- Suite: DataSist (AI data center intelligence), PulseSist (stock market intelligence), SpaceSist (live space portal), EcoSist (environmental intelligence), AGSC (global source control globe), Clearasist (metadata cleaner), GitHub Companion (repository and pull request guidance)
 - Stack: Python, JavaScript, React, Vite, Cloudflare Workers, D1, Groq, Anthropic
 - Contact: dev@aliasist.com | github.com/aliasist
 - Blake is self-taught, now formally studying Computer Information Systems, building toward AI security specialization
 
-Your role: Help visitors understand Blake's AI consulting work, projects, and technical direction. Be concise, direct, and practical. Keep responses under 3 paragraphs. Do not oversell. Do not hallucinate project details. When someone has a project idea, suggest contacting Blake through the site.`;
+Your role: Help visitors understand Blake's AI consulting work, projects, and technical direction. Be concise, direct, and practical. Keep responses under 3 paragraphs. Do not oversell. Do not hallucinate project details. When someone has a project idea, suggest contacting Blake through the site.
+
+When RAG context is provided below, use it as your primary source of truth. Cite it naturally — do not mention "RAG" or "corpus" to the user.`;
+
+function buildSystem(ragContext: string | null): string {
+  if (!ragContext) return BASE_SYSTEM;
+  return `${BASE_SYSTEM}\n\n${ragContext}`;
+}
+
+// ---------------------------------------------------------------------------
+// Rate limiting (public chat)
+// ---------------------------------------------------------------------------
 
 const publicChatBuckets = new Map<string, { count: number; windowStart: number }>();
 const PUBLIC_CHAT_WINDOW_MS = 60_000;
@@ -65,8 +227,24 @@ function checkPublicChatLimit(request: Request): boolean {
   return true;
 }
 
-function parseMessages(bodyText: string): Array<{ role: string; content: string }> {
-  const body = JSON.parse(bodyText) as { messages?: Array<{ role: string; content: string }> };
+// ---------------------------------------------------------------------------
+// Message parsing
+// ---------------------------------------------------------------------------
+
+/**
+ * Parse and normalize the chat history from a raw request body.
+ * Returns `null` on malformed JSON so the handler can answer 400 cleanly
+ * instead of throwing an unhandled 500.
+ */
+export function parseMessages(
+  bodyText: string,
+): Array<{ role: string; content: string }> | null {
+  let body: { messages?: Array<{ role: string; content: string }> };
+  try {
+    body = JSON.parse(bodyText) as typeof body;
+  } catch {
+    return null;
+  }
   const messages = Array.isArray(body.messages) ? body.messages : [];
   return messages
     .filter((m) => typeof m?.role === "string" && typeof m?.content === "string")
@@ -81,12 +259,17 @@ function trimTrailingSlashes(url: string): string {
   return url.replace(/\/+$/, "");
 }
 
+// ---------------------------------------------------------------------------
+// Provider calls
+// ---------------------------------------------------------------------------
+
 async function callGroqDirect(
   apiKey: string,
+  system: string,
   messages: Array<{ role: string; content: string }>,
 ): Promise<Response> {
   const withSystem = [
-    { role: "system", content: ALIASIST_SYSTEM },
+    { role: "system", content: system },
     ...messages.filter((m) => m.role !== "system"),
   ];
 
@@ -131,13 +314,48 @@ async function callGroqDirect(
   );
 }
 
+async function callWorkersAi(
+  ai: WorkersAi,
+  model: string,
+  system: string,
+  messages: Array<{ role: string; content: string }>,
+): Promise<Response> {
+  const withSystem = [
+    { role: "system", content: system },
+    ...messages.filter((m) => m.role !== "system"),
+  ];
+
+  const out = await ai.run(model, { messages: withSystem, max_tokens: 512 });
+  const reply = typeof out?.response === "string" ? out.response.trim() : "";
+  if (!reply) {
+    return new Response(
+      JSON.stringify({ error: "Model returned an empty response." }),
+      { status: 502, headers: corsHeaders },
+    );
+  }
+
+  return new Response(
+    JSON.stringify({ response: reply, model }),
+    { status: 200, headers: corsHeaders },
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Handler
+// ---------------------------------------------------------------------------
+
 export const onRequestOptions = async () =>
   new Response(null, { status: 204, headers: corsHeaders });
 
 /**
- * Clerk-authenticated chat endpoint.
- * If GROQ_API_KEY is set on this Pages deployment, calls Groq directly (single auth hop).
- * Otherwise falls back to proxying the llm-chat worker (legacy path).
+ * RAG-augmented chat endpoint.
+ *
+ * Flow:
+ *   1. Auth check (Clerk JWT or public-chat gate)
+ *   2. Parse the last user message
+ *   3. Detect topic → fetch RAG context from api.aliasist.tech (cached; 3.5s timeout)
+ *   4. Build enriched system prompt (BASE_SYSTEM + RAG block)
+ *   5. Call Workers AI → Groq → llm-chat worker proxy (in order of preference)
  *
  * Request:  POST /api/chat  { messages: [{role, content}, ...] }
  * Response: { response: string, model: string } | { error: string }
@@ -148,6 +366,7 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
     return json({ error: "Missing request body." }, 400);
   }
 
+  // --- Auth ---
   const authorization = request.headers.get("Authorization");
   const hasSessionToken = Boolean(authorization?.startsWith("Bearer "));
   if (hasSessionToken) {
@@ -164,21 +383,45 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
     return json({ error: "Too many chat messages. Try again in a minute." }, 429);
   }
 
-  // Direct Groq path — no worker hop, no second auth layer
+  // --- Parse messages & detect topic ---
+  const messages = parseMessages(bodyText);
+  if (!messages) {
+    return json({ error: "Malformed request body — expected JSON { messages: [...] }." }, 400);
+  }
+  const lastUserMsg = [...messages].reverse().find((m) => m.role === "user")?.content ?? "";
+
+  // --- RAG fetch (blocking, cached; 3.5s upstream timeout) ---
+  const ragContext = await fetchRagContext(env, lastUserMsg);
+  const system = buildSystem(ragContext);
+
+  // --- Workers AI (preferred — free edge LLM) ---
+  if (env.AI) {
+    try {
+      const model = env.AI_MODEL?.trim() || DEFAULT_WORKERS_AI_MODEL;
+      return await callWorkersAi(env.AI, model, system, messages);
+    } catch (e) {
+      return json({ error: e instanceof Error ? e.message : "Chat error." }, 500);
+    }
+  }
+
+  // --- Groq (secondary — requires GROQ_API_KEY) ---
   const groqKey = env.GROQ_API_KEY?.trim();
   if (groqKey) {
     try {
-      return await callGroqDirect(groqKey, parseMessages(bodyText));
+      return await callGroqDirect(groqKey, system, messages);
     } catch (e) {
       return json({ error: e instanceof Error ? e.message : "Chat error." }, 500);
     }
   }
 
   if (!hasSessionToken) {
-    return json({ error: "GROQ_API_KEY is required for public chat." }, 503);
+    return json(
+      { error: "No chat model is configured. Bind Workers AI (AI) or set GROQ_API_KEY on the Pages deployment." },
+      503,
+    );
   }
 
-  // Fallback: proxy to llm-chat worker (user must have CLERK_SECRET_KEY set there too)
+  // --- Fallback: proxy to llm-chat worker ---
   const base = trimTrailingSlashes(env.LLM_CHAT_BASE_URL?.trim() || DEFAULT_LLM_CHAT_BASE_URL);
   const upstreamUrl = `${base}/api/chat`;
 
@@ -187,7 +430,15 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
     const headers: Record<string, string> = { "Content-Type": "application/json" };
     if (authHeader) headers.Authorization = authHeader;
 
-    const upstreamRes = await fetch(upstreamUrl, { method: "POST", headers, body: bodyText });
+    // Rebuild body with enriched system injected as first message
+    const enrichedBody = JSON.stringify({
+      messages: [
+        { role: "system", content: system },
+        ...messages,
+      ],
+    });
+
+    const upstreamRes = await fetch(upstreamUrl, { method: "POST", headers, body: enrichedBody });
     const text = await upstreamRes.text();
     return new Response(text, { status: upstreamRes.status, headers: corsHeaders });
   } catch (e) {
