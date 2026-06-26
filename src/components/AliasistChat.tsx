@@ -4,7 +4,7 @@ import { useAuth, useUser } from "@clerk/react";
 import { readJsonBody, siteEndpoints } from "@/config/api";
 import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
 
-/** Groq LLM worker vs Clerk-authenticated Pages KV room (`/api/chat-messages`). */
+/** Groq worker vs Clerk-authenticated Pages KV room (`/api/chat-messages`). */
 const USE_PAGES_CHAT_ROOM = import.meta.env.VITE_USE_PAGES_CHAT_ROOM === "true";
 const LLM_CHAT_ENDPOINT = siteEndpoints.chatApi;
 const LLM_CHAT_WORKER_ENDPOINT = siteEndpoints.chatWorkerApi;
@@ -24,17 +24,17 @@ interface Message {
   content: string;
 }
 
-const WELCOME_AI =
-  "Ask me about AI consulting, Aliasist projects, or how Blake builds software.";
+const WELCOME_CHAT =
+  "Ask me about Aliasist projects, consulting, or what Blake can help build.";
 
 const WELCOME_ROOM =
-  "// Room linked — messages persist in KV when configured on Pages. Transmit when signed in.";
+  "Room is ready. Messages are saved when configured on Pages.";
 
 const WELCOME_SIGN_IN_REQUIRED =
-  "// Secure channel — sign in with Clerk to use the assistant.";
+  "Sign in with Clerk to use chat.";
 
-const WELCOME_PUBLIC_AI =
-  "Ask me about AI consulting, projects, or what Blake can help build.";
+const WELCOME_PUBLIC_CHAT =
+  "Ask me about projects, consulting, or what Blake can help build.";
 
 /** Retry the request via the other endpoint when the first one fails (but don't retry on 429 rate-limits). */
 function shouldRetry(res: Response) {
@@ -98,7 +98,7 @@ const AliasistChat = () => {
           );
         } catch {
           setMessages([
-            { role: "assistant", content: "// Could not load room — check /api/chat-messages." },
+            { role: "assistant", content: "Could not load chat. Try again." },
           ]);
         } finally {
           setLoading(false);
@@ -107,7 +107,7 @@ const AliasistChat = () => {
       return;
     }
 
-    setMessages([{ role: "assistant", content: isSignedIn ? WELCOME_AI : WELCOME_PUBLIC_AI }]);
+    setMessages([{ role: "assistant", content: isSignedIn ? WELCOME_CHAT : WELCOME_PUBLIC_CHAT }]);
   }, [open, isLoaded, isSignedIn, getToken, userId]);
 
   useEffect(() => {
@@ -125,7 +125,7 @@ const AliasistChat = () => {
 
     try {
       if (!isSignedIn && USE_PAGES_CHAT_ROOM) {
-        setMessages((prev) => [...prev, { role: "assistant", content: "// Sign in to chat." }]);
+        setMessages((prev) => [...prev, { role: "assistant", content: "Sign in to chat." }]);
         setLoading(false);
         return;
       }
@@ -134,7 +134,7 @@ const AliasistChat = () => {
       if (isSignedIn && !token) {
         setMessages((prev) => [
           ...prev.slice(0, -1),
-          { role: "assistant", content: "// Session expired — sign in again." },
+          { role: "assistant", content: "Session expired. Sign in again." },
         ]);
         setLoading(false);
         return;
@@ -164,7 +164,7 @@ const AliasistChat = () => {
           // Roll back optimistic message and show error
           setMessages((prev) => [
             ...prev.filter((m) => !(m.role === "user" && m.content === text)),
-            { role: "assistant", content: `// ${err}` },
+            { role: "assistant", content: err },
           ]);
           return;
         }
@@ -216,13 +216,13 @@ const AliasistChat = () => {
 
       const reply =
         data?.error && !data.response
-          ? `// ${data.error}`
-          : data?.response ?? (res.ok ? "// signal_lost — try again" : `// signal_lost — ${res.status}`);
+          ? data.error
+          : data?.response ?? (res.ok ? "Request failed. Try again." : `Request failed (${res.status}).`);
       setMessages((prev) => [...prev, { role: "assistant", content: reply }]);
     } catch {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "// transmission_error — check your connection." },
+        { role: "assistant", content: "Connection issue. Try again." },
       ]);
     } finally {
       setLoading(false);
@@ -261,7 +261,7 @@ const AliasistChat = () => {
               <div className="flex items-center gap-2">
                 <span className="w-2 h-2 rounded-full bg-electric animate-pulse" />
                 <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-electric">
-                  {USE_PAGES_CHAT_ROOM ? "Aliasist Room" : "Aliasist AI"}
+                  {USE_PAGES_CHAT_ROOM ? "Aliasist Room" : "Aliasist Chat"}
                 </span>
                 {isLoaded && !isSignedIn && USE_PAGES_CHAT_ROOM ? (
                   <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground/70 border border-border/60 px-1.5 py-px rounded-sm">
@@ -335,7 +335,7 @@ const AliasistChat = () => {
               ) : !isSignedIn && USE_PAGES_CHAT_ROOM ? (
                 <div className="space-y-3">
                   <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/80 text-center leading-relaxed">
-                    Sign in with Clerk to chat and protect model responses from automated abuse.
+                    Sign in with Clerk to use chat.
                   </p>
                   <button
                     type="button"
@@ -352,7 +352,7 @@ const AliasistChat = () => {
                       value={input}
                       onChange={(e) => setInput(e.target.value)}
                       onKeyDown={handleKey}
-                      placeholder="// send transmission..."
+                      placeholder="Type a message..."
                       className="flex-1 bg-muted border border-border px-3 py-2 text-base font-mono text-foreground placeholder:text-muted-foreground/50 rounded-sm outline-none focus:border-electric/50 transition-colors sm:text-xs"
                       disabled={loading}
                       aria-label="Chat input"
@@ -371,8 +371,8 @@ const AliasistChat = () => {
                     {USE_PAGES_CHAT_ROOM
                       ? "Signed in · Clerk · Room"
                       : isSignedIn
-                        ? "Signed in · AI Waterfall"
-                        : "Public demo · AI Waterfall"}
+                        ? "Signed in"
+                        : "Public demo"}
                   </p>
                 </>
               )}
@@ -388,7 +388,7 @@ const AliasistChat = () => {
         whileTap={{ scale: 0.94 }}
         className="w-14 h-14 rounded-full bg-electric text-background flex items-center justify-center shadow-electric-sm hover:shadow-electric-md transition-shadow duration-300"
         aria-label={
-          open ? "Close AI chat" : isLoaded && !isSignedIn && USE_PAGES_CHAT_ROOM ? "Sign in to open AI chat" : "Open AI chat"
+          open ? "Close chat" : isLoaded && !isSignedIn && USE_PAGES_CHAT_ROOM ? "Sign in to open chat" : "Open chat"
         }
         aria-busy={!isLoaded}
       >
@@ -406,15 +406,15 @@ const AliasistChat = () => {
             </motion.span>
           ) : (
             <motion.span
-              key="ufo"
+              key="chat"
               initial={{ rotate: 90, opacity: 0 }}
               animate={{ rotate: 0, opacity: 1 }}
               exit={{ rotate: -90, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="text-2xl leading-none"
+              className="text-sm font-bold leading-none"
               style={{ filter: "drop-shadow(0 0 4px rgba(0,0,0,0.3))" }}
             >
-              ⌖
+              B
             </motion.span>
           )}
         </AnimatePresence>

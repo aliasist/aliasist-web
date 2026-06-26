@@ -188,7 +188,7 @@ const CowAbductionEasterEgg = ({ open, onClose }: CowAbductionEasterEggProps) =>
               <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/75 via-transparent to-black/35 z-10" />
               <div className="pointer-events-none absolute inset-0 scanlines opacity-[0.08] z-10" />
               <div className="pointer-events-none absolute left-4 top-4 z-10 font-mono text-[8px] uppercase tracking-[0.25em] text-electric/55 drop-shadow-[0_1px_8px_rgba(0,0,0,0.85)]">
-                FILES ABDUCTOR // PASTURE.CAPTURED
+                FILES ABDUCTOR
               </div>
             </div>
 

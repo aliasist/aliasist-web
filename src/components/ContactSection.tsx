@@ -8,6 +8,7 @@ import { contact, suiteApps } from "@/content/homepage";
 import { readJsonBody, siteEndpoints } from "@/config/api";
 
 const CONTACT_API = siteEndpoints.contactApi;
+const isExternalHref = (href: string) => /^https?:\/\//.test(href);
 
 const GitHubIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -33,6 +34,18 @@ const linkIcons = {
   linkedin: LinkedInIcon,
   email: MailIcon,
 } as const;
+
+const contactLinkHover = {
+  x: 5,
+  y: -2,
+  scale: 1.012,
+  transition: { type: "spring" as const, stiffness: 320, damping: 24, mass: 0.65 },
+};
+
+const contactLinkTap = {
+  scale: 0.99,
+  transition: { type: "spring" as const, stiffness: 420, damping: 28 },
+};
 
 type FormState = "idle" | "sending" | "success" | "error";
 
@@ -62,7 +75,7 @@ const ContactSection = () => {
       setName(""); setEmail(""); setMessage("");
     } catch (err) {
       setFormState("error");
-      setErrorMsg(err instanceof Error ? err.message : "Transmission failed");
+      setErrorMsg(err instanceof Error ? err.message : "Message failed");
     }
   };
 
@@ -102,7 +115,7 @@ const ContactSection = () => {
             <div>
               <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-electric mb-6">
                 <span className="w-2 h-2 bg-electric rounded-full animate-pulse" />
-                {contact.signalLabel}
+                {contact.introLabel}
               </div>
 
               <h2 id="contact-heading" className="text-3xl sm:text-4xl font-bold text-background mb-4 tracking-tight leading-tight">
@@ -222,8 +235,9 @@ const ContactSection = () => {
                       whileInView={{ opacity: 1, x: 0 }}
                       viewport={{ once: true }}
                       transition={{ duration: 0.3, delay: i * 0.08 }}
-                      whileHover={{ x: 4 }}
-                      className="tap-target group flex items-center justify-between px-5 py-4 bg-background/5 border border-background/10 outline-none transition-all duration-300 hover:bg-electric/10 hover:border-electric/25 hover:shadow-electric-xs focus-visible:z-10 focus-visible:border-electric/40 focus-visible:bg-electric/10 focus-visible:shadow-electric-xs focus-visible:ring-2 focus-visible:ring-white/45 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground font-mono text-sm text-background/55 hover:text-electric"
+                      whileHover={contactLinkHover}
+                      whileTap={contactLinkTap}
+                      className="tap-target group flex items-center justify-between px-5 py-4 bg-background/5 border border-background/10 outline-none transition-[background-color,border-color,box-shadow,color] duration-300 hover:bg-electric/10 hover:border-electric/25 hover:shadow-electric-xs focus-visible:z-10 focus-visible:border-electric/40 focus-visible:bg-electric/10 focus-visible:shadow-electric-xs focus-visible:ring-2 focus-visible:ring-white/45 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground font-mono text-sm text-background/55 hover:text-electric"
                     >
                       <div className="flex items-center gap-3">
                         <span className="text-electric/40 group-hover:text-electric transition-colors">
@@ -248,19 +262,22 @@ const ContactSection = () => {
                   <motion.a
                     key={app.label}
                     href={app.href}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                    target={isExternalHref(app.href) ? "_blank" : undefined}
+                    rel={isExternalHref(app.href) ? "noopener noreferrer" : undefined}
                     onMouseEnter={() => playHover()}
                     onClick={() => playClick()}
                     initial={{ opacity: 0, x: 20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}
                     transition={{ duration: 0.4, delay: i * 0.1 }}
-                    whileHover={{ x: 6 }}
-                    className="tap-target group flex items-center justify-between px-6 py-5 bg-background/5 border border-background/10 outline-none transition-all duration-300 hover:bg-electric/10 hover:border-electric/30 hover:shadow-electric-xs focus-visible:z-10 focus-visible:border-electric/40 focus-visible:bg-electric/10 focus-visible:shadow-electric-xs focus-visible:ring-2 focus-visible:ring-white/45 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                    whileHover={contactLinkHover}
+                    whileTap={contactLinkTap}
+                    className="tap-target group flex items-center justify-between px-6 py-5 bg-background/5 border border-background/10 outline-none transition-[background-color,border-color,box-shadow] duration-300 hover:bg-electric/10 hover:border-electric/30 hover:shadow-electric-xs focus-visible:z-10 focus-visible:border-electric/40 focus-visible:bg-electric/10 focus-visible:shadow-electric-xs focus-visible:ring-2 focus-visible:ring-white/45 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
                   >
                     <div className="flex items-center gap-4">
-                      <span className="text-2xl">{app.icon}</span>
+                      <span className="flex size-9 shrink-0 items-center justify-center rounded-sm border border-background/15 bg-background/5 font-mono text-[10px] font-semibold text-electric">
+                        {app.icon}
+                      </span>
                       <div>
                         <p className="font-mono text-sm font-semibold text-background/80 group-hover:text-electric transition-colors">
                           {app.label}

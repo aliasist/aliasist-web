@@ -1,16 +1,15 @@
 import { motion } from "framer-motion";
+import { ArrowRight, Mail } from "lucide-react";
 import AlienEye from "./AlienEye";
-import badge from "@/assets/aliasist-diff-logo.png";
-import aliasistIcon from "@/assets/aliasist-logo-brand.svg";
-import mascot from "@/assets/aliasist-diff-logo.png";
 import { hero } from "@/content/homepage";
 import { HomeGoogleAuth } from "@/components/HomeGoogleAuth";
+import { playClick, playHover } from "@/hooks/useSound";
 
 const HeroSection = () => {
   return (
     <section
       id="top"
-      className="relative flex min-h-[100dvh] min-h-screen items-center justify-center grid-bg overflow-hidden scanlines"
+      className="relative flex min-h-[100dvh] min-h-screen items-center justify-center overflow-hidden grid-bg scanlines"
     >
       {/* Background photo — slow Ken-burns drift + vignette; respects prefers-reduced-motion */}
       <div
@@ -24,200 +23,133 @@ const HeroSection = () => {
 
       {/* Layered radial glows */}
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_35%,_hsl(165_90%_42%_/_0.06)_0%,_transparent_65%)] pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_55%_42%_at_24%_18%,_hsl(var(--violet)_/_0.08)_0%,_transparent_68%)] pointer-events-none" />
+      <div className="absolute inset-0 hero-violet-glow-a pointer-events-none" />
+      <div className="absolute inset-0 hero-violet-glow-b pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_50%_80%,_hsl(165_90%_42%_/_0.04)_0%,_transparent_70%)] pointer-events-none" />
 
-      {/* Top-right signal badge */}
-      <motion.div
-        initial={{ opacity: 0, x: 20 }}
-        animate={{ opacity: 1, x: 0 }}
-        transition={{ delay: 1.2, duration: 0.6 }}
-        className="absolute right-3 top-[calc(4.5rem+env(safe-area-inset-top,0px)+6px)] z-[5] flex max-w-[min(100%-1.5rem,14rem)] items-center gap-1.5 rounded-sm border border-violet/15 bg-background/40 px-2.5 py-1.5 font-mono text-[8px] uppercase tracking-[0.12em] text-muted-foreground shadow-[0_0_24px_hsl(var(--violet)_/_0.08),0_0_22px_hsl(var(--electric)_/_0.08)] backdrop-blur-md sm:right-8 sm:gap-2 sm:px-3 sm:text-[10px] sm:tracking-[0.15em] lg:right-12 xl:right-16"
-      >
-        <span className="shrink-0 text-electric animate-pulse" aria-hidden>
-          ▮
-        </span>
-        <span className="leading-snug">{hero.statusBadge}</span>
-      </motion.div>
-
-      {/* Glossy alien icon — bottom right atmospheric */}
-      <motion.div
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ delay: 1.8, duration: 1.5 }}
-        className="pointer-events-none absolute bottom-12 right-4 hidden lg:block xl:right-12 2xl:right-16"
-      >
-        <img
-          src={aliasistIcon}
-          alt=""
-          className="w-24 h-24 rounded-xl opacity-[0.12] hover:opacity-[0.22] transition-opacity duration-700 object-cover"
-        />
-      </motion.div>
-
-      {/* Mascot: aliasist, — logo design ideas (desktop) */}
-      <motion.div
-        initial={{ opacity: 0, scale: 0.7, rotate: 8 }}
-        animate={{ opacity: 1, scale: 1, rotate: 0 }}
-        transition={{ delay: 0.9, duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }}
-        className="absolute right-4 top-1/2 z-20 hidden -translate-y-1/2 flex-col items-center gap-2 lg:flex xl:right-12 2xl:right-16"
-      >
+      <div className="relative z-10 mx-auto flex w-full max-w-site flex-col items-center px-4 pt-24 pb-14 text-center sm:px-8 lg:px-12 xl:px-16">
+        {/* Alien eye — centered over the UFO in the background photo */}
         <motion.div
-          animate={{ y: [0, -10, 0] }}
-          transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-          className="relative"
-        >
-          <div className="absolute -inset-3 rounded-full border border-violet/20 animate-pulse pointer-events-none" />
-          <img
-            src={mascot}
-            alt="Aliasist Logo Draft Ideas"
-            title="Aliasist Logo Draft Ideas"
-            width={208}
-            height={208}
-            decoding="async"
-            className="w-44 h-44 xl:w-52 xl:h-52 rounded-full object-cover border-2 border-electric/50 shadow-[0_0_38px_hsl(var(--electric)_/_0.18),0_0_56px_hsl(var(--violet)_/_0.1),0_4px_26px_hsl(0_0%_0%_/_0.18)] hover:shadow-[0_0_54px_hsl(var(--electric)_/_0.24),0_0_70px_hsl(var(--violet)_/_0.14),0_8px_42px_hsl(0_0%_0%_/_0.22)] hover:scale-105 transition-all duration-500 cursor-pointer select-none bg-transparent"
-          />
-        </motion.div>
-        <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-electric/50 text-center">
-          {hero.mascotLabel}
-        </p>
-      </motion.div>
-
-      <div className="relative z-10 mx-auto w-full max-w-site px-4 text-center sm:px-8 lg:px-12 xl:px-16">
-
-        {/* Eye */}
-        <motion.div
-          className="flex justify-center mb-10"
-          initial={{ opacity: 0, y: -20, scale: 0.8 }}
+          initial={{ opacity: 0, y: -12, scale: 0.8 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 1, delay: 0.1, ease: [0.34, 1.56, 0.64, 1] }}
+          className="mb-6 flex justify-center sm:mb-8"
         >
-          <div className="translate-y-16 sm:translate-y-20">
-            <AlienEye />
-          </div>
+          <AlienEye />
         </motion.div>
 
-        <div className="translate-y-10 sm:translate-y-12">
-          {/* Mascot — mobile only (centered, below the eye) */}
-          <motion.div
-            initial={{ opacity: 0, scale: 0.7 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.9, duration: 0.8, ease: [0.34, 1.56, 0.64, 1] }}
-            className="flex lg:hidden justify-center mb-8"
-          >
-            <motion.div
-              animate={{ y: [0, -8, 0] }}
-              transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut" }}
-              className="relative"
-            >
-              <div className="absolute -inset-2 rounded-full border border-violet/20 animate-pulse pointer-events-none" />
-              <img
-                src={mascot}
-                alt={hero.mascotAlt}
-                title={hero.mascotTitle}
-                width={96}
-                height={96}
-                decoding="async"
-                className="w-24 h-24 rounded-full object-cover border-2 border-electric/50 shadow-[0_0_22px_hsl(var(--electric)_/_0.12),0_0_34px_hsl(var(--violet)_/_0.1),0_2px_14px_hsl(0_0%_0%_/_0.14)] select-none bg-transparent"
-              />
-            </motion.div>
-          </motion.div>
-
-          {/* Eyeline label */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.45, duration: 0.6 }}
-            className="flex items-center justify-center gap-3 mb-6"
-          >
-            <span className="block w-12 h-px bg-gradient-to-r from-transparent via-violet/30 to-electric/60" />
-            <p className="font-mono text-[11px] tracking-[0.3em] uppercase text-electric/80">
-              {hero.eyeline}
-            </p>
-            <span className="block w-12 h-px bg-gradient-to-l from-transparent via-violet/30 to-electric/60" />
-          </motion.div>
-
-          {/* Wordmark */}
-          <motion.h1
-            className="glitch-text mb-5 select-none text-6xl font-bold leading-none tracking-tight text-foreground sm:text-8xl md:text-[9rem]"
-            data-text={hero.wordmark}
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-          >
-            {hero.wordmark}
-          </motion.h1>
-
-          {/* Tagline */}
-          <motion.p
-            className="font-mono text-[11px] uppercase tracking-[0.24em] text-electric/60 mb-4"
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            transition={{ delay: 0.6, duration: 0.7 }}
-          >
-            {hero.tagline}
-          </motion.p>
-
-          {/* Sub copy */}
-          <motion.p
-            className="mx-auto mb-12 max-w-xl rounded-sm border border-violet/15 bg-background/75 px-5 py-4 text-base leading-relaxed text-foreground/85 shadow-[0_0_22px_hsl(var(--electric)_/_0.1),0_0_32px_hsl(var(--violet)_/_0.08),0_2px_14px_hsl(0_0%_0%_/_0.14)] backdrop-blur-md sm:px-7 sm:py-5 sm:text-lg xl:max-w-2xl"
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.7, duration: 0.6 }}
-          >
-            {hero.subcopy}
-          </motion.p>
-
-          {/* CTAs */}
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.85, duration: 0.6 }}
-            className="hero-cta-group flex flex-col sm:flex-row items-center justify-center gap-4"
-          >
-            <a
-              href={hero.ctaWorkHref}
-              className="group relative px-8 py-3.5 bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] rounded-sm overflow-hidden shadow-electric-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-electric-md active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            >
-              <span className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
-              <span className="relative">{hero.ctaWork}</span>
-            </a>
-            <a
-              href={hero.ctaContactHref}
-              className="px-8 py-3.5 border border-violet/20 text-foreground/80 font-mono text-xs uppercase tracking-[0.14em] rounded-sm hover:border-electric/60 hover:text-electric hover:bg-[linear-gradient(135deg,hsl(var(--electric)_/_0.06),hsl(var(--violet)_/_0.08))] hover:shadow-[0_0_26px_hsl(var(--electric)_/_0.12),0_0_32px_hsl(var(--violet)_/_0.1),inset_0_1px_0_hsl(var(--violet)_/_0.18)] transition-all duration-300 hover:-translate-y-0.5 active:scale-95 outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            >
-              {hero.ctaContact}
-            </a>
-          </motion.div>
-
-          <HomeGoogleAuth />
-        </div>
-
-        {/* Status row */}
         <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.25, duration: 0.6 }}
+          className="mb-6 inline-flex items-center gap-2 rounded-sm border border-violet/20 bg-background/55 px-3 py-2 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground shadow-[0_0_26px_hsl(var(--violet)_/_0.08)] backdrop-blur-md"
+        >
+          <span className="size-1.5 rounded-full bg-electric shadow-electric-dot" />
+          {hero.statusBadge}
+        </motion.div>
+
+        <motion.h1
+          className="glitch-text text-glow-violet mb-5 select-none text-6xl font-bold leading-none tracking-normal text-foreground sm:text-8xl md:text-[9rem]"
+          data-text={hero.wordmark}
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+        >
+          {hero.wordmark}
+        </motion.h1>
+
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.45, duration: 0.6 }}
+          className="mb-6 flex items-center justify-center gap-3"
+        >
+          <span className="block h-px w-12 bg-gradient-to-r from-transparent via-violet/55 to-electric/50" />
+          <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-electric/80 sm:text-[11px]">
+            {hero.eyeline}
+          </p>
+          <span className="block h-px w-12 bg-gradient-to-l from-transparent via-violet/55 to-electric/50" />
+        </motion.div>
+
+        <motion.p
+          className="mb-4 font-mono text-[11px] uppercase tracking-[0.24em] text-electric/65"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.8 }}
-          className="flex flex-wrap items-center justify-center gap-5 mt-16 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/30"
+          transition={{ delay: 0.6, duration: 0.7 }}
         >
-          {hero.statusRow.map((t, i) => (
-            <span key={t} className="flex items-center gap-5">
-              {i > 0 && <span className="w-1 h-1 rounded-full bg-border/60" />}
-              {t}
-            </span>
+          {hero.tagline}
+        </motion.p>
+
+        <motion.p
+          className="mx-auto mb-8 max-w-2xl rounded-sm border border-violet/15 bg-background/76 px-5 py-4 text-base leading-relaxed text-foreground/86 shadow-[0_0_22px_hsl(var(--electric)_/_0.1),0_0_32px_hsl(var(--violet)_/_0.08),0_2px_14px_hsl(0_0%_0%_/_0.14)] backdrop-blur-md sm:px-7 sm:py-5 sm:text-lg"
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.7, duration: 0.6 }}
+        >
+          {hero.subcopy}
+        </motion.p>
+
+        <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.82, duration: 0.6 }}
+          className="mb-8 grid w-full max-w-2xl gap-px overflow-hidden rounded-sm border border-border/55 bg-border/55 sm:grid-cols-3"
+        >
+          {hero.proofPoints.map((point) => (
+            <div key={point.label} className="bg-background/62 px-4 py-3 text-center backdrop-blur-md">
+              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/55">
+                {point.label}
+              </p>
+              <p className="mt-1 text-lg font-semibold tracking-tight text-foreground">
+                {point.value}
+              </p>
+            </div>
           ))}
         </motion.div>
 
         <motion.div
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.95, duration: 0.6 }}
+          className="hero-cta-group flex flex-col items-center justify-center gap-3 sm:flex-row"
+        >
+          <a
+            href={hero.ctaContactHref}
+            onMouseEnter={playHover}
+            onClick={playClick}
+            className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-sm bg-electric px-7 py-3.5 font-mono text-xs uppercase tracking-[0.14em] text-background shadow-electric-sm outline-none transition-all duration-300 hover:-translate-y-0.5 hover:shadow-cta-duo focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+          >
+            <span className="absolute inset-0 translate-y-full bg-white/10 transition-transform duration-300 group-hover:translate-y-0" />
+            <span className="relative">{hero.ctaContact}</span>
+            <ArrowRight className="relative size-3.5 transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden />
+          </a>
+          <a
+            href={hero.ctaSecondaryHref}
+            onMouseEnter={playHover}
+            onClick={playClick}
+            className="inline-flex items-center justify-center gap-2 rounded-sm border border-violet/22 bg-background/38 px-7 py-3.5 font-mono text-xs uppercase tracking-[0.14em] text-foreground/82 outline-none backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-electric/45 hover:bg-[linear-gradient(135deg,hsl(var(--electric)_/_0.06),hsl(var(--violet)_/_0.08))] hover:text-electric hover:shadow-[0_0_26px_hsl(var(--electric)_/_0.12),0_0_32px_hsl(var(--violet)_/_0.1),inset_0_1px_0_hsl(var(--violet)_/_0.18)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+          >
+            <Mail className="size-3.5" aria-hidden />
+            {hero.ctaSecondary}
+          </a>
+        </motion.div>
+
+        <div className="mt-6 flex justify-center">
+          <HomeGoogleAuth />
+        </div>
+
+        <motion.div
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
-          transition={{ delay: 1.35, duration: 0.8 }}
-          className="flex justify-center mt-10"
+          transition={{ delay: 1.2, duration: 0.8 }}
+          className="mt-12 flex flex-wrap items-center justify-center gap-5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/40"
         >
-          <img
-            src={badge}
-            alt=""
-            className="w-24 h-24 opacity-[0.15] hover:opacity-30 transition-opacity duration-700"
-          />
+          {hero.statusRow.map((t, i) => (
+            <span key={t} className="flex items-center gap-5">
+              {i > 0 && <span className="h-1 w-1 rounded-full bg-border/60" />}
+              {t}
+            </span>
+          ))}
         </motion.div>
       </div>
 

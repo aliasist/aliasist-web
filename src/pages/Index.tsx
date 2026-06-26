@@ -1,16 +1,15 @@
 import { lazy, Suspense, useState, useEffect } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
-import Starfield from "@/components/Starfield";
-import BackgroundRotator from "@/components/BackgroundRotator";
 import ScrollProgress from "@/components/ScrollProgress";
-import SectionRail from "@/components/SectionRail";
 import AliasistChat from "@/components/AliasistChat";
 import AISplashScreen from "@/components/AISplashScreen";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import AmbientUfo from "@/components/AmbientUfo";
 import { AdUnit, AD_SLOTS } from "@/components/AdUnit";
 
 const AboutSection = lazy(() => import("@/components/AboutSection"));
+const OperatingSnapshot = lazy(() => import("@/components/OperatingSnapshot"));
 const ProjectsSection = lazy(() => import("@/components/ProjectsSection"));
 const TransmissionsSection = lazy(() => import("@/components/TransmissionsSection"));
 const ContactSection = lazy(() => import("@/components/ContactSection"));
@@ -57,33 +56,13 @@ const Index = () => {
       {showSplash && (
         <AISplashScreen onDismiss={handleSplashDismiss} />
       )}
-      <BackgroundRotator />
-      <Starfield />
       <ScrollProgress />
-      <SectionRail />
+      <AmbientUfo />
       <Navbar />
       <main id="main-content" className="relative z-10" tabIndex={-1}>
         <HeroSection />
         <ErrorBoundary><Suspense fallback={<SectionFallback />}><AboutSection /></Suspense></ErrorBoundary>
-
-        {/* Featured Tool - GitHub Companion (prominent link after intro) */}
-        <div className="mx-auto w-full max-w-site px-4 sm:px-8 lg:px-12 xl:px-16 py-4">
-          <div className="rounded-2xl border border-border bg-card px-6 py-5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
-            <div>
-              <div className="font-mono text-[10px] uppercase tracking-[0.2em] text-electric">Featured Tool</div>
-              <h3 className="text-xl font-semibold tracking-tight mt-1">GitHub Companion</h3>
-              <p className="text-sm text-muted-foreground mt-1 max-w-md">
-                Guided repository understanding + advanced pull request reviews with risk signals.
-              </p>
-            </div>
-            <a 
-              href="/tools/github" 
-              className="inline-flex shrink-0 items-center gap-2 rounded-lg bg-electric px-5 py-2.5 text-sm font-medium text-black hover:bg-white transition-colors"
-            >
-              Open GitHub Companion →
-            </a>
-          </div>
-        </div>
+        <ErrorBoundary><Suspense fallback={<SectionFallback />}><OperatingSnapshot /></Suspense></ErrorBoundary>
 
         <div className="mx-auto w-full max-w-site px-4 sm:px-8 lg:px-12 xl:px-16 py-2">
           <AdUnit slot={AD_SLOTS.banner} format="auto" />

@@ -24,10 +24,10 @@ interface NewsResponse {
 }
 
 const TAG_LABELS: Record<string, string> = {
-  tech:    "AI & Tech",
+  tech:    "Tech",
   finance: "Finance",
   defense: "Defense",
-  aisec:   "AiSec",
+  aisec:   "Security",
 };
 
 function timeAgo(iso: string): string {
@@ -44,23 +44,23 @@ function timeAgo(iso: string): string {
 
 const FALLBACK_POSTS = [
   {
-    id: "f1", tag: "aisec", color: "#FF5555", category: "AiSec",
-    title: "AiSec, PenTesting, and a mission to fortify the future of AI.",
+    id: "f1", tag: "aisec", color: "#FF5555", category: "Security",
+    title: "Pen testing, software security, and building harder-to-break tools.",
     source: "Aliasist", url: "#", published: new Date().toISOString(),
   },
   {
-    id: "f2", tag: "tech", color: "#00C97B", category: "AI & Tech",
+    id: "f2", tag: "tech", color: "#00C97B", category: "Tech",
     title: "Building Aliasist-Files-Abductor: why I made a tool nobody asked for.",
     source: "Aliasist", url: "#", published: new Date().toISOString(),
   },
   {
-    id: "f3", tag: "tech", color: "#00C97B", category: "AI & Tech",
+    id: "f3", tag: "tech", color: "#00C97B", category: "Tech",
     title: "Self-taught to CS degree: what nobody tells you about the gap.",
     source: "Aliasist", url: "#", published: new Date().toISOString(),
   },
 ];
 
-const FILTERS = ["All", "AI & Tech", "Finance", "Defense", "AiSec"];
+const FILTERS = ["All", "Tech", "Finance", "Defense", "Security"];
 
 // Category-based thumbnail gradients — always render, no external dependency
 const CARD_GRADIENTS: Record<string, string> = {
@@ -116,7 +116,7 @@ const CardThumbnail = ({ article }: { article: Article }) => {
           className="font-mono text-[10px] uppercase tracking-[0.15em] px-2 py-0.5 border rounded-sm backdrop-blur-sm bg-background/40"
           style={{ color: article.color, borderColor: `${article.color}40` }}
         >
-          {article.tag === "aisec" ? "AiSec" : article.tag}
+          {article.tag === "aisec" ? "Security" : article.tag}
         </span>
       </div>
     </div>
@@ -125,6 +125,11 @@ const CardThumbnail = ({ article }: { article: Article }) => {
 
 // Individual blog card
 const BlogCard = ({ article, index }: { article: Article; index: number }) => {
+  const title = article.title
+    .replace(/\bA\.I\.\b/gi, "software")
+    .replace(/\bAI\b/g, "software")
+    .replace(/\bartificial intelligence\b/gi, "software");
+
   return (
     <motion.a
       href={article.url}
@@ -155,7 +160,7 @@ const BlogCard = ({ article, index }: { article: Article; index: number }) => {
 
         {/* Title */}
         <h3 className="text-sm font-semibold text-foreground/85 leading-snug mb-3 group-hover:text-foreground transition-colors duration-200 flex-1">
-          {article.title}
+          {title}
         </h3>
 
         {/* Source + arrow */}
@@ -336,7 +341,7 @@ const TransmissionsSection = () => {
         {/* Empty state */}
         {!loading && displayed.length === 0 && (
           <div className="text-center py-16 font-mono text-xs text-muted-foreground/40 uppercase tracking-[0.15em]">
-            // no transmissions in this frequency
+            No posts found.
           </div>
         )}
       </div>
