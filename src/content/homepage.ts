@@ -5,14 +5,14 @@
  *   • Project banners + assets live under `./images` (imported via `@images/...`).
  *   • Hero backdrop uses `public/background.png` (see `HeroSection`).
  *   • Optional Cloudflare **text-to-image** worker: `apps/phoenix-image-worker`
- *     calls `@cf/leonardo/phoenix-1.0` (Leonardo Phoenix on Workers AI). It
+ *     calls `@cf/leonardo/phoenix-1.0` on Workers. It
  *     generates **new** images from prompts — not automatic “enhancement” of
  *     these PNGs. To use it for marketing art: deploy the worker, POST a prompt,
  *     save the JPEG/PNG, then commit under `images/` or `public/`.
  *
- * Suite apps (live products):
- *   • Navbar: open "Suite" in the top bar — same URLs as `suiteApps` below.
- *   • Contact: scroll to Contact → right column "The Aliasist Suite".
+ * Project links:
+ *   • Navbar: open "Projects" in the top bar — same URLs as `suiteApps` below.
+ *   • Contact: scroll to Contact → right column "Projects".
  *   • Projects: each card has its own "Open …" button; URLs are in `projects`.
  *
  * Backend/API URLs (for developers): see `src/config/api.ts` (`siteEndpoints`).
@@ -24,23 +24,86 @@ import filesAbductorBanner from "@images/files_abductor_banner_cinematic.png";
 import pulseBanner from "@images/pulsesist_banner_cinematic.png";
 import spaceBanner from "@images/spacesist_banner_cinematic.png";
 
+// ── Suite apps (live products) ───────────────────────────────────────────────
+
+/** Used by Navbar "Projects" menu and Contact section project list — keep in sync. */
+export const suiteApps = [
+  {
+    label: "DataSist",
+    sub: "Data Center WebApp",
+    href: "https://datasist-frontend.pages.dev",
+    icon: "DS",
+  },
+  {
+    label: "Atomicity",
+    sub: "Stopwatch",
+    href: "/atomicity/",
+    icon: "AT",
+  },
+  {
+    label: "PulseSist",
+    sub: "Stock Market Dashboard",
+    href: "https://pulse.aliasist.com",
+    icon: "PS",
+  },
+  {
+    label: "SpaceSist",
+    sub: "Live Space Portal",
+    href: "https://space.aliasist.com",
+    icon: "SS",
+  },
+  {
+    label: "EcoSist",
+    sub: "**UNDER CONSTRUCTION** project paused.",
+    href: "/ecosist/",
+    icon: "ES",
+  },
+  {
+    label: "Clearasist",
+    sub: "Metadata Cleaner",
+    href: "https://clearasist.pages.dev",
+    icon: "CL",
+  },
+  {
+    label: "GitHub Companion",
+    sub: "Guided GitHub project tools",
+    href: "/tools/github",
+    icon: "GH",
+  },
+  {
+    label: "Literacy Tools",
+    sub: "Writing helper",
+    href: "https://github.com/aliasist/aliasist-literacy-assistant",
+    icon: "LT",
+  },
+] as const;
+
+export const suiteAppCount = suiteApps.length;
+
 // ── Hero ─────────────────────────────────────────────────────────────────────
 
 export const hero = {
-  statusBadge: "Aliasist · AI Consulting",
+  statusBadge: "Aliasist · Developer Portfolio",
   mascotLabel: "aliasist",
   mascotAlt: "Aliasist",
   mascotTitle: "Aliasist",
-  eyeline: "AI consulting // developer portfolio // projects",
-  wordmark: "A L I A S I S T",
-  tagline: "Building things for users, not hype.",
+  eyeline: "developer portfolio · practical software · security-minded tools",
+  wordmark: "ALIASIST",
+  tagline: "Software built with care, clarity, and ownership.",
   subcopy:
-    "I'm Blake. I help organizations and individuals navigate the AI landscape with knowledge, tools, and integrity to create safer systems that are harder to compromise.",
+    "I'm Blake, a self-taught developer building web apps, data tools, privacy utilities, and automation projects under the Aliasist name.",
+  proofPoints: [
+    { label: "Projects", value: `${suiteAppCount}` },
+    { label: "External APIs", value: "7+" },
+    { label: "Focus", value: "Security" },
+  ] as const,
   ctaWork: "Consulting",
   ctaWorkHref: "Consulting",
   ctaContact: "Projects",
   ctaContactHref: "#projects",
-  statusRow: ["Contract", "Developer Portfolio", "Projects"] as const,
+  ctaSecondary: "Contact",
+  ctaSecondaryHref: "#contact",
+  statusRow: ["Portfolio", "Tools", "Research", "Automation"] as const,
 } as const;
 
 // ── Navbar ───────────────────────────────────────────────────────────────────
@@ -51,57 +114,6 @@ export const pageNavLinks = [
   { label: "Tech News", href: "#transmissions" },
 ] as const;
 
-/** Used by Navbar “Suite” menu and Contact section suite list — keep in sync. */
-export const suiteApps = [
-  {
-    label: "DataSist",
-    sub: "AI Data Center WebApp",
-    href: "https://datasist-frontend.pages.dev",
-    icon: "🌐📊",
-  },
-  {
-    label: "Atomicity",
-    sub: "Stopwatch",
-    href: "/atomicity/",
-    icon: "⏱️🔥",
-  },
-  {
-    label: "PulseSist",
-    sub: "Stock Market Dashboard",
-    href: "https://pulse.aliasist.com",
-    icon: "📈🤖",
-  },
-  {
-    label: "SpaceSist",
-    sub: "Live Space Portal",
-    href: "https://space.aliasist.com",
-    icon: "🌌🛰️",
-  },
-  {
-    label: "EcoSist",
-    sub: "**UNDER CONSTRUCTION** project paused.",
-    href: "/ecosist/",
-    icon: "🌱🛠️",
-  },
-  {
-    label: "Clearasist",
-    sub: "Metadata Cleaner",
-    href: "https://clearasist.pages.dev",
-    icon: "🧹🔒",
-  },
-  {
-    label: "GitHub Companion",
-    sub: "Guided GitHub project tools",
-    href: "/tools/github",
-    icon: "🔎🛸",
-  },
-  {
-    label: "Literacy Assistant",
-    sub: "AI-powered writing assistant",
-    href: "https://github.com/aliasist/aliasist-literacy-assistant",
-    icon: "✍️✨",
-  },
-] as const;
 
 // ── Footer ────────────────────────────────────────────────────────────────────
 
@@ -131,9 +143,39 @@ const downloadLinks = {
 };
 
 export const projectsSection = {
-  dividerLabel: "Projects // Proof of work",
+  dividerLabel: "Projects",
   headline: "Built projects, not ideas.",
-  subcopy: "These are side projects and live tools that show how I think, design, and ship.",
+  subcopy: "A tighter view of the apps and utilities I have shipped, from data dashboards to privacy tools and developer workflows.",
+} as const;
+
+export const operatingSnapshot = {
+  dividerLabel: "Current work",
+  headline: "A working portfolio for shipped tools.",
+  subcopy:
+    "This site is the home base for my projects, notes, contact path, and the tools I use to manage the work behind them.",
+  lanes: [
+    {
+      label: "Projects",
+      value: `${suiteAppCount}`,
+      eyebrow: "Live index",
+      detail: "Public apps and utilities collected under one portfolio surface.",
+      href: "#projects",
+    },
+    {
+      label: "Admin",
+      value: "Private",
+      eyebrow: "Owner only",
+      detail: "Admin dashboard access stays gated to the owner account.",
+      href: "/agent",
+    },
+    {
+      label: "Contact",
+      value: "Direct",
+      eyebrow: "Open channel",
+      detail: "Project work, internship conversations, and collaboration requests.",
+      href: "#contact",
+    },
+  ],
 } as const;
 
 export const projects = [
@@ -147,7 +189,7 @@ export const projects = [
     status: "Live",
     meta: ["Project guide", "PR review", "Public tool"] as const,
     tone: "violet",
-    icon: "🔎🛸",
+    icon: "GH",
     link: "/tools/github",
     linkLabel: "Open GitHub Companion →",
     banner: null,
@@ -162,7 +204,7 @@ export const projects = [
     status: "Live",
     meta: ["NASA", "SpaceX", "Live orbital data"] as const,
     tone: "violet",
-    icon: "🌌🛰️👽",
+    icon: "SS",
     link: "https://space.aliasist.com",
     linkLabel: "Open SpaceSist →",
     banner: spaceBanner,
@@ -177,7 +219,7 @@ export const projects = [
     status: "Live",
     meta: ["PWA", "No accounts", "No storage"] as const,
     tone: "amber",
-    icon: "⏱️",
+    icon: "AT",
     link: "/atomicity/",
     linkLabel: "Open Atomicity →",
     banner: null,
@@ -185,14 +227,14 @@ export const projects = [
   {
     name: "PulseSist",
     description:
-      "A market dashboard with live charts, portfolio tools, and AI-assisted analysis.",
-    tech: ["React", "Vite", "Cloudflare Workers", "D1", "FMP API", "AI"],
+      "A market dashboard with live charts, portfolio tools, and research views.",
+    tech: ["React", "Vite", "Cloudflare Workers", "D1", "FMP API", "Dashboards"],
     github: "https://github.com/aliasist/stockmarket",
     downloads: [],
     status: "Live",
-    meta: ["Markets", "Portfolio tools", "AI analysis"] as const,
+    meta: ["Markets", "Portfolio tools", "Research views"] as const,
     tone: "amber",
-    icon: "📈🤖⚡",
+    icon: "PS",
     link: "https://pulse.aliasist.com",
     linkLabel: "Open PulseSist →",
     banner: pulseBanner,
@@ -200,7 +242,7 @@ export const projects = [
   {
     name: "EcoSist",
     description:
-      "An environmental dashboard for air quality, climate signals, and geospatial data.",
+      "An environmental dashboard for air quality, climate data, and geospatial views.",
     tech: [
       "React",
       "Vite",
@@ -212,9 +254,9 @@ export const projects = [
     github: "https://github.com/aliasist/ecosist",
     downloads: [],
     status: "Live",
-    meta: ["Climate signals", "Air quality", "Geospatial"] as const,
+    meta: ["Climate data", "Air quality", "Geospatial"] as const,
     tone: "green",
-    icon: "🌱",
+    icon: "ES",
     link: "/ecosist/",
     linkLabel: "Open EcoSist →",
     banner: ecosistBanner,
@@ -229,7 +271,7 @@ export const projects = [
     status: "Live",
     meta: ["Privacy tool", "Browser-based", "D1-backed"] as const,
     tone: "cyan",
-    icon: "🧹🔒📊",
+    icon: "CL",
     link: "https://clearasist.pages.dev",
     linkLabel: "Open Clearasist →",
     banner: null,
@@ -248,7 +290,7 @@ export const projects = [
     status: "Live",
     meta: ["Desktop builds", "yt-dlp", "Release assets"] as const,
     tone: "teal",
-    icon: "🛸",
+    icon: "FA",
     link: null as string | null,
     linkLabel: null as string | null,
     banner: filesAbductorBanner,
@@ -256,29 +298,29 @@ export const projects = [
   {
     name: "DataSist",
     description:
-      "An AI data center intelligence platform for facilities, power, water, risk, and investment data.",
-    tech: ["React", "Vite", "D1", "Groq AI", "Leaflet", "EIA API"],
+      "A data center research platform for facilities, power, water, risk, and investment data.",
+    tech: ["React", "Vite", "D1", "Groq", "Leaflet", "EIA API"],
     github: "https://github.com/aliasist/datasist",
     downloads: [],
     status: "Live",
-    meta: ["Data centers", "Power + water", "AI intelligence"] as const,
+    meta: ["Data centers", "Power + water", "Risk research"] as const,
     tone: "blue",
-    icon: "🌐",
+    icon: "DS",
     link: "https://datasist-frontend.pages.dev",
     linkLabel: "Open DataSist →",
     banner: dataBanner,
   },
   {
-    name: "Literacy Assistant",
+    name: "Literacy Tools",
     description:
-      "A glassmorphic browser extension that helps with grammar, professional rephrasing, and summarization using an AI agent waterfall.",
+      "A browser extension that helps with grammar, professional rephrasing, and summarization.",
     tech: ["React", "Vite", "Cloudflare Workers", "Gemini", "Groq", "Ollama"],
     github: "https://github.com/aliasist/aliasist-literacy-assistant",
     downloads: [],
     status: "Live",
-    meta: ["Browser extension", "Agent waterfall", "Writing tools"] as const,
+    meta: ["Browser extension", "Writing tools", "Draft cleanup"] as const,
     tone: "violet",
-    icon: "✍️✨",
+    icon: "LT",
     link: "https://github.com/aliasist/aliasist-literacy-assistant",
     linkLabel: "View on GitHub →",
     banner: null,
@@ -287,9 +329,9 @@ export const projects = [
 
 export const comingSoonProjects = [
   {
-    codename: "PROJECT Nightfall",
-    description: "Signal intercepted. Classification level: Eyes only. Details redacted pending operational clearance.",
-    eta: "ETA: 2027",
+    codename: "Next project",
+    description: "A new tool is in early planning. Details will go here when the work is ready to show.",
+    eta: "2027",
   },
 ] as const;
 
@@ -307,7 +349,7 @@ export const about = {
   dividerLabel: "About",
   headline: "Meet Aliasist.",
   pathBadge: "Path · Cybersecurity × tools",
-  skillsLabel: "// skill_set_learning",
+  skillsLabel: "Skills I'm building",
   skills: [
     "Python",
     "JavaScript",
@@ -325,7 +367,7 @@ export const about = {
   bioBlocks: [
     {
       kicker: "Where I started",
-      body: "I coded my first website in 2004, it was for my Age of Empires clan, oXiDe and it started from dabbling in making banners/forum signatures. Fast-forward to today, and I'm a self-taught developer building practical web tools, AI-assisted workflows, and data-driven applications through Aliasist. I'm providing a way to organize and make sense of all the data out there.",
+      body: "I coded my first website in 2004 for my Age of Empires clan, oXiDe, after experimenting with banners and forum signatures. Today, I build practical web tools and data-driven applications through Aliasist: a way to organize and make sense of the data around us.",
     },
   ] as const,
 
@@ -334,7 +376,7 @@ export const about = {
   authorSlots: [] as unknown as readonly { kicker: string; body: string }[],
 
   stats: [
-    { num: "5",  label: "Live apps deployed", sym: "+" as const },
+    { num: `${suiteAppCount}`,  label: "Projects connected", sym: "" as const },
     { num: "7",  label: "External APIs integrated", sym: "+" as const },
     { num: "3",  label: "Years building in public", sym: "" as const },
     { num: "100", label: "Open source · github.com/aliasist", sym: "%" as const },
@@ -344,14 +386,14 @@ export const about = {
 // ── Contact ─────────────────────────────────────────────────────────────────
 
 export const contact = {
-  dividerLabel: "Channel Open // Contact",
-  signalLabel: "Welcome, Earthling.",
+  dividerLabel: "Contact",
+  introLabel: "Hi, I'm Blake.",
   headline: "Make contact.",
   introStrong: "Open to collaborations, internships, and project work.",
   introRest: "Creating tools for users.",
-  successTitle: "Transmission received",
+  successTitle: "Message received",
   successBody:
-    "Message logged. Responses prioritized by technical complexity and project alignment.",
+    "Message received. I prioritize clear requests, technical detail, and projects with a real path forward.",
   sendAnother: "Send another ↩",
   placeholders: {
     name: "Name",
@@ -359,13 +401,13 @@ export const contact = {
     message: "Message — what are you working on?",
   },
   submitIdle: "Send message ↗",
-  submitSending: "// transmitting...",
-  errorPrefix: "// error:",
-  errorFallback: "transmission failed — try dev@aliasist.com",
-  suiteColumnLabel: "// The Aliasist Suite",
+  submitSending: "Sending...",
+  errorPrefix: "Error:",
+  errorFallback: "message failed — try dev@aliasist.com",
+  suiteColumnLabel: "Projects",
   liveBadge: "Live",
   suiteStats: [
-    { n: "5", l: "Live Apps" },
+    { n: `${suiteAppCount}`, l: "Projects" },
     { n: "7+", l: "APIs" },
     { n: "340+", l: "Data Centers" },
   ],
@@ -385,8 +427,8 @@ export const contact = {
 export const transmissions = {
   dividerLabel: "Blog",
   headline: "Tech is moving fast.",
-  scanning: "// scanning frequencies...",
-  offline: "// live feed offline — showing archive",
-  liveFeedPrefix: "// live feed · updated ",
+  scanning: "Loading posts...",
+  offline: "Could not load the latest posts. Showing saved posts.",
+  liveFeedPrefix: "Updated ",
   liveFeedRecent: "recently",
 } as const;

@@ -21,7 +21,7 @@ class ErrorBoundary extends Component<Props, State> {
       return this.props.fallback ?? (
         <div className="flex min-h-[8rem] items-center justify-center px-4">
           <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground/50">
-            // section_error — reload to retry
+            This section could not load. Refresh to try again.
           </p>
         </div>
       );

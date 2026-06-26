@@ -1,10 +1,19 @@
+/**
+ * ARCHIVED — original TEAL AlienEye (pre-purple).
+ *
+ * This is a verbatim backup of src/components/AlienEye.tsx as it was before the
+ * Proton-purple recolor. It lives outside `src` (tsconfig only includes "src"),
+ * so it is NOT compiled, bundled, or linted — it's a rollback artifact only.
+ *
+ * To roll back to the teal eye:
+ *   cp archive/AlienEye.teal.tsx src/components/AlienEye.tsx
+ */
 import { useEffect, useRef, useState } from "react";
 import { motion } from "framer-motion";
 
 /**
- * AlienEye — cursor-tracking iris, animated pupil dilation, Proton-purple glow ring.
+ * AlienEye — cursor-tracking iris, animated pupil dilation, teal glow ring.
  * The eye "follows" the cursor within a ±20deg arc.
- * (Original teal version archived at archive/AlienEye.teal.tsx for rollback.)
  */
 const AlienEye = () => {
   const eyeRef = useRef<HTMLDivElement>(null);
@@ -67,14 +76,14 @@ const AlienEye = () => {
     >
       {/* Outer glow rings */}
       <motion.div
-        className="absolute rounded-full border"
-        style={{ width: 200, height: 200, borderColor: "hsl(252 100% 62% / 0.22)" }}
+        className="absolute rounded-full border border-electric/20"
+        style={{ width: 200, height: 200 }}
         animate={{ scale: [1, 1.04, 1], opacity: [0.4, 0.7, 0.4] }}
         transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
       />
       <motion.div
-        className="absolute rounded-full border"
-        style={{ width: 220, height: 220, borderColor: "hsl(252 100% 62% / 0.12)" }}
+        className="absolute rounded-full border border-electric/10"
+        style={{ width: 220, height: 220 }}
         animate={{ scale: [1, 1.06, 1], opacity: [0.2, 0.4, 0.2] }}
         transition={{ duration: 4, repeat: Infinity, ease: "easeInOut", delay: 0.5 }}
       />
@@ -86,8 +95,8 @@ const AlienEye = () => {
           width: 160,
           height: 160,
           background: "radial-gradient(circle at 38% 34%, hsl(220 18% 20%), hsl(220 18% 8%) 62%, hsl(220 18% 5%) 100%)",
-          boxShadow: "0 0 40px 8px hsl(252 100% 52% / 0.3), inset 0 0 30px hsl(252 100% 52% / 0.08)",
-          border: "1.5px solid hsl(252 100% 52% / 0.5)",
+          boxShadow: "0 0 40px 8px hsl(165 90% 42% / 0.3), inset 0 0 30px hsl(165 90% 42% / 0.08)",
+          border: "1.5px solid hsl(165 90% 42% / 0.5)",
         }}
       >
         {/* Globe sheen / atmosphere */}
@@ -95,7 +104,7 @@ const AlienEye = () => {
           className="absolute inset-0 rounded-full pointer-events-none"
           style={{
             background:
-              "radial-gradient(circle at 30% 26%, hsl(252 100% 70% / 0.18) 0%, hsl(252 100% 66% / 0.08) 20%, transparent 42%), radial-gradient(circle at 58% 72%, transparent 0%, transparent 62%, hsl(0 0% 0% / 0.28) 100%)",
+              "radial-gradient(circle at 30% 26%, hsl(165 90% 70% / 0.18) 0%, hsl(165 90% 55% / 0.08) 20%, transparent 42%), radial-gradient(circle at 58% 72%, transparent 0%, transparent 62%, hsl(0 0% 0% / 0.28) 100%)",
           }}
         />
 
@@ -104,7 +113,7 @@ const AlienEye = () => {
           className="absolute inset-0 rounded-full pointer-events-none"
           style={{
             background:
-              "radial-gradient(circle at center, transparent 0 43%, hsl(252 100% 52% / 0.14) 44% 45%, transparent 46% 100%), radial-gradient(circle at center, transparent 0 27%, hsl(252 100% 52% / 0.12) 28% 29%, transparent 30% 100%), radial-gradient(circle at center, transparent 0 61%, hsl(252 100% 52% / 0.08) 62% 63%, transparent 64% 100%), linear-gradient(90deg, transparent 0 48%, hsl(252 100% 52% / 0.08) 49% 51%, transparent 52% 100%)",
+              "radial-gradient(circle at center, transparent 0 43%, hsl(165 90% 42% / 0.14) 44% 45%, transparent 46% 100%), radial-gradient(circle at center, transparent 0 27%, hsl(165 90% 42% / 0.12) 28% 29%, transparent 30% 100%), radial-gradient(circle at center, transparent 0 61%, hsl(165 90% 42% / 0.08) 62% 63%, transparent 64% 100%), linear-gradient(90deg, transparent 0 48%, hsl(165 90% 42% / 0.08) 49% 51%, transparent 52% 100%)",
             mixBlendMode: "screen",
           }}
         />
@@ -125,8 +134,8 @@ const AlienEye = () => {
           <div
             className="w-full h-full rounded-full"
             style={{
-              background: "radial-gradient(circle at 35% 30%, hsl(252 100% 68%), hsl(252 100% 46%), hsl(220 18% 10%))",
-              boxShadow: "0 0 16px hsl(252 100% 52% / 0.6)",
+              background: "radial-gradient(circle at 35% 30%, hsl(165 90% 56%), hsl(165 90% 30%), hsl(220 18% 10%))",
+              boxShadow: "0 0 16px hsl(165 90% 42% / 0.6)",
             }}
           />
 
@@ -135,7 +144,7 @@ const AlienEye = () => {
             className="absolute inset-0 rounded-full"
             style={{
               background:
-                "repeating-radial-gradient(circle at center, transparent 12px, hsl(252 100% 52% / 0.12) 14px, transparent 16px)",
+                "repeating-radial-gradient(circle at center, transparent 12px, hsl(165 90% 42% / 0.12) 14px, transparent 16px)",
               animation: "iris-rotate 12s linear infinite",
             }}
           />
@@ -165,11 +174,10 @@ const AlienEye = () => {
 
         {/* Orbital ring for a more literal globe silhouette */}
         <motion.div
-          className="absolute rounded-full border pointer-events-none"
+          className="absolute rounded-full border border-electric/18 pointer-events-none"
           style={{
             inset: 10,
             transform: "rotate(18deg)",
-            borderColor: "hsl(252 100% 62% / 0.2)",
           }}
           animate={{ rotate: [18, 24, 18] }}
           transition={{ duration: 7, repeat: Infinity, ease: "easeInOut" }}
@@ -192,7 +200,7 @@ const AlienEye = () => {
         className="absolute inset-0 rounded-full pointer-events-none"
         style={{
           background:
-            "linear-gradient(180deg, hsl(252 100% 80% / 0.04) 0%, transparent 50%, hsl(252 100% 52% / 0.04) 100%)",
+            "linear-gradient(180deg, hsl(165 90% 80% / 0.04) 0%, transparent 50%, hsl(165 90% 42% / 0.04) 100%)",
         }}
         animate={{ opacity: [0.5, 1, 0.5] }}
         transition={{ duration: 2, repeat: Infinity }}

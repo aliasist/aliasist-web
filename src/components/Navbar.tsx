@@ -2,14 +2,15 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth, useUser, UserButton } from "@clerk/react";
 import newLogo from "@/assets/aliasist-logo-brand.svg";
-import CowAbductionEasterEgg from "@/components/CowAbductionEasterEgg";
 import { playHover, playClick, setEnabled } from "@/hooks/useSound";
-import { pageNavLinks, suiteApps } from "@/content/homepage";
+import { pageNavLinks, suiteAppCount, suiteApps } from "@/content/homepage";
 import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
+
+const isExternalHref = (href: string) => /^https?:\/\//.test(href);
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
 
-// Suite dropdown
+// Projects dropdown
 const SuiteDropdown = () => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
@@ -45,7 +46,7 @@ const SuiteDropdown = () => {
             : "text-muted-foreground hover:bg-electric/[0.06] hover:text-foreground hover:shadow-electric-ring-inset"
         }`}
       >
-        Suite
+        Projects
         <motion.svg
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.2 }}
@@ -67,11 +68,11 @@ const SuiteDropdown = () => {
             {/* Header */}
             <div className="px-4 py-3 border-b border-border/60 flex items-center justify-between">
               <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50">
-                Aliasist Suite
+                Projects
               </span>
               <span className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.1em] text-electric/60">
                 <span className="w-1 h-1 rounded-full bg-electric animate-pulse shadow-electric-dot" />
-                {suiteApps.length} Live
+                {suiteAppCount} Links
               </span>
             </div>
 
@@ -79,8 +80,8 @@ const SuiteDropdown = () => {
               <motion.a
                 key={app.label}
                 href={app.href}
-                target="_blank"
-                rel="noopener noreferrer"
+                target={isExternalHref(app.href) ? "_blank" : undefined}
+                rel={isExternalHref(app.href) ? "noopener noreferrer" : undefined}
                 onClick={() => { playClick(); setOpen(false); }}
                 onMouseEnter={() => playHover()}
                 initial={{ opacity: 0, x: -8 }}
@@ -89,7 +90,9 @@ const SuiteDropdown = () => {
                 className="group relative flex items-center gap-3 border-b border-border/30 px-4 py-3 transition-colors duration-300 last:border-0 hover:bg-[linear-gradient(90deg,hsl(165_90%_42%_/_0.06)_0%,transparent_100%)] outline-none focus-visible:z-10 focus-visible:bg-[linear-gradient(90deg,hsl(165_90%_42%_/_0.12)_0%,transparent_100%)] focus-visible:ring-2 focus-visible:ring-electric/60 focus-visible:ring-inset"
               >
                 <span className="absolute left-0 top-1/2 h-0 w-[3px] -translate-y-1/2 rounded-full bg-electric opacity-0 shadow-electric-accent-line transition-all duration-300 group-hover:h-[60%] group-hover:opacity-100" aria-hidden />
-                <span className="text-xl leading-none transition-transform duration-300 group-hover:scale-110">{app.icon}</span>
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-sm border border-border/60 bg-background/45 font-mono text-[10px] font-semibold text-electric transition-all duration-300 group-hover:border-violet/45 group-hover:shadow-[0_0_12px_hsl(var(--violet)/0.28)]">
+                  {app.icon}
+                </span>
                 <div className="flex-1 min-w-0">
                   <p className="font-mono text-xs font-semibold text-foreground transition-colors duration-300 group-hover:text-electric">
                     {app.label}
@@ -169,7 +172,7 @@ const InternalAgentLinkMobile = ({ onClose }: { onClose: () => void }) => {
 };
 
 const signInButtonClass =
-  "border border-border/50 bg-background/40 px-3.5 py-2 text-xs font-mono uppercase tracking-[0.16em] text-muted-foreground backdrop-blur-sm transition-all duration-300 ease-out hover:border-electric/35 hover:bg-electric/[0.07] hover:text-electric hover:shadow-electric-glass-hover active:scale-[0.98] rounded-full";
+  "border border-border/50 bg-background/40 px-3.5 py-2 text-xs font-mono uppercase tracking-[0.16em] text-muted-foreground backdrop-blur-sm transition-all duration-300 ease-out hover:border-violet/40 hover:bg-electric/[0.07] hover:text-electric hover:shadow-[0_0_22px_hsl(var(--violet)/0.18),inset_0_1px_0_hsl(0_0%_100%/0.04)] active:scale-[0.98] rounded-full";
 
 const mobileSignInButtonClass =
   "flex-1 rounded-md border border-electric/35 bg-electric/[0.04] py-2.5 text-center text-xs font-mono uppercase tracking-[0.16em] text-electric shadow-electric-mobile-signin transition-all duration-300 hover:border-electric/50 hover:bg-electric/10 hover:shadow-electric-mobile-signin-hover active:scale-[0.99]";
@@ -250,7 +253,6 @@ const Navbar = () => {
   const [isDark, setIsDark]             = useState(true);
   const [soundOn, setSoundOn]           = useState(true);
   const [activeSection, setActiveSection] = useState("");
-  const [easterEggOpen, setEasterEggOpen] = useState(false);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -360,13 +362,13 @@ const Navbar = () => {
           <motion.img
             src={newLogo}
             alt=""
-            className="h-14 w-auto max-h-16 object-contain drop-shadow-electric-logo transition-all duration-300 sm:h-16 sm:max-h-[4.5rem]"
+            className="h-14 w-auto max-h-16 object-contain drop-shadow-logo-aura transition-all duration-300 sm:h-16 sm:max-h-[4.5rem]"
             style={{ minWidth: 56, background: "transparent" }}
-            whileHover={{ scale: 1.1, filter: "drop-shadow(0 0 16px hsl(165 90% 42% / 0.8))" }}
+            whileHover={{ scale: 1.1, filter: "drop-shadow(0 0 16px hsl(165 90% 42% / 0.8)) drop-shadow(0 0 22px hsl(278 82% 67% / 0.45))" }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
           />
           <div className="hidden sm:flex flex-col leading-none">
-            <span className="font-bold text-sm uppercase tracking-[0.16em] text-foreground transition-all duration-300 group-hover:text-electric group-hover:[text-shadow:0_0_28px_hsl(165_90%_42%_/_0.25)]">
+            <span className="font-bold text-sm uppercase tracking-[0.16em] text-foreground transition-all duration-300 group-hover:text-electric group-hover:[text-shadow:0_0_28px_hsl(165_90%_42%_/_0.25),0_0_36px_hsl(var(--violet)/0.3)]">
               Aliasist
             </span>
             <span className="mt-1 font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground/45 transition-colors duration-300 group-hover:text-muted-foreground/65">
@@ -375,33 +377,8 @@ const Navbar = () => {
           </div>
         </a>
 
-        {/* Small easter egg trigger (kept available) */}
-        <button
-          type="button"
-          onClick={() => { playClick(); setEasterEggOpen(true); }}
-          onMouseEnter={() => playHover()}
-          className="hidden sm:block text-[10px] text-muted-foreground/40 hover:text-electric px-1"
-          aria-label="Open easter egg"
-          title="Easter egg"
-        >
-          ✧
-        </button>
-
         {/* ── CENTER: Page links ── */}
-        <div className="hidden md:flex flex-1 items-center justify-center gap-2 rounded-full border border-border/35 bg-background/50 px-2.5 py-1.5 shadow-electric-nav-well backdrop-blur-md">
-          <a
-            href="/consulting"
-            onMouseEnter={() => playHover()}
-            className="group relative overflow-hidden rounded-full px-4 py-2 text-xs font-mono uppercase tracking-[0.16em] text-electric transition-all duration-300 ease-out outline-none hover:bg-electric/[0.08] hover:text-electric hover:tracking-[0.2em] hover:shadow-electric-ring-inset-soft focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-          >
-            <span className="relative z-10">Consulting</span>
-            <span
-              className="pointer-events-none absolute inset-x-2 top-1/2 h-full -translate-y-1/2 rounded-full bg-gradient-to-r from-transparent via-electric/10 to-transparent opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100"
-              aria-hidden
-            />
-            <span className="absolute bottom-1 left-1/2 h-[2px] w-0 -translate-x-1/2 rounded-full bg-electric opacity-0 shadow-electric-accent-line transition-all duration-300 ease-out group-hover:w-[calc(100%-1.25rem)] group-hover:opacity-100" />
-          </a>
-
+        <div className="hidden md:flex flex-1 items-center justify-center gap-2 rounded-full border border-border/35 bg-background/50 px-2.5 py-1.5 shadow-electric-violet-well backdrop-blur-md">
           {pageNavLinks.map(link => {
             const isActive = activeSection === link.href.replace("#", "");
             return (
@@ -409,6 +386,7 @@ const Navbar = () => {
                 key={link.href}
                 href={link.href}
                 onMouseEnter={() => playHover()}
+                onClick={() => playClick()}
                 className={`group relative overflow-hidden rounded-full px-4 py-2 text-xs font-mono uppercase tracking-[0.16em] transition-all duration-300 ease-out outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                   isActive
                     ? "bg-electric/[0.12] text-electric shadow-electric-xs"
@@ -421,7 +399,7 @@ const Navbar = () => {
                   aria-hidden
                 />
                 <span
-                  className={`absolute bottom-1 left-1/2 h-[2px] -translate-x-1/2 rounded-full bg-electric shadow-electric-accent-line transition-all duration-300 ease-out ${
+                  className={`absolute bottom-1 left-1/2 h-[2px] -translate-x-1/2 rounded-full bg-accent-line-duo shadow-accent-line-duo transition-all duration-300 ease-out ${
                     isActive ? "w-[calc(100%-1.25rem)] opacity-100" : "w-0 opacity-0 group-hover:w-[calc(100%-1.25rem)] group-hover:opacity-100"
                   }`}
                 />
@@ -432,7 +410,7 @@ const Navbar = () => {
           {/* Subtle separator */}
           <span className="mx-1.5 h-4 w-px bg-border/60" />
 
-          {/* Suite dropdown */}
+          {/* Projects dropdown */}
           <SuiteDropdown />
         </div>
 
@@ -519,14 +497,6 @@ const Navbar = () => {
             <div className="space-y-1 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-5 sm:px-8 lg:px-12 xl:px-16">
 
               {/* Page links */}
-              <a
-                href="/consulting"
-                onClick={() => { playClick(); setMobileOpen(false); }}
-                className="-mx-1 flex h-12 items-center rounded-lg px-3 text-xs font-mono uppercase tracking-[0.15em] text-electric transition-all duration-300 ease-out hover:bg-electric/[0.08] hover:pl-4 hover:text-electric hover:shadow-[inset_3px_0_0_hsl(165_90%_42%_/_0.65)] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-              >
-                Consulting
-              </a>
-
               {pageNavLinks.map(link => (
                 <a
                   key={link.href}
@@ -541,20 +511,22 @@ const Navbar = () => {
               {/* Divider */}
               <div className="h-px bg-border/50 my-3" />
 
-              {/* Suite apps */}
+              {/* Project links */}
               <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40 py-1">
-                The Suite
+                Projects
               </p>
               {suiteApps.map(app => (
                 <a
                   key={app.label}
                   href={app.href}
-                  target="_blank"
-                  rel="noopener noreferrer"
+                  target={isExternalHref(app.href) ? "_blank" : undefined}
+                  rel={isExternalHref(app.href) ? "noopener noreferrer" : undefined}
                   onClick={() => { playClick(); setMobileOpen(false); }}
                   className="group -mx-1 flex h-12 items-center gap-3 rounded-lg px-3 text-xs font-mono uppercase tracking-[0.15em] text-muted-foreground transition-all duration-300 hover:bg-electric/[0.06] hover:text-electric hover:shadow-[inset_3px_0_0_hsl(165_90%_42%_/_0.5)] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
-                  <span className="transition-transform duration-300 group-hover:scale-110">{app.icon}</span>
+                  <span className="flex size-7 shrink-0 items-center justify-center rounded-sm border border-border/60 bg-background/45 font-mono text-[10px] font-semibold text-electric transition-all duration-300 group-hover:border-violet/45 group-hover:shadow-[0_0_12px_hsl(var(--violet)/0.28)]">
+                    {app.icon}
+                  </span>
                   <span>{app.label}</span>
                   <span className="ml-auto text-[10px] opacity-30 transition-all duration-300 group-hover:translate-x-0.5 group-hover:opacity-100">↗</span>
                 </a>
@@ -592,8 +564,6 @@ const Navbar = () => {
           </motion.div>
         )}
       </AnimatePresence>
-
-      <CowAbductionEasterEgg open={easterEggOpen} onClose={() => setEasterEggOpen(false)} />
     </motion.nav>
   );
 };

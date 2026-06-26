@@ -42,7 +42,8 @@
     --sage-light: 150 12% 20%;
     --cool-gray: 220 10% 55%;
     --electric: 165 90% 42%;
-    --violet: 278 82% 67%;
+    /* Proton purple (#6D4AFF) — blue-violet brand accent */
+    --violet: 252 100% 64%;
 
     --font-heading: 'Space Grotesk', sans-serif;
     --font-mono: 'JetBrains Mono', monospace;
@@ -87,7 +88,8 @@
     --input: 220 15% 84%;
     --ring: 165 85% 36%;
     --electric: 165 85% 36%;
-    --violet: 276 68% 52%;
+    /* Proton purple, slightly deepened for contrast on light backgrounds */
+    --violet: 252 88% 58%;
 
     --ambient-opacity: 0.16;
     --ambient-overlay-opacity: 0.14;
@@ -225,6 +227,121 @@ body::after {
   transform: translate3d(0, 0, 0);
 }
 
+/* ─── Ambient UFO character layer ─── */
+.ambient-ufo {
+  position: fixed;
+  top: clamp(7.5rem, 22vh, 15rem);
+  right: clamp(1rem, 5vw, 4.75rem);
+  z-index: 12;
+  width: clamp(4.5rem, 8vw, 7rem);
+  height: clamp(5.5rem, 9vw, 8rem);
+  pointer-events: none;
+  opacity: 0.74;
+  filter: drop-shadow(0 0 22px hsl(var(--electric) / 0.2));
+}
+
+.ambient-ufo__orbit {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  animation: ambient-ufo-patrol 18s ease-in-out infinite;
+  transform-origin: center;
+}
+
+.ambient-ufo__craft {
+  position: absolute;
+  left: 50%;
+  top: 0.4rem;
+  width: 100%;
+  transform: translateX(-50%);
+  animation: ambient-ufo-hover 3.8s ease-in-out infinite;
+}
+
+.ambient-ufo__dome {
+  width: 34%;
+  height: 1.15rem;
+  margin: 0 auto;
+  border: 1px solid hsl(var(--electric) / 0.22);
+  border-bottom: 0;
+  border-radius: 999px 999px 55% 55%;
+  background:
+    radial-gradient(circle at 35% 25%, hsl(0 0% 100% / 0.58), transparent 26%),
+    linear-gradient(180deg, hsl(var(--foreground) / 0.78), hsl(198 92% 70% / 0.32));
+  box-shadow: inset 0 1px 0 hsl(0 0% 100% / 0.4);
+}
+
+.ambient-ufo__body {
+  position: relative;
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  gap: 0.42rem;
+  width: 78%;
+  height: 1.45rem;
+  margin: -0.28rem auto 0;
+  padding-bottom: 0.28rem;
+  border: 1px solid hsl(var(--violet) / 0.24);
+  border-radius: 999px / 58%;
+  background:
+    linear-gradient(180deg, hsl(198 92% 72% / 0.42), hsl(var(--card) / 0.96) 62%),
+    radial-gradient(ellipse at center, hsl(var(--electric) / 0.2), transparent 64%);
+  box-shadow:
+    inset 0 1px 0 hsl(0 0% 100% / 0.18),
+    0 0 22px hsl(var(--violet) / 0.12),
+    0 0 18px hsl(var(--electric) / 0.12);
+}
+
+.ambient-ufo__body span {
+  width: 0.34rem;
+  height: 0.34rem;
+  border-radius: 999px;
+  background: hsl(var(--electric));
+  box-shadow: 0 0 10px hsl(var(--electric) / 0.62);
+  animation: ambient-ufo-light 1.9s ease-in-out infinite alternate;
+}
+
+.ambient-ufo__body span:nth-child(2) {
+  animation-delay: 0.35s;
+}
+
+.ambient-ufo__body span:nth-child(3) {
+  animation-delay: 0.7s;
+}
+
+.ambient-ufo__beam {
+  position: absolute;
+  left: 50%;
+  top: 2.05rem;
+  width: 56%;
+  height: 4.6rem;
+  transform: translateX(-50%);
+  clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%);
+  background:
+    linear-gradient(180deg, hsl(var(--electric) / 0.14), hsl(var(--electric) / 0.045) 62%, transparent),
+    repeating-linear-gradient(90deg, transparent 0 8px, hsl(var(--violet) / 0.04) 8px 9px);
+  filter: blur(0.2px);
+  opacity: 0.72;
+  animation: ambient-ufo-beam 4.6s ease-in-out infinite;
+}
+
+.ambient-ufo__signal {
+  position: absolute;
+  left: 50%;
+  top: 1.08rem;
+  width: 80%;
+  aspect-ratio: 1;
+  border: 1px solid hsl(var(--electric) / 0.14);
+  border-radius: 999px;
+  transform: translateX(-50%) scale(0.7);
+  opacity: 0;
+  animation: ambient-ufo-signal 5.5s ease-out infinite;
+}
+
+.ambient-ufo__signal--b {
+  animation-delay: 2.4s;
+  border-color: hsl(var(--violet) / 0.12);
+}
+
 @keyframes ambient-drift {
   0% {
     background-position: 10% 10%, 85% 35%, 55% 95%, 50% 50%;
@@ -234,9 +351,75 @@ body::after {
   }
 }
 
+@keyframes ambient-ufo-hover {
+  0%, 100% {
+    transform: translateX(-50%) translateY(0) rotate(-1deg);
+  }
+  50% {
+    transform: translateX(-50%) translateY(-0.46rem) rotate(1.3deg);
+  }
+}
+
+@keyframes ambient-ufo-patrol {
+  0%, 100% {
+    transform: translate3d(0, 0, 0);
+  }
+  32% {
+    transform: translate3d(-1.1rem, 0.72rem, 0);
+  }
+  66% {
+    transform: translate3d(0.7rem, -0.45rem, 0);
+  }
+}
+
+@keyframes ambient-ufo-beam {
+  0%, 100% {
+    opacity: 0.42;
+    transform: translateX(-50%) scaleY(0.86);
+  }
+  48% {
+    opacity: 0.78;
+    transform: translateX(-50%) scaleY(1);
+  }
+}
+
+@keyframes ambient-ufo-light {
+  from {
+    opacity: 0.45;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(-1px);
+  }
+}
+
+@keyframes ambient-ufo-signal {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) scale(0.6);
+  }
+  16% {
+    opacity: 0.62;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) scale(1.45);
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   body::before {
     animation: none !important;
+  }
+
+  .ambient-ufo,
+  .ambient-ufo * {
+    animation: none !important;
+  }
+
+  .ambient-ufo {
+    opacity: 0.42;
   }
 }
 
@@ -246,6 +429,14 @@ body::after {
   }
   body::after {
     opacity: var(--ambient-overlay-opacity-mobile);
+  }
+
+  .ambient-ufo {
+    top: 6.1rem;
+    right: 0.55rem;
+    width: 4rem;
+    height: 5rem;
+    opacity: 0.42;
   }
 }
 
@@ -295,7 +486,13 @@ body::after {
   content: '';
   flex: 1;
   height: 1px;
-  background: hsl(var(--border));
+}
+/* Teal stays nearest the label; violet blends out toward the neutral border. */
+.classified-divider::before {
+  background: linear-gradient(90deg, hsl(var(--border)) 0%, hsl(var(--violet) / 0.3) 72%, hsl(var(--electric) / 0.45) 100%);
+}
+.classified-divider::after {
+  background: linear-gradient(90deg, hsl(var(--electric) / 0.45) 0%, hsl(var(--violet) / 0.3) 28%, hsl(var(--border)) 100%);
 }
 
 /* ─── Glitch text ─── */
@@ -494,6 +691,55 @@ body::after {
   .drop-shadow-electric-logo {
     filter: drop-shadow(0 2px 12px hsl(165 90% 42% / 0.12));
   }
+
+  /* ─── Violet secondary accent (subtle; teal stays dominant) ─── */
+  /* Logo: teal core glow + soft violet outer halo */
+  .drop-shadow-logo-aura {
+    filter:
+      drop-shadow(0 2px 12px hsl(165 90% 42% / 0.12))
+      drop-shadow(0 0 18px hsl(var(--violet) / 0.26));
+  }
+  /* Nav-well: existing depth + violet edge-light and outer bloom */
+  .shadow-electric-violet-well {
+    box-shadow:
+      inset 0 1px 0 hsl(0 0% 100% / 0.04),
+      inset 0 0 0 1px hsl(var(--violet) / 0.12),
+      0 8px 32px hsl(0 0% 0% / 0.12),
+      0 0 30px hsl(var(--violet) / 0.09);
+  }
+  /* Wordmark: violet under-glow only — text itself stays foreground */
+  .text-glow-violet {
+    text-shadow:
+      0 0 30px hsl(var(--violet) / 0.34),
+      0 0 60px hsl(var(--violet) / 0.2);
+  }
+  /* Accent underline: teal→violet gradient fill (pair with a glow utility) */
+  .bg-accent-line-duo {
+    background-image: linear-gradient(
+      90deg,
+      hsl(var(--electric)) 0%,
+      hsl(var(--violet)) 100%
+    );
+  }
+  .shadow-accent-line-duo {
+    box-shadow:
+      0 0 10px hsl(165 90% 42% / 0.4),
+      0 0 14px hsl(var(--violet) / 0.38);
+  }
+  /* Hero backdrop violet depth — theme-aware so light mode stays gentle */
+  .hero-violet-glow-a {
+    background: radial-gradient(ellipse 55% 42% at 24% 18%, hsl(var(--violet) / 0.16) 0%, transparent 68%);
+  }
+  .hero-violet-glow-b {
+    background: radial-gradient(ellipse 48% 40% at 78% 72%, hsl(var(--violet) / 0.10) 0%, transparent 70%);
+  }
+  /* Primary CTA hover — teal core bloom with a violet companion (teal-led) */
+  .shadow-cta-duo {
+    box-shadow:
+      0 0 54px hsl(165 90% 42% / 0.28),
+      0 0 38px hsl(var(--violet) / 0.22),
+      0 8px 42px hsl(0 0% 0% / 0.22);
+  }
 }
 
 .light .shadow-electric-xs {
@@ -583,6 +829,42 @@ body::after {
   filter: drop-shadow(0 2px 10px hsl(165 85% 36% / 0.1));
 }
 
+/* ─── Violet secondary accent — light mode (toned down vs dark) ─── */
+.light .drop-shadow-logo-aura {
+  filter:
+    drop-shadow(0 2px 10px hsl(165 85% 36% / 0.1))
+    drop-shadow(0 0 14px hsl(var(--violet) / 0.18));
+}
+.light .shadow-electric-violet-well {
+  box-shadow:
+    inset 0 1px 0 hsl(0 0% 100% / 0.65),
+    inset 0 0 0 1px hsl(var(--violet) / 0.09),
+    0 8px 28px hsl(0 0% 0% / 0.06),
+    0 0 22px hsl(var(--violet) / 0.07);
+}
+.light .text-glow-violet {
+  text-shadow:
+    0 0 26px hsl(var(--violet) / 0.2),
+    0 0 52px hsl(var(--violet) / 0.12);
+}
+.light .shadow-accent-line-duo {
+  box-shadow:
+    0 0 10px hsl(165 85% 36% / 0.3),
+    0 0 12px hsl(var(--violet) / 0.26);
+}
+.light .hero-violet-glow-a {
+  background: radial-gradient(ellipse 55% 42% at 24% 18%, hsl(var(--violet) / 0.09) 0%, transparent 68%);
+}
+.light .hero-violet-glow-b {
+  background: radial-gradient(ellipse 48% 40% at 78% 72%, hsl(var(--violet) / 0.05) 0%, transparent 70%);
+}
+.light .shadow-cta-duo {
+  box-shadow:
+    0 0 46px hsl(165 85% 36% / 0.22),
+    0 0 30px hsl(var(--violet) / 0.16),
+    0 8px 34px hsl(0 0% 0% / 0.1);
+}
+
 /* ─── Custom scrollbar ─── */
 ::-webkit-scrollbar {
   width: 6px;
@@ -659,6 +941,31 @@ section {
 /* ─── Link hover transitions ─── */
 a {
   transition: color 0.2s ease, opacity 0.2s ease;
+}
+
+/* ─── Subtle interaction polish ─── */
+.project-card-shell {
+  transform-origin: center;
+  backface-visibility: hidden;
+}
+
+.subtle-link-motion {
+  backface-visibility: hidden;
+  box-shadow: 0 0 0 hsl(var(--electric) / 0);
+}
+
+.subtle-link-motion:hover {
+  box-shadow:
+    0 0 18px hsl(var(--electric) / 0.12),
+    0 0 20px hsl(var(--violet) / 0.08);
+}
+
+.subtle-link-motion svg {
+  transition: transform 220ms ease, opacity 220ms ease;
+}
+
+.subtle-link-motion:hover svg {
+  transform: translateX(1px);
 }
 
 /* ─── Better button feel ─── */
@@ -781,5 +1088,12 @@ html {
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
+  }
+
+  .project-card-shell,
+  .subtle-link-motion,
+  .subtle-link-motion svg {
+    transition-duration: 1ms !important;
+    transform: none !important;
   }
 }
