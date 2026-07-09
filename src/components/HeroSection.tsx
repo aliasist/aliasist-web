@@ -1,9 +1,58 @@
-import { motion } from "framer-motion";
+import { useRef } from "react";
+import { motion, useMotionValue, useSpring, useTransform } from "framer-motion";
 import { ArrowRight, Mail } from "lucide-react";
 import AlienEye from "./AlienEye";
 import { hero } from "@/content/homepage";
 import { HomeGoogleAuth } from "@/components/HomeGoogleAuth";
 import { playClick, playHover } from "@/hooks/useSound";
+
+/** Beacon-style hero link: rotating gradient ring + text shimmer (CSS), plus a
+ * mouse-tracked magnetic tilt (JS/framer-motion) — a subtle tractor-beam pull
+ * toward the cursor that fits the UFO theme. */
+const HeroBeaconLink = () => {
+  const ref = useRef<HTMLAnchorElement>(null);
+  const mouseX = useMotionValue(0);
+  const mouseY = useMotionValue(0);
+  const springConfig = { stiffness: 220, damping: 18, mass: 0.4 };
+  const x = useSpring(mouseX, springConfig);
+  const y = useSpring(mouseY, springConfig);
+  const rotateX = useTransform(y, [-20, 20], [8, -8]);
+  const rotateY = useTransform(x, [-30, 30], [-8, 8]);
+
+  const handleMouseMove = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    const rect = ref.current?.getBoundingClientRect();
+    if (!rect) return;
+    mouseX.set(e.clientX - (rect.left + rect.width / 2));
+    mouseY.set(e.clientY - (rect.top + rect.height / 2));
+  };
+
+  const handleMouseLeave = () => {
+    mouseX.set(0);
+    mouseY.set(0);
+  };
+
+  return (
+    <motion.a
+      ref={ref}
+      href={hero.heroLinkHref}
+      target="_blank"
+      rel="noreferrer"
+      onMouseEnter={playHover}
+      onClick={playClick}
+      onMouseMove={handleMouseMove}
+      onMouseLeave={handleMouseLeave}
+      initial={{ opacity: 0, y: 8 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ delay: 0.32, duration: 0.6 }}
+      style={{ x, y, rotateX, rotateY }}
+      whileHover={{ scale: 1.06 }}
+      whileTap={{ scale: 0.97 }}
+      className="hero-beacon-link tap-target mb-6 inline-flex items-center gap-1.5 rounded-sm border border-electric/25 bg-background/45 px-3.5 py-2.5 font-mono text-[10px] font-semibold uppercase tracking-[0.18em] backdrop-blur-md sm:py-1.5"
+    >
+      <span className="hero-beacon-link__text">{hero.heroLinkLabel}</span>
+    </motion.a>
+  );
+};
 
 const HeroSection = () => {
   return (
@@ -47,6 +96,8 @@ const HeroSection = () => {
           <span className="size-1.5 rounded-full bg-electric shadow-electric-dot" />
           {hero.statusBadge}
         </motion.div>
+
+        <HeroBeaconLink />
 
         <motion.h1
           className="glitch-text text-glow-violet mb-5 select-none text-6xl font-bold leading-none tracking-normal text-foreground sm:text-8xl md:text-[9rem]"
@@ -92,26 +143,8 @@ const HeroSection = () => {
         <motion.div
           initial={{ opacity: 0, y: 10 }}
           animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.82, duration: 0.6 }}
-          className="mb-8 grid w-full max-w-2xl gap-px overflow-hidden rounded-sm border border-border/55 bg-border/55 sm:grid-cols-3"
-        >
-          {hero.proofPoints.map((point) => (
-            <div key={point.label} className="bg-background/62 px-4 py-3 text-center backdrop-blur-md">
-              <p className="font-mono text-[10px] uppercase tracking-[0.16em] text-muted-foreground/55">
-                {point.label}
-              </p>
-              <p className="mt-1 text-lg font-semibold tracking-tight text-foreground">
-                {point.value}
-              </p>
-            </div>
-          ))}
-        </motion.div>
-
-        <motion.div
-          initial={{ opacity: 0, y: 10 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.95, duration: 0.6 }}
-          className="hero-cta-group flex flex-col items-center justify-center gap-3 sm:flex-row"
+          transition={{ delay: 0.85, duration: 0.6 }}
+          className="hero-cta-group mt-2 flex flex-col items-center justify-center gap-3 sm:flex-row"
         >
           <a
             href={hero.ctaContactHref}
@@ -137,20 +170,6 @@ const HeroSection = () => {
         <div className="mt-6 flex justify-center">
           <HomeGoogleAuth />
         </div>
-
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 1.2, duration: 0.8 }}
-          className="mt-12 flex flex-wrap items-center justify-center gap-5 font-mono text-[10px] uppercase tracking-[0.18em] text-muted-foreground/40"
-        >
-          {hero.statusRow.map((t, i) => (
-            <span key={t} className="flex items-center gap-5">
-              {i > 0 && <span className="h-1 w-1 rounded-full bg-border/60" />}
-              {t}
-            </span>
-          ))}
-        </motion.div>
       </div>
 
       {/* Bottom fade — softer so it doesn’t crush the scene like full background@60% */}
