@@ -71,6 +71,12 @@ export const suiteApps = [
     icon: "GH",
   },
   {
+    label: "Globalize",
+    sub: "Global Infrastructure Map",
+    href: "https://www.aliasist.world",
+    icon: "GL",
+  },
+  {
     label: "Literacy Tools",
     sub: "Writing helper",
     href: "https://github.com/aliasist/aliasist-literacy-assistant",
@@ -84,26 +90,20 @@ export const suiteAppCount = suiteApps.length;
 
 export const hero = {
   statusBadge: "Aliasist · Developer Portfolio",
+  heroLinkLabel: "Globalize →",
+  heroLinkHref: "https://www.aliasist.world",
   mascotLabel: "aliasist",
   mascotAlt: "Aliasist",
   mascotTitle: "Aliasist",
   eyeline: "developer portfolio · practical software · security-minded tools",
   wordmark: "ALIASIST",
-  tagline: "Software built with care, clarity, and ownership.",
+  tagline: "The home base for the things I build and ship.",
   subcopy:
     "I'm Blake, a self-taught developer building web apps, data tools, privacy utilities, and automation projects under the Aliasist name.",
-  proofPoints: [
-    { label: "Projects", value: `${suiteAppCount}` },
-    { label: "External APIs", value: "7+" },
-    { label: "Focus", value: "Security" },
-  ] as const,
-  ctaWork: "Consulting",
-  ctaWorkHref: "Consulting",
   ctaContact: "Projects",
   ctaContactHref: "#projects",
   ctaSecondary: "Contact",
   ctaSecondaryHref: "#contact",
-  statusRow: ["Portfolio", "Tools", "Research", "Automation"] as const,
 } as const;
 
 // ── Navbar ───────────────────────────────────────────────────────────────────
@@ -146,36 +146,6 @@ export const projectsSection = {
   dividerLabel: "Projects",
   headline: "Built projects, not ideas.",
   subcopy: "A tighter view of the apps and utilities I have shipped, from data dashboards to privacy tools and developer workflows.",
-} as const;
-
-export const operatingSnapshot = {
-  dividerLabel: "Current work",
-  headline: "A working portfolio for shipped tools.",
-  subcopy:
-    "This site is the home base for my projects, notes, contact path, and the tools I use to manage the work behind them.",
-  lanes: [
-    {
-      label: "Projects",
-      value: `${suiteAppCount}`,
-      eyebrow: "Live index",
-      detail: "Public apps and utilities collected under one portfolio surface.",
-      href: "#projects",
-    },
-    {
-      label: "Admin",
-      value: "Private",
-      eyebrow: "Owner only",
-      detail: "Admin dashboard access stays gated to the owner account.",
-      href: "/agent",
-    },
-    {
-      label: "Contact",
-      value: "Direct",
-      eyebrow: "Open channel",
-      detail: "Project work, internship conversations, and collaboration requests.",
-      href: "#contact",
-    },
-  ],
 } as const;
 
 export const projects = [
@@ -309,6 +279,21 @@ export const projects = [
     link: "https://datasist-frontend.pages.dev",
     linkLabel: "Open DataSist →",
     banner: dataBanner,
+  },
+  {
+    name: "Globalize",
+    description:
+      "A 3D globe mapping global infrastructure — data centers, subsea cables, air traffic, and seismic activity.",
+    tech: ["React", "Three.js", "Cloudflare", "Geospatial Data"],
+    github: "https://github.com/aliasist",
+    downloads: [],
+    status: "Live",
+    meta: ["Data centers", "Global map", "Live infrastructure"] as const,
+    tone: "cyan",
+    icon: "GL",
+    link: "https://www.aliasist.world",
+    linkLabel: "Open Globalize →",
+    banner: null,
   },
   {
     name: "Literacy Tools",

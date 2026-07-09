@@ -1009,6 +1009,79 @@ button, a[class*="rounded"] {
   to   { background-position: 100% 50%; }
 }
 
+/* ─── Hero beacon link (Globalize) ─── */
+@keyframes hero-beacon-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes hero-beacon-glow {
+  0%, 100% {
+    box-shadow: 0 0 10px hsl(var(--electric) / 0.22), 0 0 22px hsl(var(--violet) / 0.14);
+  }
+  50% {
+    box-shadow: 0 0 18px hsl(var(--electric) / 0.42), 0 0 34px hsl(var(--violet) / 0.28);
+  }
+}
+
+@keyframes hero-beacon-shimmer {
+  0% { background-position: -160% 0; }
+  100% { background-position: 260% 0; }
+}
+
+.hero-beacon-link {
+  position: relative;
+  isolation: isolate;
+  animation: hero-beacon-glow 3.2s ease-in-out infinite;
+  transform-style: preserve-3d;
+}
+
+.hero-beacon-link::before {
+  content: '';
+  position: absolute;
+  inset: -1.5px;
+  border-radius: inherit;
+  padding: 1.5px;
+  background: conic-gradient(
+    from 0deg,
+    hsl(var(--electric) / 0.95),
+    hsl(var(--violet) / 0.75) 30%,
+    transparent 55%,
+    hsl(var(--violet) / 0.75) 80%,
+    hsl(var(--electric) / 0.95)
+  );
+  -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+  -webkit-mask-composite: xor;
+  mask-composite: exclude;
+  animation: hero-beacon-spin 3.6s linear infinite;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.hero-beacon-link__text {
+  position: relative;
+  background-image: linear-gradient(
+    110deg,
+    hsl(var(--electric) / 0.78) 30%,
+    hsl(var(--foreground)) 46%,
+    hsl(var(--electric)) 50%,
+    hsl(var(--foreground)) 54%,
+    hsl(var(--electric) / 0.78) 70%
+  );
+  background-size: 250% 100%;
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  animation: hero-beacon-shimmer 2.8s linear infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-beacon-link,
+  .hero-beacon-link::before,
+  .hero-beacon-link__text {
+    animation: none;
+  }
+}
+
 /*
  * Mobile tap targets (WCAG-friendly ~44px) — scoped so prose / inline links can use .text-link
  * Breakpoint matches Tailwind `md` (768px): rules apply below `md` only.
