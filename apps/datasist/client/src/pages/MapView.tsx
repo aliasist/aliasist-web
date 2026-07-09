@@ -111,6 +111,7 @@ export default function MapView() {
   const isMobile = useIsMobile();
   const mapRef = useRef<HTMLDivElement>(null);
   const mapInstanceRef = useRef<any>(null);
+  const clusterGroupRef = useRef<any>(null);
   const markersRef = useRef<any[]>([]);
 
   const [selectedCenter, setSelectedCenter] = useState<DataCenterWithEnergy | null>(null);
@@ -139,22 +140,48 @@ export default function MapView() {
   const companies = [...new Set(centers.map((c) => c.company))].sort();
   const availableRegions = [...new Set(centers.map(getRegion))].sort();
 
-  // Load Leaflet dynamically
+  // Load Leaflet + the marker-cluster plugin dynamically. Clustering is what
+  // keeps ~4,900 facilities from becoming ~4,900 simultaneously-animating DOM
+  // nodes: at low zoom most markers collapse into a handful of cluster
+  // bubbles, so only the markers actually on screen ever get created/animated.
   useEffect(() => {
-    const existingStylesheet = document.querySelector('link[data-datasist-leaflet="true"]');
-    if (!existingStylesheet) {
-      const stylesheet = document.createElement("link");
-      stylesheet.rel = "stylesheet";
-      stylesheet.href = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.css";
-      stylesheet.setAttribute("data-datasist-leaflet", "true");
-      document.head.appendChild(stylesheet);
-    }
+    const addStylesheet = (href: string, id: string) => {
+      if (document.querySelector(`link[data-datasist-lib="${id}"]`)) return;
+      const link = document.createElement("link");
+      link.rel = "stylesheet";
+      link.href = href;
+      link.setAttribute("data-datasist-lib", id);
+      document.head.appendChild(link);
+    };
+    addStylesheet("https://unpkg.com/leaflet@1.9.4/dist/leaflet.css", "leaflet");
+    addStylesheet(
+      "https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.css",
+      "markercluster",
+    );
+    addStylesheet(
+      "https://unpkg.com/leaflet.markercluster@1.5.3/dist/MarkerCluster.Default.css",
+      "markercluster-default",
+    );
 
-    if (window.L) { setLeafletReady(true); return; }
-    const script = document.createElement("script");
-    script.src = "https://unpkg.com/leaflet@1.9.4/dist/leaflet.js";
-    script.onload = () => setLeafletReady(true);
-    document.head.appendChild(script);
+    const loadScript = (src: string) =>
+      new Promise<void>((resolve) => {
+        const script = document.createElement("script");
+        script.src = src;
+        script.onload = () => resolve();
+        document.head.appendChild(script);
+      });
+
+    if (window.L?.markerClusterGroup) { setLeafletReady(true); return; }
+
+    (async () => {
+      if (!window.L) await loadScript("https://unpkg.com/leaflet@1.9.4/dist/leaflet.js");
+      if (!window.L.markerClusterGroup) {
+        await loadScript(
+          "https://unpkg.com/leaflet.markercluster@1.5.3/dist/leaflet.markercluster.js",
+        );
+      }
+      setLeafletReady(true);
+    })();
   }, []);
 
   // Init map
@@ -175,6 +202,37 @@ export default function MapView() {
       maxZoom: 19,
     }).addTo(map);
 
+    const clusterGroup = L.markerClusterGroup({
+      maxClusterRadius: 60,
+      spiderfyOnMaxZoom: true,
+      showCoverageOnHover: false,
+      disableClusteringAtZoom: 9,
+      iconCreateFunction: (cluster: any) => {
+        const count = cluster.getChildCount();
+        const size = count > 200 ? 44 : count > 50 ? 38 : count > 10 ? 32 : 26;
+        return L.divIcon({
+          html: `<div style="
+            width: ${size}px;
+            height: ${size}px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(113, 255, 156, 0.16);
+            border: 1.5px solid #71ff9c;
+            color: #d6f5e0;
+            font-family: 'General Sans', sans-serif;
+            font-weight: 700;
+            font-size: ${count > 200 ? 13 : 11}px;
+          ">${count}</div>`,
+          className: "",
+          iconSize: [size, size],
+        });
+      },
+    });
+    clusterGroup.addTo(map);
+    clusterGroupRef.current = clusterGroup;
+
     mapInstanceRef.current = map;
 
     requestAnimationFrame(() => {
@@ -187,11 +245,12 @@ export default function MapView() {
 
   // Update markers on filter change
   useEffect(() => {
-    if (!mapInstanceRef.current || !leafletReady || centers.length === 0) return;
+    if (!mapInstanceRef.current || !clusterGroupRef.current || !leafletReady || centers.length === 0) return;
     const L = window.L;
     const map = mapInstanceRef.current;
+    const clusterGroup = clusterGroupRef.current;
 
-    markersRef.current.forEach((m) => map.removeLayer(m));
+    clusterGroup.clearLayers();
     markersRef.current = [];
 
     const filtered = centers.filter((c) => {
@@ -208,7 +267,7 @@ export default function MapView() {
       return statusMatch && companyMatch && regionMatch && searchMatch;
     });
 
-    filtered.forEach((center, index) => {
+    const markers = filtered.map((center, index) => {
       const icon = L.divIcon({
         html: getMarkerHtml(center, isMobile, index),
         className: "",
@@ -242,15 +301,16 @@ export default function MapView() {
         }
       );
 
-      marker.addTo(map);
-      markersRef.current.push(marker);
+      return marker;
     });
+
+    clusterGroup.addLayers(markers);
+    markersRef.current = markers;
 
     map.invalidateSize();
 
-    if (markersRef.current.length > 0) {
-      const group = L.featureGroup(markersRef.current);
-      const bounds = group.getBounds();
+    if (markers.length > 0) {
+      const bounds = clusterGroup.getBounds();
       if (bounds.isValid()) {
         map.fitBounds(bounds, {
           padding: isMobile ? [72, 18] : [24, 24],
