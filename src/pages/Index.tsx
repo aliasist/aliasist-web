@@ -9,7 +9,6 @@ import AmbientUfo from "@/components/AmbientUfo";
 import { AdUnit, AD_SLOTS } from "@/components/AdUnit";
 
 const AboutSection = lazy(() => import("@/components/AboutSection"));
-const OperatingSnapshot = lazy(() => import("@/components/OperatingSnapshot"));
 const ProjectsSection = lazy(() => import("@/components/ProjectsSection"));
 const TransmissionsSection = lazy(() => import("@/components/TransmissionsSection"));
 const ContactSection = lazy(() => import("@/components/ContactSection"));
@@ -62,7 +61,6 @@ const Index = () => {
       <main id="main-content" className="relative z-10" tabIndex={-1}>
         <HeroSection />
         <ErrorBoundary><Suspense fallback={<SectionFallback />}><AboutSection /></Suspense></ErrorBoundary>
-        <ErrorBoundary><Suspense fallback={<SectionFallback />}><OperatingSnapshot /></Suspense></ErrorBoundary>
 
         <div className="mx-auto w-full max-w-site px-4 sm:px-8 lg:px-12 xl:px-16 py-2">
           <AdUnit slot={AD_SLOTS.banner} format="auto" />
