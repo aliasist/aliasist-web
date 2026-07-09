@@ -27,13 +27,6 @@ const STATUS_COLORS: Record<string, string> = {
   canceled: "#ff5555",
 };
 
-const STATUS_PULSE: Record<string, string> = {
-  operational: "ufo-pulse",
-  under_construction: "ufo-pulse-orange",
-  planned: "ufo-pulse-cyan",
-  canceled: "ufo-pulse-red",
-};
-
 // Region groupings
 const REGIONS: Record<string, string[]> = {
   "USA — Northeast": ["New York", "New Jersey", "Connecticut", "Massachusetts", "Pennsylvania", "Maryland", "Delaware"],
@@ -70,32 +63,46 @@ function getRegion(c: DataCenter): string {
   return "USA — Other";
 }
 
-function getMarkerHtml(center: DataCenterWithEnergy, isMobile: boolean) {
+function getMarkerHtml(center: DataCenterWithEnergy, isMobile: boolean, index: number) {
   const color = STATUS_COLORS[center.status] || "#71ff9c";
   const size = center.capacityMW
     ? Math.max(isMobile ? 9 : 10, Math.min(isMobile ? 24 : 28, (isMobile ? 9 : 10) + (center.capacityMW / 1000) * (isMobile ? 15 : 18)))
     : isMobile ? 11 : 12;
+  // Negative delay desyncs each marker's phase so hundreds of pings don't
+  // flash in lockstep; the multiplier decorrelates markers that share a
+  // nearby index (e.g. same region in the source list).
+  const delay = -((index * 173) % 250) / 100;
 
   return `
-    <div style="
-      width: ${size}px;
-      height: ${size}px;
-      border-radius: 50%;
-      background: ${color}25;
-      border: 1.5px solid ${color};
-      cursor: pointer;
-      animation: ${STATUS_PULSE[center.status] || "ufo-pulse"} 2.5s ease-in-out infinite;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      position: relative;
-    ">
-      <div style="
-        width: ${Math.max(4, size * 0.35)}px;
-        height: ${Math.max(4, size * 0.35)}px;
+    <div style="position: relative; width: ${size}px; height: ${size}px;">
+      <span class="dc-marker-ping" style="
+        position: absolute;
+        inset: 0;
         border-radius: 50%;
-        background: ${color};
-      "></div>
+        border: 1.5px solid ${color};
+        animation: ufo-pulse 2.5s ease-out infinite;
+        animation-delay: ${delay}s;
+        pointer-events: none;
+      "></span>
+      <div style="
+        width: ${size}px;
+        height: ${size}px;
+        border-radius: 50%;
+        background: ${color}25;
+        border: 1.5px solid ${color};
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: relative;
+      ">
+        <div style="
+          width: ${Math.max(4, size * 0.35)}px;
+          height: ${Math.max(4, size * 0.35)}px;
+          border-radius: 50%;
+          background: ${color};
+        "></div>
+      </div>
     </div>
   `;
 }
@@ -201,9 +208,9 @@ export default function MapView() {
       return statusMatch && companyMatch && regionMatch && searchMatch;
     });
 
-    filtered.forEach((center) => {
+    filtered.forEach((center, index) => {
       const icon = L.divIcon({
-        html: getMarkerHtml(center, isMobile),
+        html: getMarkerHtml(center, isMobile, index),
         className: "",
         iconSize: [32, 32],
         iconAnchor: [16, 16],
