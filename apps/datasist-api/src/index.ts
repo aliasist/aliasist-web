@@ -1285,10 +1285,14 @@ async function syncD1ToNeon(env: Env): Promise<{ ok: boolean; synced: number; er
     const sql = neon(env.NEON_DATABASE_URL);
 
     // 1 — Create table (one statement per call — Neon HTTP API requirement)
-    await sql`CREATE TABLE IF NOT EXISTS data_centers (external_id TEXT PRIMARY KEY, name TEXT NOT NULL, company TEXT, company_type TEXT, lat DOUBLE PRECISION, lng DOUBLE PRECISION, city TEXT, state TEXT, country TEXT, capacity_mw DOUBLE PRECISION, estimated_annual_gwh DOUBLE PRECISION, water_usage_million_gallons DOUBLE PRECISION, status TEXT, year_opened INTEGER, year_planned INTEGER, investment_billions DOUBLE PRECISION, acreage DOUBLE PRECISION, primary_models TEXT, community_impact TEXT, community_resistance INTEGER DEFAULT 0, grid_risk TEXT, renewable_percent DOUBLE PRECISION, notes TEXT, synced_at TIMESTAMPTZ DEFAULT NOW())`;
+    await sql`CREATE TABLE IF NOT EXISTS data_centers (external_id TEXT PRIMARY KEY, name TEXT NOT NULL, company TEXT, company_type TEXT, lat DOUBLE PRECISION, lng DOUBLE PRECISION, city TEXT, state TEXT, country TEXT, capacity_mw DOUBLE PRECISION, estimated_annual_gwh DOUBLE PRECISION, water_usage_million_gallons DOUBLE PRECISION, status TEXT, year_opened INTEGER, year_planned INTEGER, investment_billions DOUBLE PRECISION, acreage DOUBLE PRECISION, primary_models TEXT, community_impact TEXT, community_resistance INTEGER DEFAULT 0, grid_risk TEXT, renewable_percent DOUBLE PRECISION, notes TEXT, source TEXT, external_ref TEXT, synced_at TIMESTAMPTZ DEFAULT NOW())`;
+    // Additive migration for tables created before source/external_ref existed.
+    await sql`ALTER TABLE data_centers ADD COLUMN IF NOT EXISTS source TEXT`;
+    await sql`ALTER TABLE data_centers ADD COLUMN IF NOT EXISTS external_ref TEXT`;
     await sql`CREATE INDEX IF NOT EXISTS idx_dc_country ON data_centers (country)`;
     await sql`CREATE INDEX IF NOT EXISTS idx_dc_status  ON data_centers (status)`;
     await sql`CREATE INDEX IF NOT EXISTS idx_dc_latlng  ON data_centers (lat, lng)`;
+    await sql`CREATE INDEX IF NOT EXISTS idx_dc_source  ON data_centers (source)`;
 
     // 2 — Fetch all facilities from D1
     const { results } = await env.DB.prepare("SELECT * FROM data_centers ORDER BY id ASC").all();
@@ -1310,7 +1314,8 @@ async function syncD1ToNeon(env: Env): Promise<{ ok: boolean; synced: number; er
               (external_id, name, company, company_type, lat, lng, city, state, country,
                capacity_mw, estimated_annual_gwh, water_usage_million_gallons, status,
                year_opened, year_planned, investment_billions, acreage, primary_models,
-               community_impact, community_resistance, grid_risk, renewable_percent, notes, synced_at)
+               community_impact, community_resistance, grid_risk, renewable_percent, notes,
+               source, external_ref, synced_at)
             VALUES (
               ${String(row.id)}, ${row.name as string}, ${row.company as string}, ${row.company_type as string},
               ${row.lat as number}, ${row.lng as number}, ${row.city as string}, ${row.state as string}, ${row.country as string},
@@ -1318,14 +1323,16 @@ async function syncD1ToNeon(env: Env): Promise<{ ok: boolean; synced: number; er
               ${row.status as string}, ${row.year_opened as number}, ${row.year_planned as number},
               ${row.investment_billions as number}, ${row.acreage as number}, ${row.primary_models as string},
               ${row.community_impact as string}, ${(row.community_resistance as number) ?? 0},
-              ${row.grid_risk as string}, ${row.renewable_percent as number}, ${row.notes as string}, NOW()
+              ${row.grid_risk as string}, ${row.renewable_percent as number}, ${row.notes as string},
+              ${row.source as string | null}, ${row.external_ref as string | null}, NOW()
             )
             ON CONFLICT (external_id) DO UPDATE SET
               name=EXCLUDED.name, company=EXCLUDED.company, capacity_mw=EXCLUDED.capacity_mw,
               status=EXCLUDED.status, lat=EXCLUDED.lat, lng=EXCLUDED.lng,
               country=EXCLUDED.country, renewable_percent=EXCLUDED.renewable_percent,
               grid_risk=EXCLUDED.grid_risk, community_resistance=EXCLUDED.community_resistance,
-              notes=EXCLUDED.notes, synced_at=NOW()
+              notes=EXCLUDED.notes, source=EXCLUDED.source, external_ref=EXCLUDED.external_ref,
+              synced_at=NOW()
           `)
         );
         synced += chunk.length;
