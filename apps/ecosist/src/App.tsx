@@ -8,6 +8,7 @@ import OSHeader, { type EcosistView } from "./components/ecosist/OSHeader";
 import SignalDeck from "./components/ecosist/SignalDeck";
 import CommandTerminal from "./components/ecosist/CommandTerminal";
 import EarthSignals from "./components/ecosist/EarthSignals";
+import CameraNetwork from "./components/ecosist/CameraNetwork";
 
 const PlanetaryScene = lazy(() => import("./components/ecosist/PlanetaryScene"));
 
@@ -103,6 +104,12 @@ export default function App() {
                   {activeView === "signals" && (
                     <motion.div key="signals" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.02 }} className="h-full">
                       <EarthSignals signals={signals} />
+                    </motion.div>
+                  )}
+
+                  {activeView === "cameras" && (
+                    <motion.div key="cameras" initial={{ opacity: 0, scale: 0.98 }} animate={{ opacity: 1, scale: 1 }} exit={{ opacity: 0, scale: 1.02 }} className="h-full">
+                      <CameraNetwork signals={signals} />
                     </motion.div>
                   )}
                 </AnimatePresence>

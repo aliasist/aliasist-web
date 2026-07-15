@@ -8,7 +8,7 @@ export default defineConfig({
   server: {
     proxy: {
       '/api/ecosist': {
-        target: 'https://aliasist-workers-api.bchooper0730.workers.dev',
+        target: 'https://api.aliasist.tech',
         changeOrigin: true,
         rewrite: (path) => path.replace(/^\/api\/ecosist/, '/eco'),
       },

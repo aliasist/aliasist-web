@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
-import { Activity, Globe2, Leaf, Radio } from "lucide-react";
+import { Activity, Camera, Globe2, Leaf, Radio } from "lucide-react";
 import type { LiveSignals } from "../../lib/useLiveSignals";
 
-export type EcosistView = "core" | "intelligence" | "signals";
+export type EcosistView = "core" | "intelligence" | "signals" | "cameras";
 
 interface OSHeaderProps {
   activeView: EcosistView;
@@ -15,6 +15,7 @@ export default function OSHeader({ activeView, onViewChange, signals }: OSHeader
     { id: "core", label: "Core", icon: Leaf },
     { id: "intelligence", label: "Brief", icon: Activity },
     { id: "signals", label: "Earth Signals", icon: Globe2 },
+    { id: "cameras", label: "Cameras", icon: Camera },
   ];
 
   return (
