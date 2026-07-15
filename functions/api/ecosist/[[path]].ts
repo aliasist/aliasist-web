@@ -8,8 +8,8 @@ type PagesContext = {
   params: { path?: string | string[] };
 };
 
-const DEFAULT_API_BASE = "https://aliasist-workers-api.bchooper0730.workers.dev";
-const ALLOWED_PATHS = new Set(["signals", "space-weather"]);
+const DEFAULT_API_BASE = "https://api.aliasist.tech";
+const ALLOWED_PATHS = new Set(["signals", "space-weather", "cameras", "camera-sources"]);
 
 function json(body: unknown, status: number) {
   return new Response(JSON.stringify(body), {

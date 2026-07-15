@@ -2,13 +2,15 @@ import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import {
   EcoSignalsSchema,
   EcoSpaceWeatherSchema,
+  EcoCameraListSchema,
   type EcoAlert,
   type EcoEvent,
   type EcoQuake,
   type EcoSpaceWeather,
+  type EcoCamera,
 } from "./schemas";
 
-export type { EcoAlert, EcoEvent, EcoQuake, EcoSpaceWeather };
+export type { EcoAlert, EcoEvent, EcoQuake, EcoSpaceWeather, EcoCamera };
 
 const API_BASE = (import.meta.env.VITE_ECOSIST_API_BASE ??
   "/api/ecosist").replace(/\/$/, "");
@@ -35,12 +37,15 @@ export interface SourceHealth {
   usgs: boolean;
   nasa: boolean;
   noaa: boolean;
+  cameras: boolean;
 }
 
 export interface LiveSignals {
   alerts: EcoAlert[];
   quakes: EcoQuake[];
   events: EcoEvent[];
+  cameras: EcoCamera[];
+  cameraTotal: number;
   spaceWeather: EcoSpaceWeather | null;
   kpIndex: number | null;
   kpLabel: string;
@@ -58,12 +63,15 @@ const OFFLINE: SourceHealth = {
   usgs: false,
   nasa: false,
   noaa: false,
+  cameras: false,
 };
 
 export function useLiveSignals(pollMs = 120_000): LiveSignals {
   const [alerts, setAlerts] = useState<EcoAlert[]>([]);
   const [quakes, setQuakes] = useState<EcoQuake[]>([]);
   const [events, setEvents] = useState<EcoEvent[]>([]);
+  const [cameras, setCameras] = useState<EcoCamera[]>([]);
+  const [cameraTotal, setCameraTotal] = useState(0);
   const [spaceWeather, setSpaceWeather] = useState<EcoSpaceWeather | null>(null);
   const [aggregateKp, setAggregateKp] = useState<number | null>(null);
   const [sourceHealth, setSourceHealth] = useState<SourceHealth>(OFFLINE);
@@ -80,7 +88,7 @@ export function useLiveSignals(pollMs = 120_000): LiveSignals {
     const operation = (async () => {
       if (mountedRef.current) setIsRefreshing(true);
 
-      const [signalsResult, spaceResult] = await Promise.allSettled([
+      const [signalsResult, spaceResult, camerasResult] = await Promise.allSettled([
         fetch(apiUrl("/signals?area=US"), { headers: { accept: "application/json" } })
           .then(async (response) => {
             if (!response.ok) throw new Error(`EcoSist signals ${response.status}`);
@@ -91,16 +99,23 @@ export function useLiveSignals(pollMs = 120_000): LiveSignals {
             if (!response.ok) throw new Error(`EcoSist space weather ${response.status}`);
             return EcoSpaceWeatherSchema.parse(await response.json());
           }),
+        fetch(apiUrl("/cameras?limit=500"), { headers: { accept: "application/json" } })
+          .then(async (response) => {
+            if (!response.ok) throw new Error(`EcoSist cameras ${response.status}`);
+            return EcoCameraListSchema.parse(await response.json());
+          }),
       ]);
 
       const aggregate = signalsResult.status === "fulfilled" ? signalsResult.value : null;
       const space = spaceResult.status === "fulfilled" ? spaceResult.value : null;
+      const cameraCatalog = camerasResult.status === "fulfilled" ? camerasResult.value : null;
       const health: SourceHealth = {
         ecosist: aggregate !== null || space !== null,
         nws: aggregate !== null,
         usgs: aggregate !== null,
         nasa: aggregate !== null,
         noaa: space !== null || aggregate?.spaceWeather != null,
+        cameras: cameraCatalog !== null,
       };
       const capturedAt = Date.now();
 
@@ -112,6 +127,10 @@ export function useLiveSignals(pollMs = 120_000): LiveSignals {
         setAggregateKp(aggregate.spaceWeather?.kpIndex ?? null);
       }
       if (space) setSpaceWeather(space);
+      if (cameraCatalog) {
+        setCameras(cameraCatalog.items);
+        setCameraTotal(cameraCatalog.total);
+      }
       setSourceHealth(health);
       setHasAttempted(true);
       setLastAttempted(capturedAt);
@@ -146,6 +165,8 @@ export function useLiveSignals(pollMs = 120_000): LiveSignals {
     alerts,
     quakes,
     events,
+    cameras,
+    cameraTotal,
     spaceWeather,
     kpIndex,
     kpLabel: kpLabel(kpIndex),

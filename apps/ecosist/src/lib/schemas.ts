@@ -76,7 +76,34 @@ export const EcoSpaceWeatherSchema = z.object({
   ),
 });
 
+export const EcoCameraSchema = z.object({
+  id: z.string(),
+  sourceId: z.string(),
+  externalId: z.string(),
+  name: z.string(),
+  state: z.string().nullable(),
+  roadway: z.string().nullable(),
+  direction: z.string().nullable(),
+  latitude: z.number(),
+  longitude: z.number(),
+  location: z.string().nullable(),
+  status: z.string(),
+  pageUrl: z.string(),
+  imageUrl: z.string().nullable(),
+  streamUrl: z.string().nullable(),
+  attribution: z.string(),
+  observedAt: z.string(),
+});
+
+export const EcoCameraListSchema = z.object({
+  items: z.array(EcoCameraSchema),
+  total: z.number(),
+  configured: z.boolean(),
+  generatedAt: z.string(),
+});
+
 export type EcoAlert = z.infer<typeof EcoAlertSchema>;
 export type EcoQuake = z.infer<typeof EcoQuakeSchema>;
 export type EcoEvent = z.infer<typeof EcoEventSchema>;
 export type EcoSpaceWeather = z.infer<typeof EcoSpaceWeatherSchema>;
+export type EcoCamera = z.infer<typeof EcoCameraSchema>;
