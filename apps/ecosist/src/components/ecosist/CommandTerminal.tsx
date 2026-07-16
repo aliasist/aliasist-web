@@ -6,35 +6,60 @@ interface CommandTerminalProps {
   onCommandAction: (cmd: any) => void;
 }
 
+const KNOWN_COMMANDS = new Set(["help", "scan", "brief", "signals", "export", "clear"]);
+
+/**
+ * Anything that isn't a recognized single-word command is treated as a
+ * natural-language question and routed to the site-wide AI chat, which
+ * grounds eco questions in live planetary data (see functions/api/chat.ts +
+ * services/workers-api's buildLiveContextBlock) — not just canned command
+ * output. Same-origin call since /ecosist/ and /api/chat share aliasist.com.
+ */
+async function askEcosist(question: string): Promise<string> {
+  const res = await fetch("/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages: [{ role: "user", content: question }] }),
+  });
+  const data = (await res.json().catch(() => null)) as { response?: string; error?: string } | null;
+  if (!res.ok || !data?.response) {
+    throw new Error(data?.error ?? `Ask failed (${res.status})`);
+  }
+  return data.response;
+}
+
 export default function CommandTerminal({ onSystemMessage, onCommandAction }: CommandTerminalProps) {
   const [input, setInput] = useState("");
+  const [thinking, setThinking] = useState(false);
   const [history, setHistory] = useState<string[]>([
     "ECOSIST EARTH OS v1.0.0",
     "FEDERATED FEEDS: SECURE",
-    "TYPE 'HELP' FOR COMMANDS"
+    "TYPE 'HELP' FOR COMMANDS, OR ASK A QUESTION"
   ]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     if (scrollRef.current) scrollRef.current.scrollTop = scrollRef.current.scrollHeight;
-  }, [history]);
+  }, [history, thinking]);
 
   const handleCommand = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!input.trim()) return;
+    if (!input.trim() || thinking) return;
 
-    const cmd = input.toLowerCase().trim();
-    setHistory(prev => [...prev, `> ${input}`]);
+    const raw = input.trim();
+    const cmd = raw.toLowerCase();
+    setHistory(prev => [...prev, `> ${raw}`]);
     setInput("");
 
     if (cmd === 'help') {
-      setHistory(prev => [...prev, 
+      setHistory(prev => [...prev,
         "AVAILABLE COMMANDS:",
         "  SCAN  - REFRESH ALL PLANETARY SIGNALS",
         "  BRIEF - VIEW INTELLIGENCE SUMMARY",
         "  SIGNALS - OPEN EARTH SIGNAL DECK",
         "  EXPORT - DOWNLOAD MD REPORT",
-        "  CLEAR - WIPE TERMINAL HISTORY"
+        "  CLEAR - WIPE TERMINAL HISTORY",
+        "  Anything else is sent to the EcoSist AI as a question."
       ]);
     } else if (cmd === 'scan') {
       onCommandAction('scan');
@@ -50,8 +75,19 @@ export default function CommandTerminal({ onSystemMessage, onCommandAction }: Co
       setHistory(prev => [...prev, "GENERATING INTELLIGENCE REPORT..."]);
     } else if (cmd === 'clear') {
       setHistory([]);
-    } else {
+    } else if (KNOWN_COMMANDS.has(cmd)) {
       setHistory(prev => [...prev, `COMMAND NOT RECOGNIZED: ${cmd}`]);
+    } else {
+      setThinking(true);
+      setHistory(prev => [...prev, "ECOSIST AI: THINKING..."]);
+      askEcosist(raw)
+        .then((answer) => {
+          setHistory(prev => [...prev.slice(0, -1), `ECOSIST AI: ${answer}`]);
+        })
+        .catch((err: Error) => {
+          setHistory(prev => [...prev.slice(0, -1), `ECOSIST AI ERROR: ${err.message}`]);
+        })
+        .finally(() => setThinking(false));
     }
   };
 
@@ -73,9 +109,10 @@ export default function CommandTerminal({ onSystemMessage, onCommandAction }: Co
         <input
           autoFocus
           value={input}
+          disabled={thinking}
           onChange={(e) => setInput(e.target.value)}
-          className="w-full bg-transparent text-[10px] text-white outline-none placeholder:text-emerald-400/20"
-          placeholder="Enter command..."
+          className="w-full bg-transparent text-[10px] text-white outline-none placeholder:text-emerald-400/20 disabled:opacity-40"
+          placeholder={thinking ? "Waiting on EcoSist AI..." : "Enter command, or ask a question..."}
         />
       </form>
     </div>

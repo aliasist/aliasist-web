@@ -63,11 +63,11 @@ interface RagAskResult {
 /** Map keywords in the user's latest message to a sist ID. */
 export function detectSist(text: string): SistId | null {
   const t = text.toLowerCase();
-  if (/\b(space|nasa|iss|spacex|asteroid|exoplanet|orbit|rocket|satellite|hubble|james webb|apollo)\b/.test(t)) return "space";
-  if (/\b(data.?center|datacenter|server|hyperscale|colocation|colo|facility|pue|rack|gpu.?cluster)\b/.test(t)) return "data";
-  if (/\b(eco|weather|climate|storm|hurricane|wildfire|flood|air quality|space.?weather|geomagnetic)\b/.test(t)) return "eco";
-  if (/\b(market|stock|ticker|finance|crypto|macro|earnings|gdp|fed|interest rate|inflation)\b/.test(t)) return "pulse";
-  if (/\b(agsc|globe|country|data.?center.?map|undersea.?cable|internet.?exchange|submarine.?cable)\b/.test(t)) return "agsc";
+  if (/\b(space|nasa|iss|spacex|asteroids?|exoplanets?|orbit|rockets?|satellites?|hubble|james webb|apollo)\b/.test(t)) return "space";
+  if (/\b(data.?centers?|datacenters?|servers?|hyperscale|colocation|colo|facilit(y|ies)|pue|racks?|gpu.?clusters?)\b/.test(t)) return "data";
+  if (/\b(eco|weather|climate|storms?|hurricanes?|wildfires?|floods?|earthquakes?|quakes?|seismic|tsunamis?|air quality|space.?weather|geomagnetic)\b/.test(t)) return "eco";
+  if (/\b(markets?|stocks?|tickers?|finance|crypto|macro|earnings|gdp|fed|interest rates?|inflation)\b/.test(t)) return "pulse";
+  if (/\b(agsc|globe|countr(y|ies)|data.?center.?maps?|undersea.?cables?|internet.?exchanges?|submarine.?cables?)\b/.test(t)) return "agsc";
   return null;
 }
 

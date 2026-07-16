@@ -28,6 +28,26 @@ describe("detectSist", () => {
     expect(detectSist("hurricane and flood risk this week")).toBe("eco");
   });
 
+  it("routes plural forms of eco keywords (regression: 'storms'/'hurricanes' previously fell through to null)", () => {
+    expect(detectSist("any tropical storms active right now?")).toBe("eco");
+    expect(detectSist("are there any hurricanes right now")).toBe("eco");
+    expect(detectSist("give me a rundown of active wildfires")).toBe("eco");
+    expect(detectSist("what floods are happening")).toBe("eco");
+  });
+
+  it("routes earthquake/seismic questions to eco (previously had no matching keyword at all)", () => {
+    expect(detectSist("were there any earthquakes today?")).toBe("eco");
+    expect(detectSist("any recent quakes near California")).toBe("eco");
+    expect(detectSist("tell me about seismic activity")).toBe("eco");
+  });
+
+  it("routes plural forms across other sists", () => {
+    expect(detectSist("tell me about nearby asteroids")).toBe("space");
+    expect(detectSist("how many data centers does Aliasist track?")).toBe("data");
+    expect(detectSist("what's the outlook on interest rates")).toBe("pulse");
+    expect(detectSist("show me the submarine cables")).toBe("agsc");
+  });
+
   it("routes market topics", () => {
     expect(detectSist("what did the Fed do to interest rates")).toBe("pulse");
   });
