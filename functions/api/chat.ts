@@ -50,6 +50,14 @@ interface RagAskResult {
   latencyMs: number;
   chunks: Array<{ id: string; source: string; score: number; text: string }>;
   sist: SistId;
+  /**
+   * Raw live-data snapshot (eco: active alerts/quakes/events/storms/Kp).
+   * Present whenever `live: { includeDataSnapshot: true }` was requested,
+   * independent of whether the RAG worker's own LLM providers were up —
+   * this is what lets us answer "what's happening right now" even when
+   * that worker fell back to local-retrieval and `answer` is generic.
+   */
+  liveContext?: string | null;
 }
 
 /** Map keywords in the user's latest message to a sist ID. */
@@ -72,6 +80,11 @@ export function detectSist(text: string): SistId | null {
  *     wrapper, but `data.chunks` still hold real, high-quality source text.
  * In local-rag mode we drop the wrapper prose and ground purely on the chunks,
  * so the existing free retrieval backend is usable instead of discarded.
+ *
+ * `data.liveContext` (eco only) is independent of both modes — it's the raw
+ * live snapshot (active alerts/quakes/storms/Kp), always included when
+ * present, since it's what actually answers "what's happening right now"
+ * regardless of whether the RAG worker's own LLM providers were reachable.
  */
 export function formatRagContext(sist: SistId, data: RagAskResult): string | null {
   const isLocal = data?.source === "local-rag";
@@ -80,16 +93,22 @@ export function formatRagContext(sist: SistId, data: RagAskResult): string | nul
     .slice(0, 3)
     .map((c) => `- [${c.source}] ${c.text.slice(0, 300)}`)
     .join("\n");
+  const liveBlock = data?.liveContext
+    ? `Live snapshot (verify; may be stale):\n${data.liveContext}`
+    : "";
 
-  // Local-rag mode: ground on chunks only. No chunks → nothing useful to add.
+  // Local-rag mode: ground on chunks (+ live snapshot). No chunks and no
+  // live snapshot → nothing useful to add.
   if (isLocal) {
-    if (!chunkSnippets) return null;
+    if (!chunkSnippets && !liveBlock) return null;
     return [
       `=== RAG Context (${sist.toUpperCase()}) ===`,
-      `Source excerpts from the ${sist.toUpperCase()} corpus:`,
-      chunkSnippets,
+      chunkSnippets ? `Source excerpts from the ${sist.toUpperCase()} corpus:\n${chunkSnippets}` : "",
+      liveBlock,
       `=== End RAG Context ===`,
-    ].join("\n");
+    ]
+      .filter(Boolean)
+      .join("\n");
   }
 
   // Vector/LLM mode: quote the synthesized answer plus supporting excerpts.
@@ -98,6 +117,7 @@ export function formatRagContext(sist: SistId, data: RagAskResult): string | nul
     `=== RAG Context (${sist.toUpperCase()}) ===`,
     `Answer from corpus: ${data.answer}`,
     chunkSnippets ? `\nSource excerpts:\n${chunkSnippets}` : "",
+    liveBlock,
     `=== End RAG Context ===`,
   ]
     .filter(Boolean)
@@ -118,18 +138,27 @@ function ragCacheKey(sist: SistId, question: string): Request {
 const RAG_CACHE_TTL_SECONDS = 3600;
 
 /**
+ * `eco` questions are grounded against live conditions (active alerts,
+ * earthquakes, storms, Kp), not just the static reference corpus — those
+ * change minute to minute, so a 1-hour cache would answer "what's happening
+ * right now" with stale data. Match the eco route's own edge-cache cadence.
+ */
+const RAG_CACHE_TTL_SECONDS_LIVE = 60;
+
+/**
  * Fetch grounded RAG context for a question from the aliasist workers-api.
  * Blocking by design — the LLM system prompt depends on the result — but cached
  * via the Cloudflare Cache API so repeated questions skip the upstream round-trip.
  * Returns a formatted context block, or null if RAG is unavailable/irrelevant.
  */
-async function fetchRagContext(
+export async function fetchRagContext(
   env: Env,
   question: string,
 ): Promise<string | null> {
   const sist = detectSist(question);
   if (!sist) return null;
 
+  const live = sist === "eco";
   const cache = (globalThis as { caches?: { default?: Cache } }).caches?.default;
   const cacheKey = ragCacheKey(sist, question);
 
@@ -144,7 +173,12 @@ async function fetchRagContext(
     const res = await fetch(`${base}/rag/ask`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ sist, question, topK: 4 }),
+      body: JSON.stringify({
+        sist,
+        question,
+        topK: 4,
+        ...(live ? { live: { includeDataSnapshot: true } } : {}),
+      }),
       signal: AbortSignal.timeout(3500),
     });
     if (res.ok) {
@@ -162,7 +196,7 @@ async function fetchRagContext(
       .put(
         cacheKey,
         new Response(context, {
-          headers: { "Cache-Control": `max-age=${RAG_CACHE_TTL_SECONDS}` },
+          headers: { "Cache-Control": `max-age=${live ? RAG_CACHE_TTL_SECONDS_LIVE : RAG_CACHE_TTL_SECONDS}` },
         }),
       )
       .catch(() => {});
@@ -340,6 +374,18 @@ async function callWorkersAi(
   );
 }
 
+async function responseErrorSummary(provider: string, res: Response): Promise<string> {
+  const text = await res.clone().text().catch(() => "");
+  if (!text) return `${provider} ${res.status}`;
+  try {
+    const parsed = JSON.parse(text) as { error?: string; message?: string };
+    const message = parsed.error || parsed.message;
+    return message ? `${provider} ${res.status}: ${message}` : `${provider} ${res.status}`;
+  } catch {
+    return `${provider} ${res.status}: ${text.slice(0, 240)}`;
+  }
+}
+
 // ---------------------------------------------------------------------------
 // Handler
 // ---------------------------------------------------------------------------
@@ -393,14 +439,17 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
   // --- RAG fetch (blocking, cached; 3.5s upstream timeout) ---
   const ragContext = await fetchRagContext(env, lastUserMsg);
   const system = buildSystem(ragContext);
+  const providerErrors: string[] = [];
 
   // --- Workers AI (preferred — free edge LLM) ---
   if (env.AI) {
     try {
       const model = env.AI_MODEL?.trim() || DEFAULT_WORKERS_AI_MODEL;
-      return await callWorkersAi(env.AI, model, system, messages);
+      const res = await callWorkersAi(env.AI, model, system, messages);
+      if (res.ok) return res;
+      providerErrors.push(await responseErrorSummary("Workers AI", res));
     } catch (e) {
-      return json({ error: e instanceof Error ? e.message : "Chat error." }, 500);
+      providerErrors.push(`Workers AI: ${e instanceof Error ? e.message : "Chat error."}`);
     }
   }
 
@@ -408,13 +457,15 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
   const groqKey = env.GROQ_API_KEY?.trim();
   if (groqKey) {
     try {
-      return await callGroqDirect(groqKey, system, messages);
+      const res = await callGroqDirect(groqKey, system, messages);
+      if (res.ok) return res;
+      providerErrors.push(await responseErrorSummary("Groq", res));
     } catch (e) {
-      return json({ error: e instanceof Error ? e.message : "Chat error." }, 500);
+      providerErrors.push(`Groq: ${e instanceof Error ? e.message : "Chat error."}`);
     }
   }
 
-  if (!hasSessionToken) {
+  if (!hasSessionToken && !isPublicChatEnabled(env)) {
     return json(
       { error: "No chat model is configured. Bind Workers AI (AI) or set GROQ_API_KEY on the Pages deployment." },
       503,
@@ -443,7 +494,11 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
     return new Response(text, { status: upstreamRes.status, headers: corsHeaders });
   } catch (e) {
     return json(
-      { error: "Upstream chat error.", message: e instanceof Error ? e.message : String(e) },
+      {
+        error: "Upstream chat error.",
+        message: e instanceof Error ? e.message : String(e),
+        providerErrors,
+      },
       502,
     );
   }

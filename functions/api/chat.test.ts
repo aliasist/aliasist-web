@@ -1,5 +1,17 @@
-import { describe, expect, it } from "vitest";
-import { detectSist, formatRagContext, parseMessages } from "./chat";
+import { afterEach, describe, expect, it, vi } from "vitest";
+import { detectSist, fetchRagContext, formatRagContext, onRequestPost, parseMessages } from "./chat";
+
+function chatRequest(content = "hello") {
+  return new Request("https://aliasist.test/api/chat", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ messages: [{ role: "user", content }] }),
+  });
+}
+
+afterEach(() => {
+  vi.restoreAllMocks();
+});
 
 describe("detectSist", () => {
   it("routes space topics", () => {
@@ -133,5 +145,155 @@ describe("formatRagContext", () => {
     expect(out).not.toContain("fourth-should-be-dropped");
     // 500-char chunk should be truncated to 300
     expect(out).not.toContain("x".repeat(301));
+  });
+
+  it("includes liveContext in local-rag mode even with no chunks", () => {
+    const out = formatRagContext("eco", {
+      ...base,
+      sist: "eco",
+      answer: 'Closest grounded answer for: "x"',
+      source: "local-rag",
+      chunks: [],
+      liveContext: JSON.stringify({ planetarySnapshot: { alertCount: 3 } }),
+    });
+    expect(out).not.toBeNull();
+    expect(out).toContain("Live snapshot");
+    expect(out).toContain("alertCount");
+  });
+
+  it("includes liveContext alongside a synthesized vector-mode answer", () => {
+    const out = formatRagContext("eco", {
+      ...base,
+      sist: "eco",
+      answer: "There is one active hurricane.",
+      source: "groq",
+      chunks: [],
+      liveContext: JSON.stringify({ planetarySnapshot: { activeStorms: [{ name: "Elida" }] } }),
+    });
+    expect(out).toContain("There is one active hurricane.");
+    expect(out).toContain("Live snapshot");
+    expect(out).toContain("Elida");
+  });
+
+  it("omits the live snapshot line when liveContext is absent", () => {
+    const out = formatRagContext("eco", {
+      ...base,
+      sist: "eco",
+      answer: "generic answer",
+      source: "groq",
+      chunks: [],
+    });
+    expect(out).not.toContain("Live snapshot");
+  });
+});
+
+describe("onRequestPost", () => {
+  it("rejects unsigned chat when public chat is disabled", async () => {
+    const res = await onRequestPost({
+      request: chatRequest(),
+      env: {},
+    });
+
+    expect(res.status).toBe(403);
+    await expect(res.json()).resolves.toMatchObject({
+      error: expect.stringContaining("Public chat is not enabled"),
+    });
+  });
+
+  it("falls back to the upstream worker when Workers AI fails", async () => {
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ response: "fallback ok" }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    const res = await onRequestPost({
+      request: chatRequest("tell me about Aliasist"),
+      env: {
+        PUBLIC_CHAT_ENABLED: "true",
+        LLM_CHAT_BASE_URL: "https://upstream.example",
+        AI: {
+          run: vi.fn(async () => {
+            throw new Error("model unavailable");
+          }),
+        },
+      },
+    });
+
+    expect(res.status).toBe(200);
+    await expect(res.json()).resolves.toEqual({ response: "fallback ok" });
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "https://upstream.example/api/chat",
+      expect.objectContaining({ method: "POST" }),
+    );
+  });
+
+  it("uses the upstream worker for public chat when no local model is configured", async () => {
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ response: "upstream public ok" }), {
+        status: 200,
+        headers: { "Content-Type": "application/json" },
+      }),
+    );
+
+    const res = await onRequestPost({
+      request: chatRequest("hello"),
+      env: {
+        PUBLIC_CHAT_ENABLED: "true",
+        LLM_CHAT_BASE_URL: "https://upstream.example/",
+      },
+    });
+
+    expect(res.status).toBe(200);
+    await expect(res.json()).resolves.toEqual({ response: "upstream public ok" });
+    expect(fetchSpy).toHaveBeenCalledWith(
+      "https://upstream.example/api/chat",
+      expect.objectContaining({ method: "POST" }),
+    );
+  });
+});
+
+describe("fetchRagContext", () => {
+  it("returns null for a question with no detectable sist (skips the RAG call entirely)", async () => {
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+    const result = await fetchRagContext({}, "what's your favorite color?");
+    expect(result).toBeNull();
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("requests live grounding for eco questions", async () => {
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(
+        JSON.stringify({ answer: "It's calm right now.", model: "test", source: "vector", latencyMs: 1, chunks: [] }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      ),
+    );
+
+    const result = await fetchRagContext({}, "is there an active hurricane right now?");
+
+    expect(result).toContain("It's calm right now.");
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    const [, init] = fetchSpy.mock.calls[0] as [string, RequestInit];
+    const body = JSON.parse(init.body as string);
+    expect(body.sist).toBe("eco");
+    expect(body.live).toEqual({ includeDataSnapshot: true });
+  });
+
+  it("does not request live grounding for non-eco questions", async () => {
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(
+        JSON.stringify({ answer: "Launch is Tuesday.", model: "test", source: "vector", latencyMs: 1, chunks: [] }),
+        { status: 200, headers: { "Content-Type": "application/json" } },
+      ),
+    );
+
+    await fetchRagContext({}, "when is the next SpaceX launch?");
+
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    const [, init] = fetchSpy.mock.calls[0] as [string, RequestInit];
+    const body = JSON.parse(init.body as string);
+    expect(body.sist).toBe("space");
+    expect(body.live).toBeUndefined();
   });
 });
