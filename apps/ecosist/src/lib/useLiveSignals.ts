@@ -9,9 +9,10 @@ import {
   type EcoSpaceWeather,
   type EcoCamera,
   type EcoStorm,
+  type EcoVolcano,
 } from "./schemas";
 
-export type { EcoAlert, EcoEvent, EcoQuake, EcoSpaceWeather, EcoCamera, EcoStorm };
+export type { EcoAlert, EcoEvent, EcoQuake, EcoSpaceWeather, EcoCamera, EcoStorm, EcoVolcano };
 
 const API_BASE = (import.meta.env.VITE_ECOSIST_API_BASE ??
   "/api/ecosist").replace(/\/$/, "");
@@ -46,6 +47,7 @@ export interface LiveSignals {
   quakes: EcoQuake[];
   events: EcoEvent[];
   hurricanes: EcoStorm[];
+  volcanoes: EcoVolcano[];
   cameras: EcoCamera[];
   cameraTotal: number;
   spaceWeather: EcoSpaceWeather | null;
@@ -73,6 +75,7 @@ export function useLiveSignals(pollMs = 120_000): LiveSignals {
   const [quakes, setQuakes] = useState<EcoQuake[]>([]);
   const [events, setEvents] = useState<EcoEvent[]>([]);
   const [hurricanes, setHurricanes] = useState<EcoStorm[]>([]);
+  const [volcanoes, setVolcanoes] = useState<EcoVolcano[]>([]);
   const [cameras, setCameras] = useState<EcoCamera[]>([]);
   const [cameraTotal, setCameraTotal] = useState(0);
   const [spaceWeather, setSpaceWeather] = useState<EcoSpaceWeather | null>(null);
@@ -128,6 +131,7 @@ export function useLiveSignals(pollMs = 120_000): LiveSignals {
         setQuakes(aggregate.earthquakes);
         setEvents(aggregate.events);
         setHurricanes(aggregate.hurricanes);
+        setVolcanoes(aggregate.volcanoes);
         setAggregateKp(aggregate.spaceWeather?.kpIndex ?? null);
       }
       if (space) setSpaceWeather(space);
@@ -170,6 +174,7 @@ export function useLiveSignals(pollMs = 120_000): LiveSignals {
     quakes,
     events,
     hurricanes,
+    volcanoes,
     cameras,
     cameraTotal,
     spaceWeather,

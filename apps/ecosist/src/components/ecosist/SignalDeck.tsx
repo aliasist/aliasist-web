@@ -1,10 +1,20 @@
 import { motion } from "framer-motion";
-import { Activity, CloudLightning, Flame, Radio, Wind } from "lucide-react";
+import { Activity, CloudLightning, Flame, Mountain, Radio, Wind } from "lucide-react";
 import type { LiveSignals } from "../../lib/useLiveSignals";
+
+const VOLCANO_SEVERITY: Record<string, number> = { WARNING: 3, WATCH: 2, ADVISORY: 1, NORMAL: 0 };
 
 export default function SignalDeck({ signals }: { signals: LiveSignals }) {
   const strongestStorm = signals.hurricanes.reduce<LiveSignals["hurricanes"][number] | null>(
     (current, storm) => (!current || (storm.windMph ?? 0) > (current.windMph ?? 0) ? storm : current),
+    null,
+  );
+  const mostSevereVolcano = signals.volcanoes.reduce<LiveSignals["volcanoes"][number] | null>(
+    (current, volcano) => {
+      const currentRank = VOLCANO_SEVERITY[current?.alertLevel ?? ""] ?? -1;
+      const volcanoRank = VOLCANO_SEVERITY[volcano.alertLevel ?? ""] ?? -1;
+      return !current || volcanoRank > currentRank ? volcano : current;
+    },
     null,
   );
   return (
@@ -17,6 +27,13 @@ export default function SignalDeck({ signals }: { signals: LiveSignals }) {
         label="Active Storms"
         value={signals.hurricanes.length}
         subValue={strongestStorm ? `${strongestStorm.name} · ${strongestStorm.category ?? "—"}` : "NOAA NHC"}
+        online={signals.sourceHealth.nws}
+      />
+      <SignalCard
+        icon={Mountain}
+        label="Elevated Volcanoes"
+        value={signals.volcanoes.length}
+        subValue={mostSevereVolcano ? `${mostSevereVolcano.name} · ${mostSevereVolcano.alertLevel ?? "—"}` : "USGS HANS"}
         online={signals.sourceHealth.nws}
       />
       <SignalCard icon={Radio} label="K-Index" value={signals.kpIndex?.toFixed(1) ?? "—"} subValue={signals.kpLabel} online={signals.sourceHealth.noaa} />
