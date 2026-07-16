@@ -43,10 +43,26 @@ export const EcoEventSchema = z.object({
   lng: z.number().nullable(),
 });
 
+export const EcoStormSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  classification: z.string().nullable(),
+  category: z.string().nullable(),
+  windMph: z.number().nullable(),
+  pressureMb: z.number().nullable(),
+  lat: z.number().nullable(),
+  lng: z.number().nullable(),
+  movementDir: z.number().nullable(),
+  movementMph: z.number().nullable(),
+  lastUpdate: z.string().nullable(),
+  advisoryUrl: z.string().nullable(),
+});
+
 export const EcoSignalsSchema = z.object({
   alerts: z.array(EcoAlertSchema),
   earthquakes: z.array(EcoQuakeSchema),
   events: z.array(EcoEventSchema),
+  hurricanes: z.array(EcoStormSchema).default([]),
   spaceWeather: z
     .object({
       time: z.string().nullable(),
@@ -105,5 +121,6 @@ export const EcoCameraListSchema = z.object({
 export type EcoAlert = z.infer<typeof EcoAlertSchema>;
 export type EcoQuake = z.infer<typeof EcoQuakeSchema>;
 export type EcoEvent = z.infer<typeof EcoEventSchema>;
+export type EcoStorm = z.infer<typeof EcoStormSchema>;
 export type EcoSpaceWeather = z.infer<typeof EcoSpaceWeatherSchema>;
 export type EcoCamera = z.infer<typeof EcoCameraSchema>;

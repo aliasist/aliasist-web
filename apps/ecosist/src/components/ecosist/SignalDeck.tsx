@@ -1,13 +1,24 @@
 import { motion } from "framer-motion";
-import { Activity, CloudLightning, Flame, Radio } from "lucide-react";
+import { Activity, CloudLightning, Flame, Radio, Wind } from "lucide-react";
 import type { LiveSignals } from "../../lib/useLiveSignals";
 
 export default function SignalDeck({ signals }: { signals: LiveSignals }) {
+  const strongestStorm = signals.hurricanes.reduce<LiveSignals["hurricanes"][number] | null>(
+    (current, storm) => (!current || (storm.windMph ?? 0) > (current.windMph ?? 0) ? storm : current),
+    null,
+  );
   return (
     <div className="flex-1 space-y-4 overflow-y-auto pr-2">
       <SignalCard icon={CloudLightning} label="NWS Alerts" value={signals.alerts.length} subValue="Active US" online={signals.sourceHealth.nws} />
       <SignalCard icon={Activity} label="Earthquakes" value={signals.quakes.length} subValue="M4.5+ / 7D" online={signals.sourceHealth.usgs} />
       <SignalCard icon={Flame} label="Natural Events" value={signals.events.length} subValue="NASA EONET" online={signals.sourceHealth.nasa} />
+      <SignalCard
+        icon={Wind}
+        label="Active Storms"
+        value={signals.hurricanes.length}
+        subValue={strongestStorm ? `${strongestStorm.name} · ${strongestStorm.category ?? "—"}` : "NOAA NHC"}
+        online={signals.sourceHealth.nws}
+      />
       <SignalCard icon={Radio} label="K-Index" value={signals.kpIndex?.toFixed(1) ?? "—"} subValue={signals.kpLabel} online={signals.sourceHealth.noaa} />
     </div>
   );
