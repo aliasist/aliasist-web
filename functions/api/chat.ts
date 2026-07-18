@@ -179,7 +179,10 @@ export async function fetchRagContext(
         topK: 4,
         ...(live ? { live: { includeDataSnapshot: true } } : {}),
       }),
-      signal: AbortSignal.timeout(3500),
+      // The hub's live-data asks (eco snapshot = 5 upstream feeds + waterfall
+      // generation) routinely exceed the old 3.5s budget, which silently
+      // dropped RAG context and produced generic persona answers.
+      signal: AbortSignal.timeout(12_000),
     });
     if (res.ok) {
       const data = await res.json() as RagAskResult;
