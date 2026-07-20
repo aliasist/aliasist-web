@@ -28,11 +28,24 @@ export default function CameraNetwork({ signals }: { signals: LiveSignals }) {
 
       <div className="grid min-h-0 flex-1 gap-3 overflow-y-auto pr-2 md:grid-cols-2 xl:grid-cols-3">
         {visible.map((camera) => (
-          <article key={camera.id} className="flex min-h-44 flex-col rounded-xl border border-emerald-500/10 bg-black/50 p-4 transition hover:border-emerald-400/30">
-            <div className="flex items-start justify-between gap-3"><div className="flex size-9 items-center justify-center rounded-lg border border-emerald-400/15 bg-emerald-400/5"><Camera className="size-4" /></div><span className={`rounded-full px-2 py-1 text-[8px] uppercase tracking-widest ${camera.status === "enabled" ? "bg-emerald-400/10 text-emerald-300" : "bg-amber-400/10 text-amber-300"}`}>{camera.status}</span></div>
+          <article key={camera.id} className="flex min-h-44 flex-col overflow-hidden rounded-xl border border-emerald-500/10 bg-black/50 transition hover:border-emerald-400/30">
+            {camera.imageUrl && (
+              <a href={camera.streamUrl ?? camera.imageUrl} target="_blank" rel="noreferrer" className="block">
+                <img
+                  src={camera.imageUrl}
+                  alt={`Live view: ${camera.name}`}
+                  loading="lazy"
+                  className="aspect-video w-full border-b border-emerald-500/10 object-cover"
+                  onError={(event) => { event.currentTarget.parentElement!.style.display = "none"; }}
+                />
+              </a>
+            )}
+            <div className="flex flex-1 flex-col p-4">
+            <div className="flex items-start justify-between gap-3"><div className="flex size-9 items-center justify-center rounded-lg border border-emerald-400/15 bg-emerald-400/5"><Camera className="size-4" /></div><span className={`rounded-full px-2 py-1 text-[8px] uppercase tracking-widest ${camera.status === "enabled" || camera.status === "online" ? "bg-emerald-400/10 text-emerald-300" : "bg-amber-400/10 text-amber-300"}`}>{camera.status}</span></div>
             <h3 className="mt-4 line-clamp-2 text-sm font-bold text-white">{camera.name}</h3>
             <p className="mt-2 flex items-start gap-2 text-[10px] leading-relaxed text-emerald-100/50"><MapPin className="mt-0.5 size-3 shrink-0" />{camera.location ?? `${camera.latitude.toFixed(4)}, ${camera.longitude.toFixed(4)}`}</p>
             <div className="mt-auto flex items-end justify-between gap-3 pt-4"><div className="text-[8px] uppercase tracking-widest text-emerald-400/35"><div>{camera.state} // {camera.roadway ?? "roadway unknown"}</div><div className="mt-1">{camera.attribution}</div></div><a href={camera.pageUrl} target="_blank" rel="noreferrer" aria-label={`Open ${camera.name}`} className="text-emerald-400 hover:text-white"><ExternalLink className="size-4" /></a></div>
+            </div>
           </article>
         ))}
         {!visible.length && <div className="col-span-full flex min-h-64 items-center justify-center rounded-xl border border-dashed border-emerald-500/15 text-center text-[10px] uppercase tracking-widest text-emerald-400/35">Camera catalog is ready; configure and ingest an authorized provider feed.</div>}
