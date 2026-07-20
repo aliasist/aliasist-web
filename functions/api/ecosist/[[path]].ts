@@ -9,7 +9,16 @@ type PagesContext = {
 };
 
 const DEFAULT_API_BASE = "https://api.aliasist.tech";
-const ALLOWED_PATHS = new Set(["signals", "space-weather", "cameras", "camera-sources"]);
+const ALLOWED_PATHS = new Set([
+  "signals",
+  "space-weather",
+  "cameras",
+  "camera-sources",
+  "emergency-lens",
+  "hurricanes",
+  "wildfires",
+  "volcanoes",
+]);
 
 function json(body: unknown, status: number) {
   return new Response(JSON.stringify(body), {
