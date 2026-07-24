@@ -17,8 +17,6 @@ interface Env extends ClerkEnv {
   GROQ_API_KEY?: string;
   /** Fallback: proxy to upstream LLM worker. Defaults to production llm-chat worker URL. */
   LLM_CHAT_BASE_URL?: string;
-  /** Set to "true" to let unsigned visitors use the homepage AI demo. */
-  PUBLIC_CHAT_ENABLED?: string;
   /**
    * Base URL for the aliasist RAG worker (api.aliasist.tech).
    * Used to fetch grounded context before answering.
@@ -236,35 +234,6 @@ function buildSystem(ragContext: string | null): string {
 }
 
 // ---------------------------------------------------------------------------
-// Rate limiting (public chat)
-// ---------------------------------------------------------------------------
-
-const publicChatBuckets = new Map<string, { count: number; windowStart: number }>();
-const PUBLIC_CHAT_WINDOW_MS = 60_000;
-const PUBLIC_CHAT_LIMIT = 6;
-
-function isPublicChatEnabled(env: Env): boolean {
-  return env.PUBLIC_CHAT_ENABLED?.trim().toLowerCase() === "true";
-}
-
-function clientKey(request: Request): string {
-  return request.headers.get("CF-Connecting-IP") ?? request.headers.get("x-forwarded-for") ?? "unknown";
-}
-
-function checkPublicChatLimit(request: Request): boolean {
-  const now = Date.now();
-  const key = clientKey(request);
-  const current = publicChatBuckets.get(key);
-  if (!current || now - current.windowStart > PUBLIC_CHAT_WINDOW_MS) {
-    publicChatBuckets.set(key, { count: 1, windowStart: now });
-    return true;
-  }
-  if (current.count >= PUBLIC_CHAT_LIMIT) return false;
-  current.count += 1;
-  return true;
-}
-
-// ---------------------------------------------------------------------------
 // Message parsing
 // ---------------------------------------------------------------------------
 
@@ -423,13 +392,8 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
     if (!auth.ok) {
       return json({ error: auth.error }, auth.status);
     }
-  } else if (!isPublicChatEnabled(env)) {
-    return json(
-      { error: "Public chat is not enabled. Set PUBLIC_CHAT_ENABLED=true and GROQ_API_KEY on the Pages deployment." },
-      403,
-    );
-  } else if (!checkPublicChatLimit(request)) {
-    return json({ error: "Too many chat messages. Try again in a minute." }, 429);
+  } else {
+    return json({ error: "Sign in to use chat." }, 401);
   }
 
   // --- Parse messages & detect topic ---
@@ -466,13 +430,6 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
     } catch (e) {
       providerErrors.push(`Groq: ${e instanceof Error ? e.message : "Chat error."}`);
     }
-  }
-
-  if (!hasSessionToken && !isPublicChatEnabled(env)) {
-    return json(
-      { error: "No chat model is configured. Bind Workers AI (AI) or set GROQ_API_KEY on the Pages deployment." },
-      503,
-    );
   }
 
   // --- Fallback: proxy to llm-chat worker ---
