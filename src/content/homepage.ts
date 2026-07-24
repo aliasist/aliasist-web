@@ -70,12 +70,6 @@ export const suiteApps = [
     icon: "AT",
   },
   {
-    label: "Literacy Tools",
-    sub: "Writing helper",
-    href: "https://github.com/aliasist/aliasist-literacy-assistant",
-    icon: "LT",
-  },
-  {
     label: "EcoSist",
     sub: "**UNDER CONSTRUCTION** project paused.",
     href: "/ecosist/",
@@ -91,11 +85,10 @@ export const hero = {
   mascotLabel: "aliasist",
   mascotAlt: "Aliasist",
   mascotTitle: "Aliasist",
-  eyeline: "developer portfolio · practical software · security-minded tools",
   wordmark: "ALIASIST",
-  tagline: "The home base for the things I build and ship.",
+  tagline: "Data software tools 24/7 real-time updates",
   subcopy:
-    "I'm Blake, a self-taught developer building web apps, data tools, privacy utilities, and automation projects under the Aliasist name.",
+    "Hey, I'm Blake. Aliasist is a project I started in spring 2026 to give users access to data that is not always readily available, reliable, or easy to reach 24/7.",
   ctaContact: "Projects",
   ctaContactHref: "#projects",
   ctaSecondary: "Contact",
@@ -141,7 +134,7 @@ const downloadLinks = {
 export const projectsSection = {
   dividerLabel: "Projects",
   headline: "Built projects, not ideas.",
-  subcopy: "A tighter view of the apps and utilities I have shipped, from data dashboards to privacy tools and developer workflows.",
+  subcopy: "A focused view of the apps and utilities connected to Aliasist, from data dashboards to privacy tools and developer workflows.",
 } as const;
 
 export const projects = [
@@ -270,21 +263,6 @@ export const projects = [
     banner: null,
   },
   {
-    name: "Literacy Tools",
-    description:
-      "A browser extension that helps with grammar, professional rephrasing, and summarization.",
-    tech: ["React", "Vite", "Cloudflare Workers", "Gemini", "Groq", "Ollama"],
-    github: "https://github.com/aliasist/aliasist-literacy-assistant",
-    downloads: [],
-    status: "Live",
-    meta: ["Browser extension", "Writing tools", "Draft cleanup"] as const,
-    tone: "violet",
-    icon: "LT",
-    link: "https://github.com/aliasist/aliasist-literacy-assistant",
-    linkLabel: "View on GitHub →",
-    banner: null,
-  },
-  {
     name: "EcoSist",
     description:
       "An environmental dashboard for air quality, climate data, and geospatial views.",
@@ -329,8 +307,8 @@ export type ProjectCard = (typeof projects)[number];
 export const about = {
   dividerLabel: "About",
   headline: "Meet Aliasist.",
-  pathBadge: "Path · Cybersecurity × tools",
-  skillsLabel: "Skills I'm building",
+  pathBadge: "Focus · Software × data × security",
+  skillsLabel: "Core capabilities",
   skills: [
     "Python",
     "JavaScript",
@@ -343,12 +321,16 @@ export const about = {
   ] as const,
   /**
    * Each block: optional `kicker` (small label) + `body` (main text).
-   * Same story as before — early start with HTML, stack emphasis, studies, open source, CTA.
+   * Project-first positioning for the Aliasist suite.
    */
   bioBlocks: [
     {
-      kicker: "Where I started",
-      body: "I coded my first website in 2004 for my Age of Empires clan, oXiDe, after experimenting with banners and forum signatures. Today, I build practical web tools and data-driven applications through Aliasist: a way to organize and make sense of the data around us.",
+      kicker: "What it is",
+      body: "Aliasist brings together practical web tools, data-driven applications, privacy utilities, and AI-assisted workflows. If you would like to collaborate on a project or have something built with frontend and backend support, send an email and include the goal, scope, and timeline.",
+    },
+    {
+      kicker: "Background",
+      body: "I have been working with web design and software since 2004, starting with Dreamweaver, Photoshop layouts, sliced images, XHTML, CSS, and hand-coded effects.",
     },
   ] as const,
 
@@ -359,7 +341,6 @@ export const about = {
   stats: [
     { num: `${suiteAppCount}`,  label: "Projects connected", sym: "" as const },
     { num: "7",  label: "External APIs integrated", sym: "+" as const },
-    { num: "3",  label: "Years building in public", sym: "" as const },
     { num: "100", label: "Open source · github.com/aliasist", sym: "%" as const },
   ],
 } as const;
@@ -368,10 +349,10 @@ export const about = {
 
 export const contact = {
   dividerLabel: "Contact",
-  introLabel: "Hi, I'm Blake.",
+  introLabel: "Aliasist contact",
   headline: "Make contact.",
-  introStrong: "Open to collaborations, internships, and project work.",
-  introRest: "Creating tools for users.",
+  introStrong: "Open to project work, collaborations, and frontend/backend builds.",
+  introRest: "Send a clear note with what you want built, what it should connect to, and what success looks like.",
   successTitle: "Message received",
   successBody:
     "Message received. I prioritize clear requests, technical detail, and projects with a real path forward.",

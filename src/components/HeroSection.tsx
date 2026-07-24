@@ -42,19 +42,6 @@ const HeroSection = () => {
           {hero.wordmark}
         </motion.h1>
 
-        <motion.div
-          initial={{ opacity: 0, y: 8 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.45, duration: 0.6 }}
-          className="mb-6 flex items-center justify-center gap-3"
-        >
-          <span className="block h-px w-12 bg-gradient-to-r from-transparent via-violet/55 to-electric/50" />
-          <p className="font-mono text-[10px] uppercase tracking-[0.26em] text-electric/80 sm:text-[11px]">
-            {hero.eyeline}
-          </p>
-          <span className="block h-px w-12 bg-gradient-to-l from-transparent via-violet/55 to-electric/50" />
-        </motion.div>
-
         <motion.p
           className="mb-4 font-mono text-[11px] uppercase tracking-[0.24em] text-electric/65"
           initial={{ opacity: 0 }}

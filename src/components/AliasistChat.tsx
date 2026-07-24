@@ -1,11 +1,13 @@
 import { useState, useRef, useEffect, type KeyboardEvent } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth, useUser } from "@clerk/react";
+import aliasistLogo from "@/assets/aliasist-logo.png";
 import { readJsonBody, siteEndpoints } from "@/config/api";
 import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
 
 /** Groq worker vs Clerk-authenticated Pages KV room (`/api/chat-messages`). */
 const USE_PAGES_CHAT_ROOM = import.meta.env.VITE_USE_PAGES_CHAT_ROOM === "true";
+const REQUIRE_CHAT_SIGN_IN = true;
 const LLM_CHAT_ENDPOINT = siteEndpoints.chatApi;
 const LLM_CHAT_WORKER_ENDPOINT = siteEndpoints.chatWorkerApi;
 const ROOM_CHAT_ENDPOINT = siteEndpoints.chatMessagesApi;
@@ -25,16 +27,13 @@ interface Message {
 }
 
 const WELCOME_CHAT =
-  "Ask me about Aliasist projects, consulting, or what Blake can help build.";
+  "Ask me about Aliasist projects, consulting, or practical software workflows.";
 
 const WELCOME_ROOM =
   "Room is ready. Messages are saved when configured on Pages.";
 
 const WELCOME_SIGN_IN_REQUIRED =
   "Sign in with Clerk to use chat.";
-
-const WELCOME_PUBLIC_CHAT =
-  "Ask me about projects, consulting, or what Blake can help build.";
 
 /** Retry the request via the other endpoint when the first one fails (but don't retry on 429 rate-limits). */
 function shouldRetry(res: Response) {
@@ -61,7 +60,7 @@ const AliasistChat = () => {
   }, [isLoaded, isSignedIn]);
 
   useEffect(() => {
-    if (USE_PAGES_CHAT_ROOM && isLoaded && !isSignedIn && open) {
+    if (REQUIRE_CHAT_SIGN_IN && isLoaded && !isSignedIn && open) {
       setOpen(false);
     }
   }, [isLoaded, isSignedIn, open]);
@@ -69,7 +68,7 @@ const AliasistChat = () => {
   useEffect(() => {
     if (!open || !isLoaded) return;
 
-    if (!isSignedIn && USE_PAGES_CHAT_ROOM) {
+    if (!isSignedIn && REQUIRE_CHAT_SIGN_IN) {
       setMessages([{ role: "assistant", content: WELCOME_SIGN_IN_REQUIRED }]);
       return;
     }
@@ -107,7 +106,7 @@ const AliasistChat = () => {
       return;
     }
 
-    setMessages([{ role: "assistant", content: isSignedIn ? WELCOME_CHAT : WELCOME_PUBLIC_CHAT }]);
+    setMessages([{ role: "assistant", content: WELCOME_CHAT }]);
   }, [open, isLoaded, isSignedIn, getToken, userId]);
 
   useEffect(() => {
@@ -124,7 +123,7 @@ const AliasistChat = () => {
     setLoading(true);
 
     try {
-      if (!isSignedIn && USE_PAGES_CHAT_ROOM) {
+      if (!isSignedIn && REQUIRE_CHAT_SIGN_IN) {
         setMessages((prev) => [...prev, { role: "assistant", content: "Sign in to chat." }]);
         setLoading(false);
         return;
@@ -238,7 +237,7 @@ const AliasistChat = () => {
 
   const handleLauncherClick = () => {
     if (!isLoaded) return;
-    if (!isSignedIn && USE_PAGES_CHAT_ROOM) {
+    if (!isSignedIn && REQUIRE_CHAT_SIGN_IN) {
       pendingOpenRef.current = true;
       openSiteSignIn();
       return;
@@ -263,7 +262,7 @@ const AliasistChat = () => {
                 <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-electric">
                   {USE_PAGES_CHAT_ROOM ? "Aliasist Room" : "Aliasist Chat"}
                 </span>
-                {isLoaded && !isSignedIn && USE_PAGES_CHAT_ROOM ? (
+                {isLoaded && !isSignedIn && REQUIRE_CHAT_SIGN_IN ? (
                   <span className="font-mono text-[9px] uppercase tracking-[0.12em] text-muted-foreground/70 border border-border/60 px-1.5 py-px rounded-sm">
                     Sign in
                   </span>
@@ -332,7 +331,7 @@ const AliasistChat = () => {
             <div className="border-t border-border p-3 bg-background/40 backdrop-blur-sm">
               {!isLoaded ? (
                 <div className="h-10 rounded-sm bg-muted/50 border border-border animate-pulse" aria-hidden />
-              ) : !isSignedIn && USE_PAGES_CHAT_ROOM ? (
+              ) : !isSignedIn && REQUIRE_CHAT_SIGN_IN ? (
                 <div className="space-y-3">
                   <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/80 text-center leading-relaxed">
                     Sign in with Clerk to use chat.
@@ -368,11 +367,7 @@ const AliasistChat = () => {
                     </button>
                   </div>
                   <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-muted-foreground/30 mt-2 text-center">
-                    {USE_PAGES_CHAT_ROOM
-                      ? "Signed in · Clerk · Room"
-                      : isSignedIn
-                        ? "Signed in"
-                        : "Public demo"}
+                    {USE_PAGES_CHAT_ROOM ? "Signed in · Clerk · Room" : "Signed in"}
                   </p>
                 </>
               )}
@@ -386,9 +381,9 @@ const AliasistChat = () => {
         onClick={handleLauncherClick}
         whileHover={{ scale: 1.08 }}
         whileTap={{ scale: 0.94 }}
-        className="w-14 h-14 rounded-full bg-electric text-background flex items-center justify-center shadow-electric-sm hover:shadow-electric-md transition-shadow duration-300"
+        className="w-14 h-14 overflow-hidden rounded-full border border-electric/45 bg-background text-background flex items-center justify-center shadow-electric-sm hover:shadow-electric-md transition-shadow duration-300"
         aria-label={
-          open ? "Close chat" : isLoaded && !isSignedIn && USE_PAGES_CHAT_ROOM ? "Sign in to open chat" : "Open chat"
+          open ? "Close chat" : isLoaded && !isSignedIn && REQUIRE_CHAT_SIGN_IN ? "Sign in to open chat" : "Open chat"
         }
         aria-busy={!isLoaded}
       >
@@ -405,17 +400,18 @@ const AliasistChat = () => {
               ✕
             </motion.span>
           ) : (
-            <motion.span
+            <motion.img
               key="chat"
               initial={{ rotate: 90, opacity: 0 }}
               animate={{ rotate: 0, opacity: 1 }}
               exit={{ rotate: -90, opacity: 0 }}
               transition={{ duration: 0.2 }}
-              className="text-sm font-bold leading-none"
-              style={{ filter: "drop-shadow(0 0 4px rgba(0,0,0,0.3))" }}
-            >
-              B
-            </motion.span>
+              src={aliasistLogo}
+              alt=""
+              aria-hidden="true"
+              className="h-full w-full object-cover"
+              style={{ filter: "drop-shadow(0 0 5px hsl(var(--electric) / 0.4))" }}
+            />
           )}
         </AnimatePresence>
       </motion.button>

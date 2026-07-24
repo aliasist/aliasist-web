@@ -208,19 +208,19 @@ describe("formatRagContext", () => {
 });
 
 describe("onRequestPost", () => {
-  it("rejects unsigned chat when public chat is disabled", async () => {
+  it("rejects unsigned chat", async () => {
     const res = await onRequestPost({
       request: chatRequest(),
       env: {},
     });
 
-    expect(res.status).toBe(403);
+    expect(res.status).toBe(401);
     await expect(res.json()).resolves.toMatchObject({
-      error: expect.stringContaining("Public chat is not enabled"),
+      error: expect.stringContaining("Sign in"),
     });
   });
 
-  it("falls back to the upstream worker when Workers AI fails", async () => {
+  it("rejects unsigned chat even when Workers AI is configured", async () => {
     const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
       new Response(JSON.stringify({ response: "fallback ok" }), {
         status: 200,
@@ -231,7 +231,6 @@ describe("onRequestPost", () => {
     const res = await onRequestPost({
       request: chatRequest("tell me about Aliasist"),
       env: {
-        PUBLIC_CHAT_ENABLED: "true",
         LLM_CHAT_BASE_URL: "https://upstream.example",
         AI: {
           run: vi.fn(async () => {
@@ -241,15 +240,14 @@ describe("onRequestPost", () => {
       },
     });
 
-    expect(res.status).toBe(200);
-    await expect(res.json()).resolves.toEqual({ response: "fallback ok" });
-    expect(fetchSpy).toHaveBeenCalledWith(
-      "https://upstream.example/api/chat",
-      expect.objectContaining({ method: "POST" }),
-    );
+    expect(res.status).toBe(401);
+    await expect(res.json()).resolves.toMatchObject({
+      error: expect.stringContaining("Sign in"),
+    });
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 
-  it("uses the upstream worker for public chat when no local model is configured", async () => {
+  it("rejects unsigned chat even when an upstream worker is configured", async () => {
     const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
       new Response(JSON.stringify({ response: "upstream public ok" }), {
         status: 200,
@@ -260,17 +258,15 @@ describe("onRequestPost", () => {
     const res = await onRequestPost({
       request: chatRequest("hello"),
       env: {
-        PUBLIC_CHAT_ENABLED: "true",
         LLM_CHAT_BASE_URL: "https://upstream.example/",
       },
     });
 
-    expect(res.status).toBe(200);
-    await expect(res.json()).resolves.toEqual({ response: "upstream public ok" });
-    expect(fetchSpy).toHaveBeenCalledWith(
-      "https://upstream.example/api/chat",
-      expect.objectContaining({ method: "POST" }),
-    );
+    expect(res.status).toBe(401);
+    await expect(res.json()).resolves.toMatchObject({
+      error: expect.stringContaining("Sign in"),
+    });
+    expect(fetchSpy).not.toHaveBeenCalled();
   });
 });
 

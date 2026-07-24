@@ -9,16 +9,13 @@
 #     GITHUB_APP_CLIENT_ID  (GitHub App settings page; preferred JWT issuer)
 #     GITHUB_APP_PRIVATE_KEY  (secret; generated PEM private key)
 #     GITHUB_WEBHOOK_SECRET  (secret; must match GitHub App webhook configuration)
-# Agent Dashboard:
-#     ALIASIST_ADMIN_USER_IDS  (comma-separated Clerk user IDs permitted to view owner-only reports)
-#     AGENT_PUSH_SECRET  (secret; must match aliasist-chat so /api/agent-status can read snapshots)
+# Clearasist reports:
 #     CLEARASIST_ADMIN_SECRET  (secret; must match the clearasist-metadata Worker ADMIN_SECRET)
 #     CLEARASIST_METADATA_WORKER_URL  (optional; defaults to the production Worker URL)
 #
 # Other workers: see apps/llm-chat/.dev.vars.example, apps/datasist-api/.dev.vars.example, etc.
-# Public homepage AI demo:
-#     PUBLIC_CHAT_ENABLED=true  (plain env var)
-#     GROQ_API_KEY              (secret; required for unsigned visitor chat)
+# Homepage chat:
+#     CLERK_SECRET_KEY          (secret; required for signed-in visitor chat)
 
 name = "aliasistabductor"
 pages_build_output_dir = "dist"
@@ -28,7 +25,6 @@ compatibility_flags = ["nodejs_compat"]
 [vars]
 GITHUB_APP_ID = "3909945"
 GITHUB_APP_CLIENT_ID = "Iv23liyNQyBoBOh6IROQ"
-PUBLIC_CHAT_ENABLED = "true"
 # Current free Workers AI text model. The previous @cf/meta/llama-3.1-8b-instruct
 # was deprecated 2026-05-30 (error 5028) — keep this pointed at a live model
 # (list: `npx wrangler ai models`).
