@@ -1,4 +1,4 @@
-import mascot from "@/assets/aliasist-logo-brand20.svg";
+import mascot from "@/assets/aliasist-a-mark.svg";
 import { footer } from "@/content/homepage";
 
 const Footer = () => {

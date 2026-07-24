@@ -1,8 +1,6 @@
 
 import { motion, AnimatePresence } from "framer-motion";
-import { playHover, playClick } from "@/hooks/useSound";
 import streetBanner from "@images/aliasist_banner_street.png";
-import mascot from "@/assets/mascot.png";
 import { useState, useRef } from "react";
 import { contact, suiteApps } from "@/content/homepage";
 import { readJsonBody, siteEndpoints } from "@/config/api";
@@ -89,18 +87,13 @@ const ContactSection = () => {
         className="absolute inset-0 bg-cover bg-center opacity-[0.12] mix-blend-screen pointer-events-none"
         style={{ backgroundImage: `url(${streetBanner})` }}
       />
-      {/* Mascot background for branding */}
-      <div
-        className="absolute inset-0 bg-cover bg-center opacity-[0.04] pointer-events-none"
-        style={{ backgroundImage: `url(${mascot})` }}
-      />
       <div className="absolute inset-0 bg-gradient-to-b from-foreground/80 via-foreground/60 to-foreground/90 pointer-events-none" />
       <div className="absolute -right-32 -bottom-32 w-[500px] h-[500px] rounded-full pointer-events-none opacity-[0.05]"
         style={{ background: "radial-gradient(circle, hsl(165 90% 42%), transparent 70%)" }}
       />
 
       <div className="relative z-10 mx-auto w-full max-w-site">
-        <div className="classified-divider mb-16 [&>span]:text-background/35 before:bg-background/10 after:bg-background/10">
+        <div className="section-divider mb-16 [&>span]:text-background/35 before:bg-background/10 after:bg-background/10">
           <span>{contact.dividerLabel}</span>
         </div>
 
@@ -264,8 +257,6 @@ const ContactSection = () => {
                     href={app.href}
                     target={isExternalHref(app.href) ? "_blank" : undefined}
                     rel={isExternalHref(app.href) ? "noopener noreferrer" : undefined}
-                    onMouseEnter={() => playHover()}
-                    onClick={() => playClick()}
                     initial={{ opacity: 0, x: 20 }}
                     whileInView={{ opacity: 1, x: 0 }}
                     viewport={{ once: true }}

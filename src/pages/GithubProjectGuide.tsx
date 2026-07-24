@@ -14,7 +14,6 @@ import { Link } from "react-router-dom";
 import BackgroundRotator from "@/components/BackgroundRotator";
 import Starfield from "@/components/Starfield";
 import { readJsonBody, siteEndpoints } from "@/config/api";
-import { playClick, playHover } from "@/hooks/useSound";
 import {
   parseRepositoryUrl,
   type GithubInstallationState,
@@ -67,7 +66,6 @@ const GithubProjectGuide = () => {
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    playClick();
     const ref = parseRepositoryUrl(url);
     if (!ref) {
       setError("Paste a full GitHub repository URL, like https://github.com/owner/repo.");
@@ -106,7 +104,6 @@ const GithubProjectGuide = () => {
         <header className="flex min-h-[72px] flex-wrap items-center justify-between gap-4">
           <Link
             to="/tools/github"
-            onMouseEnter={() => playHover()}
             className="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-electric"
           >
             Aliasist // GitHub Companion
@@ -115,7 +112,6 @@ const GithubProjectGuide = () => {
             href="https://github.com/aliasist"
             target="_blank"
             rel="noreferrer"
-            onMouseEnter={() => playHover()}
             className="inline-flex items-center gap-2 border border-border/60 bg-background/45 px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground backdrop-blur-md transition-colors hover:border-electric/40 hover:text-electric"
           >
             <Github className="size-4" />
@@ -125,7 +121,7 @@ const GithubProjectGuide = () => {
 
         <section className="grid gap-8 py-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <div>
-            <div className="classified-divider mb-8">
+            <div className="section-divider mb-8">
               <span>GitHub Companion // Project Guide</span>
             </div>
             <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
@@ -155,7 +151,6 @@ const GithubProjectGuide = () => {
               <button
                 type="submit"
                 disabled={loading}
-                onMouseEnter={() => playHover()}
                 className="inline-flex min-h-12 items-center justify-center gap-2 bg-electric px-5 font-mono text-xs uppercase tracking-[0.14em] text-background transition-colors hover:bg-electric/85 disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {loading ? <Loader2 className="size-4 animate-spin" /> : <Search className="size-4" />}
@@ -293,7 +288,6 @@ const GithubProjectGuide = () => {
               </details>
               <Link
                 to="/tools/github-pr-reviewer"
-                onMouseEnter={() => playHover()}
                 className="flex min-h-28 items-center justify-between gap-6 border border-electric/30 bg-electric/[0.08] p-5 transition-colors hover:bg-electric/[0.14] sm:p-6 lg:max-w-sm"
               >
                 <span>

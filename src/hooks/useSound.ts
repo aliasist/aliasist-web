@@ -21,7 +21,7 @@ function getCtx(): AudioContext {
   return ctx;
 }
 
-function tone(
+async function tone(
   freq: number,
   type: OscillatorType,
   gain: number,
@@ -34,7 +34,7 @@ function tone(
     const ac = getCtx();
     // Many browsers start AudioContext suspended until a user gesture.
     if (ac.state === "suspended") {
-      void ac.resume();
+      await ac.resume();
     }
     const osc = ac.createOscillator();
     const gainNode = ac.createGain();
@@ -59,8 +59,8 @@ export function playHover() {
 
 export function playClick() {
   unlocked = true;
-  tone(523.25, "triangle", 0.012, 0.11, 0.006, 0.08);
-  setTimeout(() => tone(659.25, "sine", 0.008, 0.10, 0.01, 0.07), 34);
+  void tone(523.25, "triangle", 0.028, 0.12, 0.006, 0.08);
+  setTimeout(() => void tone(659.25, "sine", 0.018, 0.10, 0.01, 0.07), 34);
 }
 
 export function playSuccess() {

@@ -2,7 +2,6 @@ import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { Link } from "react-router-dom";
 import BackgroundRotator from "@/components/BackgroundRotator";
 import Starfield from "@/components/Starfield";
-import { playHover } from "@/hooks/useSound";
 
 const services = [
   {
@@ -36,14 +35,12 @@ const Consulting = () => (
       <header className="flex min-h-[72px] flex-wrap items-center justify-between gap-4">
         <Link
           to="/"
-          onMouseEnter={() => playHover()}
           className="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-electric"
         >
           Aliasist
         </Link>
         <a
           href="mailto:aliasist@proton.me?subject=AI consulting"
-          onMouseEnter={() => playHover()}
           className="inline-flex items-center gap-2 border border-border/60 bg-background/45 px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground backdrop-blur-md transition-colors hover:border-electric/40 hover:text-electric"
         >
           Contact
@@ -53,7 +50,7 @@ const Consulting = () => (
 
       <section className="grid gap-10 py-10 sm:py-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
         <div>
-          <div className="classified-divider mb-8">
+          <div className="section-divider mb-8">
             <span>AI Consulting</span>
           </div>
           <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
@@ -73,7 +70,6 @@ const Consulting = () => (
           </p>
           <a
             href="mailto:aliasist@proton.me?subject=AI consulting"
-            onMouseEnter={() => playHover()}
             className="mt-6 inline-flex items-center gap-2 bg-electric px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-background shadow-electric-sm transition-colors hover:bg-electric/90"
           >
             Start a conversation
@@ -83,7 +79,7 @@ const Consulting = () => (
       </section>
 
       <section aria-labelledby="consulting-services">
-        <div className="classified-divider mb-6">
+        <div className="section-divider mb-6">
           <span>What I can help with</span>
         </div>
         <h2 id="consulting-services" className="sr-only">
@@ -101,7 +97,7 @@ const Consulting = () => (
 
       <section className="mt-12 grid gap-6 lg:grid-cols-[0.7fr_1fr] lg:items-start">
         <div>
-          <div className="classified-divider mb-6">
+          <div className="section-divider mb-6">
             <span>Good fit</span>
           </div>
           <p className="max-w-md text-sm leading-relaxed text-muted-foreground">

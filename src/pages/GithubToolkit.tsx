@@ -2,7 +2,6 @@ import { ArrowRight, BookOpen, Github, GitPullRequest, HeartPulse, Share2 } from
 import { Link } from "react-router-dom";
 import BackgroundRotator from "@/components/BackgroundRotator";
 import Starfield from "@/components/Starfield";
-import { playHover } from "@/hooks/useSound";
 
 const tools = [
   {
@@ -45,7 +44,6 @@ const GithubToolkit = () => (
       <header className="flex min-h-[72px] flex-wrap items-center justify-between gap-4">
         <Link
           to="/"
-          onMouseEnter={() => playHover()}
           className="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-electric"
         >
           Aliasist
@@ -54,7 +52,6 @@ const GithubToolkit = () => (
           href="https://github.com/aliasist"
           target="_blank"
           rel="noreferrer"
-          onMouseEnter={() => playHover()}
           className="inline-flex items-center gap-2 border border-border/60 bg-background/45 px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground backdrop-blur-md transition-colors hover:border-electric/40 hover:text-electric"
         >
           <Github className="size-4" />
@@ -63,7 +60,7 @@ const GithubToolkit = () => (
       </header>
 
       <section className="max-w-4xl py-10 sm:py-16">
-        <div className="classified-divider mb-8">
+        <div className="section-divider mb-8">
           <span>Developer Toolkit // GitHub</span>
         </div>
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
@@ -76,7 +73,7 @@ const GithubToolkit = () => (
       </section>
 
       <section aria-labelledby="choose-tool">
-        <div className="classified-divider mb-6">
+        <div className="section-divider mb-6">
           <span>Choose a task</span>
         </div>
         <h2 id="choose-tool" className="sr-only">
@@ -110,7 +107,6 @@ const GithubToolkit = () => (
               <Link
                 key={tool.title}
                 to={tool.href}
-                onMouseEnter={() => playHover()}
                 className="border border-border/65 bg-card/75 p-5 backdrop-blur-xl transition-colors hover:border-electric/40 hover:bg-card/90 sm:p-6"
               >
                 {body}
