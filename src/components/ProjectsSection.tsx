@@ -1,6 +1,5 @@
 import { motion } from "framer-motion";
 import { Download, ExternalLink, Github } from "lucide-react";
-import { playHover, playClick } from "@/hooks/useSound";
 import {
   projects,
   comingSoonProjects,
@@ -104,7 +103,6 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
       transition={{ duration: 0.55, delay: index * 0.1 }}
       whileHover={cardHover}
       whileTap={{ scale: 0.996 }}
-      onMouseEnter={() => playHover()}
       aria-labelledby={headingId}
       className={`project-card-shell group relative z-0 flex flex-col overflow-hidden rounded-sm border border-border/60 bg-card text-foreground outline-none transition-[border-color,box-shadow] duration-500 will-change-transform hover:z-10 hover:shadow-project-violet focus-within:z-10 focus-within:shadow-project-violet ${tone.border}`}
     >
@@ -176,8 +174,6 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
               rel="noopener noreferrer"
               whileHover={actionHover}
               whileTap={actionTap}
-              onMouseEnter={() => playHover()}
-              onClick={() => playClick()}
               className="tap-target subtle-link-motion inline-flex items-center gap-2 rounded-sm font-mono text-xs uppercase tracking-[0.1em] text-muted-foreground outline-none transition-colors hover:text-electric focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
             >
               <Download className="size-3.5" aria-hidden />
@@ -195,8 +191,6 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
             rel={isExternalHref(project.link) ? "noopener noreferrer" : undefined}
             whileHover={actionHover}
             whileTap={actionTap}
-            onMouseEnter={() => playHover()}
-            onClick={() => playClick()}
             className="tap-target subtle-link-motion inline-flex items-center gap-2 rounded-sm bg-electric px-5 py-2.5 font-mono text-xs uppercase tracking-[0.12em] text-background outline-none transition-colors hover:bg-electric/85 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
           >
             <span>{project.linkLabel}</span>
@@ -209,8 +203,6 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
             rel="noopener noreferrer"
             whileHover={actionHover}
             whileTap={actionTap}
-            onMouseEnter={() => playHover()}
-            onClick={() => playClick()}
             className="tap-target subtle-link-motion inline-flex items-center gap-2 rounded-sm border border-border/70 bg-background/25 px-4 py-2.5 font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground outline-none transition-colors hover:border-violet/35 hover:text-electric focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
           >
             <Github className="size-3.5" aria-hidden />
@@ -231,7 +223,7 @@ const ProjectsSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="classified-divider mb-16"
+          className="section-divider mb-16"
         >
           <span>{projectsSection.dividerLabel}</span>
         </motion.div>

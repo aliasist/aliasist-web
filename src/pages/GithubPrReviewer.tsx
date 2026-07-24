@@ -15,7 +15,6 @@ import { Link } from "react-router-dom";
 import BackgroundRotator from "@/components/BackgroundRotator";
 import Starfield from "@/components/Starfield";
 import { readJsonBody, siteEndpoints } from "@/config/api";
-import { playClick, playHover } from "@/hooks/useSound";
 import {
   analyzePullRequest,
   parsePullRequestUrl,
@@ -139,7 +138,6 @@ ${data.analysis.suggestedComments.map((line) => `- ${line}`).join("\n")}`;
 
   async function handleSubmit(event: FormEvent<HTMLFormElement>) {
     event.preventDefault();
-    playClick();
     const ref = parsePullRequestUrl(url);
     if (!ref) {
       setError("Paste a full GitHub PR URL, like https://github.com/owner/repo/pull/123.");
@@ -174,7 +172,6 @@ ${data.analysis.suggestedComments.map((line) => `- ${line}`).join("\n")}`;
 
   async function copyReview() {
     if (!reviewText) return;
-    playClick();
     await navigator.clipboard.writeText(reviewText);
     setCopied(true);
     window.setTimeout(() => setCopied(false), 1800);
@@ -188,7 +185,6 @@ ${data.analysis.suggestedComments.map((line) => `- ${line}`).join("\n")}`;
         <header className="flex min-h-[72px] flex-wrap items-center justify-between gap-4">
           <Link
             to="/tools/github"
-            onMouseEnter={() => playHover()}
             className="font-mono text-xs uppercase tracking-[0.16em] text-muted-foreground transition-colors hover:text-electric"
           >
             Aliasist // GitHub Companion
@@ -197,7 +193,6 @@ ${data.analysis.suggestedComments.map((line) => `- ${line}`).join("\n")}`;
             href="https://github.com/aliasist"
             target="_blank"
             rel="noreferrer"
-            onMouseEnter={() => playHover()}
             className="inline-flex items-center gap-2 border border-border/60 bg-background/45 px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground backdrop-blur-md transition-colors hover:border-electric/40 hover:text-electric"
           >
             <Github className="size-4" />
@@ -207,7 +202,7 @@ ${data.analysis.suggestedComments.map((line) => `- ${line}`).join("\n")}`;
 
         <section className="grid gap-8 py-10 lg:grid-cols-[0.9fr_1.1fr] lg:items-end">
           <div>
-            <div className="classified-divider mb-8">
+            <div className="section-divider mb-8">
               <span>Developer Tool // PR Review</span>
             </div>
             <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
@@ -240,7 +235,6 @@ ${data.analysis.suggestedComments.map((line) => `- ${line}`).join("\n")}`;
               <button
                 type="submit"
                 disabled={loading}
-                onMouseEnter={() => playHover()}
                 className="inline-flex min-h-12 items-center justify-center gap-2 bg-electric px-5 font-mono text-xs uppercase tracking-[0.14em] text-background transition-colors hover:bg-electric/85 disabled:cursor-not-allowed disabled:opacity-70"
               >
                 {loading ? <Loader2 className="size-4 animate-spin" /> : <Search className="size-4" />}
@@ -329,7 +323,6 @@ ${data.analysis.suggestedComments.map((line) => `- ${line}`).join("\n")}`;
                     href={data.pr.html_url}
                     target="_blank"
                     rel="noreferrer"
-                    onMouseEnter={() => playHover()}
                     className="inline-flex items-center gap-2 border border-border/70 px-4 py-2 font-mono text-xs uppercase tracking-[0.13em] text-muted-foreground transition-colors hover:border-electric/40 hover:text-electric"
                   >
                     <ExternalLink className="size-4" />
@@ -338,7 +331,6 @@ ${data.analysis.suggestedComments.map((line) => `- ${line}`).join("\n")}`;
                   <button
                     type="button"
                     onClick={copyReview}
-                    onMouseEnter={() => playHover()}
                     className="inline-flex items-center gap-2 border border-electric/35 bg-electric/[0.08] px-4 py-2 font-mono text-xs uppercase tracking-[0.13em] text-electric transition-colors hover:bg-electric/[0.14]"
                   >
                     {copied ? <CheckCircle2 className="size-4" /> : <Clipboard className="size-4" />}
@@ -441,7 +433,6 @@ ${data.analysis.suggestedComments.map((line) => `- ${line}`).join("\n")}`;
                     href={file.blob_url}
                     target="_blank"
                     rel="noreferrer"
-                    onMouseEnter={() => playHover()}
                     className="grid gap-3 border border-border/60 bg-card/75 p-4 transition-colors hover:border-electric/35 sm:grid-cols-[1fr_auto]"
                   >
                     <span className="min-w-0 break-words font-mono text-sm text-foreground">{file.filename}</span>

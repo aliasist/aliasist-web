@@ -3,7 +3,6 @@
  *
  * Images:
  *   • Project banners + assets live under `./images` (imported via `@images/...`).
- *   • Hero backdrop uses `public/background.png` (see `HeroSection`).
  *   • Optional Cloudflare **text-to-image** worker: `apps/phoenix-image-worker`
  *     calls `@cf/leonardo/phoenix-1.0` on Workers. It
  *     generates **new** images from prompts — not automatic “enhancement” of
@@ -29,16 +28,16 @@ import spaceBanner from "@images/spacesist_banner_cinematic.png";
 /** Used by Navbar "Projects" menu and Contact section project list — keep in sync. */
 export const suiteApps = [
   {
+    label: "Globalize",
+    sub: "Global Infrastructure Map",
+    href: "https://www.aliasist.world",
+    icon: "GL",
+  },
+  {
     label: "DataSist",
     sub: "Data Center WebApp",
     href: "https://datasist-frontend.pages.dev",
     icon: "DS",
-  },
-  {
-    label: "Atomicity",
-    sub: "Stopwatch",
-    href: "/atomicity/",
-    icon: "AT",
   },
   {
     label: "PulseSist",
@@ -53,12 +52,6 @@ export const suiteApps = [
     icon: "SS",
   },
   {
-    label: "EcoSist",
-    sub: "**UNDER CONSTRUCTION** project paused.",
-    href: "/ecosist/",
-    icon: "ES",
-  },
-  {
     label: "Clearasist",
     sub: "Metadata Cleaner",
     href: "https://clearasist.pages.dev",
@@ -71,16 +64,22 @@ export const suiteApps = [
     icon: "GH",
   },
   {
-    label: "Globalize",
-    sub: "Global Infrastructure Map",
-    href: "https://www.aliasist.world",
-    icon: "GL",
+    label: "Atomicity",
+    sub: "Stopwatch",
+    href: "/atomicity/",
+    icon: "AT",
   },
   {
     label: "Literacy Tools",
     sub: "Writing helper",
     href: "https://github.com/aliasist/aliasist-literacy-assistant",
     icon: "LT",
+  },
+  {
+    label: "EcoSist",
+    sub: "**UNDER CONSTRUCTION** project paused.",
+    href: "/ecosist/",
+    icon: "ES",
   },
 ] as const;
 
@@ -89,9 +88,6 @@ export const suiteAppCount = suiteApps.length;
 // ── Hero ─────────────────────────────────────────────────────────────────────
 
 export const hero = {
-  statusBadge: "Aliasist · Developer Portfolio",
-  heroLinkLabel: "Globalize →",
-  heroLinkHref: "https://www.aliasist.world",
   mascotLabel: "aliasist",
   mascotAlt: "Aliasist",
   mascotTitle: "Aliasist",
@@ -150,49 +146,34 @@ export const projectsSection = {
 
 export const projects = [
   {
-    name: "GitHub Companion",
+    name: "Globalize",
     description:
-      "A GitHub toolkit that explains repositories and reviews pull requests in plain language.",
-    tech: ["React", "GitHub API", "Project Guidance", "Review Heuristics"],
-    github: "https://github.com/aliasist/aliasistabductor",
-    downloads: [],
-    status: "Live",
-    meta: ["Project guide", "PR review", "Public tool"] as const,
-    tone: "violet",
-    icon: "GH",
-    link: "/tools/github",
-    linkLabel: "Open GitHub Companion →",
-    banner: null,
-  },
-  {
-    name: "SpaceSist",
-    description:
-      "A live space dashboard using NASA, SpaceX, ISS, asteroid, and exoplanet data.",
-    tech: ["React", "Vite", "NASA APIs", "SpaceX API", "Leaflet", "Cloudflare"],
+      "A 3D globe mapping global infrastructure — data centers, subsea cables, air traffic, and seismic activity.",
+    tech: ["React", "Three.js", "Cloudflare", "Geospatial Data"],
     github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
-    meta: ["NASA", "SpaceX", "Live orbital data"] as const,
-    tone: "violet",
-    icon: "SS",
-    link: "https://space.aliasist.com",
-    linkLabel: "Open SpaceSist →",
-    banner: spaceBanner,
+    meta: ["Data centers", "Global map", "Live infrastructure"] as const,
+    tone: "cyan",
+    icon: "GL",
+    link: "https://www.aliasist.world",
+    linkLabel: "Open Globalize →",
+    banner: null,
   },
   {
-    name: "Atomicity",
+    name: "DataSist",
     description:
-      "Simple, fast stopwatch. No tasks, no accounts, no data saved. Just start/stop/reset, plus a lightweight intro.",
-    tech: ["Vanilla JS", "PWA", "No storage"],
-    github: "https://github.com/aliasist/atomicity",
+      "A data center research platform for facilities, power, water, risk, and investment data.",
+    tech: ["React", "Vite", "D1", "Groq", "Leaflet", "EIA API"],
+    github: "https://github.com/aliasist/datasist",
     downloads: [],
     status: "Live",
-    meta: ["PWA", "No accounts", "No storage"] as const,
-    tone: "amber",
-    icon: "AT",
-    link: "/atomicity/",
-    linkLabel: "Open Atomicity →",
-    banner: null,
+    meta: ["Data centers", "Power + water", "Risk research"] as const,
+    tone: "blue",
+    icon: "DS",
+    link: "https://datasist-frontend.pages.dev",
+    linkLabel: "Open DataSist →",
+    banner: dataBanner,
   },
   {
     name: "PulseSist",
@@ -210,26 +191,19 @@ export const projects = [
     banner: pulseBanner,
   },
   {
-    name: "EcoSist",
+    name: "SpaceSist",
     description:
-      "An environmental dashboard for air quality, climate data, and geospatial views.",
-    tech: [
-      "React",
-      "Vite",
-      "Environmental APIs",
-      "Geospatial Data",
-      "Cloudflare",
-      "Live Monitoring",
-    ],
-    github: "https://github.com/aliasist/ecosist",
+      "A live space dashboard using NASA, SpaceX, ISS, asteroid, and exoplanet data.",
+    tech: ["React", "Vite", "NASA APIs", "SpaceX API", "Leaflet", "Cloudflare"],
+    github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
-    meta: ["Climate data", "Air quality", "Geospatial"] as const,
-    tone: "green",
-    icon: "ES",
-    link: "/ecosist/",
-    linkLabel: "Open EcoSist →",
-    banner: ecosistBanner,
+    meta: ["NASA", "SpaceX", "Live orbital data"] as const,
+    tone: "violet",
+    icon: "SS",
+    link: "https://space.aliasist.com",
+    linkLabel: "Open SpaceSist →",
+    banner: spaceBanner,
   },
   {
     name: "Clearasist",
@@ -244,6 +218,21 @@ export const projects = [
     icon: "CL",
     link: "https://clearasist.pages.dev",
     linkLabel: "Open Clearasist →",
+    banner: null,
+  },
+  {
+    name: "GitHub Companion",
+    description:
+      "A GitHub toolkit that explains repositories and reviews pull requests in plain language.",
+    tech: ["React", "GitHub API", "Project Guidance", "Review Heuristics"],
+    github: "https://github.com/aliasist/aliasistabductor",
+    downloads: [],
+    status: "Live",
+    meta: ["Project guide", "PR review", "Public tool"] as const,
+    tone: "violet",
+    icon: "GH",
+    link: "/tools/github",
+    linkLabel: "Open GitHub Companion →",
     banner: null,
   },
   {
@@ -266,33 +255,18 @@ export const projects = [
     banner: filesAbductorBanner,
   },
   {
-    name: "DataSist",
+    name: "Atomicity",
     description:
-      "A data center research platform for facilities, power, water, risk, and investment data.",
-    tech: ["React", "Vite", "D1", "Groq", "Leaflet", "EIA API"],
-    github: "https://github.com/aliasist/datasist",
+      "Simple, fast stopwatch. No tasks, no accounts, no data saved. Just start/stop/reset, plus a lightweight intro.",
+    tech: ["Vanilla JS", "PWA", "No storage"],
+    github: "https://github.com/aliasist/atomicity",
     downloads: [],
     status: "Live",
-    meta: ["Data centers", "Power + water", "Risk research"] as const,
-    tone: "blue",
-    icon: "DS",
-    link: "https://datasist-frontend.pages.dev",
-    linkLabel: "Open DataSist →",
-    banner: dataBanner,
-  },
-  {
-    name: "Globalize",
-    description:
-      "A 3D globe mapping global infrastructure — data centers, subsea cables, air traffic, and seismic activity.",
-    tech: ["React", "Three.js", "Cloudflare", "Geospatial Data"],
-    github: "https://github.com/aliasist",
-    downloads: [],
-    status: "Live",
-    meta: ["Data centers", "Global map", "Live infrastructure"] as const,
-    tone: "cyan",
-    icon: "GL",
-    link: "https://www.aliasist.world",
-    linkLabel: "Open Globalize →",
+    meta: ["PWA", "No accounts", "No storage"] as const,
+    tone: "amber",
+    icon: "AT",
+    link: "/atomicity/",
+    linkLabel: "Open Atomicity →",
     banner: null,
   },
   {
@@ -309,6 +283,28 @@ export const projects = [
     link: "https://github.com/aliasist/aliasist-literacy-assistant",
     linkLabel: "View on GitHub →",
     banner: null,
+  },
+  {
+    name: "EcoSist",
+    description:
+      "An environmental dashboard for air quality, climate data, and geospatial views.",
+    tech: [
+      "React",
+      "Vite",
+      "Environmental APIs",
+      "Geospatial Data",
+      "Cloudflare",
+      "Live Monitoring",
+    ],
+    github: "https://github.com/aliasist/ecosist",
+    downloads: [],
+    status: "Live",
+    meta: ["Climate data", "Air quality", "Geospatial"] as const,
+    tone: "green",
+    icon: "ES",
+    link: "/ecosist/",
+    linkLabel: "Open EcoSist →",
+    banner: ecosistBanner,
   },
 ] as const;
 

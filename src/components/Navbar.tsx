@@ -1,8 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useAuth, useUser, UserButton } from "@clerk/react";
+import { useAuth, UserButton } from "@clerk/react";
 import newLogo from "@/assets/aliasist-logo-brand.svg";
-import { playHover, playClick, setEnabled } from "@/hooks/useSound";
+import { playClick, setEnabled } from "@/hooks/useSound";
 import { pageNavLinks, suiteAppCount, suiteApps } from "@/content/homepage";
 import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
 
@@ -39,7 +39,6 @@ const SuiteDropdown = () => {
       <button
         type="button"
         onClick={() => { setOpen(o => !o); playClick(); }}
-        onMouseEnter={() => playHover()}
         className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-mono uppercase tracking-[0.16em] outline-none transition-all duration-300 ease-out focus-visible:ring-2 focus-visible:ring-electric/55 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
           open
             ? "bg-electric/10 text-electric shadow-electric-xs"
@@ -83,7 +82,6 @@ const SuiteDropdown = () => {
                 target={isExternalHref(app.href) ? "_blank" : undefined}
                 rel={isExternalHref(app.href) ? "noopener noreferrer" : undefined}
                 onClick={() => { playClick(); setOpen(false); }}
-                onMouseEnter={() => playHover()}
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.15, delay: i * 0.04 }}
@@ -104,70 +102,10 @@ const SuiteDropdown = () => {
                 <span className="translate-x-0.5 font-mono text-xs text-electric opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">↗</span>
               </motion.a>
             ))}
-            
-            {/* Internal Tools - Only visible to aliasist@proton.me when signed in */}
-            <InternalAgentLink onClose={() => setOpen(false)} />
           </motion.div>
         )}
       </AnimatePresence>
     </div>
-  );
-};
-
-const InternalAgentLink = ({ onClose }: { onClose: () => void }) => {
-  const { isLoaded, isSignedIn } = useAuth();
-  const { user } = useUser();
-
-  if (!isLoaded || !isSignedIn || !user) return null;
-
-  const primaryEmail = user.primaryEmailAddress?.emailAddress;
-
-  if (primaryEmail !== "aliasist@proton.me") {
-    return null;
-  }
-
-  return (
-    <div className="border-t border-border/60">
-      <a
-        href="/agent"
-        onClick={() => {
-          playClick();
-          onClose();
-        }}
-        className="group flex items-center gap-3 px-4 py-3 text-sm font-mono tracking-[0.16em] text-electric hover:bg-electric/10 transition-colors"
-      >
-        <span className="text-lg">◆</span>
-        <div>
-          <div className="font-medium">Agent Dashboard</div>
-          <div className="text-[10px] text-electric/60">Internal • aliasist@proton.me</div>
-        </div>
-      </a>
-    </div>
-  );
-};
-
-const InternalAgentLinkMobile = ({ onClose }: { onClose: () => void }) => {
-  const { isLoaded, isSignedIn } = useAuth();
-  const { user } = useUser();
-
-  if (!isLoaded || !isSignedIn || !user) return null;
-
-  const primaryEmail = user.primaryEmailAddress?.emailAddress;
-
-  if (primaryEmail !== "aliasist@proton.me") {
-    return null;
-  }
-
-  return (
-    <a
-      href="/agent"
-      onClick={() => { playClick(); onClose(); }}
-      className="group -mx-1 flex h-12 items-center gap-3 rounded-lg px-3 text-xs font-mono uppercase tracking-[0.15em] text-electric transition-all duration-300 hover:bg-electric/[0.08] hover:pl-4"
-    >
-      <span>◆</span>
-      <span>Agent Dashboard</span>
-      <span className="ml-auto text-[10px] opacity-50 group-hover:opacity-100">Internal</span>
-    </a>
   );
 };
 
@@ -204,9 +142,6 @@ const DesktopAuthControl = () => {
         playClick();
         openSiteSignIn();
       }}
-      onMouseEnter={() => {
-        playHover();
-      }}
       className={`${signInButtonClass} shrink-0 cursor-pointer text-foreground/90 ${!isLoaded ? "opacity-70" : ""}`}
     >
       Sign In
@@ -234,9 +169,6 @@ const MobileAuthControl = () => {
       onClick={() => {
         playClick();
         openSiteSignIn();
-      }}
-      onMouseEnter={() => {
-        playHover();
       }}
       className={`${mobileSignInButtonClass} cursor-pointer${!isLoaded ? " opacity-70" : ""}`}
     >
@@ -367,14 +299,6 @@ const Navbar = () => {
             whileHover={{ scale: 1.1, filter: "drop-shadow(0 0 16px hsl(165 90% 42% / 0.8)) drop-shadow(0 0 22px hsl(278 82% 67% / 0.45))" }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
           />
-          <div className="hidden sm:flex flex-col leading-none">
-            <span className="font-bold text-sm uppercase tracking-[0.16em] text-foreground transition-all duration-300 group-hover:text-electric group-hover:[text-shadow:0_0_28px_hsl(165_90%_42%_/_0.25),0_0_36px_hsl(var(--violet)/0.3)]">
-              Aliasist
-            </span>
-            <span className="mt-1 font-mono text-[9px] uppercase tracking-[0.18em] text-muted-foreground/45 transition-colors duration-300 group-hover:text-muted-foreground/65">
-              Aliasist Project
-            </span>
-          </div>
         </a>
 
         {/* ── CENTER: Page links ── */}
@@ -385,7 +309,6 @@ const Navbar = () => {
               <a
                 key={link.href}
                 href={link.href}
-                onMouseEnter={() => playHover()}
                 onClick={() => playClick()}
                 className={`group relative overflow-hidden rounded-full px-4 py-2 text-xs font-mono uppercase tracking-[0.16em] transition-all duration-300 ease-out outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                   isActive
@@ -422,7 +345,6 @@ const Navbar = () => {
               title={soundOn ? "Mute" : "Unmute"}
               className={utilityButtonClass}
               aria-label={soundOn ? "Mute sounds" : "Enable sounds"}
-              onMouseEnter={() => playHover()}
             >
               {soundOn ? (
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
@@ -460,7 +382,6 @@ const Navbar = () => {
           <div className="flex items-center gap-3 shrink-0 min-w-0">
             <a
               href="#contact"
-              onMouseEnter={() => playHover()}
               onClick={() => playClick()}
               className="rounded-full bg-electric px-5 py-2 text-xs font-mono uppercase tracking-[0.16em] text-background shadow-electric-sm transition-[background-color,box-shadow,transform] duration-300 ease-out hover:bg-electric/90 hover:shadow-electric-md active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
@@ -531,12 +452,6 @@ const Navbar = () => {
                   <span className="ml-auto text-[10px] opacity-30 transition-all duration-300 group-hover:translate-x-0.5 group-hover:opacity-100">↗</span>
                 </a>
               ))}
-
-              {/* Divider */}
-              <div className="h-px bg-border/50 my-3" />
-
-              {/* Internal Agent Dashboard - only for aliasist@proton.me */}
-              <InternalAgentLinkMobile onClose={() => setMobileOpen(false)} />
 
               {/* Divider */}
               <div className="h-px bg-border/50 my-3" />

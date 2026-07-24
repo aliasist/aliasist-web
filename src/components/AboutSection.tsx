@@ -26,11 +26,6 @@ const AboutSection = () => {
       aria-labelledby="about-heading"
       className="relative overflow-hidden px-4 py-28 sm:px-8 lg:px-12 xl:px-16"
     >
-      {/* Top-only carryover from the hero so the heading scene blends into About */}
-      <div
-        className="absolute inset-x-0 top-0 h-[44%] bg-cover bg-center bg-no-repeat opacity-[0.13] pointer-events-none"
-        style={{ backgroundImage: "url(/background.png)" }}
-      />
       {/* Fade quickly into the same plain field used by the projects section */}
       <div className="absolute inset-0 bg-gradient-to-b from-background/52 via-background/88 to-background pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_72%_48%_at_50%_14%,_hsl(165_90%_42%_/_0.04)_0%,_transparent_62%)] pointer-events-none" />
@@ -41,7 +36,7 @@ const AboutSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.5 }}
-          className="classified-divider mb-16"
+          className="section-divider mb-16"
         >
           <span>{about.dividerLabel}</span>
         </motion.div>

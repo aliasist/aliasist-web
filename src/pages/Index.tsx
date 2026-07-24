@@ -5,7 +5,6 @@ import ScrollProgress from "@/components/ScrollProgress";
 import AliasistChat from "@/components/AliasistChat";
 import AISplashScreen from "@/components/AISplashScreen";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import AmbientUfo from "@/components/AmbientUfo";
 import { AdUnit, AD_SLOTS } from "@/components/AdUnit";
 
 const AboutSection = lazy(() => import("@/components/AboutSection"));
@@ -56,7 +55,6 @@ const Index = () => {
         <AISplashScreen onDismiss={handleSplashDismiss} />
       )}
       <ScrollProgress />
-      <AmbientUfo />
       <Navbar />
       <main id="main-content" className="relative z-10" tabIndex={-1}>
         <HeroSection />
