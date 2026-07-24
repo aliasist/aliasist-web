@@ -11,9 +11,10 @@ const isExternalHref = (href: string) => /^https?:\/\//.test(href);
 // ── Sub-components ─────────────────────────────────────────────────────────────
 
 // Projects dropdown
-const SuiteDropdown = () => {
+const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const highlighted = open || isActive;
 
   useEffect(() => {
     if (!open) return;
@@ -39,20 +40,31 @@ const SuiteDropdown = () => {
       <button
         type="button"
         onClick={() => { setOpen(o => !o); playClick(); }}
-        className={`flex items-center gap-1.5 rounded-full px-2.5 py-1.5 text-xs font-mono uppercase tracking-[0.16em] outline-none transition-all duration-300 ease-out focus-visible:ring-2 focus-visible:ring-electric/55 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
-          open
+        className={`group relative flex items-center gap-1.5 overflow-hidden rounded-full px-2.5 py-1.5 text-xs font-mono uppercase tracking-[0.16em] outline-none transition-all duration-300 ease-out focus-visible:ring-2 focus-visible:ring-electric/55 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+          highlighted
             ? "bg-electric/10 text-electric shadow-electric-xs"
             : "text-muted-foreground hover:bg-electric/[0.06] hover:text-foreground hover:shadow-electric-ring-inset"
         }`}
       >
-        Projects
+        <span className="relative z-10">Projects</span>
         <motion.svg
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.2 }}
+          className="relative z-10"
           width="10" height="10" viewBox="0 0 24 24" fill="none"
         >
           <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </motion.svg>
+        <span
+          className={`pointer-events-none absolute inset-x-2 top-1/2 h-full -translate-y-1/2 rounded-full bg-gradient-to-r from-transparent via-electric/10 to-transparent opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100 ${highlighted ? "opacity-60" : ""}`}
+          aria-hidden
+        />
+        <span
+          className={`absolute bottom-1 left-1/2 h-[2px] -translate-x-1/2 rounded-full bg-accent-line-duo shadow-accent-line-duo transition-all duration-300 ease-out ${
+            highlighted ? "w-[calc(100%-1.25rem)] opacity-100" : "w-0 opacity-0 group-hover:w-[calc(100%-1.25rem)] group-hover:opacity-100"
+          }`}
+          aria-hidden
+        />
       </button>
 
       <AnimatePresence>
@@ -334,7 +346,7 @@ const Navbar = () => {
           <span className="mx-1.5 h-4 w-px bg-border/60" />
 
           {/* Projects dropdown */}
-          <SuiteDropdown />
+          <SuiteDropdown isActive={activeSection === "projects"} />
         </div>
 
         {/* ── RIGHT: Controls ── */}
