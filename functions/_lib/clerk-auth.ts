@@ -5,7 +5,7 @@ const PRODUCTION_PUBLISHABLE_KEY = "pk_live_Y2xlcmsuYWxpYXNpc3QuY29tJA";
 export type ClerkEnv = {
   CLERK_SECRET_KEY?: string;
   CLERK_PUBLISHABLE_KEY?: string;
-  /** Clerk JWT PEM public key for networkless session verification. */
+  /** JWT PEM public key for networkless session verification. */
   CLERK_JWT_KEY?: string;
   CLERK_PUBLIC_KEY?: string;
   /**
@@ -15,10 +15,10 @@ export type ClerkEnv = {
   VITE_CLERK_SECRET_KEY?: string;
   VITE_CLERK_PUBLISHABLE_KEY?: string;
   /**
-   * Optional comma-separated extra origins for Clerk's authorizedParties check.
+   * Optional comma-separated extra origins for the authorizedParties check.
    * Use this on Pages preview deployments to add the preview URL, e.g.:
    *   https://abc123.aliasistabductor.pages.dev
-   * Set via Cloudflare Pages → Settings → Environment variables → CLERK_AUTHORIZED_PARTIES
+   * Set in deployment environment variables as CLERK_AUTHORIZED_PARTIES.
    */
   CLERK_AUTHORIZED_PARTIES?: string;
 };

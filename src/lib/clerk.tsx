@@ -4,9 +4,9 @@ import { useMemo, type ReactNode } from "react";
 const PRODUCTION_PUBLISHABLE_KEY = "pk_live_Y2xlcmsuYWxpYXNpc3QuY29tJA";
 
 /**
- * Cloudflare Pages should set `VITE_CLERK_PUBLISHABLE_KEY` for Production and Preview.
- * The production fallback is safe to ship because Clerk publishable keys are public client IDs;
- * keep `CLERK_SECRET_KEY` env-only.
+ * Production and preview should set the publishable sign-in key.
+ * The fallback is safe to ship because publishable keys are public client IDs;
+ * keep the secret key env-only.
  */
 function resolvePublishableKey(): string {
   const primary = import.meta.env.VITE_CLERK_PUBLISHABLE_KEY?.trim();
@@ -16,13 +16,13 @@ function resolvePublishableKey(): string {
     const devKey = import.meta.env.VITE_CLERK_DEV_PUBLISHABLE_KEY?.trim();
     if (devKey) return devKey;
     console.warn(
-      "[Clerk] Set VITE_CLERK_PUBLISHABLE_KEY or VITE_CLERK_DEV_PUBLISHABLE_KEY for local sign-in.",
+      "[Sign-in] Set VITE_CLERK_PUBLISHABLE_KEY or VITE_CLERK_DEV_PUBLISHABLE_KEY for local sign-in.",
     );
     return "";
   }
 
   console.warn(
-    "[Clerk] Missing VITE_CLERK_PUBLISHABLE_KEY — using the production publishable key fallback.",
+    "[Sign-in] Missing VITE_CLERK_PUBLISHABLE_KEY; using the production publishable key fallback.",
   );
   return PRODUCTION_PUBLISHABLE_KEY;
 }
@@ -37,10 +37,10 @@ const CENTRAL_SIGN_UP =
   import.meta.env.VITE_CLERK_PRIMARY_SIGN_UP_URL?.trim() ||
   "https://auth.aliasist.com/sign-up";
 
-/** Same Clerk instance as auth.aliasist.com — set on Pages when using custom FAPI host. */
+/** Same sign-in instance as auth.aliasist.com. */
 const clerkProxyUrl = import.meta.env.VITE_CLERK_PROXY_URL?.trim();
 
-/** Origins Clerk may redirect back to after Account Portal / OAuth (production + dev + tunnels). */
+/** Origins that sign-in may redirect back to after Account Portal / OAuth. */
 const defaultRedirectOriginPatterns: Array<string | RegExp> = [
   /^https:\/\/.+\.trycloudflare\.com$/,
   /^http:\/\/localhost(?::\d+)?$/,
@@ -66,13 +66,7 @@ function useAllowedRedirectOrigins(): Array<string | RegExp> {
   }, []);
 }
 
-/**
- * Cloudflare tunnel hostnames are a different site origin than aliasist.com.
- * Clerk treats that as a satellite: sign-in runs on the primary (Account Portal), then returns here.
- * Dashboard: https://dashboard.clerk.com/~/domains → Satellites → add each *.trycloudflare.com host.
- *
- * @see https://clerk.com/docs/guides/dashboard/dns-domains/satellite-domains
- */
+/** Preview tunnel hostnames run sign-in on the primary domain, then return here. */
 function useSatelliteProps(): {
   isSatellite?: true;
   domain?: (url: URL) => string;

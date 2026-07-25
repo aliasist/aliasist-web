@@ -4,12 +4,12 @@ import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index";
-import AgentDashboard from "./pages/AgentDashboard";
 import GithubProjectGuide from "./pages/GithubProjectGuide";
 import GithubPrReviewer from "./pages/GithubPrReviewer";
 import GithubToolkit from "./pages/GithubToolkit";
 import Consulting from "./pages/Consulting";
 import NotFound from "./pages/NotFound";
+import TechLanding from "./pages/TechLanding";
 
 const queryClient = new QueryClient();
 
@@ -21,7 +21,7 @@ const App = () => (
       <BrowserRouter>
         <Routes>
           <Route path="/" element={<Index />} />
-          <Route path="/agent" element={<AgentDashboard />} />
+          <Route path="/tech" element={<TechLanding />} />
           <Route path="/tools/github" element={<GithubToolkit />} />
           <Route path="/tools/github/project-guide" element={<GithubProjectGuide />} />
           <Route path="/tools/github-pr-reviewer" element={<GithubPrReviewer />} />

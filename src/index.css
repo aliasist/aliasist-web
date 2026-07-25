@@ -676,6 +676,36 @@ body::after {
   }
 }
 
+.alien-logo-glow {
+  --alien-eye-glow: hsl(165 90% 58%);
+  position: relative;
+  isolation: isolate;
+}
+
+.alien-logo-glow > img {
+  position: relative;
+  z-index: 1;
+}
+
+.alien-logo-glow::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  pointer-events: none;
+  background:
+    radial-gradient(ellipse 13% 20% at 41% 49%, var(--alien-eye-glow) 0%, color-mix(in srgb, var(--alien-eye-glow) 54%, transparent) 38%, transparent 72%),
+    radial-gradient(ellipse 13% 20% at 59% 49%, var(--alien-eye-glow) 0%, color-mix(in srgb, var(--alien-eye-glow) 54%, transparent) 38%, transparent 72%);
+  filter: blur(5px) saturate(1.25);
+  mix-blend-mode: screen;
+  opacity: 0.42;
+  transition: background 900ms ease, opacity 900ms ease;
+}
+
+.alien-logo-glow:hover::after {
+  opacity: 0.58;
+}
+
 .light .shadow-electric-xs {
   box-shadow:
     0 0 18px hsl(165 85% 36% / 0.11),

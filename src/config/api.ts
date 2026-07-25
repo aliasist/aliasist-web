@@ -36,17 +36,17 @@ export const siteEndpoints = {
    */
   contactWorkerApi: `${llmBase}/api/contact`,
   /**
-   * Floating AI widget → Pages Function proxy (`functions/api/chat.ts`).
-   * Requires `Authorization: Bearer <Clerk session JWT>` (enforced server-side).
+   * Floating chat widget → Pages Function proxy (`functions/api/chat.ts`).
+   * Requires `Authorization: Bearer <session JWT>` (enforced server-side).
    */
   chatApi: "/api/chat",
   /**
-   * Secured LLM worker fallback for static previews where Pages Functions are absent.
-   * The worker also requires the Clerk `Authorization` header.
+   * Secured chat fallback for static previews where Pages Functions are absent.
+   * The worker also requires the `Authorization` header.
    */
   chatWorkerApi: `${llmBase}/api/chat`,
   /**
-   * Pages Function — Clerk-authenticated chat (`functions/api/chat-messages.ts`).
+   * Pages Function — signed-in chat (`functions/api/chat-messages.ts`).
    * POST requires `Authorization: Bearer <session JWT>` once you switch the widget to this API.
    */
   chatMessagesApi: "/api/chat-messages",
