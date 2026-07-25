@@ -5,6 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "dev:cf": "ALIASIST_CLOUDFLARE_VITE_DEV=true vite",
+    "dev:local": "vite --host 127.0.0.1",
     "doctor": "node scripts/doctor.mjs",
     "build": "npm run build:ecosist && npm run sync:ecosist && vite build && npm run build:functions",
     "build:dev": "vite build --mode development",
@@ -23,7 +25,7 @@
     "build:functions": "wrangler pages functions build functions --outdir dist/_worker.js --output-routes-path dist/_routes.json --compatibility-date 2025-04-01 --compatibility-flag nodejs_compat",
     "lint": "eslint .",
     "preview": "npm run build && wrangler pages dev dist --compatibility-date 2025-04-01 --compatibility-flag nodejs_compat",
-    "tunnel:vite": "vite --host :: --port 8080",
+    "tunnel:vite": "vite --host 127.0.0.1 --port 8080",
     "tunnel:quick": "cloudflared tunnel --url http://localhost:8080",
     "test": "vitest run",
     "test:watch": "vitest",

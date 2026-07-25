@@ -130,8 +130,7 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
         </div>
 
       <div className="flex items-center gap-3 mb-6 relative z-10">
-        <span className="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.15em] text-electric">
-          <span className="w-1.5 h-1.5 rounded-full bg-electric animate-pulse" />
+        <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-electric">
           {project.status}
         </span>
       </div>
@@ -282,8 +281,7 @@ const ProjectsSection = () => {
                     {item.description}
                   </p>
                 </div>
-                <div className="flex items-center gap-2 mt-6">
-                  <span className="w-1.5 h-1.5 rounded-full bg-electric/40 animate-pulse" />
+                <div className="mt-6">
                   <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-muted-foreground/50">
                     ETA: {item.eta}
                   </span>

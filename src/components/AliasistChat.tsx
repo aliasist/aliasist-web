@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, type KeyboardEvent } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
 import { useAuth, useUser } from "@clerk/react";
-import aliasistLogo from "@/assets/aliasist-logo.png";
+import aliasistLogo from "@/assets/aliasist-ai-orb.png";
 import { readJsonBody, siteEndpoints } from "@/config/api";
 import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
 
@@ -27,10 +27,10 @@ interface Message {
 }
 
 const WELCOME_CHAT =
-  "Ask me about Aliasist projects, consulting, or practical software workflows.";
+  "Ask about Aliasist projects, data tools, or file utilities.";
 
 const WELCOME_ROOM =
-  "Room is ready. Messages are saved when configured on Pages.";
+  "Room is ready. Messages are saved when storage is enabled.";
 
 const WELCOME_SIGN_IN_REQUIRED =
   "Sign in to use chat.";
@@ -41,6 +41,7 @@ function shouldRetry(res: Response) {
 }
 
 const AliasistChat = () => {
+  const prefersReducedMotion = useReducedMotion();
   const { isLoaded, isSignedIn, getToken, userId } = useAuth();
   const { user } = useUser();
   const openSiteSignIn = useOpenSiteSignIn();
@@ -258,7 +259,6 @@ const AliasistChat = () => {
           >
             <div className="flex items-center justify-between px-4 py-3 border-b border-border bg-background/60 backdrop-blur-sm">
               <div className="flex items-center gap-2">
-                <span className="w-2 h-2 rounded-full bg-electric animate-pulse" />
                 <span className="font-mono text-[11px] uppercase tracking-[0.15em] text-electric">
                   {USE_PAGES_CHAT_ROOM ? "Aliasist Room" : "Aliasist Chat"}
                 </span>
@@ -376,45 +376,77 @@ const AliasistChat = () => {
         )}
       </AnimatePresence>
 
-      <motion.button
-        type="button"
-        onClick={handleLauncherClick}
-        whileHover={{ scale: 1.08 }}
-        whileTap={{ scale: 0.94 }}
-        className="w-14 h-14 overflow-hidden rounded-full border border-electric/45 bg-background text-background flex items-center justify-center shadow-electric-sm hover:shadow-electric-md transition-shadow duration-300"
-        aria-label={
-          open ? "Close chat" : isLoaded && !isSignedIn && REQUIRE_CHAT_SIGN_IN ? "Sign in to open chat" : "Open chat"
-        }
-        aria-busy={!isLoaded}
-      >
-        <AnimatePresence mode="wait">
-          {open ? (
+      <div className="group relative flex items-center justify-center">
+        {!open && (
+          <>
             <motion.span
-              key="close"
-              initial={{ rotate: -90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: 90, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              className="text-lg font-mono"
-            >
-              ✕
-            </motion.span>
-          ) : (
-            <motion.img
-              key="chat"
-              initial={{ rotate: 90, opacity: 0 }}
-              animate={{ rotate: 0, opacity: 1 }}
-              exit={{ rotate: -90, opacity: 0 }}
-              transition={{ duration: 0.2 }}
-              src={aliasistLogo}
-              alt=""
               aria-hidden="true"
-              className="h-full w-full object-cover"
-              style={{ filter: "drop-shadow(0 0 5px hsl(var(--electric) / 0.4))" }}
+              className="pointer-events-none absolute inset-1 rounded-full border border-electric/40"
+              animate={prefersReducedMotion ? undefined : { scale: [1, 1.32], opacity: [0.55, 0] }}
+              transition={{ duration: 2.4, repeat: Infinity, ease: "easeOut" }}
             />
-          )}
-        </AnimatePresence>
-      </motion.button>
+            <motion.span
+              aria-hidden="true"
+              className="pointer-events-none absolute -inset-1 rounded-full bg-[conic-gradient(from_90deg,transparent,hsl(var(--electric)/.55),hsl(278_82%_67%/.55),transparent_72%)] blur-[6px]"
+              animate={prefersReducedMotion ? undefined : { rotate: 360 }}
+              transition={{ duration: 7, repeat: Infinity, ease: "linear" }}
+            />
+            <span className="pointer-events-none absolute right-[calc(100%+0.65rem)] whitespace-nowrap rounded-full border border-electric/25 bg-background/90 px-3 py-1.5 font-mono text-[9px] uppercase tracking-[0.18em] text-electric opacity-0 shadow-electric-xs backdrop-blur-md transition-all duration-300 group-hover:-translate-x-1 group-hover:opacity-100 group-focus-within:-translate-x-1 group-focus-within:opacity-100">
+              Ask AI
+            </span>
+          </>
+        )}
+
+        <motion.button
+          type="button"
+          onClick={handleLauncherClick}
+          animate={
+            !open && !prefersReducedMotion
+              ? { y: [0, -4, 0], rotate: [0, 1.5, 0, -1.5, 0] }
+              : { y: 0, rotate: 0 }
+          }
+          transition={
+            !open && !prefersReducedMotion
+              ? { y: { duration: 3.2, repeat: Infinity, ease: "easeInOut" }, rotate: { duration: 6.4, repeat: Infinity, ease: "easeInOut" } }
+              : { duration: 0.2 }
+          }
+          whileHover={{ scale: 1.1, y: -3 }}
+          whileTap={{ scale: 0.92 }}
+          className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-full border border-electric/55 bg-[#050909] text-electric shadow-[0_0_0_1px_hsl(var(--electric)/.12),0_8px_30px_hsl(var(--electric)/.3),0_0_42px_hsl(278_82%_67%/.18)] transition-[border-color,box-shadow] duration-300 hover:border-electric/90 hover:shadow-[0_0_0_1px_hsl(var(--electric)/.28),0_10px_36px_hsl(var(--electric)/.45),0_0_58px_hsl(278_82%_67%/.35)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background sm:h-[4.5rem] sm:w-[4.5rem]"
+          aria-label={
+            open ? "Close chat" : isLoaded && !isSignedIn && REQUIRE_CHAT_SIGN_IN ? "Sign in to open chat" : "Open chat"
+          }
+          aria-busy={!isLoaded}
+        >
+          <AnimatePresence mode="wait">
+            {open ? (
+              <motion.span
+                key="close"
+                initial={{ rotate: -90, opacity: 0, scale: 0.6 }}
+                animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                exit={{ rotate: 90, opacity: 0, scale: 0.6 }}
+                transition={{ duration: 0.2 }}
+                className="text-xl font-mono"
+              >
+                ✕
+              </motion.span>
+            ) : (
+              <motion.img
+                key="chat"
+                initial={{ rotate: 90, opacity: 0, scale: 0.65 }}
+                animate={{ rotate: 0, opacity: 1, scale: 1 }}
+                exit={{ rotate: -90, opacity: 0, scale: 0.65 }}
+                transition={{ type: "spring", stiffness: 300, damping: 22 }}
+                src={aliasistLogo}
+                alt=""
+                aria-hidden="true"
+                className="h-[118%] w-[118%] max-w-none select-none object-contain transition-[filter,transform] duration-300 group-hover:scale-105 group-hover:brightness-110"
+                style={{ filter: "drop-shadow(0 0 7px hsl(var(--electric) / 0.52)) drop-shadow(0 0 10px hsl(278 82% 67% / 0.32))" }}
+              />
+            )}
+          </AnimatePresence>
+        </motion.button>
+      </div>
     </div>
   );
 };

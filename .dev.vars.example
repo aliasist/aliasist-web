@@ -16,6 +16,10 @@ CLERK_PUBLISHABLE_KEY=pk_live_your_clerk_publishable_key
 # Defaults to https://llm-chat.bchooper0730.workers.dev if omitted.
 # LLM_CHAT_BASE_URL=https://llm-chat.your-worker.workers.dev
 #
+# RAG backend base URL — used by /api/chat to fetch grounded context.
+# Defaults to https://api.aliasist.tech if omitted.
+# RAG_BASE_URL=https://api.aliasist.tech
+#
 # Homepage AI consulting demo.
 # Keep GROQ_API_KEY server-side only. PUBLIC_CHAT_ENABLED lets unsigned visitors
 # try the floating AI widget with a small server-side rate limit.

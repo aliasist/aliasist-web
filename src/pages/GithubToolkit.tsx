@@ -13,14 +13,14 @@ const tools = [
     status: "Live",
   },
   {
-    title: "Improve my project",
+    title: "Check repository health",
     description: "Check documentation, community files, automation, and repository readiness.",
     label: "Repo Health",
     icon: HeartPulse,
     status: "Next",
   },
   {
-    title: "Share my changes",
+    title: "Prepare a pull request",
     description: "Prepare a clear pull request with a focused summary and a useful review checklist.",
     label: "PR Builder",
     icon: Share2,
@@ -67,8 +67,8 @@ const GithubToolkit = () => (
           GitHub Companion
         </h1>
         <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
-          Start with a project you want to understand. Move into repository health, pull request
-          preparation, and deeper review as your workflow grows.
+          Start with a repository map. Move into health checks, pull request preparation,
+          and deeper review when needed.
         </p>
       </section>
 

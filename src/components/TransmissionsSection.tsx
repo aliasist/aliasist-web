@@ -50,12 +50,12 @@ const FALLBACK_POSTS = [
   },
   {
     id: "f2", tag: "tech", color: "#00C97B", category: "Tech",
-    title: "Building Aliasist-Files-Abductor: why I made a tool nobody asked for.",
+    title: "Building Aliasist-Files-Abductor: a practical tool for direct file workflows.",
     source: "Aliasist", url: "#", published: new Date().toISOString(),
   },
   {
     id: "f3", tag: "tech", color: "#00C97B", category: "Tech",
-    title: "Self-taught to CS degree: what nobody tells you about the gap.",
+    title: "From early web design to modern software: how the tooling changed.",
     source: "Aliasist", url: "#", published: new Date().toISOString(),
   },
 ];
@@ -267,9 +267,8 @@ const TransmissionsSection = () => {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.15em] text-electric"
+              className="font-mono text-[10px] uppercase tracking-[0.15em] text-electric"
             >
-              <span className="w-2 h-2 rounded-full bg-electric animate-pulse shadow-electric-dot" />
               Live · Auto-refresh 10m
             </motion.div>
           )}

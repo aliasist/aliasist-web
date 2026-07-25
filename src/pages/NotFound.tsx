@@ -9,14 +9,11 @@ const NotFound = () => {
         <div className="font-mono text-[10px] uppercase tracking-[0.35em] text-electric/70">
           404 // ROUTE NOT FOUND
         </div>
-        <h1
-          className="glitch-text text-5xl sm:text-7xl font-bold tracking-tight text-foreground select-none"
-          data-text="UNKNOWN"
-        >
+        <h1 className="text-5xl sm:text-7xl font-bold tracking-tight text-foreground select-none">
           UNKNOWN
         </h1>
         <p className="font-mono text-sm text-muted-foreground max-w-md leading-relaxed">
-          This URL is not routed on aliasist.com. Return to mission control below.
+          This URL is not routed on aliasist.com.
         </p>
         <Link
           to="/"

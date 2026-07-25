@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth, UserButton } from "@clerk/react";
-import newLogo from "@/assets/aliasist-logo-brand.svg";
+import newLogo from "@/assets/apple-touch-icon.png";
 import { playClick, setEnabled } from "@/hooks/useSound";
 import { pageNavLinks, suiteAppCount, suiteApps } from "@/content/homepage";
 import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
@@ -81,8 +81,7 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
               <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50">
                 Projects
               </span>
-              <span className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.1em] text-electric/60">
-                <span className="w-1 h-1 rounded-full bg-electric animate-pulse shadow-electric-dot" />
+              <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-electric/60">
                 {suiteAppCount} Links
               </span>
             </div>
@@ -306,9 +305,9 @@ const Navbar = () => {
           <motion.img
             src={newLogo}
             alt=""
-            className="h-14 w-auto max-h-16 object-contain drop-shadow-logo-aura transition-all duration-300 sm:h-16 sm:max-h-[4.5rem]"
-            style={{ minWidth: 56, background: "transparent" }}
-            whileHover={{ scale: 1.1, filter: "drop-shadow(0 0 16px hsl(165 90% 42% / 0.8)) drop-shadow(0 0 22px hsl(278 82% 67% / 0.45))" }}
+            className="h-12 w-12 object-contain drop-shadow-logo-aura transition-all duration-300 sm:h-14 sm:w-14"
+            style={{ background: "transparent" }}
+            whileHover={{ scale: 1.08, rotate: -3, filter: "drop-shadow(0 0 16px hsl(165 90% 42% / 0.8)) drop-shadow(0 0 22px hsl(278 82% 67% / 0.45))" }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
           />
         </a>

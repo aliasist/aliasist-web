@@ -92,9 +92,9 @@ export const hero = {
   mascotAlt: "Aliasist",
   mascotTitle: "Aliasist",
   wordmark: "ALIASIST",
-  tagline: "Data software tools 24/7 real-time updates",
+  tagline: "A CS student's playground for real-time data tools",
   subcopy:
-    "Hey, I'm Blake. Aliasist is a project I started in spring 2026 to give users access to data that is not always readily available, reliable, or easy to reach 24/7.",
+    "Aliasist is a personal project by a computer science student building data dashboards, privacy tools, and small utilities to learn new technology hands-on.",
   ctaContact: "Projects",
   ctaContactHref: "#projects",
   ctaSecondary: "Contact",
@@ -106,7 +106,7 @@ export const hero = {
 export const pageNavLinks = [
   { label: "About", href: "#about" },
   { label: "Projects", href: "#projects" },
-  { label: "Tech News", href: "#transmissions" },
+  { label: "Updates", href: "#transmissions" },
 ] as const;
 
 
@@ -120,7 +120,7 @@ export const footer = {
   linkedinLabel: "LinkedIn",
   emailLabel: "Email",
   githubHref: "https://github.com/aliasist",
-  linkedinHref: "https://www.linkedin.com/in/blake-hooper-b99899400",
+  linkedinHref: "",
   emailHref: "mailto:dev@aliasist.com",
 } as const;
 
@@ -139,15 +139,15 @@ const downloadLinks = {
 
 export const projectsSection = {
   dividerLabel: "Projects",
-  headline: "Built projects, not ideas.",
-  subcopy: "A focused view of the apps and utilities connected to Aliasist, from data dashboards to privacy tools and developer workflows.",
+  headline: "Tools that are online now.",
+  subcopy: "A current list of Aliasist apps, dashboards, and file tools.",
 } as const;
 
 export const projects = [
   {
     name: "Aliasist Tech · Waterfall",
     description:
-      "A protected Waterfall workspace for guided chat, image tools, and private access.",
+      "A protected prompt workspace for chat, images, and private sessions.",
     tech: ["Waterfall", "Secure access", "Chat workspace", "Image tools", "Private sessions"],
     github: "https://github.com/aliasist/waterfall",
     downloads: [],
@@ -177,7 +177,7 @@ export const projects = [
   {
     name: "DataSist",
     description:
-      "A data center research platform for facilities, power, water, risk, and investment data.",
+      "A data center research dashboard for facilities, power, water, risk, and investment data.",
     tech: ["Facility research", "Power data", "Water data", "Risk maps", "Data tables"],
     github: "https://github.com/aliasist/datasist",
     downloads: [],
@@ -237,7 +237,7 @@ export const projects = [
   {
     name: "GitHub Companion",
     description:
-      "A GitHub toolkit that explains repositories and reviews pull requests in plain language.",
+      "A GitHub tool for repository summaries and pull request review notes.",
     tech: ["Repository maps", "Pull request review", "Project guidance", "Review notes"],
     github: "https://github.com/aliasist/aliasistabductor",
     downloads: [],
@@ -252,7 +252,7 @@ export const projects = [
   {
     name: "Aliasist-Files-Abductor",
     description:
-      "My first full app: a GUI tool for downloading files from YouTube and direct URLs.",
+      "A desktop GUI tool for downloading files from YouTube and direct URLs.",
     tech: ["Python", "GUI", "CLI", "File Automation", "yt-dlp"],
     github: `https://github.com/aliasist/aliasistabductor/releases/tag/${releaseTagEncoded}`,
     downloads: [
@@ -307,7 +307,7 @@ export const projects = [
 export const comingSoonProjects = [
   {
     codename: "Next project",
-    description: "A new tool is in early planning. Details will go here when the work is ready to show.",
+    description: "A new tool is in early planning. Details will appear when there is something useful to test.",
     eta: "2027",
   },
 ] as const;
@@ -325,7 +325,7 @@ export type ProjectCard = (typeof projects)[number];
 export const about = {
   dividerLabel: "About",
   headline: "Meet Aliasist.",
-  pathBadge: "Focus · Software × data × security",
+  pathBadge: "CS student · building toward AI security",
   skillsLabel: "Core capabilities",
   skills: [
     "Python",
@@ -333,7 +333,7 @@ export const about = {
     "HTML / CSS",
     "Frontend systems",
     "Node.js",
-    "UI design",
+    "Security-minded design",
     "CLI tooling",
     "File automation",
   ] as const,
@@ -343,12 +343,16 @@ export const about = {
    */
   bioBlocks: [
     {
-      kicker: "What it is",
-      body: "Aliasist brings together practical web tools, data-driven applications, privacy utilities, and reliable workflows. If you would like to collaborate on a project or have something built with frontend and backend support, send an email and include the goal, scope, and timeline.",
+      kicker: "Who's behind it",
+      body: "I'm a computer science student building toward a career in AI-focused cybersecurity and security consulting. Aliasist started as a way to actually build things — not just study them — and turned into an ongoing collection of dashboards, tools, and utilities built with security in mind from the start.",
     },
     {
-      kicker: "Background",
-      body: "I have been working with web design and software since 2004, starting with Dreamweaver, Photoshop layouts, sliced images, XHTML, CSS, and hand-coded effects.",
+      kicker: "What it is",
+      body: "Aliasist is a self-directed learning project with a security lens: each app is a chance to work with a new API, framework, or deployment pattern, apply real security practices, and ship something real. It's applied practice for the field I'm working toward, not just a sandbox.",
+    },
+    {
+      kicker: "Why it exists",
+      body: "I wanted hands-on practice with the full stack — frontend, backend, APIs, storage, deployment, and the security considerations behind all of it — outside of coursework, and something concrete to point to as I move toward AI security and consulting work.",
     },
   ] as const,
 
@@ -357,7 +361,7 @@ export const about = {
   authorSlots: [] as unknown as readonly { kicker: string; body: string }[],
 
   stats: [
-    { num: `${suiteAppCount}`,  label: "Projects connected", sym: "" as const },
+    { num: `${suiteAppCount}`,  label: "Projects online", sym: "" as const },
     { num: "7",  label: "External APIs integrated", sym: "+" as const },
     { num: "100", label: "Open source · github.com/aliasist", sym: "%" as const },
   ],
@@ -369,16 +373,16 @@ export const contact = {
   dividerLabel: "Contact",
   introLabel: "Aliasist contact",
   headline: "Make contact.",
-  introStrong: "Open to project work, collaborations, and frontend/backend builds.",
-  introRest: "Send a clear note with what you want built, what it should connect to, and what success looks like.",
+  introStrong: "Open to focused builds and collaborations.",
+  introRest: "Send the goal, required connections, timeline, and what success looks like.",
   successTitle: "Message received",
   successBody:
-    "Message received. I prioritize clear requests, technical detail, and projects with a real path forward.",
+    "Message received. Clear scope, technical detail, and a real path forward make evaluation easier.",
   sendAnother: "Send another ↩",
   placeholders: {
     name: "Name",
     email: "Email",
-    message: "Message — what are you working on?",
+    message: "Message — goal, scope, timeline",
   },
   submitIdle: "Send message ↗",
   submitSending: "Sending...",
@@ -393,11 +397,6 @@ export const contact = {
   ],
   directLinks: [
     { label: "GitHub", href: "https://github.com/aliasist", iconKey: "github" as const },
-    {
-      label: "LinkedIn",
-      href: "https://www.linkedin.com/in/blake-hooper-b99899400",
-      iconKey: "linkedin" as const,
-    },
     { label: "dev@aliasist.com", href: "mailto:dev@aliasist.com", iconKey: "email" as const },
   ],
 } as const;
@@ -406,7 +405,7 @@ export const contact = {
 
 export const transmissions = {
   dividerLabel: "Blog",
-  headline: "Tech is moving fast.",
+  headline: "Project notes.",
   scanning: "Loading posts...",
   offline: "Could not load the latest posts. Showing saved posts.",
   liveFeedPrefix: "Updated ",
