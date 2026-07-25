@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import ScrollProgress from "@/components/ScrollProgress";
 import AliasistChat from "@/components/AliasistChat";
-import AISplashScreen from "@/components/AISplashScreen";
+import IntroSplashScreen from "@/components/IntroSplashScreen";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { AdUnit, AD_SLOTS } from "@/components/AdUnit";
 
@@ -52,7 +52,7 @@ const Index = () => {
   return (
     <div className="min-h-screen relative">
       {showSplash && (
-        <AISplashScreen onDismiss={handleSplashDismiss} />
+        <IntroSplashScreen onDismiss={handleSplashDismiss} />
       )}
       <ScrollProgress />
       <Navbar />

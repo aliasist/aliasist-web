@@ -106,8 +106,7 @@ const ContactSection = () => {
           <div className="grid md:grid-cols-2 gap-16 items-start">
             {/* Left — contact form */}
             <div>
-              <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.14em] text-electric mb-6">
-                <span className="w-2 h-2 bg-electric rounded-full animate-pulse" />
+              <div className="font-mono text-xs uppercase tracking-[0.14em] text-electric mb-6">
                 {contact.introLabel}
               </div>
 
@@ -131,8 +130,7 @@ const ContactSection = () => {
                     animate={{ opacity: 1, y: 0 }}
                     className="border border-electric/30 bg-electric/8 px-6 py-8 rounded-sm shadow-electric-xs"
                   >
-                    <div className="flex items-center gap-3 mb-3">
-                      <span className="w-2 h-2 rounded-full bg-electric animate-pulse" />
+                    <div className="mb-3">
                       <span className="font-mono text-xs uppercase tracking-[0.18em] text-electric">{contact.successTitle}</span>
                     </div>
                     <p className="font-mono text-sm text-background/60 leading-relaxed">
@@ -279,8 +277,7 @@ const ContactSection = () => {
                       </div>
                     </div>
                     <div className="flex items-center gap-2">
-                      <span className="flex items-center gap-1 font-mono text-[9px] uppercase tracking-[0.1em] text-electric/60">
-                        <span className="w-1.5 h-1.5 rounded-full bg-electric animate-pulse" />
+                      <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-electric/60">
                         {contact.liveBadge}
                       </span>
                       <span className="opacity-20 group-hover:opacity-100 group-hover:text-electric text-background transition-all font-mono">↗</span>

@@ -21,8 +21,7 @@ export default function TechLanding() {
             animate={{ opacity: 1, scale: 1 }}
             className="inline-flex items-center gap-2 rounded-sm border border-violet/20 bg-background/55 px-4 py-2 font-mono text-xs uppercase tracking-widest text-muted-foreground mb-8"
           >
-            <span className="size-2 rounded-full bg-electric animate-pulse" />
-            Aliasist.tech · Engineering
+            Aliasist.tech
           </motion.div>
           
           <h1 className="text-6xl md:text-8xl font-bold mb-6 tracking-tight">
@@ -30,12 +29,11 @@ export default function TechLanding() {
               ENGINEERING
             </span>
             <br />
-            <span className="text-foreground">PORTFOLIO</span>
+            <span className="text-foreground">SYSTEMS</span>
           </h1>
           
           <p className="max-w-2xl mx-auto text-lg text-muted-foreground mb-8">
-            Full-stack development, data systems, and practical software tools.
-            Building software that solves real problems.
+            Data systems, browser tools, and backend-connected apps.
           </p>
           
           <a
@@ -52,12 +50,12 @@ export default function TechLanding() {
         {/* Capabilities */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-20">
           {[
-            { icon: Code2, title: "Frontend", desc: "Fast interfaces, polished layouts, and usable workflows" },
-            { icon: Server, title: "Backend", desc: "APIs, routing, storage, and server-side application logic" },
-            { icon: Database, title: "Data", desc: "Research tables, data pipelines, and operational dashboards" },
-            { icon: Globe, title: "Infrastructure", desc: "Reliable deployments, custom domains, and live services" },
-            { icon: Lock, title: "Security", desc: "Private access, safer defaults, and privacy-focused tooling" },
-            { icon: Terminal, title: "CLI Tools", desc: "Automation, scripts, and desktop utility workflows" },
+            { icon: Code2, title: "Frontend", desc: "Readable interfaces and responsive layouts" },
+            { icon: Server, title: "Backend", desc: "APIs, routing, storage, and server logic" },
+            { icon: Database, title: "Data", desc: "Research tables, imports, and dashboards" },
+            { icon: Globe, title: "Deployments", desc: "Live sites, custom domains, and release checks" },
+            { icon: Lock, title: "Access", desc: "Private routes, sign-in, and safer defaults" },
+            { icon: Terminal, title: "CLI Tools", desc: "Scripts and desktop utility commands" },
           ].map((tech, i) => (
             <motion.div
               key={tech.title}
@@ -84,7 +82,7 @@ export default function TechLanding() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               { name: "Globalize", desc: "Live 3D globe with global data signals", link: "https://www.aliasist.world" },
-              { name: "DataSist", desc: "Data center research platform", link: "https://datasist-frontend.pages.dev" },
+              { name: "DataSist", desc: "Data center research dashboard", link: "https://datasist-frontend.pages.dev" },
               { name: "PulseSist", desc: "Market signal dashboards", link: "https://pulse.aliasist.com" },
               { name: "SpaceSist", desc: "Live space portal", link: "https://space.aliasist.com" },
               { name: "EcoSist", desc: "Environmental observatory", link: "/ecosist/" },

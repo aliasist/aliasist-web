@@ -1,0 +1,302 @@
+{
+  "Meta Prometheus": {
+    "lat": 40.0811745,
+    "lng": -82.8087864,
+    "address": "1 Community Cir, New Albany, OH 43054",
+    "country": "United States"
+  },
+  "Microsoft Fairwater Atlanta": {
+    "lat": 33.4452227,
+    "lng": -84.5248259,
+    "address": "1435 Hwy 54 W, Fayetteville, GA 30214",
+    "country": "United States"
+  },
+  "Anthropic-Amazon New Carlisle": {
+    "lat": 41.7056871,
+    "lng": -86.5098231,
+    "address": "55001 Larrison Blvd, New Carlisle, IN 46552",
+    "country": "United States"
+  },
+  "Colossus 2": {
+    "lat": 34.9979829,
+    "lng": -90.0348674,
+    "address": "5420 Tulane Rd, Memphis, TN 38109",
+    "country": "United States"
+  },
+  "OpenAI Stargate Abilene": {
+    "lat": 32.4942321,
+    "lng": -99.8009071,
+    "address": "5502 Spinks Rd, Abilene, TX 79601",
+    "country": "United States"
+  },
+  "Microsoft Fairwater Wisconsin": {
+    "lat": 42.6748722,
+    "lng": -87.8948822,
+    "address": "4800 90th St, Mount Pleasant, WI 53403",
+    "country": "United States"
+  },
+  "Colossus 1": {
+    "lat": 35.0735541,
+    "lng": -90.0873076,
+    "address": "3231 Riverport Rd, Memphis, TN 38109",
+    "country": "United States"
+  },
+  "QTS Richmond 1": {
+    "lat": 37.4888273,
+    "lng": -77.24749,
+    "address": "6000 Technology Blvd, Sandston, VA 23150",
+    "country": "United States"
+  },
+  "Google Columbus": {
+    "lat": 39.8614521,
+    "lng": -83.0039995,
+    "address": "5076 S High St, Columbus, OH 43207",
+    "country": "United States"
+  },
+  "Google New Albany": {
+    "lat": 40.070051,
+    "lng": -82.754042,
+    "address": "1101 Beech Rd SW, New Albany, OH 43054",
+    "country": "United States"
+  },
+  "Microsoft Goodyear": {
+    "lat": 33.4089905,
+    "lng": -112.3647996,
+    "address": "14250 W Broadway Rd, Goodyear, AZ 85338",
+    "country": "United States"
+  },
+  "Meta Jeffersonville": {
+    "lat": 38.279131,
+    "lng": -85.739009,
+    "address": "500 8th St, Jeffersonville, IN 47130, USA",
+    "country": "United States"
+  },
+  "Meta Rosemount": {
+    "lat": 44.7391873,
+    "lng": -93.12611,
+    "address": "1772-2396 145th St, Rosemount, MN 55068, USA",
+    "country": "United States"
+  },
+  "QTS Richmond 2": {
+    "lat": 37.4888273,
+    "lng": -77.24749,
+    "address": "6000 Technology Blvd, Sandston, VA 23150",
+    "country": "United States"
+  },
+  "QTS Richmond 3": {
+    "lat": 37.4888273,
+    "lng": -77.24749,
+    "address": "6000 Technology Blvd, Sandston, VA 23150",
+    "country": "United States"
+  },
+  "Meta Montgomery": {
+    "lat": 32.3777111,
+    "lng": -86.3090775,
+    "address": "Co Rd 42, Montgomery, AL 36105, USA",
+    "country": "United States"
+  },
+  "Meta Kuna": {
+    "lat": 43.4592072,
+    "lng": -116.4211106,
+    "address": "601 Kuna Mora Rd,  Kuna ID 83634",
+    "country": "United States"
+  },
+  "Meta Temple": {
+    "lat": 31.1259599,
+    "lng": -97.3598178,
+    "address": "2310 Eberhardt Rd, Temple, TX 76504",
+    "country": "United States"
+  },
+  "Amazon Ridgeland": {
+    "lat": 32.4000327,
+    "lng": -90.1971708,
+    "address": "1626 County Line Road Ridgeland, Mississippi",
+    "country": "United States"
+  },
+  "Google Council Bluffs (East)": {
+    "lat": 41.1666499,
+    "lng": -95.7977408,
+    "address": "10410 Bunge Ave, Council Bluffs, IA 51503",
+    "country": "United States"
+  },
+  "Microsoft Project Osmium": {
+    "lat": 41.4833235,
+    "lng": -93.7624442,
+    "address": "5855 SW Kerry St, Cumming, IA 50061",
+    "country": "United States"
+  },
+  "CoreWeave Chester VA": {
+    "lat": 37.3489475,
+    "lng": -77.438379,
+    "address": "1401 Meadowville Technology Parkway, Chester, VA",
+    "country": "United States"
+  },
+  "Google Lincoln": {
+    "lat": 40.907472,
+    "lng": -96.6457832,
+    "address": "5475 Cloud Ct, Lincoln, NE 68514",
+    "country": "United States"
+  },
+  "CoreWeave Denton TX": {
+    "lat": 33.2192731,
+    "lng": -97.1747833,
+    "address": "8171 Jim Christal Rd, Denton, TX 76207",
+    "country": "United States"
+  },
+  "Google The Dalles": {
+    "lat": 45.6253889,
+    "lng": -121.2023887,
+    "address": "3500 River Rd, The Dalles, OR",
+    "country": "United States"
+  },
+  "Fluidstack Lake Mariner": {
+    "lat": 43.3586546,
+    "lng": -78.604128,
+    "address": "7725 Lake Rd, Barker, NY 14012",
+    "country": "United States"
+  },
+  "Google Storey County": {
+    "lat": 39.4962992,
+    "lng": -119.4337027,
+    "address": "",
+    "country": "United States"
+  },
+  "Google Lancaster": {
+    "lat": 39.7270407,
+    "lng": -82.6831433,
+    "address": "105 Whiley Rd, Lancaster, OH 43130",
+    "country": "United States"
+  },
+  "Google Papillion": {
+    "lat": 39.7837304,
+    "lng": -100.445882,
+    "address": "14651-15249 Gold Coast Rd 68138 Papillion Nebraska, USA",
+    "country": "United States"
+  },
+  "CoreWeave Marble NC": {
+    "lat": 35.1849883,
+    "lng": -83.9141225,
+    "address": "155 Palmer Ln, Marble, NC 28905",
+    "country": "United States"
+  },
+  "Google Omaha": {
+    "lat": 41.3356809,
+    "lng": -96.0523625,
+    "address": "11110 State St, Omaha, NE 68142",
+    "country": "United States"
+  },
+  "Microsoft SAT40": {
+    "lat": 29.4246002,
+    "lng": -98.4951405,
+    "address": "15000 Lambda Drive, San Antonio, TX 78245",
+    "country": "United States"
+  },
+  "Google Mesa": {
+    "lat": 32.9096454,
+    "lng": -117.1818689,
+    "address": "",
+    "country": "United States"
+  },
+  "STACK Infrastructure NVA02": {
+    "lat": 38.7458055,
+    "lng": -77.5377246,
+    "address": "9590 Hornbaker Rd, Manassas, VA 20109",
+    "country": "United States"
+  },
+  "Google Midlothian": {
+    "lat": 32.438927,
+    "lng": -97.0507991,
+    "address": "3250 Railport Parkway, Midlothian, TX 76065",
+    "country": "United States"
+  },
+  "Google Red Oak": {
+    "lat": 32.5376266,
+    "lng": -96.7966747,
+    "address": "330 Austin Blvd, Red Oak, TX 75154",
+    "country": "United States"
+  },
+  "Stream Phoenix": {
+    "lat": 33.4194907,
+    "lng": -112.3599884,
+    "address": "2950 S. Litchfield Road",
+    "country": "United States"
+  },
+  "Microsoft SAT14": {
+    "lat": 29.4728631,
+    "lng": -98.681767,
+    "address": "3545 Wiseman Boulevard, San Antonio, TX 78251",
+    "country": "United States"
+  },
+  "Vantage TX1": {
+    "lat": 33.4672279,
+    "lng": -112.3853489,
+    "address": "Goodyear, Arizona 85338",
+    "country": "United States"
+  },
+  "Start Campus Sines Data Campus": {
+    "lat": 37.956549,
+    "lng": -8.8689639,
+    "address": "Start Campus - Sustainable Data Center Services, Sines, Portugal",
+    "country": "Portugal"
+  },
+  "Google Pryor (North)": {
+    "lat": 36.2411721,
+    "lng": -95.3300473,
+    "address": "4581 Webb St, Pryor, OK 74361",
+    "country": "United States"
+  },
+  "Meta Hyperion": {
+    "lat": 32.4676421,
+    "lng": -91.6267883,
+    "address": "Holly Ridge, LA 71269",
+    "country": "United States"
+  },
+  "Goodnight": {
+    "lat": 35.1081103,
+    "lng": -101.362741,
+    "address": "10001 Lima Rd, Claude, TX 79019",
+    "country": "United States"
+  },
+  "OpenAI Stargate UAE": {
+    "lat": 24.4792916,
+    "lng": 52.3139486,
+    "address": "Nexus L&T Project Office, Al Bihouth, Al Dhafrah, Abu Dhabi, United Arab Emirates",
+    "country": "United Arab Emirates"
+  },
+  "Coreweave Helios": {
+    "lat": 31.7131508,
+    "lng": -106.1573957,
+    "address": "984 County Road 112, Afton, TX 79920",
+    "country": "United States"
+  },
+  "Google Cedar Rapids": {
+    "lat": 41.9222823,
+    "lng": -91.7156692,
+    "address": "5800 EDGEWOOD RD SW CEDAR RAPIDS, IA 52404",
+    "country": "United States"
+  },
+  "QTS Cedar Rapids": {
+    "lat": 41.9056197,
+    "lng": -91.7510775,
+    "address": "6200 76th Ave SW, Fairfax, IA 52228",
+    "country": "United States"
+  },
+  "Google Fort Wayne": {
+    "lat": 41.0309293,
+    "lng": -85.0536261,
+    "address": "6015 Adams Center Road, Fort Wayne, IN 46806",
+    "country": "United States"
+  },
+  "Crusoe Abilene Expansion": {
+    "lat": 32.4942321,
+    "lng": -99.8009071,
+    "address": "5502 Spinks Rd, Abilene, TX 79601",
+    "country": "United States"
+  },
+  "OpenAI Stargate Lordstown": {
+    "lat": 41.2367955,
+    "lng": -80.8190423,
+    "address": "2300 Hallock Young Rd, Warren, OH 44481",
+    "country": "United States"
+  }
+}

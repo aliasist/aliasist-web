@@ -3,7 +3,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Mail } from "lucide-react";
 import { hero } from "@/content/homepage";
 import { HomeGoogleAuth } from "@/components/HomeGoogleAuth";
-import mascot from "@/assets/aliasist-logo-glowing-eyes.png";
+import mascot from "@/assets/logo-clean.svg";
 
 const EYE_GLOW_COLORS = [
   "hsl(165 90% 58%)",

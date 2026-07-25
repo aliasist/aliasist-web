@@ -82,6 +82,10 @@ export default defineConfig(async ({ mode }) => {
     baseEnv.CLERK_PUBLISHABLE_KEY?.trim() ||
     devVars.CLERK_PUBLISHABLE_KEY?.trim() ||
     "";
+  const enableCloudflareDev =
+    process.env.ALIASIST_CLOUDFLARE_VITE_DEV === "true" ||
+    baseEnv.ALIASIST_CLOUDFLARE_VITE_DEV === "true" ||
+    devVars.ALIASIST_CLOUDFLARE_VITE_DEV === "true";
 
   // `lovable-tagger` is optional dev tooling; don't fail production builds
   // if npm couldn't install it (peer-dep conflicts with vite versions).
@@ -98,17 +102,17 @@ export default defineConfig(async ({ mode }) => {
       console.warn("[vite] lovable-tagger not available; skipping tagger.");
     }
 
-    // Only enable the Cloudflare Vite runtime during local dev. Production
+    // Only enable the Cloudflare Vite runtime when explicitly requested. Production
     // Pages builds should emit a plain static `dist/` without a generated
     // `dist/wrangler.json`, otherwise Pages tries to parse that file as deploy
     // configuration and aborts after a successful build.
-    runtimePlugins.push(cloudflare());
+    if (enableCloudflareDev) runtimePlugins.push(cloudflare());
   }
 
   return {
     appType: "spa",
     server: {
-      host: "::",
+      host: "127.0.0.1",
       port: 8080,
       hmr: {
         overlay: false,

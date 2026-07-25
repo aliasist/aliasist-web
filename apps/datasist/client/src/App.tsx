@@ -64,7 +64,6 @@ export default function App() {
       <AdminViewGuard activeView={activeView} setActiveView={setActiveView} />
       {!splashDone && <SplashScreen onDone={handleSplashDone} />}
       <div className="datasist-shell flex flex-col h-screen overflow-hidden" style={{ background: "var(--color-bg)" }}>
-        <div className="scanline-overlay" />
         <Header activeView={activeView} setActiveView={setActiveView} />
         <main className="flex-1 overflow-hidden relative">
           {activeView === "map" && <MapView />}

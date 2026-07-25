@@ -6,15 +6,15 @@ import Starfield from "@/components/Starfield";
 const services = [
   {
     title: "Find the useful part",
-    body: "We look at how you work now and pick one place software can make it easier.",
+    body: "Aliasist identifies one repeated task or data problem worth turning into software.",
   },
   {
     title: "Build a first version",
-    body: "A small tool, chatbot, dashboard, or workflow you can try for real.",
+    body: "A small tool, dashboard, chat surface, or form-backed app that can be tested.",
   },
   {
     title: "Keep it simple",
-    body: "No giant platform pitch. We keep what works and improve it from there.",
+    body: "Start with the useful part, then improve it after real use.",
   },
 ] as const;
 
@@ -57,7 +57,7 @@ const Consulting = () => (
             Practical software help for small teams.
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            I help people turn a rough idea or repeated task into a practical tool or workflow.
+            Aliasist turns repeated tasks, scattered data, and rough product ideas into testable software.
           </p>
         </div>
 
@@ -66,7 +66,7 @@ const Consulting = () => (
             Start here
           </p>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-            Bring the messy process, the repeated task, or the idea you keep thinking about. We will turn it into a clear first build.
+            Bring the repeated task, messy spreadsheet, or feature idea. Aliasist can shape it into a first build.
           </p>
           <a
             href="mailto:aliasist@proton.me?subject=Project consulting"
@@ -80,7 +80,7 @@ const Consulting = () => (
 
       <section aria-labelledby="consulting-services">
         <div className="section-divider mb-6">
-          <span>What I can help with</span>
+          <span>What Aliasist can help with</span>
         </div>
         <h2 id="consulting-services" className="sr-only">
           Project consulting services
@@ -101,7 +101,7 @@ const Consulting = () => (
             <span>Good fit</span>
           </div>
           <p className="max-w-md text-sm leading-relaxed text-muted-foreground">
-            This is for practical builds, not buzzword consulting.
+            This is for specific builds, not buzzword consulting.
           </p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
