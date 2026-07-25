@@ -220,7 +220,7 @@ describe("onRequestPost", () => {
     });
   });
 
-  it("rejects unsigned chat even when Workers AI is configured", async () => {
+  it("rejects unsigned chat even when the edge model is configured", async () => {
     const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
       new Response(JSON.stringify({ response: "fallback ok" }), {
         status: 200,

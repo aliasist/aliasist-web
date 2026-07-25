@@ -3,11 +3,6 @@
  *
  * Images:
  *   • Project banners + assets live under `./images` (imported via `@images/...`).
- *   • Optional Cloudflare **text-to-image** worker: `apps/phoenix-image-worker`
- *     calls `@cf/leonardo/phoenix-1.0` on Workers. It
- *     generates **new** images from prompts — not automatic “enhancement” of
- *     these PNGs. To use it for marketing art: deploy the worker, POST a prompt,
- *     save the JPEG/PNG, then commit under `images/` or `public/`.
  *
  * Project links:
  *   • Navbar: open "Projects" in the top bar — same URLs as `suiteApps` below.
@@ -17,9 +12,14 @@
  * Backend/API URLs (for developers): see `src/config/api.ts` (`siteEndpoints`).
  */
 
+import atomicityBanner from "@images/atomicity_banner_cinematic.png";
+import aliasistTechBanner from "@images/aliasist_tech_waterfall_banner_cinematic.png";
+import clearasistBanner from "@images/clearasist_banner_cinematic.png";
 import dataBanner from "@images/datasist_banner_cinematic.png";
 import ecosistBanner from "@images/ecosist_banner_tornado.png";
 import filesAbductorBanner from "@images/files_abductor_banner_cinematic.png";
+import githubCompanionBanner from "@images/github_companion_banner_cinematic.png";
+import globalizeBanner from "@images/globalize_banner_cinematic.png";
 import pulseBanner from "@images/pulsesist_banner_cinematic.png";
 import spaceBanner from "@images/spacesist_banner_cinematic.png";
 
@@ -27,6 +27,12 @@ import spaceBanner from "@images/spacesist_banner_cinematic.png";
 
 /** Used by Navbar "Projects" menu and Contact section project list — keep in sync. */
 export const suiteApps = [
+  {
+    label: "Aliasist Tech",
+    sub: "Waterfall workspace",
+    href: "https://www.aliasist.tech",
+    icon: "AT",
+  },
   {
     label: "Globalize",
     sub: "Global Infrastructure Map",
@@ -139,10 +145,25 @@ export const projectsSection = {
 
 export const projects = [
   {
+    name: "Aliasist Tech · Waterfall",
+    description:
+      "A protected Waterfall workspace for guided chat, image tools, and private access.",
+    tech: ["Waterfall", "Secure access", "Chat workspace", "Image tools", "Private sessions"],
+    github: "https://github.com/aliasist/waterfall",
+    downloads: [],
+    status: "Live",
+    meta: ["Workspace", "Chat + images", "Protected access"] as const,
+    tone: "violet",
+    icon: "AT",
+    link: "https://www.aliasist.tech",
+    linkLabel: "Open Waterfall →",
+    banner: aliasistTechBanner,
+  },
+  {
     name: "Globalize",
     description:
       "A 3D globe mapping global infrastructure — data centers, subsea cables, air traffic, and seismic activity.",
-    tech: ["React", "Three.js", "Cloudflare", "Geospatial Data"],
+    tech: ["3D globe", "Infrastructure map", "Data signals", "Geospatial views"],
     github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
@@ -151,13 +172,13 @@ export const projects = [
     icon: "GL",
     link: "https://www.aliasist.world",
     linkLabel: "Open Globalize →",
-    banner: null,
+    banner: globalizeBanner,
   },
   {
     name: "DataSist",
     description:
       "A data center research platform for facilities, power, water, risk, and investment data.",
-    tech: ["React", "Vite", "D1", "Groq", "Leaflet", "EIA API"],
+    tech: ["Facility research", "Power data", "Water data", "Risk maps", "Data tables"],
     github: "https://github.com/aliasist/datasist",
     downloads: [],
     status: "Live",
@@ -172,7 +193,7 @@ export const projects = [
     name: "PulseSist",
     description:
       "A market dashboard with live charts, portfolio tools, and research views.",
-    tech: ["React", "Vite", "Cloudflare Workers", "D1", "FMP API", "Dashboards"],
+    tech: ["Market charts", "Portfolio views", "Research panels", "Live dashboards"],
     github: "https://github.com/aliasist/stockmarket",
     downloads: [],
     status: "Live",
@@ -187,7 +208,7 @@ export const projects = [
     name: "SpaceSist",
     description:
       "A live space dashboard using NASA, SpaceX, ISS, asteroid, and exoplanet data.",
-    tech: ["React", "Vite", "NASA APIs", "SpaceX API", "Leaflet", "Cloudflare"],
+    tech: ["Launch data", "ISS tracking", "Asteroids", "Exoplanets", "Live space feeds"],
     github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
@@ -202,22 +223,22 @@ export const projects = [
     name: "Clearasist",
     description:
       "A browser-based metadata cleaner for images, PDFs, and Office files.",
-    tech: ["React", "Vite", "TypeScript", "pdf-lib", "JSZip", "Cloudflare Pages", "D1"],
+    tech: ["Metadata removal", "Image cleanup", "PDF cleanup", "Office files", "Browser-based"],
     github: "https://github.com/aliasist/aliasistabductor",
     downloads: [],
     status: "Live",
-    meta: ["Privacy tool", "Browser-based", "D1-backed"] as const,
+    meta: ["Privacy tool", "Browser-based", "File cleanup"] as const,
     tone: "cyan",
     icon: "CL",
     link: "https://clearasist.pages.dev",
     linkLabel: "Open Clearasist →",
-    banner: null,
+    banner: clearasistBanner,
   },
   {
     name: "GitHub Companion",
     description:
       "A GitHub toolkit that explains repositories and reviews pull requests in plain language.",
-    tech: ["React", "GitHub API", "Project Guidance", "Review Heuristics"],
+    tech: ["Repository maps", "Pull request review", "Project guidance", "Review notes"],
     github: "https://github.com/aliasist/aliasistabductor",
     downloads: [],
     status: "Live",
@@ -226,7 +247,7 @@ export const projects = [
     icon: "GH",
     link: "/tools/github",
     linkLabel: "Open GitHub Companion →",
-    banner: null,
+    banner: githubCompanionBanner,
   },
   {
     name: "Aliasist-Files-Abductor",
@@ -260,18 +281,15 @@ export const projects = [
     icon: "AT",
     link: "/atomicity/",
     linkLabel: "Open Atomicity →",
-    banner: null,
+    banner: atomicityBanner,
   },
   {
     name: "EcoSist",
     description:
       "An environmental dashboard for air quality, climate data, and geospatial views.",
     tech: [
-      "React",
-      "Vite",
       "Environmental APIs",
       "Geospatial Data",
-      "Cloudflare",
       "Live Monitoring",
     ],
     github: "https://github.com/aliasist/ecosist",
@@ -313,7 +331,7 @@ export const about = {
     "Python",
     "JavaScript",
     "HTML / CSS",
-    "React / Vite",
+    "Frontend systems",
     "Node.js",
     "UI design",
     "CLI tooling",
@@ -326,7 +344,7 @@ export const about = {
   bioBlocks: [
     {
       kicker: "What it is",
-      body: "Aliasist brings together practical web tools, data-driven applications, privacy utilities, and AI-assisted workflows. If you would like to collaborate on a project or have something built with frontend and backend support, send an email and include the goal, scope, and timeline.",
+      body: "Aliasist brings together practical web tools, data-driven applications, privacy utilities, and reliable workflows. If you would like to collaborate on a project or have something built with frontend and backend support, send an email and include the goal, scope, and timeline.",
     },
     {
       kicker: "Background",

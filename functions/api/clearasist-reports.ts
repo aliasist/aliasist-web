@@ -40,7 +40,7 @@ export const onRequestOptions = async () =>
   new Response(null, { status: 204, headers: corsHeaders });
 
 /**
- * Clerk-authenticated proxy for Clearasist admin data.
+ * Signed-in proxy for Clearasist admin data.
  * Supports GET (list) and PATCH (update tags/notes on a report).
  */
 export const onRequestGet = async ({ request, env }: PagesContext) => {

@@ -82,9 +82,8 @@ function loadGsiScript(): Promise<void> {
 }
 
 /**
- * Embedded Google sign-in on the landing hero: GIS button + One Tap (when
- * `VITE_GOOGLE_WEB_CLIENT_ID` matches the Clerk Google OAuth client).
- * Without that env var, the hero uses the same overlay `<SignIn />` as the navbar.
+ * Embedded Google sign-in on the landing hero. Without the Google client ID,
+ * the hero uses the same sign-in overlay as the navbar.
  */
 export function HomeGoogleAuth() {
   const openSiteSignIn = useOpenSiteSignIn();
@@ -102,7 +101,7 @@ export function HomeGoogleAuth() {
         const sid = resource.createdSessionId;
         if (sid) await clerk.setActive({ session: sid });
       } catch (err) {
-        console.error("[Clerk] Google One Tap / button sign-in failed:", err);
+        console.error("[Sign-in] Google One Tap / button sign-in failed:", err);
       }
     },
     [clerk],

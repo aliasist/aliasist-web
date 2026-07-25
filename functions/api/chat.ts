@@ -1,7 +1,7 @@
 import type { ClerkEnv } from "../_lib/clerk-auth";
 import { authenticateRequest, corsHeaders, json } from "../_lib/clerk-auth";
 
-/** Minimal shape of the Cloudflare Workers AI binding (avoids a workers-types dep). */
+/** Minimal shape of the edge model binding. */
 interface WorkersAi {
   run(
     model: string,
@@ -11,9 +11,9 @@ interface WorkersAi {
 
 interface Env extends ClerkEnv {
   AI?: WorkersAi;
-  /** Override the Workers AI text model. Default: @cf/meta/llama-3.1-8b-instruct */
+  /** Override the edge text model. */
   AI_MODEL?: string;
-  /** Groq API key — used for LLM generation. */
+  /** Backup chat API key. */
   GROQ_API_KEY?: string;
   /** Fallback: proxy to upstream LLM worker. Defaults to production llm-chat worker URL. */
   LLM_CHAT_BASE_URL?: string;
@@ -146,7 +146,7 @@ const RAG_CACHE_TTL_SECONDS_LIVE = 60;
 /**
  * Fetch grounded RAG context for a question from the aliasist workers-api.
  * Blocking by design — the LLM system prompt depends on the result — but cached
- * via the Cloudflare Cache API so repeated questions skip the upstream round-trip.
+ * through edge caching so repeated questions skip the upstream round-trip.
  * Returns a formatted context block, or null if RAG is unavailable/irrelevant.
  */
 export async function fetchRagContext(
@@ -207,7 +207,7 @@ export async function fetchRagContext(
 }
 
 // ---------------------------------------------------------------------------
-// LLM providers
+// Chat providers
 // ---------------------------------------------------------------------------
 
 const DEFAULT_LLM_CHAT_BASE_URL = "https://llm-chat.bchooper0730.workers.dev";
@@ -215,16 +215,15 @@ const GROQ_MODEL = "llama-3.3-70b-versatile";
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 const DEFAULT_WORKERS_AI_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
-const BASE_SYSTEM = `You are the Aliasist AI — the intelligent assistant embedded in aliasist.com, the developer portfolio and project hub of Blake, an AI security developer and CS student.
+const BASE_SYSTEM = `You are the Aliasist project assistant embedded in aliasist.com, the project hub created by Blake.
 
 About Aliasist:
-- Focus: practical AI consulting, developer portfolio work, AI-assisted workflows, AI security, and useful software builds
-- Suite: DataSist (AI data center intelligence), PulseSist (stock market intelligence), SpaceSist (live space portal), EcoSist (environmental intelligence), AGSC (global source control globe), Clearasist (metadata cleaner), GitHub Companion (repository and pull request guidance)
-- Stack: Python, JavaScript, React, Vite, Cloudflare Workers, D1, Groq, Anthropic
+- Focus: practical software, data tools, privacy utilities, project workflows, and useful web applications
+- Suite: DataSist (data center intelligence), PulseSist (stock market research), SpaceSist (live space portal), EcoSist (environmental dashboard), AGSC (global source control globe), Clearasist (metadata cleaner), GitHub Companion (repository and pull request guidance)
 - Contact: dev@aliasist.com | github.com/aliasist
-- Blake is self-taught, now formally studying Computer Information Systems, building toward AI security specialization
+- Blake has been working with web design and software since 2004 and is now formally studying Computer Information Systems.
 
-Your role: Help visitors understand Blake's AI consulting work, projects, and technical direction. Be concise, direct, and practical. Keep responses under 3 paragraphs. Do not oversell. Do not hallucinate project details. When someone has a project idea, suggest contacting Blake through the site.
+Your role: Help visitors understand Aliasist, Blake's projects, and the practical direction behind the work. Be concise, direct, and practical. Keep responses under 3 paragraphs. Do not oversell. Do not hallucinate project details. When someone has a project idea, suggest contacting Blake through the site.
 
 When RAG context is provided below, use it as your primary source of truth. Cite it naturally — do not mention "RAG" or "corpus" to the user.`;
 
@@ -296,7 +295,7 @@ async function callGroqDirect(
   if (!res.ok) {
     const err = await res.text().catch(() => res.statusText);
     return new Response(
-      JSON.stringify({ error: `Groq ${res.status}: ${err}` }),
+      JSON.stringify({ error: `Chat provider ${res.status}: ${err}` }),
       { status: 502, headers: corsHeaders },
     );
   }
@@ -309,7 +308,7 @@ async function callGroqDirect(
   const reply = data.choices?.[0]?.message?.content;
   if (!reply) {
     return new Response(
-      JSON.stringify({ error: "Groq returned an empty response." }),
+      JSON.stringify({ error: "Chat provider returned an empty response." }),
       { status: 502, headers: corsHeaders },
     );
   }
@@ -369,11 +368,11 @@ export const onRequestOptions = async () =>
  * RAG-augmented chat endpoint.
  *
  * Flow:
- *   1. Auth check (Clerk JWT or public-chat gate)
+ *   1. Auth check
  *   2. Parse the last user message
  *   3. Detect topic → fetch RAG context from api.aliasist.tech (cached; 3.5s timeout)
  *   4. Build enriched system prompt (BASE_SYSTEM + RAG block)
- *   5. Call Workers AI → Groq → llm-chat worker proxy (in order of preference)
+ *   5. Call the configured chat providers in order of preference
  *
  * Request:  POST /api/chat  { messages: [{role, content}, ...] }
  * Response: { response: string, model: string } | { error: string }
@@ -408,27 +407,27 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
   const system = buildSystem(ragContext);
   const providerErrors: string[] = [];
 
-  // --- Workers AI (preferred — free edge LLM) ---
+  // --- Primary edge model ---
   if (env.AI) {
     try {
       const model = env.AI_MODEL?.trim() || DEFAULT_WORKERS_AI_MODEL;
       const res = await callWorkersAi(env.AI, model, system, messages);
       if (res.ok) return res;
-      providerErrors.push(await responseErrorSummary("Workers AI", res));
+      providerErrors.push(await responseErrorSummary("Primary chat provider", res));
     } catch (e) {
-      providerErrors.push(`Workers AI: ${e instanceof Error ? e.message : "Chat error."}`);
+      providerErrors.push(`Primary chat provider: ${e instanceof Error ? e.message : "Chat error."}`);
     }
   }
 
-  // --- Groq (secondary — requires GROQ_API_KEY) ---
+  // --- Backup chat provider ---
   const groqKey = env.GROQ_API_KEY?.trim();
   if (groqKey) {
     try {
       const res = await callGroqDirect(groqKey, system, messages);
       if (res.ok) return res;
-      providerErrors.push(await responseErrorSummary("Groq", res));
+      providerErrors.push(await responseErrorSummary("Backup chat provider", res));
     } catch (e) {
-      providerErrors.push(`Groq: ${e instanceof Error ? e.message : "Chat error."}`);
+      providerErrors.push(`Backup chat provider: ${e instanceof Error ? e.message : "Chat error."}`);
     }
   }
 
@@ -457,7 +456,6 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
       {
         error: "Upstream chat error.",
         message: e instanceof Error ? e.message : String(e),
-        providerErrors,
       },
       502,
     );

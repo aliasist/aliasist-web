@@ -30,10 +30,7 @@ export function useClerkSignInModal(): ClerkSignInModalContextValue {
   return ctx;
 }
 
-/**
- * Full-screen overlay with Clerk `<SignIn />` — works on the primary domain even when
- * `clerk.openSignIn()` would navigate to the hosted Account Portal.
- */
+/** Full-screen sign-in overlay that keeps visitors on the site. */
 export function ClerkSignInModalRoot({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
   const { isSignedIn } = useAuth();

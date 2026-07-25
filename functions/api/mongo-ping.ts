@@ -17,8 +17,8 @@ export const onRequestOptions = async () =>
   });
 
 /**
- * Clerk-authenticated MongoDB connectivity check. Requires `MONGODB_URI` Pages secret.
- * Uses the Node `mongodb` driver (Wrangler `nodejs_compat`).
+ * Signed-in MongoDB connectivity check. Requires `MONGODB_URI` deployment secret.
+ * Uses the Node `mongodb` driver.
  */
 export const onRequestGet = async ({ request, env }: PagesContext) => {
   const auth = await authenticateRequest(request, env);

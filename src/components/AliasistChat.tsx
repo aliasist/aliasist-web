@@ -5,7 +5,7 @@ import aliasistLogo from "@/assets/aliasist-logo.png";
 import { readJsonBody, siteEndpoints } from "@/config/api";
 import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
 
-/** Groq worker vs Clerk-authenticated Pages KV room (`/api/chat-messages`). */
+/** Direct chat endpoint vs signed-in message room (`/api/chat-messages`). */
 const USE_PAGES_CHAT_ROOM = import.meta.env.VITE_USE_PAGES_CHAT_ROOM === "true";
 const REQUIRE_CHAT_SIGN_IN = true;
 const LLM_CHAT_ENDPOINT = siteEndpoints.chatApi;
@@ -33,7 +33,7 @@ const WELCOME_ROOM =
   "Room is ready. Messages are saved when configured on Pages.";
 
 const WELCOME_SIGN_IN_REQUIRED =
-  "Sign in with Clerk to use chat.";
+  "Sign in to use chat.";
 
 /** Retry the request via the other endpoint when the first one fails (but don't retry on 429 rate-limits). */
 function shouldRetry(res: Response) {
@@ -334,7 +334,7 @@ const AliasistChat = () => {
               ) : !isSignedIn && REQUIRE_CHAT_SIGN_IN ? (
                 <div className="space-y-3">
                   <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/80 text-center leading-relaxed">
-                    Sign in with Clerk to use chat.
+                    Sign in to use chat.
                   </p>
                   <button
                     type="button"
@@ -367,7 +367,7 @@ const AliasistChat = () => {
                     </button>
                   </div>
                   <p className="font-mono text-[9px] uppercase tracking-[0.15em] text-muted-foreground/30 mt-2 text-center">
-                    {USE_PAGES_CHAT_ROOM ? "Signed in · Clerk · Room" : "Signed in"}
+                    {USE_PAGES_CHAT_ROOM ? "Signed in · Room" : "Signed in"}
                   </p>
                 </>
               )}

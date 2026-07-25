@@ -6,7 +6,7 @@ import Starfield from "@/components/Starfield";
 const services = [
   {
     title: "Find the useful part",
-    body: "We look at how you work now and pick one place AI can actually help.",
+    body: "We look at how you work now and pick one place software can make it easier.",
   },
   {
     title: "Build a first version",
@@ -22,7 +22,7 @@ const goodFit = [
   "Chat over your own docs",
   "Internal tools",
   "Workflow automation",
-  "Website or app AI features",
+  "Website or app features",
   "Dashboards and reports",
 ] as const;
 
@@ -40,7 +40,7 @@ const Consulting = () => (
           Aliasist
         </Link>
         <a
-          href="mailto:aliasist@proton.me?subject=AI consulting"
+          href="mailto:aliasist@proton.me?subject=Project consulting"
           className="inline-flex items-center gap-2 border border-border/60 bg-background/45 px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground backdrop-blur-md transition-colors hover:border-electric/40 hover:text-electric"
         >
           Contact
@@ -51,13 +51,13 @@ const Consulting = () => (
       <section className="grid gap-10 py-10 sm:py-16 lg:grid-cols-[1.05fr_0.95fr] lg:items-end">
         <div>
           <div className="section-divider mb-8">
-            <span>AI Consulting</span>
+            <span>Project Consulting</span>
           </div>
           <h1 className="max-w-3xl text-4xl font-bold tracking-tight text-foreground sm:text-6xl">
-            Practical AI help for small teams.
+            Practical software help for small teams.
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            I help people figure out where AI actually makes sense, then build the tool or workflow.
+            I help people turn a rough idea or repeated task into a practical tool or workflow.
           </p>
         </div>
 
@@ -69,7 +69,7 @@ const Consulting = () => (
             Bring the messy process, the repeated task, or the idea you keep thinking about. We will turn it into a clear first build.
           </p>
           <a
-            href="mailto:aliasist@proton.me?subject=AI consulting"
+            href="mailto:aliasist@proton.me?subject=Project consulting"
             className="mt-6 inline-flex items-center gap-2 bg-electric px-4 py-2 font-mono text-xs uppercase tracking-[0.14em] text-background shadow-electric-sm transition-colors hover:bg-electric/90"
           >
             Start a conversation
@@ -83,7 +83,7 @@ const Consulting = () => (
           <span>What I can help with</span>
         </div>
         <h2 id="consulting-services" className="sr-only">
-          AI consulting services
+          Project consulting services
         </h2>
         <div className="grid gap-4 md:grid-cols-3">
           {services.map((service) => (

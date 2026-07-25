@@ -1,13 +1,13 @@
 /// <reference types="vite/client" />
 
 interface ImportMetaEnv {
-  /** Clerk publishable key (production / tunnel SPA). */
+  /** Publishable sign-in key (production / tunnel SPA). */
   readonly VITE_CLERK_PUBLISHABLE_KEY?: string;
-  /** Custom Clerk Frontend API proxy URL, e.g. https://clerk.aliasist.com/__clerk */
+  /** Custom sign-in frontend API proxy URL. */
   readonly VITE_CLERK_PROXY_URL?: string;
   /**
-   * Google OAuth **Web** client ID (GIS button + One Tap → Clerk `authenticateWithGoogleOneTap`).
-   * Must match the Google SSO credentials configured for this Clerk application.
+   * Google OAuth **Web** client ID for GIS button + One Tap.
+   * Must match the Google SSO credentials configured for this sign-in application.
    */
   readonly VITE_GOOGLE_WEB_CLIENT_ID?: string;
   /** Optional dev-instance publishable key; used when `import.meta.env.DEV` if primary unset */
@@ -16,7 +16,7 @@ interface ImportMetaEnv {
   readonly VITE_LLM_CHAT_BASE_URL?: string;
   /** Base URL for news worker (no trailing slash) */
   readonly VITE_NEWS_WORKER_BASE_URL?: string;
-  /** Sentry browser DSN (production). Set in Cloudflare Pages env or .env.production.local */
+  /** Sentry browser DSN (production). Set in deployment env or .env.production.local. */
   readonly VITE_SENTRY_DSN?: string;
   readonly VITE_SENTRY_RELEASE?: string;
   readonly VITE_SENTRY_TRACES_SAMPLE_RATE?: string;
@@ -30,7 +30,7 @@ interface ImportMetaEnv {
   readonly VITE_DATADOG_SERVICE?: string;
   readonly VITE_DATADOG_SESSION_SAMPLE_RATE?: string;
   readonly VITE_DATADOG_SESSION_REPLAY_SAMPLE_RATE?: string;
-  /** Comma-separated extra origins Clerk may redirect to (e.g. preview URLs). */
+  /** Comma-separated extra origins sign-in may redirect to (e.g. preview URLs). */
   readonly VITE_CLERK_EXTRA_ORIGINS?: string;
   /** `modal` = overlay on this site. With `VITE_CLERK_PROXY_URL`, modal is default unless `redirect` is set. */
   readonly VITE_CLERK_SIGN_IN_MODE?: string;

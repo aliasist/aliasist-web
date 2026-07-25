@@ -1,10 +1,46 @@
+import { useEffect, useState, type CSSProperties } from "react";
 import { motion } from "framer-motion";
 import { ArrowRight, Mail } from "lucide-react";
 import { hero } from "@/content/homepage";
 import { HomeGoogleAuth } from "@/components/HomeGoogleAuth";
 import mascot from "@/assets/aliasist-logo-glowing-eyes.png";
 
+const EYE_GLOW_COLORS = [
+  "hsl(165 90% 58%)",
+  "hsl(186 95% 62%)",
+  "hsl(252 100% 72%)",
+  "hsl(42 92% 62%)",
+] as const;
+
+const EYE_GLOW_VISIT_KEY = "aliasist-eye-glow-visits";
+const EYE_GLOW_SESSION_KEY = "aliasist-eye-glow-session";
+const EYE_GLOW_WINDOW_MS = 6 * 60 * 60 * 1000;
+
+function pickEyeGlowColor() {
+  const timeSlot = Math.floor(Date.now() / EYE_GLOW_WINDOW_MS);
+  let visits = 0;
+
+  try {
+    visits = Number(localStorage.getItem(EYE_GLOW_VISIT_KEY) ?? "0");
+    if (!sessionStorage.getItem(EYE_GLOW_SESSION_KEY)) {
+      visits += 1;
+      localStorage.setItem(EYE_GLOW_VISIT_KEY, String(visits));
+      sessionStorage.setItem(EYE_GLOW_SESSION_KEY, "1");
+    }
+  } catch {
+    visits = 0;
+  }
+
+  return EYE_GLOW_COLORS[(timeSlot + Math.floor(visits / 3)) % EYE_GLOW_COLORS.length];
+}
+
 const HeroSection = () => {
+  const [eyeGlowColor, setEyeGlowColor] = useState<(typeof EYE_GLOW_COLORS)[number]>(EYE_GLOW_COLORS[0]);
+
+  useEffect(() => {
+    setEyeGlowColor(pickEyeGlowColor());
+  }, []);
+
   return (
     <section
       id="top"
@@ -22,16 +58,21 @@ const HeroSection = () => {
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_50%_80%,_hsl(165_90%_42%_/_0.04)_0%,_transparent_70%)] pointer-events-none" />
 
       <div className="relative z-10 mx-auto flex w-full max-w-site flex-col items-center px-4 pt-14 pb-14 text-center sm:px-8 sm:pt-16 lg:px-12 xl:px-16">
-        <motion.img
-          src={mascot}
-          alt={hero.mascotAlt}
-          title={hero.mascotTitle}
-          draggable={false}
-          className="mb-5 h-28 w-28 select-none object-contain drop-shadow-logo-aura sm:h-36 sm:w-36 md:h-44 md:w-44"
+        <motion.div
+          className="alien-logo-glow mb-5 h-28 w-28 sm:h-36 sm:w-36 md:h-44 md:w-44"
+          style={{ "--alien-eye-glow": eyeGlowColor } as CSSProperties}
           initial={{ opacity: 0, y: 12, scale: 0.96 }}
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.7, delay: 0.38, ease: [0.16, 1, 0.3, 1] }}
-        />
+        >
+          <img
+            src={mascot}
+            alt={hero.mascotAlt}
+            title={hero.mascotTitle}
+            draggable={false}
+            className="h-full w-full select-none object-contain drop-shadow-logo-aura"
+          />
+        </motion.div>
 
         <motion.h1
           className="text-glow-violet mb-5 select-none text-6xl font-bold leading-none tracking-normal text-foreground sm:text-8xl md:text-[9rem]"
@@ -88,8 +129,8 @@ const HeroSection = () => {
         </div>
       </div>
 
-      {/* Bottom fade — softer so it doesn’t crush the scene like full background@60% */}
-      <div className="absolute bottom-0 left-0 right-0 h-40 bg-gradient-to-t from-background/80 via-background/25 to-transparent pointer-events-none z-[2]" />
+      {/* Bottom fade — carries the tiled field into the next section instead of ending hard. */}
+      <div className="absolute bottom-0 left-0 right-0 h-72 bg-gradient-to-t from-background via-background/58 via-45% to-transparent pointer-events-none z-[2]" />
     </section>
   );
 };
