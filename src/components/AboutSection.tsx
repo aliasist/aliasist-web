@@ -51,11 +51,11 @@ const AboutSection = () => {
             viewport={{ once: true }}
             transition={{ duration: 0.65, ease: [0.16, 1, 0.3, 1] }}
           >
-            <h2 id="about-heading" className="text-3xl sm:text-4xl font-bold text-foreground mb-8 tracking-tight text-balance max-w-2xl">
+            <h2 id="about-heading" className="mb-4 max-w-2xl text-3xl font-bold text-foreground sm:text-4xl">
               {about.headline}
             </h2>
 
-            <div className="space-y-8 text-base leading-relaxed text-foreground/70 max-w-xl">
+            <div className="readable-copy space-y-8 text-foreground/75">
               {about.bioBlocks.map((block, i) => (
                 <div key={`bio-${block.kicker}-${i}`} className="space-y-2">
                   <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-electric/85">

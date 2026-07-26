@@ -110,11 +110,11 @@ const ContactSection = () => {
                 {contact.introLabel}
               </div>
 
-              <h2 id="contact-heading" className="text-3xl sm:text-4xl font-bold text-background mb-4 tracking-tight leading-tight">
+              <h2 id="contact-heading" className="mb-4 text-3xl font-bold text-background sm:text-4xl">
                 {contact.headline}
               </h2>
 
-              <p className="mb-8 max-w-sm text-sm leading-relaxed text-background/50 xl:max-w-md">
+              <p className="readable-copy mb-8 text-background/60">
                 <strong className="text-background/75 font-semibold">
                   {contact.introStrong}
                 </strong>{" "}
