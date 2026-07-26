@@ -98,11 +98,17 @@ export async function authenticateRequest(request: Request, env: ClerkEnv) {
     publishableKey,
   });
 
-  const forwardedRequest = new Request(request, {
-    headers: new Headers(request.headers),
+  // Build a fresh headers-only Request instead of cloning `request` — the
+  // caller may have already consumed the original body (e.g. via
+  // `request.text()`), and `new Request(request, ...)` throws in that case
+  // ("Cannot reconstruct a Request with a used body"). Auth only needs
+  // headers, so a bodyless GET avoids touching the original body entirely.
+  const headers = new Headers(request.headers);
+  headers.set("Authorization", `Bearer ${token}`);
+  const forwardedRequest = new Request(request.url, {
+    method: "GET",
+    headers,
   });
-
-  forwardedRequest.headers.set("Authorization", `Bearer ${token}`);
 
   const baseParties = [
     "https://aliasist.com",
