@@ -351,7 +351,7 @@ export const about = {
     },
     {
       kicker: "Why it exists",
-      body: "I learn better when I make something real instead of only reading about it. This project gives me a place to keep doing that. I want to get better at building software and, over time, work on things that make a real difference for people.",
+      body: "Aliasist started as a creative sandbox and school project, but it has grown into a place where I can experiment with AI, data, websites, apps, and whatever new technology catches my attention. The entire point is to learn by actually building things and seeing how different systems can connect and work together. Some of the projects are useful tools, some are experiments, and others are ideas that may eventually grow into something much bigger. I’m using Aliasist to better understand technology, discover patterns in data, and explore what we may be able to learn or predict from it. It’s an ongoing project, and I’m building it one piece at a time.",
     },
   ] as const,
 
