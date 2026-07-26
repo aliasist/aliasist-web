@@ -6,7 +6,7 @@ import Starfield from "@/components/Starfield";
 const services = [
   {
     title: "Find the useful part",
-    body: "Aliasist identifies one repeated task or data problem worth turning into software.",
+    body: "Start with one repeated task or data problem that software could make easier.",
   },
   {
     title: "Build a first version",
@@ -57,7 +57,7 @@ const Consulting = () => (
             Practical software help for small teams.
           </h1>
           <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
-            Aliasist turns repeated tasks, scattered data, and rough product ideas into testable software.
+            If you have a repetitive task, scattered data, or an app idea, I can help turn it into a small first version.
           </p>
         </div>
 
@@ -66,7 +66,7 @@ const Consulting = () => (
             Start here
           </p>
           <p className="mt-4 text-sm leading-relaxed text-muted-foreground">
-            Bring the repeated task, messy spreadsheet, or feature idea. Aliasist can shape it into a first build.
+            Send me the task, spreadsheet, or idea you are dealing with. We can figure out whether a small tool would help.
           </p>
           <a
             href="mailto:aliasist@proton.me?subject=Project consulting"

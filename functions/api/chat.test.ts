@@ -52,7 +52,8 @@ describe("detectSist", () => {
     expect(detectSist("what did the Fed do to interest rates")).toBe("pulse");
   });
 
-  it("routes globe / agsc topics", () => {
+  it("routes waterfall / globe topics", () => {
+    expect(detectSist("what is waterfall?")).toBe("agsc");
     expect(detectSist("show me the undersea cable map")).toBe("agsc");
   });
 

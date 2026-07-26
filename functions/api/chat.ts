@@ -65,7 +65,7 @@ export function detectSist(text: string): SistId | null {
   if (/\b(data.?centers?|datacenters?|servers?|hyperscale|colocation|colo|facilit(y|ies)|pue|racks?|gpu.?clusters?)\b/.test(t)) return "data";
   if (/\b(eco|weather|climate|storms?|hurricanes?|wildfires?|floods?|earthquakes?|quakes?|seismic|tsunamis?|air quality|space.?weather|geomagnetic)\b/.test(t)) return "eco";
   if (/\b(markets?|stocks?|tickers?|finance|crypto|macro|earnings|gdp|fed|interest rates?|inflation)\b/.test(t)) return "pulse";
-  if (/\b(agsc|globe|countr(y|ies)|data.?center.?maps?|undersea.?cables?|internet.?exchanges?|submarine.?cables?)\b/.test(t)) return "agsc";
+  if (/\b(waterfall|agsc|globe|countr(y|ies)|data.?center.?maps?|undersea.?cables?|internet.?exchanges?|submarine.?cables?)\b/.test(t)) return "agsc";
   return null;
 }
 
@@ -219,7 +219,7 @@ const BASE_SYSTEM = `You are the Aliasist project assistant embedded in aliasist
 
 About Aliasist:
 - Focus: data dashboards, privacy tools, file utilities, and small web apps
-- Projects: DataSist (data center research), PulseSist (market dashboards), SpaceSist (space data), EcoSist (environmental dashboard), AGSC (global source map), Clearasist (metadata cleaner), GitHub Companion (repository and pull request notes)
+- Projects: Waterfall (AI chat and image generation), DataSist (data center research), PulseSist (market dashboards), SpaceSist (space data), EcoSist (environmental dashboard), Clearasist (metadata cleaner), GitHub Companion (repository and pull request notes)
 - Contact: dev@aliasist.com | github.com/aliasist
 - Background: Aliasist is shaped by older web design habits and modern application work: layout, CSS, interfaces, APIs, storage, and deployment.
 
@@ -378,21 +378,21 @@ export const onRequestOptions = async () =>
  * Response: { response: string, model: string } | { error: string }
  */
 export const onRequestPost = async ({ request, env }: PagesContext) => {
-  const bodyText = await request.text();
-  if (!bodyText.trim()) {
-    return json({ error: "Missing request body." }, 400);
-  }
-
   // --- Auth ---
   const authorization = request.headers.get("Authorization");
   const hasSessionToken = Boolean(authorization?.startsWith("Bearer "));
   if (hasSessionToken) {
-    const auth = await authenticateRequest(request, env);
+    const auth = await authenticateRequest(request.clone(), env);
     if (!auth.ok) {
       return json({ error: auth.error }, auth.status);
     }
   } else {
     return json({ error: "Sign in to use chat." }, 401);
+  }
+
+  const bodyText = await request.text();
+  if (!bodyText.trim()) {
+    return json({ error: "Missing request body." }, 400);
   }
 
   // --- Parse messages & detect topic ---
