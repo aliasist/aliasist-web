@@ -135,10 +135,10 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
         </span>
       </div>
 
-      <h3 id={headingId} className="relative z-10 text-2xl sm:text-3xl font-bold text-foreground mb-4 font-mono tracking-tight transition-colors duration-300 group-hover:text-white">
+      <h3 id={headingId} className="relative z-10 mb-4 text-2xl font-bold text-foreground transition-colors duration-300 group-hover:text-white sm:text-3xl">
         {project.name}
       </h3>
-      <p className="relative z-10 mb-8 max-w-2xl text-sm leading-relaxed text-muted-foreground xl:max-w-3xl">
+      <p className="readable-copy relative z-10 mb-8 text-muted-foreground">
         {project.description}
       </p>
 
@@ -232,7 +232,7 @@ const ProjectsSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6 }}
-          className="mb-4 text-3xl font-bold tracking-tight text-foreground sm:text-4xl"
+          className="mb-4 text-3xl font-bold text-foreground sm:text-4xl"
         >
           {projectsSection.headline}
         </motion.h2>
@@ -242,7 +242,7 @@ const ProjectsSection = () => {
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
           transition={{ duration: 0.6, delay: 0.05 }}
-          className="mb-12 max-w-2xl text-sm leading-relaxed text-muted-foreground sm:text-base"
+          className="readable-copy mb-12 text-muted-foreground"
         >
           {projectsSection.subcopy}
         </motion.p>

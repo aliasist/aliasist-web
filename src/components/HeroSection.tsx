@@ -75,7 +75,7 @@ const HeroSection = () => {
         </motion.div>
 
         <motion.h1
-          className="text-glow-violet mb-5 select-none text-6xl font-bold leading-none tracking-normal text-foreground sm:text-8xl md:text-[9rem]"
+          className="text-glow-violet mb-5 select-none text-6xl font-bold leading-none tracking-[0.04em] text-foreground sm:text-8xl md:text-[9rem]"
           initial={{ opacity: 0, y: 24 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
@@ -93,7 +93,7 @@ const HeroSection = () => {
         </motion.p>
 
         <motion.p
-          className="mx-auto mb-8 max-w-2xl rounded-sm border border-violet/15 bg-background/76 px-5 py-4 text-base leading-relaxed text-foreground/86 shadow-[0_0_22px_hsl(var(--electric)_/_0.1),0_0_32px_hsl(var(--violet)_/_0.08),0_2px_14px_hsl(0_0%_0%_/_0.14)] backdrop-blur-md sm:px-7 sm:py-5 sm:text-lg"
+          className="readable-copy mx-auto mb-8 rounded-sm border border-violet/15 bg-background/76 px-4 py-4 text-foreground/86 shadow-[0_0_22px_hsl(var(--electric)_/_0.1),0_0_32px_hsl(var(--violet)_/_0.08),0_2px_14px_hsl(0_0%_0%_/_0.14)] backdrop-blur-md sm:px-8 sm:py-5 sm:text-lg"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.6 }}

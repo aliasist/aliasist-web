@@ -92,9 +92,9 @@ export const hero = {
   mascotAlt: "Aliasist",
   mascotTitle: "Aliasist",
   wordmark: "ALIASIST",
-  tagline: "A CS student's playground for real-time data tools",
+  tagline: "Independent tools for data, privacy, and the web",
   subcopy:
-    "Aliasist is a personal project by a computer science student building data dashboards, privacy tools, and small utilities to learn new technology hands-on.",
+    "Aliasist builds practical dashboards, privacy tools, and focused utilities that turn complex information into clear, useful experiences.",
   ctaContact: "Projects",
   ctaContactHref: "#projects",
   ctaSecondary: "Contact",
@@ -318,14 +318,13 @@ export type ProjectCard = (typeof projects)[number];
 //
 // Copy is split into short blocks (kicker + paragraph) so it’s easy to edit.
 // Add your own sections in `authorSlots` (same shape); empty `body` = hidden.
-// Typography: body uses Space Grotesk (--font-heading from index.css); mono
-// labels use JetBrains Mono. No font change required — SG reads clean and modern
-// for engineering portfolios; alternatives if you ever switch: IBM Plex Sans, DM Sans.
+// Typography: body uses Inter (--font-body from index.css); headings use
+// Space Grotesk and labels use JetBrains Mono.
 //
 export const about = {
   dividerLabel: "About",
   headline: "Meet Aliasist.",
-  pathBadge: "CS student · building toward AI security",
+  pathBadge: "Working toward a CS degree · building for good",
   skillsLabel: "Core capabilities",
   skills: [
     "Python",
@@ -344,15 +343,15 @@ export const about = {
   bioBlocks: [
     {
       kicker: "Who's behind it",
-      body: "I'm a computer science student building toward a career in AI-focused cybersecurity and security consulting. Aliasist started as a way to actually build things — not just study them — and turned into an ongoing collection of dashboards, tools, and utilities built with security in mind from the start.",
+      body: "I'm working toward a degree in computer science because I want to understand how useful technology is built. My hope is to apply that knowledge to projects that help people, improve lives, and make a meaningful difference for good.",
     },
     {
       kicker: "What it is",
-      body: "Aliasist is a self-directed learning project with a security lens: each app is a chance to work with a new API, framework, or deployment pattern, apply real security practices, and ship something real. It's applied practice for the field I'm working toward, not just a sandbox.",
+      body: "Aliasist is where that intention becomes practice. Each app explores a real need, a new idea, or a better way to make complex technology useful and approachable. The collection will keep growing as those ideas become tools people can actually use.",
     },
     {
       kicker: "Why it exists",
-      body: "I wanted hands-on practice with the full stack — frontend, backend, APIs, storage, deployment, and the security considerations behind all of it — outside of coursework, and something concrete to point to as I move toward AI security and consulting work.",
+      body: "It exists to learn by building and to give promising ideas room to become something valuable. The larger goal is simple: create technology with care, share it with people, and keep working toward projects that can make a positive difference at a meaningful scale.",
     },
   ] as const,
 
