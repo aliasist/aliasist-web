@@ -41,7 +41,7 @@ export const onRequestOptions = async () =>
   });
 
 export const onRequestGet = async ({ request, env }: PagesContext) => {
-  const auth = await authenticateRequest(request, env);
+  const auth = await authenticateRequest(request.clone(), env);
   if (!auth.ok) {
     return json({ error: auth.error }, auth.status);
   }
@@ -50,7 +50,7 @@ export const onRequestGet = async ({ request, env }: PagesContext) => {
 };
 
 export const onRequestPost = async ({ request, env }: PagesContext) => {
-  const auth = await authenticateRequest(request, env);
+  const auth = await authenticateRequest(request.clone(), env);
   if (!auth.ok) {
     return json({ error: auth.error }, auth.status);
   }

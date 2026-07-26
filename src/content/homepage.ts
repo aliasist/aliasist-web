@@ -92,9 +92,9 @@ export const hero = {
   mascotAlt: "Aliasist",
   mascotTitle: "Aliasist",
   wordmark: "ALIASIST",
-  tagline: "Independent tools for data, privacy, and the web",
+  tagline: "Tools, dashboards, and experiments for the web",
   subcopy:
-    "Aliasist builds practical dashboards, privacy tools, and focused utilities that turn complex information into clear, useful experiences.",
+    "Aliasist is a growing collection of projects I build to learn, solve problems, and make useful things available to anyone who wants them.",
   ctaContact: "Projects",
   ctaContactHref: "#projects",
   ctaSecondary: "Contact",
@@ -139,20 +139,20 @@ const downloadLinks = {
 
 export const projectsSection = {
   dividerLabel: "Projects",
-  headline: "Tools that are online now.",
-  subcopy: "A current list of Aliasist apps, dashboards, and file tools.",
+  headline: "Projects you can use now.",
+  subcopy: "These are the Aliasist apps and tools that are currently online.",
 } as const;
 
 export const projects = [
   {
-    name: "Aliasist Tech · Waterfall",
+    name: "Aliasist Waterfall",
     description:
-      "A protected prompt workspace for chat, images, and private sessions.",
-    tech: ["Waterfall", "Secure access", "Chat workspace", "Image tools", "Private sessions"],
+      "An AI RAG system with an AI chatbot and image generation.",
+    tech: ["AI RAG System", "AI Chatbot + Image Generation"],
     github: "https://github.com/aliasist/waterfall",
     downloads: [],
     status: "Live",
-    meta: ["Workspace", "Chat + images", "Protected access"] as const,
+    meta: ["AI RAG System", "AI Chatbot + Image Generation"] as const,
     tone: "violet",
     icon: "AT",
     link: "https://www.aliasist.tech",
@@ -273,7 +273,7 @@ export const projects = [
     description:
       "Simple, fast stopwatch. No tasks, no accounts, no data saved. Just start/stop/reset, plus a lightweight intro.",
     tech: ["Vanilla JS", "PWA", "No storage"],
-    github: "https://github.com/aliasist/atomicity",
+    github: "https://github.com/aliasist/aliasistabductor",
     downloads: [],
     status: "Live",
     meta: ["PWA", "No accounts", "No storage"] as const,
@@ -324,8 +324,8 @@ export type ProjectCard = (typeof projects)[number];
 export const about = {
   dividerLabel: "About",
   headline: "Meet Aliasist.",
-  pathBadge: "Working toward a CS degree · building for good",
-  skillsLabel: "Core capabilities",
+  pathBadge: "Working toward a CS degree · learning by building",
+  skillsLabel: "What I work with",
   skills: [
     "Python",
     "JavaScript",
@@ -343,15 +343,15 @@ export const about = {
   bioBlocks: [
     {
       kicker: "Who's behind it",
-      body: "I'm working toward a degree in computer science because I want to understand how useful technology is built. My hope is to apply that knowledge to projects that help people, improve lives, and make a meaningful difference for good.",
+      body: "I'm working toward a computer science degree. Aliasist is where I build and test ideas that might be useful to other people. I hope some of these projects eventually solve real problems or help people in a meaningful way.",
     },
     {
       kicker: "What it is",
-      body: "Aliasist is where that intention becomes practice. Each app explores a real need, a new idea, or a better way to make complex technology useful and approachable. The collection will keep growing as those ideas become tools people can actually use.",
+      body: "Aliasist is the name I use for this collection of projects. Some started because I needed a tool myself, while others started because I wanted to understand a subject or try an idea. If something becomes useful, I put it online so other people can use it too.",
     },
     {
       kicker: "Why it exists",
-      body: "It exists to learn by building and to give promising ideas room to become something valuable. The larger goal is simple: create technology with care, share it with people, and keep working toward projects that can make a positive difference at a meaningful scale.",
+      body: "I learn better when I make something real instead of only reading about it. This project gives me a place to keep doing that. I want to get better at building software and, over time, work on things that make a real difference for people.",
     },
   ] as const,
 
@@ -370,18 +370,18 @@ export const about = {
 
 export const contact = {
   dividerLabel: "Contact",
-  introLabel: "Aliasist contact",
-  headline: "Make contact.",
-  introStrong: "Open to focused builds and collaborations.",
-  introRest: "Send the goal, required connections, timeline, and what success looks like.",
+  introLabel: "Contact",
+  headline: "Want to talk?",
+  introStrong: "Questions, ideas, and project feedback are welcome.",
+  introRest: "Tell me what you're working on or what you need help with.",
   successTitle: "Message received",
   successBody:
-    "Message received. Clear scope, technical detail, and a real path forward make evaluation easier.",
+    "Thanks for reaching out. I'll read your message and reply when I can.",
   sendAnother: "Send another ↩",
   placeholders: {
     name: "Name",
     email: "Email",
-    message: "Message — goal, scope, timeline",
+    message: "What would you like to talk about?",
   },
   submitIdle: "Send message ↗",
   submitSending: "Sending...",

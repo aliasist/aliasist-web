@@ -6,7 +6,7 @@ import Starfield from "@/components/Starfield";
 const tools = [
   {
     title: "Understand a project",
-    description: "Turn a public repository into a plain-language map of the project and its next steps.",
+    description: "See what is in a public repository, how it is organized, and what you could work on next.",
     label: "Open Project Guide",
     href: "/tools/github/project-guide",
     icon: BookOpen,
@@ -21,14 +21,14 @@ const tools = [
   },
   {
     title: "Prepare a pull request",
-    description: "Prepare a clear pull request with a focused summary and a useful review checklist.",
+    description: "Write a clear pull request summary and make a checklist for the reviewer.",
     label: "PR Builder",
     icon: Share2,
     status: "Planned",
   },
   {
     title: "Review a pull request",
-    description: "Analyze a public pull request for risk, hotspots, test hints, and reviewer-ready comments.",
+    description: "Check a public pull request for risky changes, missing tests, and things a reviewer should look at.",
     label: "Open PR Reviewer",
     href: "/tools/github-pr-reviewer",
     icon: GitPullRequest,
@@ -67,8 +67,8 @@ const GithubToolkit = () => (
           GitHub Companion
         </h1>
         <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
-          Start with a repository map. Move into health checks, pull request preparation,
-          and deeper review when needed.
+          Pick what you need: understand a repository, check its setup, write a pull
+          request, or review one.
         </p>
       </section>
 
