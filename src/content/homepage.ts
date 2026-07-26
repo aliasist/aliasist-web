@@ -324,7 +324,7 @@ export type ProjectCard = (typeof projects)[number];
 export const about = {
   dividerLabel: "About",
   headline: "Meet Aliasist.",
-  pathBadge: "Working toward a CS degree · learning by building",
+  pathBadge: "Working toward a CS degree · building for good",
   skillsLabel: "What I work with",
   skills: [
     "Python",
@@ -343,15 +343,15 @@ export const about = {
   bioBlocks: [
     {
       kicker: "Who's behind it",
-      body: "I'm working toward a computer science degree. Aliasist is where I build and test ideas that might be useful to other people. I hope some of these projects eventually solve real problems or help people in a meaningful way.",
+      body: "I'm working toward a degree in computer science because I want to understand how useful technology is built. My hope is to apply that knowledge to projects that help people, improve lives, and make a meaningful difference for good.",
     },
     {
       kicker: "What it is",
-      body: "Aliasist is the name I use for this collection of projects. Some started because I needed a tool myself, while others started because I wanted to understand a subject or try an idea. If something becomes useful, I put it online so other people can use it too.",
+      body: "Aliasist is where that intention becomes practice. Each app explores a real need, a new idea, or a better way to make complex technology useful and approachable. The collection will keep growing as those ideas become tools people can actually use.",
     },
     {
       kicker: "Why it exists",
-      body: "Aliasist started as a creative sandbox and school project, but it has grown into a place where I can experiment with AI, data, websites, apps, and whatever new technology catches my attention. The entire point is to learn by actually building things and seeing how different systems can connect and work together. Some of the projects are useful tools, some are experiments, and others are ideas that may eventually grow into something much bigger. I’m using Aliasist to better understand technology, discover patterns in data, and explore what we may be able to learn or predict from it. It’s an ongoing project, and I’m building it one piece at a time.",
+      body: "It exists to learn by building and to give promising ideas room to become something valuable. The larger goal is simple: create technology with care, share it with people, and keep working toward projects that can make a positive difference at a meaningful scale.",
     },
   ] as const,
 
