@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { Download, ExternalLink, Github } from "lucide-react";
 import {
   projects,
-  comingSoonProjects,
+  COMING_SOON_PROJECTS,
   projectsSection,
   type ProjectCard,
 } from "@/content/homepage";
@@ -254,7 +254,7 @@ const ProjectsSection = () => {
 
           {/* Coming-soon slots */}
           <div className="grid sm:grid-cols-2 gap-0.5 mt-0.5">
-            {comingSoonProjects.map((item, i) => (
+            {COMING_SOON_PROJECTS.map((item, i) => (
               <motion.div
                 key={item.codename}
                 initial={{ opacity: 0, y: 20 }}

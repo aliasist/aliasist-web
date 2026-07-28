@@ -26,10 +26,7 @@ const AboutSection = () => {
       aria-labelledby="about-heading"
       className="relative overflow-hidden px-4 py-28 sm:px-8 lg:px-12 xl:px-16"
     >
-      {/* Continue the hero grid briefly so the scroll transition feels blended. */}
-      <div className="absolute inset-x-0 -top-32 h-80 grid-bg opacity-55 [mask-image:linear-gradient(to_bottom,transparent_0%,black_18%,black_52%,transparent_100%)] pointer-events-none" />
-      <div className="absolute inset-x-0 -top-28 h-80 bg-gradient-to-b from-transparent via-background/58 to-background pointer-events-none" />
-      <div className="absolute inset-0 bg-gradient-to-b from-background/28 via-background/82 to-background pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-background/20 to-background/10 pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_72%_48%_at_50%_14%,_hsl(165_90%_42%_/_0.04)_0%,_transparent_62%)] pointer-events-none" />
 
       <div className="relative z-10 mx-auto w-full max-w-site">
