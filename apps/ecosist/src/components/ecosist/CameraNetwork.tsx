@@ -16,8 +16,8 @@ export default function CameraNetwork({ signals }: { signals: LiveSignals }) {
     <div className="flex h-full flex-col gap-5 overflow-hidden p-5 sm:p-8">
       <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <div>
-          <p className="text-[9px] uppercase tracking-[0.35em] text-emerald-400/40">Authorized public-agency feeds</p>
-          <h2 className="mt-2 text-3xl font-black italic uppercase tracking-tighter text-white">Camera Network</h2>
+          <p className="text-[9px] uppercase tracking-[0.35em] text-emerald-400/40">Public transportation camera sources</p>
+          <h2 className="mt-2 text-3xl font-black italic uppercase tracking-tighter text-white">Traffic Cameras</h2>
           <p className="mt-2 text-[10px] uppercase tracking-widest text-emerald-400/45">{signals.cameraTotal} cataloged // {visible.length} shown</p>
         </div>
         <div className="flex gap-2">

@@ -32,9 +32,8 @@ export default function CommandTerminal({ onSystemMessage, onCommandAction }: Co
   const [input, setInput] = useState("");
   const [thinking, setThinking] = useState(false);
   const [history, setHistory] = useState<string[]>([
-    "ECOSIST EARTH OS v1.0.0",
-    "FEDERATED FEEDS: SECURE",
-    "TYPE 'HELP' FOR COMMANDS, OR ASK A QUESTION"
+    "EcoSist data console",
+    "Type 'help' to see the available actions, or ask a question."
   ]);
   const scrollRef = useRef<HTMLDivElement>(null);
 
@@ -53,39 +52,39 @@ export default function CommandTerminal({ onSystemMessage, onCommandAction }: Co
 
     if (cmd === 'help') {
       setHistory(prev => [...prev,
-        "AVAILABLE COMMANDS:",
-        "  SCAN  - REFRESH ALL PLANETARY SIGNALS",
-        "  BRIEF - VIEW INTELLIGENCE SUMMARY",
-        "  SIGNALS - OPEN EARTH SIGNAL DECK",
-        "  EXPORT - DOWNLOAD MD REPORT",
-        "  CLEAR - WIPE TERMINAL HISTORY",
-        "  Anything else is sent to the EcoSist AI as a question."
+        "Available actions:",
+        "  scan    - refresh the data",
+        "  brief   - open the summary",
+        "  signals - open the earth data list",
+        "  export  - download the summary",
+        "  clear   - clear this history",
+        "  Anything else will be treated as a question."
       ]);
     } else if (cmd === 'scan') {
       onCommandAction('scan');
-      setHistory(prev => [...prev, "INITIATING PLANETARY SCAN..."]);
+      setHistory(prev => [...prev, "Refreshing data..."]);
     } else if (cmd === 'brief') {
       onCommandAction('brief');
-      setHistory(prev => [...prev, "ROUTING TO INTELLIGENCE DECK..."]);
+      setHistory(prev => [...prev, "Opening the summary..."]);
     } else if (cmd === 'signals') {
       onCommandAction('signals');
-      setHistory(prev => [...prev, "OPENING EARTH SIGNAL DECK..."]);
+      setHistory(prev => [...prev, "Opening the earth data list..."]);
     } else if (cmd === 'export') {
       onCommandAction('export');
-      setHistory(prev => [...prev, "GENERATING INTELLIGENCE REPORT..."]);
+      setHistory(prev => [...prev, "Preparing the download..."]);
     } else if (cmd === 'clear') {
       setHistory([]);
     } else if (KNOWN_COMMANDS.has(cmd)) {
       setHistory(prev => [...prev, `COMMAND NOT RECOGNIZED: ${cmd}`]);
     } else {
       setThinking(true);
-      setHistory(prev => [...prev, "ECOSIST AI: THINKING..."]);
+      setHistory(prev => [...prev, "Looking through the EcoSist data..."]);
       askEcosist(raw)
         .then((answer) => {
-          setHistory(prev => [...prev.slice(0, -1), `ECOSIST AI: ${answer}`]);
+          setHistory(prev => [...prev.slice(0, -1), answer]);
         })
         .catch((err: Error) => {
-          setHistory(prev => [...prev.slice(0, -1), `ECOSIST AI ERROR: ${err.message}`]);
+          setHistory(prev => [...prev.slice(0, -1), `Could not answer: ${err.message}`]);
         })
         .finally(() => setThinking(false));
     }
@@ -95,7 +94,7 @@ export default function CommandTerminal({ onSystemMessage, onCommandAction }: Co
     <div className="flex h-full flex-col rounded-lg border border-emerald-500/20 bg-black/60 p-4 font-mono shadow-2xl backdrop-blur-xl lg:h-2/3">
       <div className="mb-3 flex items-center gap-2 border-b border-emerald-500/10 pb-2 text-emerald-400/40">
         <Terminal className="size-3" />
-        <span className="text-[9px] uppercase tracking-[0.3em]">Command Console</span>
+        <span className="text-[9px] uppercase tracking-[0.3em]">Data Console</span>
       </div>
       
       <div ref={scrollRef} className="flex-1 overflow-y-auto space-y-1 text-[10px] text-emerald-300/80 scrollbar-none">
@@ -112,7 +111,7 @@ export default function CommandTerminal({ onSystemMessage, onCommandAction }: Co
           disabled={thinking}
           onChange={(e) => setInput(e.target.value)}
           className="w-full bg-transparent text-[10px] text-white outline-none placeholder:text-emerald-400/20 disabled:opacity-40"
-          placeholder={thinking ? "Waiting on EcoSist AI..." : "Enter command, or ask a question..."}
+          placeholder={thinking ? "Checking the data..." : "Enter an action, or ask a question..."}
         />
       </form>
     </div>

@@ -6,12 +6,12 @@ export default function SplashScreen({ onDone }: { onDone: () => void }) {
   const [statusLines, setStatusLines] = useState<string[]>([]);
 
   const BOOT_LINES = [
-    "// initializing datasist v2.0.0",
-    "// connecting to D1 database...",
-    "// loading 48 facilities across 13 countries",
-    "// fetching EIA grid data...",
-    "// calibrating AI analysis engine",
-    "// signal acquired. launching.",
+    "Starting DataSist",
+    "Connecting to the database...",
+    "Loading facility records...",
+    "Loading EIA power data...",
+    "Preparing the map and dashboard...",
+    "DataSist is ready.",
   ];
 
   useEffect(() => {
@@ -191,7 +191,7 @@ export default function SplashScreen({ onDone }: { onDone: () => void }) {
         opacity: phase === "in" ? 0 : 0.7,
         transition: "opacity 0.5s ease 0.4s",
       }}>
-        // ai infrastructure intelligence · online
+        AI data center research
       </div>
 
       {/* Boot terminal */}
@@ -259,7 +259,7 @@ export default function SplashScreen({ onDone }: { onDone: () => void }) {
         opacity: phase === "scan" ? 0.5 : 0,
         transition: "opacity 0.4s ease 0.8s",
       }}>
-        48 facilities · 13 countries · live eia data
+        Facilities, energy use, water use, and grid data
       </div>
 
       <style>{`

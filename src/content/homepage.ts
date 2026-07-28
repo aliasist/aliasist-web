@@ -1,6 +1,6 @@
 /**
  * Homepage copy & navigation — edit this file to change marketing text and suite links.
- *
+ *  -_- The homepage is built with React + TypeScript + TailwindCSS. 
  * Images:
  *   • Project banners + assets live under `./images` (imported via `@images/...`).
  *
@@ -28,8 +28,8 @@ import spaceBanner from "@images/spacesist_banner_cinematic.png";
 /** Used by Navbar "Projects" menu and Contact section project list — keep in sync. */
 export const suiteApps = [
   {
-    label: "Aliasist Tech",
-    sub: "Waterfall workspace",
+    label: "Waterfall",
+    sub: "Waterfall RAG system with AI chatbot and image generation",
     href: "https://www.aliasist.tech",
     icon: "AT",
   },
@@ -58,7 +58,7 @@ export const suiteApps = [
     icon: "SS",
   },
   {
-    label: "Clearasist",
+    label: "ClearSist",
     sub: "Metadata Cleaner",
     href: "https://clearasist.pages.dev",
     icon: "CL",
@@ -88,13 +88,13 @@ export const suiteAppCount = suiteApps.length;
 // ── Hero ─────────────────────────────────────────────────────────────────────
 
 export const hero = {
-  mascotLabel: "aliasist",
+  mascotLabel: "Aliasist",
   mascotAlt: "Aliasist",
   mascotTitle: "Aliasist",
   wordmark: "ALIASIST",
   tagline: "Tools, dashboards, and experiments for the web",
   subcopy:
-    "Aliasist is a growing collection of projects I build to learn, solve problems, and make useful things available to anyone who wants them.",
+    "Aliasist is a growing suite of free tools — data dashboards, live infrastructure maps, and more — built to be useful the moment you open them.",
   ctaContact: "Projects",
   ctaContactHref: "#projects",
   ctaSecondary: "Contact",
@@ -139,7 +139,7 @@ const downloadLinks = {
 
 export const projectsSection = {
   dividerLabel: "Projects",
-  headline: "Projects you can use now.",
+  headline: "These are tools you can use.",
   subcopy: "These are the Aliasist apps and tools that are currently online.",
 } as const;
 
@@ -156,7 +156,7 @@ export const projects = [
     tone: "violet",
     icon: "AT",
     link: "https://www.aliasist.tech",
-    linkLabel: "Open Waterfall →",
+    linkLabel: "OPEN →",
     banner: aliasistTechBanner,
   },
   {
@@ -171,7 +171,7 @@ export const projects = [
     tone: "cyan",
     icon: "GL",
     link: "https://www.aliasist.world",
-    linkLabel: "Open Globalize →",
+    linkLabel: "OPEN →",
     banner: globalizeBanner,
   },
   {
@@ -186,7 +186,7 @@ export const projects = [
     tone: "blue",
     icon: "DS",
     link: "https://datasist-frontend.pages.dev",
-    linkLabel: "Open DataSist →",
+    linkLabel: "OPEN →",
     banner: dataBanner,
   },
   {
@@ -201,7 +201,7 @@ export const projects = [
     tone: "amber",
     icon: "PS",
     link: "https://pulse.aliasist.com",
-    linkLabel: "Open PulseSist →",
+    linkLabel: "OPEN →",
     banner: pulseBanner,
   },
   {
@@ -216,11 +216,11 @@ export const projects = [
     tone: "violet",
     icon: "SS",
     link: "https://space.aliasist.com",
-    linkLabel: "Open SpaceSist →",
+    linkLabel: "OPEN →",
     banner: spaceBanner,
   },
   {
-    name: "Clearasist",
+    name: "ClearSist",
     description:
       "A browser-based metadata cleaner for images, PDFs, and Office files.",
     tech: ["Metadata removal", "Image cleanup", "PDF cleanup", "Office files", "Browser-based"],
@@ -231,7 +231,7 @@ export const projects = [
     tone: "cyan",
     icon: "CL",
     link: "https://clearasist.pages.dev",
-    linkLabel: "Open Clearasist →",
+    linkLabel: "OPEN →",
     banner: clearasistBanner,
   },
   {
@@ -246,7 +246,7 @@ export const projects = [
     tone: "violet",
     icon: "GH",
     link: "/tools/github",
-    linkLabel: "Open GitHub Companion →",
+    linkLabel: "OPEN →",
     banner: githubCompanionBanner,
   },
   {
@@ -276,11 +276,11 @@ export const projects = [
     github: "https://github.com/aliasist/aliasistabductor",
     downloads: [],
     status: "Live",
-    meta: ["PWA", "No accounts", "No storage"] as const,
+    meta: ["Simple Stopwatch"] as const,
     tone: "amber",
     icon: "AT",
     link: "/atomicity/",
-    linkLabel: "Open Atomicity →",
+    linkLabel: "OPEN →",
     banner: atomicityBanner,
   },
   {
@@ -299,15 +299,15 @@ export const projects = [
     tone: "green",
     icon: "ES",
     link: "/ecosist/",
-    linkLabel: "Open EcoSist →",
+    linkLabel: "OPEN →",
     banner: ecosistBanner,
   },
 ] as const;
 
-export const comingSoonProjects = [
+export const COMING_SOON_PROJECTS = [
   {
     codename: "Next project",
-    description: "A new tool is in early planning. Details will appear when there is something useful to test.",
+    description: "Planning and dvelopment in progress.",
     eta: "2027",
   },
 ] as const;
@@ -376,7 +376,7 @@ export const contact = {
   introRest: "Tell me what you're working on or what you need help with.",
   successTitle: "Message received",
   successBody:
-    "Thanks for reaching out. I'll read your message and reply when I can.",
+    "Thanks for reaching out and hope to get back to you soon.",
   sendAnother: "Send another ↩",
   placeholders: {
     name: "Name",
@@ -404,8 +404,8 @@ export const contact = {
 
 export const transmissions = {
   dividerLabel: "Blog",
-  headline: "Project notes.",
-  scanning: "Loading posts...",
+  headline: "News & updates",
+  scanning: "Updates are live.",
   offline: "Could not load the latest posts. Showing saved posts.",
   liveFeedPrefix: "Updated ",
   liveFeedRecent: "recently",

@@ -12,9 +12,9 @@ interface OSHeaderProps {
 
 export default function OSHeader({ activeView, onViewChange, signals }: OSHeaderProps) {
   const tabs: { id: EcosistView; label: string; icon: typeof Leaf }[] = [
-    { id: "core", label: "Core", icon: Leaf },
-    { id: "intelligence", label: "Brief", icon: Activity },
-    { id: "signals", label: "Earth Signals", icon: Globe2 },
+    { id: "core", label: "Overview", icon: Leaf },
+    { id: "intelligence", label: "Summary", icon: Activity },
+    { id: "signals", label: "Earth Data", icon: Globe2 },
     { id: "cameras", label: "Cameras", icon: Camera },
   ];
 
@@ -26,7 +26,7 @@ export default function OSHeader({ activeView, onViewChange, signals }: OSHeader
         </div>
         <div>
           <h1 className="text-sm font-black uppercase tracking-widest text-white">Ecosist</h1>
-          <p className="text-[9px] uppercase tracking-[0.2em] text-emerald-400/50">Earth Intelligence // Live</p>
+          <p className="text-[9px] uppercase tracking-[0.2em] text-emerald-400/50">Weather and earth data</p>
         </div>
       </div>
 
@@ -56,8 +56,8 @@ export default function OSHeader({ activeView, onViewChange, signals }: OSHeader
 
       <div className="flex items-center gap-4 text-[9px] uppercase tracking-widest md:gap-6">
         <div className="flex flex-col md:items-end">
-          <span className="text-emerald-400/40">Federated feeds</span>
-          <span className="font-bold text-emerald-400">{signals.status === "live" ? "Online" : signals.status}</span>
+          <span className="text-emerald-400/40">Data sources</span>
+          <span className="font-bold text-emerald-400">{signals.status === "live" ? "Available" : signals.status}</span>
         </div>
         <div className={`size-2 rounded-full ${signals.status === "live" ? "bg-emerald-400 shadow-[0_0_8px_#34d399]" : "animate-pulse bg-amber-400"}`} />
       </div>

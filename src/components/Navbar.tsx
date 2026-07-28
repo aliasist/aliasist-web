@@ -46,7 +46,7 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
             : "text-muted-foreground hover:bg-electric/[0.06] hover:text-foreground hover:shadow-electric-ring-inset"
         }`}
       >
-        <span className="relative z-10">Projects</span>
+        <span className="relative z-10">Menu</span>
         <motion.svg
           animate={{ rotate: open ? 180 : 0 }}
           transition={{ duration: 0.2 }}

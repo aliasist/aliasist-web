@@ -41,7 +41,7 @@ export default function Marquee() {
             fontSize: "10px",
             letterSpacing: "0.12em",
             color: "var(--color-text-muted)",
-            fontFamily: "'General Sans', monospace",
+            fontFamily: "'JetBrains Mono', monospace",
             display: "inline-block",
             paddingRight: "60px",
           }}
@@ -53,7 +53,7 @@ export default function Marquee() {
             fontSize: "10px",
             letterSpacing: "0.12em",
             color: "var(--color-text-muted)",
-            fontFamily: "'General Sans', monospace",
+            fontFamily: "'JetBrains Mono', monospace",
             display: "inline-block",
             paddingRight: "60px",
           }}

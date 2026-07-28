@@ -85,6 +85,43 @@ before assuming it's an animation-cost regression — verify the premise, don't
 default to the same fix that worked last time if the shape of the problem
 has changed.
 
+## RAG integration (consumer only — retrieval lives elsewhere)
+
+This repo does **not** implement RAG retrieval. `functions/api/chat.ts`
+calls the shared Aliasist RAG worker directly: `POST {RAG_BASE_URL}/rag/ask`
+(default `https://api.aliasist.tech/rag/ask`) with `{ sist, question, topK,
+live? }`, gated behind a local `detectSist()` keyword classifier
+(`SIST_IDS = waterfall | data | eco | pulse | space` in user-facing docs; the
+current upstream worker still accepts the legacy internal key for Waterfall).
+
+- **`detectSist()` here is a separate implementation from the platform's
+  `classifySist()`**, which does the equivalent job server-side for
+  `aliasist-tech` (the Waterfall frontend)'s Hub-routed traffic. There is no
+  shared code between them — a misrouting fix or corpus-mapping change made
+  to one does **not** propagate to the other. If RAG answers here ground on
+  the wrong topic, check `detectSist()` in this file first, not the upstream
+  worker.
+- **The 12s timeout in `fetchRagContext()` (`AbortSignal.timeout(12_000)`)
+  was deliberately raised from an old 3.5s budget** because `eco` live-data
+  asks (5 upstream feeds + waterfall generation) routinely exceeded it,
+  silently dropping RAG context. The doc comment above the fetch call and in
+  the handler's flow comment still say "3.5s upstream timeout" — that's
+  stale, left over from before the bump. Trust the code (12s), not those
+  comments, until someone updates them.
+- **Two response modes, handled differently in `formatRagContext()`:**
+  `local-rag` source → `data.answer` is a canned wrapper string, discarded;
+  grounding comes from `data.chunks` instead. Any other `source` → treat
+  `data.answer` as a real synthesized answer worth quoting. Don't "fix" the
+  local-rag branch to use `data.answer` — that wrapper text is intentionally
+  dropped.
+- **`eco` questions get a live data snapshot** (`live.includeDataSnapshot`)
+  independent of which response mode fires, and are cached for 60s instead
+  of the normal 3600s (`RAG_CACHE_TTL_SECONDS_LIVE` vs
+  `RAG_CACHE_TTL_SECONDS`) — active alerts/quakes/storms change too fast for
+  the long TTL.
+- Only successful lookups are cached (`if (cache && context)`) — a transient
+  upstream outage never poisons the edge cache with a miss.
+
 ## No headless browser in this sandbox
 
 Playwright's browser binaries fail to install here (`ubuntu26.04-x64` is
