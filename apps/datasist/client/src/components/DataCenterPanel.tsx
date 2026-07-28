@@ -110,7 +110,7 @@ export default function DataCenterPanel({ center, onClose, onAskAI, onCompare, i
   return (
     <div
       className="flex flex-col h-full overflow-hidden"
-      style={{ fontFamily: "'General Sans', sans-serif" }}
+      style={{ fontFamily: "'Inter', sans-serif" }}
     >
       {/* Panel Header */}
       <div
@@ -131,7 +131,7 @@ export default function DataCenterPanel({ center, onClose, onAskAI, onCompare, i
           </span>
           <h2
             className="font-bold leading-tight"
-            style={{ fontSize: isMobile ? "16px" : "18px", color: "var(--color-text)", fontFamily: "'Cabinet Grotesk', sans-serif" }}
+            style={{ fontSize: isMobile ? "16px" : "18px", color: "var(--color-text)", fontFamily: "'Space Grotesk', sans-serif" }}
           >
             {center.name}
           </h2>

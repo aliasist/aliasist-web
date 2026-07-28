@@ -1,46 +1,21 @@
 # Aliasist
 
-![Aliasist banner](images/aliasist_banner_orbit.png)
+![Aliasist homepage](images/aliasist-homepage-screenshot.png)
 
-**Aliasist** is the public-facing homepage and brand entry point for the Aliasist suite. It showcases the platform, previews product surfaces, and delivers the first impression for new users.
+**Aliasist** is my homepage — the front door to everything else I've built. One stop to see the whole suite and get pointed at whatever you're after.
 
-## Visual preview
+## What it actually looks like
 
-![Homepage preview](public/newbg1.png)
+![Aliasist, the About section](public/aliasist-about-screenshot.png)
 
-## Suite highlights
+## The suite
 
-<table>
-  <tr>
-    <td align="center">
-      <img src="assets/cinematic-suite/datasist-orbital-infrastructure-hero.png" alt="DataSist preview" width="420" />
-      <br />
-      <strong>DataSist</strong> — insight and data surfaces
-    </td>
-    <td align="center">
-      <img src="assets/cinematic-suite/pulsesist-market-signals-hero.png" alt="PulseSist preview" width="420" />
-      <br />
-      <strong>PulseSist</strong> — market signal dashboards
-    </td>
-  </tr>
-  <tr>
-    <td align="center">
-      <img src="assets/cinematic-suite/ecosist-environmental-observatory-hero.png" alt="EcoSist preview" width="420" />
-      <br />
-      <strong>EcoSist</strong> — environmental observatory tools
-    </td>
-    <td align="center">
-      <img src="assets/cinematic-suite/spacesist-orbital-mission-hero.png" alt="SpaceSist preview" width="420" />
-      <br />
-      <strong>SpaceSist</strong> — orbital mission planning
-    </td>
-  </tr>
-  <tr>
-    <td align="center" colspan="2">
-      <strong>Clearasist</strong> — privacy-first, fully local metadata stripping (client-side only; only removal counts are ever shown)
-    </td>
-  </tr>
-</table>
+- **DataSist** — data and insight dashboards
+- **PulseSist** — market signal dashboards
+- **EcoSist** — environmental observatory tools
+- **SpaceSist** — orbital mission planning
+- **Clearasist** — privacy-first, fully local metadata stripping. Runs client-side only; the only thing it ever shows you is a removal count.
+- **Aliasist Tech · Waterfall** — a protected workspace for prompts, chat, and private sessions
 
 ## Tech stack
 
@@ -55,7 +30,7 @@
 - `public/` — static assets and brand imagery
 - `functions/` — Cloudflare Pages Functions
 - `apps/` — suite applications and experiments
-- `assets/` — cinematic and marketing visuals
+- `assets/` — marketing visuals
 
 ## Local development
 

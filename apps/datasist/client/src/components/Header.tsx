@@ -18,7 +18,7 @@ const NAV_BASE: Array<{
   activeBorder: string;
 }> = [
   { view: "map", label: "Map", icon: Map, activeColor: "var(--color-green)", activeBg: "rgba(113,255,156,0.08)", activeBorder: "rgba(113,255,156,0.2)" },
-  { view: "dashboard", label: "Intelligence", icon: BarChart3, activeColor: "var(--color-cyan)", activeBg: "rgba(94,246,255,0.08)", activeBorder: "rgba(94,246,255,0.2)" },
+  { view: "dashboard", label: "Dashboard", icon: BarChart3, activeColor: "var(--color-cyan)", activeBg: "rgba(94,246,255,0.08)", activeBorder: "rgba(94,246,255,0.2)" },
   {
     view: "admin",
     label: "Admin",
@@ -106,7 +106,7 @@ export default function Header({ activeView, setActiveView }: HeaderProps) {
           <span
             className="font-bold tracking-widest text-glow-green"
             style={{
-              fontFamily: "'Cabinet Grotesk', sans-serif",
+              fontFamily: "'Space Grotesk', sans-serif",
               fontSize: "18px",
               color: "var(--color-green)",
               letterSpacing: "0.14em",
@@ -120,10 +120,10 @@ export default function Header({ activeView, setActiveView }: HeaderProps) {
                 fontSize: "9px",
                 color: "var(--color-text-muted)",
                 letterSpacing: "0.18em",
-                fontFamily: "'General Sans', sans-serif",
+                fontFamily: "'Inter', sans-serif",
               }}
             >
-              ALIASIST.COM · AI INFRASTRUCTURE INTELLIGENCE
+              AI DATA CENTER RESEARCH
             </span>
             <span className="datasist-tag" style={{ padding: "4px 8px", fontSize: "9px" }}>
               340+ Facilities Live
@@ -159,7 +159,7 @@ export default function Header({ activeView, setActiveView }: HeaderProps) {
           }}
         >
           <Zap size={11} style={{ color: "var(--color-green)" }} />
-          <span>Live power, water, and grid signals</span>
+          <span>Power, water, and grid data</span>
         </div>
         <a
           href="https://aliasist.com"

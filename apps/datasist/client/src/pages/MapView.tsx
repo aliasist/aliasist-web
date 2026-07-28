@@ -221,7 +221,7 @@ export default function MapView() {
             background: rgba(113, 255, 156, 0.16);
             border: 1.5px solid #71ff9c;
             color: #d6f5e0;
-            font-family: 'General Sans', sans-serif;
+            font-family: 'Inter', sans-serif;
             font-weight: 700;
             font-size: ${count > 200 ? 13 : 11}px;
           ">${count}</div>`,
@@ -285,7 +285,7 @@ export default function MapView() {
       const models: string[] = center.primaryModels ? JSON.parse(center.primaryModels) : [];
       const color = STATUS_COLORS[center.status] || "#71ff9c";
       marker.bindTooltip(
-        `<div style="font-family:'General Sans',sans-serif;min-width:160px;max-width:220px;">
+        `<div style="font-family:'Inter',sans-serif;min-width:160px;max-width:220px;">
           <div style="font-weight:700;font-size:12px;color:#d6f5e0;margin-bottom:4px;">${center.name}</div>
           <div style="font-size:10px;color:#7aad8a;margin-bottom:4px;">${center.company} · ${center.city}, ${center.state}${center.country !== "USA" ? ", " + center.country : ""}</div>
           ${center.capacityMW ? `<div style="font-size:11px;color:${color};font-weight:600;">${center.capacityMW >= 1000 ? `${(center.capacityMW / 1000).toFixed(1)} GW` : `${center.capacityMW} MW`} capacity</div>` : ""}
@@ -399,7 +399,7 @@ export default function MapView() {
                 fontSize: "24px",
                 lineHeight: 1,
                 color: "var(--color-text)",
-                fontFamily: "'Cabinet Grotesk', sans-serif",
+                fontFamily: "'Space Grotesk', sans-serif",
                 fontWeight: 800,
                 letterSpacing: "0.02em",
               }}
@@ -456,13 +456,13 @@ export default function MapView() {
           </div>
           <div className="grid grid-cols-2 gap-2">
             <div>
-              <div style={{ fontSize: "16px", lineHeight: 1, color: "var(--color-text)", fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 700 }}>
+              <div style={{ fontSize: "16px", lineHeight: 1, color: "var(--color-text)", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>
                 {filteredCenters.length}
               </div>
               <div style={{ fontSize: "9px", color: "var(--color-text-muted)", letterSpacing: "0.08em" }}>VISIBLE FACILITIES</div>
             </div>
             <div>
-              <div style={{ fontSize: "16px", lineHeight: 1, color: "#ffd76a", fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 700 }}>
+              <div style={{ fontSize: "16px", lineHeight: 1, color: "#ffd76a", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>
                 {filteredAveragePowerPrice != null ? `${filteredAveragePowerPrice.toFixed(1)}c` : "—"}
               </div>
               <div style={{ fontSize: "9px", color: "var(--color-text-muted)", letterSpacing: "0.08em" }}>AVG U.S. POWER PRICE</div>
@@ -495,13 +495,13 @@ export default function MapView() {
         >
           <div>
             <div style={{ fontSize: "10px", color: "var(--color-text-muted)", letterSpacing: "0.12em" }}>VISIBLE CAPACITY</div>
-            <div style={{ fontSize: "20px", color: "var(--color-green)", fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 700 }}>
+            <div style={{ fontSize: "20px", color: "var(--color-green)", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>
               {(filteredCapacityMw / 1000).toFixed(1)} GW
             </div>
           </div>
           <div>
             <div style={{ fontSize: "10px", color: "var(--color-text-muted)", letterSpacing: "0.12em" }}>OPERATIONAL</div>
-            <div style={{ fontSize: "20px", color: "var(--color-cyan)", fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 700 }}>
+            <div style={{ fontSize: "20px", color: "var(--color-cyan)", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>
               {operationalVisible}
             </div>
           </div>
@@ -718,7 +718,7 @@ export default function MapView() {
             style={{ background: "rgba(7, 16, 25, 0.92)" }}
           >
             <div style={{ fontSize: "12px", color: "var(--color-green)", letterSpacing: "0.15em" }}>
-              LOADING INTELLIGENCE DATA...
+              LOADING DATA CENTER RECORDS...
             </div>
           </div>
         )}
@@ -748,7 +748,7 @@ export default function MapView() {
                 fontSize: "26px",
                 lineHeight: 1.05,
                 color: "var(--color-text)",
-                fontFamily: "'Cabinet Grotesk', sans-serif",
+                fontFamily: "'Space Grotesk', sans-serif",
                 fontWeight: 800,
                 maxWidth: "14ch",
               }}
@@ -763,19 +763,19 @@ export default function MapView() {
           >
             <div>
               <div style={{ fontSize: "10px", color: "var(--color-text-muted)", letterSpacing: "0.12em" }}>VISIBLE</div>
-              <div style={{ fontSize: "22px", color: "var(--color-text)", fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 700 }}>
+              <div style={{ fontSize: "22px", color: "var(--color-text)", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>
                 {filteredCenters.length}
               </div>
             </div>
             <div>
               <div style={{ fontSize: "10px", color: "var(--color-text-muted)", letterSpacing: "0.12em" }}>CAPACITY</div>
-              <div style={{ fontSize: "22px", color: "var(--color-green)", fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 700 }}>
+              <div style={{ fontSize: "22px", color: "var(--color-green)", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>
                 {(filteredCapacityMw / 1000).toFixed(1)} GW
               </div>
             </div>
             <div>
               <div style={{ fontSize: "10px", color: "var(--color-text-muted)", letterSpacing: "0.12em" }}>POWER</div>
-              <div style={{ fontSize: "22px", color: "var(--color-gold)", fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 700 }}>
+              <div style={{ fontSize: "22px", color: "var(--color-gold)", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>
                 {filteredAveragePowerPrice != null ? `${filteredAveragePowerPrice.toFixed(1)}c` : "—"}
               </div>
             </div>
@@ -1160,25 +1160,25 @@ export default function MapView() {
                   </div>
                   <div className="grid grid-cols-2 gap-3">
                     <div>
-                      <div style={{ fontSize: "18px", lineHeight: 1, color: "var(--color-text)", fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 700 }}>
+                      <div style={{ fontSize: "18px", lineHeight: 1, color: "var(--color-text)", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>
                         {filteredCenters.length}
                       </div>
                       <div style={{ fontSize: "10px", color: "var(--color-text-muted)", letterSpacing: "0.08em" }}>VISIBLE FACILITIES</div>
                     </div>
                     <div>
-                      <div style={{ fontSize: "18px", lineHeight: 1, color: "#ffd76a", fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 700 }}>
+                      <div style={{ fontSize: "18px", lineHeight: 1, color: "#ffd76a", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>
                         {filteredAveragePowerPrice != null ? `${filteredAveragePowerPrice.toFixed(1)}c` : "—"}
                       </div>
                       <div style={{ fontSize: "10px", color: "var(--color-text-muted)", letterSpacing: "0.08em" }}>AVG POWER PRICE</div>
                     </div>
                     <div>
-                      <div style={{ fontSize: "18px", lineHeight: 1, color: "var(--color-green)", fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 700 }}>
+                      <div style={{ fontSize: "18px", lineHeight: 1, color: "var(--color-green)", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>
                         {(filteredCapacityMw / 1000).toFixed(1)} GW
                       </div>
                       <div style={{ fontSize: "10px", color: "var(--color-text-muted)", letterSpacing: "0.08em" }}>VISIBLE CAPACITY</div>
                     </div>
                     <div>
-                      <div style={{ fontSize: "18px", lineHeight: 1, color: "var(--color-cyan)", fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 700 }}>
+                      <div style={{ fontSize: "18px", lineHeight: 1, color: "var(--color-cyan)", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700 }}>
                         {operationalVisible}
                       </div>
                       <div style={{ fontSize: "10px", color: "var(--color-text-muted)", letterSpacing: "0.08em" }}>OPERATIONAL</div>

@@ -53,8 +53,8 @@ export default function EarthSignals({ signals }: { signals: LiveSignals }) {
     <div className="flex h-full flex-col gap-5 overflow-hidden p-5 sm:p-8">
       <div className="flex flex-col gap-4 xl:flex-row xl:items-end xl:justify-between">
         <div>
-          <p className="text-[9px] uppercase tracking-[0.35em] text-emerald-400/40">Federated environmental feeds</p>
-          <h2 className="mt-2 text-3xl font-black italic uppercase tracking-tighter text-white">Earth Signals</h2>
+          <p className="text-[9px] uppercase tracking-[0.35em] text-emerald-400/40">NWS, USGS, and NASA data</p>
+          <h2 className="mt-2 text-3xl font-black italic uppercase tracking-tighter text-white">Earth Data</h2>
         </div>
         <label className="flex min-w-0 items-center gap-3 rounded-lg border border-emerald-500/15 bg-black/50 px-3 py-2 xl:w-80">
           <Search className="size-4 text-emerald-400/50" />
@@ -84,7 +84,7 @@ export default function EarthSignals({ signals }: { signals: LiveSignals }) {
               </div>
             </button>
           ))}
-          {!visible.length && <div className="rounded-lg border border-dashed border-emerald-500/15 p-8 text-center text-[10px] uppercase tracking-widest text-emerald-400/35">No matching signals</div>}
+          {!visible.length && <div className="rounded-lg border border-dashed border-emerald-500/15 p-8 text-center text-[10px] uppercase tracking-widest text-emerald-400/35">No matching results</div>}
         </div>
 
         <aside className="overflow-y-auto rounded-xl border border-emerald-500/10 bg-black/55 p-5">
@@ -97,7 +97,7 @@ export default function EarthSignals({ signals }: { signals: LiveSignals }) {
               {selected.href && <a href={selected.href} target="_blank" rel="noreferrer" className="mt-6 flex items-center gap-2 text-[9px] font-bold uppercase tracking-widest text-emerald-400 hover:text-white">Open source <ExternalLink className="size-3" /></a>}
             </>
           ) : (
-            <div className="flex h-full min-h-48 items-center justify-center text-center text-[10px] uppercase tracking-widest text-emerald-400/30">Select a signal for source detail</div>
+            <div className="flex h-full min-h-48 items-center justify-center text-center text-[10px] uppercase tracking-widest text-emerald-400/30">Select an item to see its source</div>
           )}
         </aside>
       </div>

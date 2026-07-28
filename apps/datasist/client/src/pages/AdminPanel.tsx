@@ -179,7 +179,7 @@ export default function AdminPanel() {
   );
 
   return (
-    <div className="flex h-full overflow-hidden" style={{ fontFamily: "'General Sans', sans-serif" }}>
+    <div className="flex h-full overflow-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
       {/* Table section */}
       <div className="flex-1 flex flex-col overflow-hidden">
         {/* Admin header */}
@@ -189,7 +189,7 @@ export default function AdminPanel() {
         >
           <div className="flex items-center gap-2">
             <Shield size={16} style={{ color: "#ffb347" }} />
-            <span style={{ fontSize: "14px", fontWeight: 700, color: "var(--color-text)", fontFamily: "'Cabinet Grotesk', sans-serif", letterSpacing: "0.05em" }}>
+            <span style={{ fontSize: "14px", fontWeight: 700, color: "var(--color-text)", fontFamily: "'Space Grotesk', sans-serif", letterSpacing: "0.05em" }}>
               Admin Panel
             </span>
             <span
@@ -393,7 +393,7 @@ export default function AdminPanel() {
             className="flex items-center justify-between px-4 py-3 border-b flex-shrink-0"
             style={{ borderColor: "var(--color-border)" }}
           >
-            <div style={{ fontSize: "13px", fontWeight: 700, color: "var(--color-text)", fontFamily: "'Cabinet Grotesk', sans-serif" }}>
+            <div style={{ fontSize: "13px", fontWeight: 700, color: "var(--color-text)", fontFamily: "'Space Grotesk', sans-serif" }}>
               {mode === "add" ? "Add New Facility" : `Edit: ${editTarget?.name}`}
             </div>
             <button

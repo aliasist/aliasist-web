@@ -88,7 +88,7 @@ export default function ComparePanel({ facilityA, facilityB, onClose }: Props) {
       style={{
         background: "var(--color-surface)",
         borderLeft: "1px solid var(--color-border-strong)",
-        fontFamily: "'General Sans', sans-serif",
+        fontFamily: "'Inter', sans-serif",
         minWidth: isMobile ? "100%" : "320px",
         maxWidth: isMobile ? "100%" : "360px",
       }}

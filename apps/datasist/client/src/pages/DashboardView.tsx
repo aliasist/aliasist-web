@@ -36,7 +36,7 @@ function KpiCard({ icon: Icon, label, value, sub, color }: { icon: any; label: s
       </div>
       <div
         className="font-bold"
-        style={{ fontSize: "22px", color: color || "var(--color-green)", fontFamily: "'Cabinet Grotesk', sans-serif", lineHeight: 1 }}
+        style={{ fontSize: "22px", color: color || "var(--color-green)", fontFamily: "'Space Grotesk', sans-serif", lineHeight: 1 }}
       >
         {value}
       </div>
@@ -54,7 +54,7 @@ const CustomTooltipStyle = {
     borderRadius: "4px",
     color: "#d6f5e0",
     fontSize: "11px",
-    fontFamily: "'General Sans', sans-serif",
+    fontFamily: "'Inter', sans-serif",
   },
   itemStyle: { color: "#7aad8a" },
   labelStyle: { color: "#71ff9c", fontWeight: 600, marginBottom: "4px" },
@@ -70,7 +70,7 @@ export default function DashboardView() {
     return (
       <div className="flex items-center justify-center h-full">
         <span style={{ fontSize: "12px", color: "var(--color-green)", letterSpacing: "0.15em" }}>
-          COMPILING INTELLIGENCE...
+          LOADING DASHBOARD DATA...
         </span>
       </div>
     );
@@ -163,7 +163,7 @@ export default function DashboardView() {
             <h1
               style={{
                 fontSize: "18px",
-                fontFamily: "'Cabinet Grotesk', sans-serif",
+                fontFamily: "'Space Grotesk', sans-serif",
                 color: "var(--color-green)",
                 fontWeight: 800,
                 letterSpacing: "0.05em",
@@ -243,7 +243,7 @@ export default function DashboardView() {
                 </span>
                 <h2
                   style={{
-                    fontFamily: "'Cabinet Grotesk', sans-serif",
+                    fontFamily: "'Space Grotesk', sans-serif",
                     fontSize: "1.2rem",
                     fontWeight: 800,
                     color: "var(--color-text)",
@@ -351,7 +351,7 @@ export default function DashboardView() {
               style={{ background: "rgba(5,10,6,0.52)", border: "1px solid rgba(255,215,112,0.12)" }}
             >
               <div style={{ fontSize: "9px", color: "var(--color-text-muted)", letterSpacing: "0.12em" }}>AVERAGE U.S. POWER PRICE</div>
-              <div style={{ fontSize: "22px", color: "#ffd76a", fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 800, lineHeight: 1 }}>
+              <div style={{ fontSize: "22px", color: "#ffd76a", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 800, lineHeight: 1 }}>
                 {avgElectricityPrice !== null ? `${avgElectricityPrice.toFixed(1)} c/kWh` : "—"}
               </div>
               <div style={{ fontSize: "10px", color: "var(--color-text-muted)" }}>
@@ -363,7 +363,7 @@ export default function DashboardView() {
               style={{ background: "rgba(5,10,6,0.52)", border: "1px solid rgba(255,215,112,0.12)" }}
             >
               <div style={{ fontSize: "9px", color: "var(--color-text-muted)", letterSpacing: "0.12em" }}>HIGHEST PRICE MARKET</div>
-              <div style={{ fontSize: "16px", color: "var(--color-text)", fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 700, lineHeight: 1.1 }}>
+              <div style={{ fontSize: "16px", color: "var(--color-text)", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, lineHeight: 1.1 }}>
                 {highestElectricityCenter?.state ?? "—"}
               </div>
               <div style={{ fontSize: "12px", color: "#ffd76a", fontWeight: 600 }}>
@@ -380,7 +380,7 @@ export default function DashboardView() {
               style={{ background: "rgba(5,10,6,0.52)", border: "1px solid rgba(255,215,112,0.12)" }}
             >
               <div style={{ fontSize: "9px", color: "var(--color-text-muted)", letterSpacing: "0.12em" }}>LOWEST PRICE MARKET</div>
-              <div style={{ fontSize: "16px", color: "var(--color-text)", fontFamily: "'Cabinet Grotesk', sans-serif", fontWeight: 700, lineHeight: 1.1 }}>
+              <div style={{ fontSize: "16px", color: "var(--color-text)", fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, lineHeight: 1.1 }}>
                 {lowestElectricityCenter?.state ?? "—"}
               </div>
               <div style={{ fontSize: "12px", color: "var(--color-green)", fontWeight: 600 }}>
@@ -410,12 +410,12 @@ export default function DashboardView() {
                 <CartesianGrid strokeDasharray="2 4" stroke="rgba(29,52,37,0.5)" vertical={false} />
                 <XAxis
                   dataKey="company"
-                  tick={{ fill: "#7aad8a", fontSize: 10, fontFamily: "'General Sans', sans-serif" }}
+                  tick={{ fill: "#7aad8a", fontSize: 10, fontFamily: "'Inter', sans-serif" }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <YAxis
-                  tick={{ fill: "#7aad8a", fontSize: 10, fontFamily: "'General Sans', sans-serif" }}
+                  tick={{ fill: "#7aad8a", fontSize: 10, fontFamily: "'Inter', sans-serif" }}
                   axisLine={false}
                   tickLine={false}
                 />
@@ -465,7 +465,7 @@ export default function DashboardView() {
                 <Legend
                   iconType="circle"
                   iconSize={8}
-                  wrapperStyle={{ fontSize: "10px", color: "#7aad8a", fontFamily: "'General Sans', sans-serif" }}
+                  wrapperStyle={{ fontSize: "10px", color: "#7aad8a", fontFamily: "'Inter', sans-serif" }}
                 />
               </PieChart>
             </ResponsiveContainer>
@@ -487,12 +487,12 @@ export default function DashboardView() {
                 <CartesianGrid strokeDasharray="2 4" stroke="rgba(29,52,37,0.5)" vertical={false} />
                 <XAxis
                   dataKey="range"
-                  tick={{ fill: "#7aad8a", fontSize: 10, fontFamily: "'General Sans', sans-serif" }}
+                  tick={{ fill: "#7aad8a", fontSize: 10, fontFamily: "'Inter', sans-serif" }}
                   axisLine={false}
                   tickLine={false}
                 />
                 <YAxis
-                  tick={{ fill: "#7aad8a", fontSize: 10, fontFamily: "'General Sans', sans-serif" }}
+                  tick={{ fill: "#7aad8a", fontSize: 10, fontFamily: "'Inter', sans-serif" }}
                   axisLine={false}
                   tickLine={false}
                 />
@@ -636,7 +636,7 @@ export default function DashboardView() {
                 className="flex flex-col gap-1 p-3 rounded"
                 style={{ background: "var(--color-bg)", border: "1px solid var(--color-border)" }}
               >
-                <div style={{ fontSize: "18px", fontWeight: 800, color: stat.color, fontFamily: "'Cabinet Grotesk', sans-serif", lineHeight: 1 }}>
+                <div style={{ fontSize: "18px", fontWeight: 800, color: stat.color, fontFamily: "'Space Grotesk', sans-serif", lineHeight: 1 }}>
                   {stat.value}
                 </div>
                 <div style={{ fontSize: "10px", color: "var(--color-text-muted)", lineHeight: 1.4 }}>

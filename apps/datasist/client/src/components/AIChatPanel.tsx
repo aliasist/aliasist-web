@@ -122,7 +122,7 @@ export default function AIChatPanel({ facility, onClose }: Props) {
       style={{
         background: "var(--color-surface)",
         borderLeft: "1px solid var(--color-border-strong)",
-        fontFamily: "'General Sans', sans-serif",
+        fontFamily: "'Inter', sans-serif",
       }}
     >
       {/* Header */}
@@ -147,7 +147,7 @@ export default function AIChatPanel({ facility, onClose }: Props) {
               DataSist AI
             </span>
             <span style={{ fontSize: "9px", color: "var(--color-text-muted)", letterSpacing: "0.08em" }}>
-              {facility ? `ANALYZING: ${facility.name.slice(0, 24)}…` : "GLOBAL ANALYSIS MODE"}
+              {facility ? `ABOUT: ${facility.name.slice(0, 24)}…` : "ASK ABOUT THE DATA"}
             </span>
           </div>
         </div>
@@ -348,7 +348,7 @@ export default function AIChatPanel({ facility, onClose }: Props) {
               fontSize: "12px",
               resize: "none",
               lineHeight: "1.5",
-              fontFamily: "'General Sans', sans-serif",
+              fontFamily: "'Inter', sans-serif",
               maxHeight: "80px",
               overflowY: "auto",
             }}
