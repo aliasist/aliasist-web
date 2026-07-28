@@ -44,7 +44,7 @@ const HeroSection = () => {
   return (
     <section
       id="top"
-      className="relative flex min-h-[100dvh] min-h-screen items-center justify-center overflow-hidden grid-bg"
+      className="relative flex min-h-[100dvh] min-h-screen items-center justify-center overflow-hidden"
     >
       <div
         className="absolute inset-0 pointer-events-none z-[0] bg-[radial-gradient(ellipse_85%_75%_at_50%_42%,_transparent_0%,_hsl(var(--background)_/_0.72)_88%,_hsl(var(--background)_/_0.95)_100%)]"
@@ -128,9 +128,6 @@ const HeroSection = () => {
           <HomeGoogleAuth />
         </div>
       </div>
-
-      {/* Bottom fade — carries the tiled field into the next section instead of ending hard. */}
-      <div className="absolute bottom-0 left-0 right-0 h-72 bg-gradient-to-t from-background via-background/58 via-45% to-transparent pointer-events-none z-[2]" />
     </section>
   );
 };
