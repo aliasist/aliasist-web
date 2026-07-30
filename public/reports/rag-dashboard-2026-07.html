@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Aliasist RAG Curation Dashboard — Progress Report</title>
+<meta name="description" content="Progress report: the Aliasist RAG ingestion dashboard is live — per-corpus curation, full document lifecycle, and an end-to-end verified pipeline." />
+<style>
+  :root {
+    --bg: hsl(220, 18%, 7%);
+    --card: hsl(220, 18%, 10%);
+    --border: hsl(220, 15%, 17%);
+    --fg: hsl(150, 10%, 94%);
+    --muted: hsl(220, 12%, 55%);
+    --electric: hsl(165, 90%, 42%);
+    --violet: hsl(252, 100%, 64%);
+    --mono: 'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
+  }
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    background: var(--bg);
+    color: var(--fg);
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    line-height: 1.6;
+    padding: 3rem 1.25rem 5rem;
+  }
+  ::selection { background: hsla(165, 90%, 42%, 0.35); }
+  .wrap { max-width: 860px; margin: 0 auto; }
+  .kicker {
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--electric);
+    margin-bottom: 1rem;
+  }
+  h1 {
+    font-size: clamp(1.8rem, 5vw, 2.6rem);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.75rem;
+  }
+  .sub { color: var(--muted); font-size: 1.05rem; max-width: 60ch; }
+  .date { font-family: var(--mono); font-size: 0.75rem; color: var(--muted); margin-top: 1rem; }
+  .divider {
+    display: flex; align-items: center; gap: 1rem;
+    margin: 3rem 0 1.25rem;
+    font-family: var(--mono); font-size: 0.7rem;
+    letter-spacing: 0.2em; text-transform: uppercase; color: var(--electric);
+  }
+  .divider::after { content: ""; flex: 1; height: 1px; background: var(--border); }
+  h2 { font-size: 1.3rem; letter-spacing: -0.02em; margin-bottom: 0.75rem; }
+  p + p { margin-top: 0.75rem; }
+  .muted { color: var(--muted); }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(230px, 1fr)); gap: 2px; margin: 1.25rem 0; }
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    padding: 1.5rem;
+  }
+  .card h3 { font-size: 0.95rem; margin-bottom: 0.4rem; }
+  .card p { font-size: 0.85rem; color: var(--muted); }
+  .stat { font-size: 1.9rem; font-weight: 700; color: var(--electric); font-family: var(--mono); }
+  .stat-label { font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.15em; text-transform: uppercase; color: var(--muted); margin-top: 0.3rem; }
+  .flow {
+    font-family: var(--mono); font-size: 0.8rem;
+    background: var(--card); border: 1px solid var(--border);
+    padding: 1.25rem 1.5rem; margin: 1.25rem 0;
+    overflow-x: auto; white-space: pre; line-height: 1.9;
+    color: var(--fg);
+  }
+  .flow b { color: var(--electric); font-weight: 600; }
+  ul { padding-left: 1.2rem; margin: 0.75rem 0; }
+  li { margin: 0.45rem 0; }
+  li::marker { color: var(--electric); }
+  .tag {
+    display: inline-block; font-family: var(--mono); font-size: 0.65rem;
+    letter-spacing: 0.12em; text-transform: uppercase;
+    border: 1px solid hsla(165, 90%, 42%, 0.35); color: var(--electric);
+    padding: 0.15rem 0.55rem; border-radius: 2px; margin: 0.15rem 0.25rem 0.15rem 0;
+  }
+  .tag.v { border-color: hsla(252, 100%, 64%, 0.4); color: var(--violet); }
+  .footer {
+    margin-top: 4rem; padding-top: 1.5rem; border-top: 1px solid var(--border);
+    font-family: var(--mono); font-size: 0.7rem; color: var(--muted);
+    display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.5rem;
+  }
+  a { color: var(--electric); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="kicker">Aliasist · Project Update</div>
+  <h1>The RAG Curation Dashboard is live</h1>
+  <p class="sub">
+    We built a full ingestion dashboard for the Aliasist RAG system — upload any document,
+    convert it to clean markdown, route it into the right knowledge corpus, and have every
+    Aliasist chatbot able to cite it moments later. The complete document lifecycle,
+    including deletion, is now verified end-to-end.
+  </p>
+  <p class="date">July 30, 2026 · Blake — Data Science / Platform</p>
+
+  <div class="divider"><span>Background</span></div>
+  <h2>One RAG engine, six brains</h2>
+  <p>
+    The Aliasist platform runs a single retrieval-augmented generation (RAG) hub behind
+    <span class="muted">api.aliasist.tech</span>. Instead of one undifferentiated pile of
+    documents, knowledge is organized into six <strong>corpora</strong> — focused document
+    collections the system searches before answering:
+  </p>
+  <p style="margin-top: 1rem;">
+    <span class="tag">General</span><span class="tag">AGSC · Globe</span><span class="tag">Data · Data centers</span><span class="tag">Eco · Weather</span><span class="tag">Pulse · Markets</span><span class="tag">Space · NASA</span>
+  </p>
+  <p>
+    Incoming questions are triaged to the right corpus automatically, retrieval runs in
+    keyword or semantic (embedding) mode, and answers are generated through a provider
+    waterfall that fails over gracefully. Every Aliasist chatbot — the homepage assistant,
+    the Waterfall prompt surface — draws from this same engine with its own voice.
+  </p>
+
+  <div class="divider"><span>What we shipped</span></div>
+  <div class="grid">
+    <div class="card">
+      <h3>📥 Bulk file-to-markdown ingestion</h3>
+      <p>Drag-and-drop uploads for PDF, DOCX, HTML, CSV, JSON, plain text, and common source files — converted to clean markdown before indexing.</p>
+    </div>
+    <div class="card">
+      <h3>🎯 Per-document corpus targeting</h3>
+      <p>Every upload is routed into a chosen corpus via a dropdown — space docs to Space, market research to Pulse — with validation at every layer.</p>
+    </div>
+    <div class="card">
+      <h3>🧠 Durable vector memory</h3>
+      <p>Documents are chunked, embedded, and stored in both a relational record store and a vector index — searchable semantically, no redeploy required.</p>
+    </div>
+    <div class="card">
+      <h3>🗑️ True deletion</h3>
+      <p>A new delete-by-source API removes a document's records and vectors from the live system — the full lifecycle, not just append-only ingest.</p>
+    </div>
+  </div>
+
+  <div class="divider"><span>Pipeline</span></div>
+  <div class="flow">upload file  →  <b>convert to markdown</b>  →  choose corpus  →  <b>chunk + embed</b>
+    →  durable memory (records + vectors)  →  <b>retrieval</b>  →  cited answers in chat</div>
+
+  <div class="divider"><span>Verified results</span></div>
+  <div class="grid">
+    <div class="card"><div class="stat">212/212</div><div class="stat-label">platform tests passing</div></div>
+    <div class="card"><div class="stat">6</div><div class="stat-label">target corpora</div></div>
+    <div class="card"><div class="stat">8</div><div class="stat-label">file formats converted</div></div>
+    <div class="card"><div class="stat">100%</div><div class="stat-label">lifecycle verified E2E</div></div>
+  </div>
+  <p>
+    The full loop was exercised against a live local stack: a test document was uploaded
+    with the Space corpus selected, converted, chunked, and ingested — then retrieved and
+    cited by the RAG engine under its stored identity. Deleting it through the dashboard
+    removed the underlying records, and fresh queries immediately stopped citing it.
+    Chunk-level citations mean every answer can point back to the exact document that
+    grounded it.
+  </p>
+
+  <div class="divider"><span>Why it matters</span></div>
+  <p>
+    Until now, expanding what Aliasist's assistants know meant editing curated corpus files
+    and redeploying the platform. With the dashboard, curation is a live workflow:
+    drop in research, briefs, or reference material, pick the corpus, and it's citable
+    within moments — across every Aliasist surface at once. This is the foundation for a
+    continuously curated, custom knowledge base.
+  </p>
+
+  <div class="divider"><span>Next</span></div>
+  <ul>
+    <li>Deploy the deletion API to production alongside the existing ingest endpoints</li>
+    <li>Corpus-level browsing — see everything currently ingested per corpus at a glance</li>
+    <li>Scheduled/automated ingestion from recurring sources</li>
+  </ul>
+
+  <div class="footer">
+    <span>ALIASIST · aliasist.com</span>
+    <span>RAG Curation Dashboard · Progress Report · 2026-07-30</span>
+  </div>
+
+</div>
+</body>
+</html>

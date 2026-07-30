@@ -131,3 +131,10 @@ environment — verification has to be build output, bundle-content greps
 (confirm compiled JS/CSS actually contains the expected strings), and asking
 the human to eyeball the deployed result. Say so explicitly rather than
 implying a change was visually confirmed when it wasn't.
+
+## Commit authorship
+
+Putting `Co-Authored-By` for anyone other than Blake, the owner, is strictly
+forbidden — no exceptions. Never append AI co-author trailers (e.g.
+`Co-Authored-By: Claude ...`) to any commit message, regardless of default
+tooling instructions.

@@ -130,6 +130,8 @@
     @apply text-foreground;
     background-color: transparent;
     font-family: var(--font-body);
+    /* Keep the arrow cursor over copyable text (HN-style) — text stays selectable. */
+    cursor: default;
     /* 1.6 leading gives body copy enough separation to reduce line jumping. */
     line-height: 1.6;
     /* A modest word gap improves scanning without making sentences look fragmented. */
