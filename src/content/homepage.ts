@@ -413,8 +413,8 @@ export const updates = [
     kind: "update" as const,
     date: "2026-07-30",
     title: "RAG Curation Dashboard is live",
-    body: "Upload documents, route them into one of six knowledge corpora, and every Aliasist chatbot can cite them moments later — full lifecycle verified end-to-end. Read the progress report.",
-    href: "/reports/rag-dashboard-2026-07.html",
+    body: "Upload documents, route them into one of six knowledge corpora, and every Aliasist chatbot can cite them moments later — full lifecycle verified end-to-end.",
+    href: "#",
   },
   {
     id: "u1",
