@@ -8,7 +8,7 @@ verification level.
 If the task mentions `aliasist.com`, the homepage, navbar, favicon, project
 cards, public copy, or the floating homepage chat button:
 
-- Work in `/home/blake/aliasistabductor`.
+- Work in `/home/blake/aliasist-web`.
 - Start with `src/`, `functions/`, `public/`, or `apps/*` depending on scope.
 
 If the task mentions Waterfall, CAPTCHA, Turnstile, AI image generation,

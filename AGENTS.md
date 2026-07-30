@@ -1,4 +1,4 @@
-# Agent notes — aliasistabductor
+# Agent notes — aliasist-web
 
 Context for any AI agent (Claude, Codex, etc.) working in this repo. Read this
 before making changes, especially before pushing or deploying. Update it when
@@ -9,6 +9,12 @@ you learn something here that isn't obvious from the code.
 This is the `aliasist.com` monorepo — the marketing homepage lives at the
 repo root (`src/`, `functions/`, deploys as Cloudflare Pages project
 `aliasistabductor`), plus a set of independent sub-apps under `apps/`:
+
+The repo and local folder were renamed to `aliasist-web` on 2026-07-30, but
+the Cloudflare Pages **project** is still named `aliasistabductor` — renaming
+it would change the `.pages.dev` URL and disturb the custom domain, so leave
+it. Files Abductor release binaries now live in the separate public repo
+`aliasist/files-abductor`; this repo is private.
 
 | App | What it is | Deploy |
 |---|---|---|
