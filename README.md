@@ -12,10 +12,20 @@
 
 - **DataSist** — data and insight dashboards
 - **PulseSist** — market signal dashboards
-- **EcoSist** — environmental observatory tools
+- **EcoSist** — environmental observatory tools (archived; the demo stays
+  online but is no longer being developed)
 - **SpaceSist** — orbital mission planning
 - **Clearasist** — privacy-first, fully local metadata stripping. Runs client-side only; the only thing it ever shows you is a removal count.
 - **Aliasist Tech · Waterfall** — a protected workspace for prompts, chat, and private sessions
+
+## Related repositories
+
+- **[`files-abductor`](https://github.com/aliasist/files-abductor)** (public) —
+  hosts the Files Abductor desktop release binaries. The homepage download
+  buttons point here, which is what lets this repo stay private. Binaries do
+  not live in this repo.
+- **`verity-console`** (private) — the RAG curation dashboard for the Aliasist
+  knowledge corpora.
 
 ## Tech stack
 
