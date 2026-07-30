@@ -127,10 +127,8 @@ export const footer = {
 
 // ── Projects section ──────────────────────────────────────────────────────────
 
-// Files Abductor binaries — tag on GitHub includes a leading "#" (see releases/tag/%23v2.7.0).
-const releaseTag = "#v2.7.0";
-const releaseTagEncoded = encodeURIComponent(releaseTag);
-const releaseBaseUrl = `https://github.com/aliasist/aliasistabductor/releases/download/${releaseTagEncoded}`;
+// Files Abductor binaries live in the public files-abductor release repo.
+const releaseBaseUrl = "https://github.com/aliasist/files-abductor/releases/download/v2.7.0";
 
 const downloadLinks = {
   appImage: `${releaseBaseUrl}/${encodeURIComponent("Aliasist.Files.Abductor-2.7.0.AppImage")}`,
@@ -150,7 +148,7 @@ export const projects = [
     description:
       "An AI RAG system with an AI chatbot and image generation.",
     tech: ["AI RAG System", "AI Chatbot + Image Generation"],
-    github: "https://github.com/aliasist/waterfall",
+    github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
     meta: ["AI RAG System", "AI Chatbot + Image Generation"] as const,
@@ -180,7 +178,7 @@ export const projects = [
     description:
       "A data center research dashboard for facilities, power, water, risk, and investment data.",
     tech: ["Facility research", "Power data", "Water data", "Risk maps", "Data tables"],
-    github: "https://github.com/aliasist/datasist",
+    github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
     meta: ["Data centers", "Power + water", "Risk research"] as const,
@@ -195,7 +193,7 @@ export const projects = [
     description:
       "A market dashboard with live charts, portfolio tools, and research views.",
     tech: ["Market charts", "Portfolio views", "Research panels", "Live dashboards"],
-    github: "https://github.com/aliasist/stockmarket",
+    github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
     meta: ["Markets", "Portfolio tools", "Research views"] as const,
@@ -225,7 +223,7 @@ export const projects = [
     description:
       "A browser-based metadata cleaner for images, PDFs, and Office files.",
     tech: ["Metadata removal", "Image cleanup", "PDF cleanup", "Office files", "Browser-based"],
-    github: "https://github.com/aliasist/aliasistabductor",
+    github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
     meta: ["Privacy tool", "Browser-based", "File cleanup"] as const,
@@ -240,7 +238,7 @@ export const projects = [
     description:
       "A GitHub tool for repository summaries and pull request review notes.",
     tech: ["Repository maps", "Pull request review", "Project guidance", "Review notes"],
-    github: "https://github.com/aliasist/aliasistabductor",
+    github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
     meta: ["Project guide", "PR review", "Public tool"] as const,
@@ -255,7 +253,7 @@ export const projects = [
     description:
       "A desktop GUI tool for downloading files from YouTube and direct URLs.",
     tech: ["Python", "GUI", "CLI", "File Automation", "yt-dlp"],
-    github: `https://github.com/aliasist/aliasistabductor/releases/tag/${releaseTagEncoded}`,
+    github: "https://github.com/aliasist/files-abductor/releases/tag/v2.7.0",
     downloads: [
       { label: "AppImage", href: downloadLinks.appImage },
       { label: "Snap", href: downloadLinks.snap },
@@ -274,7 +272,7 @@ export const projects = [
     description:
       "Simple, fast stopwatch. No tasks, no accounts, no data saved. Just start/stop/reset, plus a lightweight intro.",
     tech: ["Vanilla JS", "PWA", "No storage"],
-    github: "https://github.com/aliasist/aliasistabductor",
+    github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
     meta: ["Simple Stopwatch"] as const,
@@ -293,7 +291,7 @@ export const projects = [
       "Geospatial Data",
       "Live Monitoring",
     ],
-    github: "https://github.com/aliasist/ecosist",
+    github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
     meta: ["Climate data", "Air quality", "Geospatial"] as const,
