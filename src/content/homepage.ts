@@ -404,7 +404,7 @@ export const contact = {
 export const updatesSection = {
   dividerLabel: "Log",
   headline: "Updates & events",
-  subcopy: "Project news, releases, and upcoming events — posted by hand.",
+  subcopy: "Project news, releases, and upcoming events.",
 } as const;
 
 export const updates = [
