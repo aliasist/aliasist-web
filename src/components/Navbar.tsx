@@ -298,7 +298,7 @@ const Navbar = () => {
 
         {/* ── LEFT: Logo ── */}
         <a
-          href="/"
+          href="/" onClick={() => playClick()}
           className="group flex flex-shrink-0 items-center gap-3 rounded-xl border-0 bg-transparent py-1 pr-2 text-left transition-all duration-300 hover:bg-electric/[0.04] cursor-pointer outline-none appearance-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Back to Aliasist homepage"
         >

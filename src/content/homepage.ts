@@ -106,7 +106,8 @@ export const hero = {
 export const pageNavLinks = [
   { label: "About", href: "#about" },
   { label: "Projects", href: "#projects" },
-  { label: "Updates", href: "#transmissions" },
+  { label: "Updates", href: "#updates" },
+  { label: "NEWS", href: "#transmissions" },
 ] as const;
 
 
@@ -400,11 +401,33 @@ export const contact = {
   ],
 } as const;
 
+// ── Updates & events ───────────────────────────────────────────────────────
+
+export const updatesSection = {
+  dividerLabel: "Log",
+  headline: "Updates & events",
+  subcopy: "Project news, releases, and upcoming events — posted by hand.",
+} as const;
+
+export const updates = [
+  {
+    id: "u1",
+    kind: "update" as const, // "update" | "event"
+    date: "2026-07-30",
+    title: "Homepage gets an updates & events log",
+    body: "Project news and upcoming events now live here, separate from the news feed below.",
+    href: "#",
+  },
+  // Add new entries above this line, newest first.
+] as const;
+
+export type UpdateEntry = (typeof updates)[number];
+
 // ── Transmissions (blog) section headers ─────────────────────────────────────
 
 export const transmissions = {
   dividerLabel: "Blog",
-  headline: "News & updates",
+  headline: "Industry Inquiries",
   scanning: "Updates are live.",
   offline: "Could not load the latest posts. Showing saved posts.",
   liveFeedPrefix: "Updated ",

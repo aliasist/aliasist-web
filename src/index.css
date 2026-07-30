@@ -147,8 +147,8 @@
     font-family: var(--font-heading);
     /* Tighter leading keeps multi-line headings visually cohesive. */
     line-height: 1.2;
-    /* Positive tracking gives large headings a clearer silhouette. */
-    letter-spacing: 0.04em;
+    /* Tight negative tracking gives large headings a denser, more editorial silhouette. */
+    letter-spacing: -0.02em;
     word-spacing: normal;
     text-wrap: balance;
   }

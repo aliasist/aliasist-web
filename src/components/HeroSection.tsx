@@ -47,7 +47,7 @@ const HeroSection = () => {
       className="relative flex min-h-[100dvh] min-h-screen items-center justify-center overflow-hidden"
     >
       <div
-        className="absolute inset-0 pointer-events-none z-[0] bg-[radial-gradient(ellipse_85%_75%_at_50%_42%,_transparent_0%,_hsl(var(--background)_/_0.72)_88%,_hsl(var(--background)_/_0.95)_100%)]"
+        className="absolute inset-0 pointer-events-none z-[0] bg-[radial-gradient(ellipse_85%_75%_at_50%_42%,_transparent_0%,_hsl(var(--background)_/_0.55)_75%,_transparent_100%)]"
         aria-hidden
       />
 
