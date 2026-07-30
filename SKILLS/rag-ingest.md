@@ -13,7 +13,7 @@ context.
 ## Preconditions
 
 - Retrieval and ingestion work belongs in `/home/blake/aliasist-platform`.
-- Homepage chat in `/home/blake/aliasistabductor` is a consumer only.
+- Homepage chat in `/home/blake/aliasist-web` is a consumer only.
 - Data records need source metadata and freshness rules.
 
 ## Tool Steps

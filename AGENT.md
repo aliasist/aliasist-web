@@ -13,7 +13,7 @@ worktree.
 
 ## Source Boundaries
 
-- `aliasistabductor`: `aliasist.com` homepage and nested suite apps.
+- `aliasist-web`: `aliasist.com` homepage and nested suite apps.
 - `aliasist-tech`: Waterfall AI, CAPTCHA, text/image generation.
 - `aliasist-platform`: shared API, RAG, AI routing, Vectorize/data pipelines.
 - `globalize`: Globalize app.

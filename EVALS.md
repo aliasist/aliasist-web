@@ -11,7 +11,7 @@ Prompt:
 
 Expected behavior:
 
-- Uses `/home/blake/aliasistabductor`.
+- Uses `/home/blake/aliasist-web`.
 - Does not use `/home/blake/aliasist-home`.
 - Checks `git status --short --branch`.
 - Edits the relevant homepage source only.
@@ -41,7 +41,7 @@ Prompt:
 Expected behavior:
 
 - Uses `/home/blake/aliasist-platform` for ingestion/retrieval changes.
-- Uses `/home/blake/aliasistabductor` only for homepage chat consumer changes.
+- Uses `/home/blake/aliasist-web` only for homepage chat consumer changes.
 - Preserves source URLs, observed dates, timestamps, and tags.
 - Separates local data preparation from deployed retrieval.
 
