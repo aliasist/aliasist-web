@@ -130,7 +130,12 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
         </div>
 
       <div className="flex items-center gap-3 mb-6 relative z-10">
-        <span className="font-mono text-[10px] uppercase tracking-[0.15em] text-electric">
+        {/* Electric reads as "active" — anything not live is muted so the badge doesn't oversell. */}
+        <span
+          className={`font-mono text-[10px] uppercase tracking-[0.15em] ${
+            project.status === "Live" ? "text-electric" : "text-muted-foreground/60"
+          }`}
+        >
           {project.status}
         </span>
       </div>

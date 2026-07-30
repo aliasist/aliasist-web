@@ -1,12 +1,16 @@
 import { motion } from "framer-motion";
 import { updatesSection, updates, type UpdateEntry } from "@/content/homepage";
 
-const KIND_LABELS: Record<UpdateEntry["kind"], string> = {
+// Both kinds are styled here even when no entry currently uses "event",
+// so adding one to the updates list needs no change in this file.
+type UpdateKind = "update" | "event";
+
+const KIND_LABELS: Record<UpdateKind, string> = {
   update: "Update",
   event: "Event",
 };
 
-const KIND_COLORS: Record<UpdateEntry["kind"], string> = {
+const KIND_COLORS: Record<UpdateKind, string> = {
   update: "hsl(var(--electric))",
   event: "hsl(var(--violet))",
 };

@@ -77,7 +77,7 @@ export const suiteApps = [
   },
   {
     label: "EcoSist",
-    sub: "**UNDER CONSTRUCTION** project paused.",
+    sub: "Archived — demo only",
     href: "/ecosist/",
     icon: "ES",
   },
@@ -285,7 +285,7 @@ export const projects = [
   {
     name: "EcoSist",
     description:
-      "An environmental dashboard for air quality, climate data, and geospatial views.",
+      "An environmental dashboard for air quality, climate data, and geospatial views. Archived — the demo stays online, but it is no longer being developed.",
     tech: [
       "Environmental APIs",
       "Geospatial Data",
@@ -293,12 +293,12 @@ export const projects = [
     ],
     github: "https://github.com/aliasist",
     downloads: [],
-    status: "Live",
+    status: "Archived",
     meta: ["Climate data", "Air quality", "Geospatial"] as const,
     tone: "green",
     icon: "ES",
     link: "/ecosist/",
-    linkLabel: "OPEN →",
+    linkLabel: "VIEW DEMO →",
     banner: ecosistBanner,
   },
 ] as const;
