@@ -128,6 +128,30 @@ current upstream worker still accepts the legacy internal key for Waterfall).
 - Only successful lookups are cached (`if (cache && context)`) — a transient
   upstream outage never poisons the edge cache with a miss.
 
+## A green CI run is not proof the change is live
+
+Verified twice on 2026-07-30: the deploy workflow reported success while
+`curl` still returned the previous bundle. Two distinct causes — a cached
+HTML response pointing at the old asset hash, and edge propagation lag after
+the workflow finishes. Neither is a failed deploy, and re-running or
+re-pushing "to fix it" would have been the wrong call.
+
+Verify by comparing the live asset hash against the hash your local `npm run
+build` produced, using a cache-busted request, then grep the live chunk for
+the strings you added *and* the ones you removed. Full recipe in
+`docs/HOMEPAGE_DEPLOYMENT.md` → "Verifying A Deploy Actually Shipped".
+
+## Repo visibility and public assets
+
+Every Aliasist repo is private as of 2026-07-30 except `files-abductor`,
+which exists only to host public release binaries. Consequences to remember:
+
+- Anything the live site links to on GitHub — release downloads, raw asset
+  URLs — must live in a public repo or it 404s for visitors.
+- Privatizing repos silently broke every `github:` link on the homepage
+  project cards; they now point at the `github.com/aliasist` profile. Re-check
+  those links whenever repo visibility changes.
+
 ## No headless browser in this sandbox
 
 Playwright's browser binaries fail to install here (`ubuntu26.04-x64` is
