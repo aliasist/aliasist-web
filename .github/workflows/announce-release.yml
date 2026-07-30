@@ -1,0 +1,40 @@
+name: Announce release to homepage feed
+
+# Fired by a `repository_dispatch` from a source repo's own release workflow
+# (see docs/announce-release-source-repo.yml for the sender side, since that
+# workflow lives in a different repo and can't be added from here).
+on:
+  repository_dispatch:
+    types: [new-release]
+
+jobs:
+  open-update-pr:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+      pull-requests: write
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Append update entry
+        id: entry
+        env:
+          REPO: ${{ github.event.client_payload.repo }}
+          TAG: ${{ github.event.client_payload.tag }}
+          NAME: ${{ github.event.client_payload.name }}
+          BODY: ${{ github.event.client_payload.body }}
+          URL: ${{ github.event.client_payload.url }}
+        run: node scripts/announce-release.mjs
+
+      - name: Open pull request
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "content: announce ${{ github.event.client_payload.repo }} ${{ github.event.client_payload.tag }}"
+          branch: announce/${{ github.event.client_payload.repo }}-${{ github.event.client_payload.tag }}
+          title: "Announce: ${{ github.event.client_payload.repo }} ${{ github.event.client_payload.tag }}"
+          body: |
+            Auto-generated from a release published on `${{ github.event.client_payload.repo }}`.
+
+            Review the title/body copy in `src/content/homepage.ts` before merging — it's pulled directly from the GitHub release notes and may need trimming.
+          add-paths: src/content/homepage.ts

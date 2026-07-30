@@ -1,0 +1,36 @@
+# Copy this file into EACH source repo you want to appear in the
+# aliasistabductor homepage feed (e.g. datasist, ecosist, clearasist,
+# llm-chat), at: .github/workflows/announce-to-homepage.yml
+#
+# Setup, once per source repo:
+#   1. Create a GitHub PAT (classic or fine-grained) with `repo` scope,
+#      belonging to an account with write access to aliasist/aliasistabductor.
+#   2. In this source repo: Settings -> Secrets and variables -> Actions
+#      -> New repository secret -> name it HOMEPAGE_DISPATCH_TOKEN, paste the PAT.
+#   3. Commit this file. It will fire on every published GitHub Release
+#      and notify aliasistabductor, which opens a review PR there.
+
+name: Announce release to homepage
+
+on:
+  release:
+    types: [published]
+
+jobs:
+  notify-homepage:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Dispatch to aliasistabductor
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          token: ${{ secrets.HOMEPAGE_DISPATCH_TOKEN }}
+          repository: aliasist/aliasistabductor
+          event-type: new-release
+          client-payload: |-
+            {
+              "repo": "${{ github.event.repository.name }}",
+              "tag": "${{ github.event.release.tag_name }}",
+              "name": "${{ github.event.release.name }}",
+              "body": ${{ toJson(github.event.release.body) }},
+              "url": "${{ github.event.release.html_url }}"
+            }

@@ -144,7 +144,7 @@ const BlogCard = ({ article, index }: { article: Article; index: number }) => {
       <CardThumbnail article={article} />
 
       {/* Card body */}
-      <div className="p-5 flex flex-col flex-1">
+      <div className="p-6 flex flex-col flex-1">
         {/* Bottom accent line */}
         <div
           className="absolute bottom-0 left-0 right-0 h-px scale-x-0 group-hover:scale-x-100 transition-transform duration-400 origin-left"
@@ -301,7 +301,7 @@ const TransmissionsSection = () => {
         {loading && (
           <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-0.5">
             {[...Array(6)].map((_, i) => (
-              <div key={i} className="bg-background border border-border p-7 animate-pulse">
+              <div key={i} className="bg-background border border-border p-6 animate-pulse">
                 <div className="h-2 bg-border rounded w-20 mb-5" />
                 <div className="h-4 bg-border rounded w-full mb-2" />
                 <div className="h-4 bg-border rounded w-3/4 mb-5" />
