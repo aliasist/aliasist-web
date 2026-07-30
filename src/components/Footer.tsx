@@ -12,7 +12,7 @@ const Footer = () => {
           className="hidden sm:block absolute -left-20 bottom-0 w-16 h-16 opacity-30 hover:opacity-60 transition-opacity duration-700 pointer-events-none select-none"
         />
         <p className="font-mono text-xs text-background/30 order-2 text-center sm:order-none sm:text-left">
-          © {new Date().getFullYear()} {footer.brandName}. All rights reserved.
+          © Aliasist. Made with ❤️ in America
         </p>
 
         <div className="flex flex-wrap items-center justify-center gap-x-6 gap-y-3 order-1 sm:order-none">
