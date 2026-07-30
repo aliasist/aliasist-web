@@ -81,10 +81,17 @@ Root homepage deployment:
 npm run deploy:pages
 ```
 
-This deploys the Cloudflare Pages project `aliasistabductor`.
+This deploys the Cloudflare Pages project `aliasistabductor` — that is the
+Pages project name, not the repo name. The repo was renamed to `aliasist-web`
+on 2026-07-30; the Pages project deliberately kept its old name.
 
 Nested apps may not deploy from the root push. Check `AGENTS.md` and each app's
 `package.json` before claiming anything shipped.
+
+A green CI run is not proof the change is live — cached HTML and edge
+propagation lag both make a fresh deploy look stale. Compare the live asset
+hash against your local build hash before saying it shipped; recipe in
+`docs/HOMEPAGE_DEPLOYMENT.md`.
 
 ## Escalation
 
