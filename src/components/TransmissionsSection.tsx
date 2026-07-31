@@ -84,7 +84,9 @@ const CardThumbnail = ({ article }: { article: Article }) => {
   const svgId = `pat-${article.tag}`;
 
   return (
-    <div className="relative w-full aspect-video overflow-hidden" style={{ background: bg }}>
+    <div className="relative w-full h-14 sm:h-16 overflow-hidden" style={{ background: bg }}>
+      {/* Purely decorative (no per-article image) — kept short so the card's
+          real content, the title, dominates the space instead of the art. */}
       {/* Subtle animated grid pattern */}
       <svg className="absolute inset-0 w-full h-full opacity-[0.08]" aria-hidden="true">
         <defs>
@@ -144,7 +146,7 @@ const BlogCard = ({ article, index }: { article: Article; index: number }) => {
       <CardThumbnail article={article} />
 
       {/* Card body */}
-      <div className="p-6 flex flex-col flex-1">
+      <div className="p-5 flex flex-col flex-1">
         {/* Bottom accent line */}
         <div
           className="absolute bottom-0 left-0 right-0 h-px scale-x-0 group-hover:scale-x-100 transition-transform duration-400 origin-left"
@@ -152,7 +154,7 @@ const BlogCard = ({ article, index }: { article: Article; index: number }) => {
         />
 
         {/* Time */}
-        <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center justify-between mb-2">
           <span className="font-mono text-[10px] text-muted-foreground/50">
             {timeAgo(article.published)}
           </span>
