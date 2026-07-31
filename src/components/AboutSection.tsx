@@ -26,7 +26,10 @@ const AboutSection = () => {
       aria-labelledby="about-heading"
       className="relative overflow-hidden px-4 py-28 sm:px-8 lg:px-12 xl:px-16"
     >
-      <div className="absolute inset-0 bg-gradient-to-b from-background/10 via-background/20 to-background/10 pointer-events-none" />
+      {/* Starts transparent, not a fixed tint — Hero's own gradients all fade
+          to transparent at its lower edge, so matching that here keeps the
+          seam between the two sections continuous instead of stepping. */}
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background/10 pointer-events-none" />
       <div className="absolute inset-0 bg-[radial-gradient(ellipse_72%_48%_at_50%_14%,_hsl(165_90%_42%_/_0.04)_0%,_transparent_62%)] pointer-events-none" />
 
       <div className="relative z-10 mx-auto w-full max-w-site">

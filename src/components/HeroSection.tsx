@@ -46,16 +46,25 @@ const HeroSection = () => {
       id="top"
       className="relative flex min-h-[100dvh] min-h-screen items-center justify-center overflow-hidden"
     >
+      {/* The 85%/75% ellipse below is still at ~0.5 alpha at this section's
+          own bottom edge — its own gradient stops never reach transparent
+          before the box ends. Masking the whole glow stack forces it to
+          zero right at the boundary so About's section starts from a true
+          blank instead of a visible step down in tint. */}
       <div
-        className="absolute inset-0 pointer-events-none z-[0] bg-[radial-gradient(ellipse_85%_75%_at_50%_42%,_transparent_0%,_hsl(var(--background)_/_0.55)_75%,_transparent_100%)]"
-        aria-hidden
-      />
+        className="absolute inset-0 pointer-events-none [mask-image:linear-gradient(to_bottom,black_0%,black_78%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_0%,black_78%,transparent_100%)]"
+      >
+        <div
+          className="absolute inset-0 z-[0] bg-[radial-gradient(ellipse_85%_75%_at_50%_42%,_transparent_0%,_hsl(var(--background)_/_0.55)_75%,_transparent_100%)]"
+          aria-hidden
+        />
 
-      {/* Layered radial glows */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_35%,_hsl(165_90%_42%_/_0.06)_0%,_transparent_65%)] pointer-events-none" />
-      <div className="absolute inset-0 hero-violet-glow-a pointer-events-none" />
-      <div className="absolute inset-0 hero-violet-glow-b pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_50%_80%,_hsl(165_90%_42%_/_0.04)_0%,_transparent_70%)] pointer-events-none" />
+        {/* Layered radial glows */}
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_35%,_hsl(165_90%_42%_/_0.06)_0%,_transparent_65%)] pointer-events-none" />
+        <div className="absolute inset-0 hero-violet-glow-a pointer-events-none" />
+        <div className="absolute inset-0 hero-violet-glow-b pointer-events-none" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_50%_80%,_hsl(165_90%_42%_/_0.04)_0%,_transparent_70%)] pointer-events-none" />
+      </div>
 
       <div className="relative z-10 mx-auto flex w-full max-w-site flex-col items-center px-4 pt-14 pb-14 text-center sm:px-8 sm:pt-16 lg:px-12 xl:px-16">
         <motion.div
