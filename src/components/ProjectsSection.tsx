@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { motion } from "framer-motion";
 import { Download, ExternalLink, Github } from "lucide-react";
 import {
@@ -7,6 +8,13 @@ import {
   type ProjectCard,
 } from "@/content/homepage";
 import { AdUnit, AD_SLOTS } from "@/components/AdUnit";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 const isExternalHref = (href: string) => /^https?:\/\//.test(href);
 
@@ -94,6 +102,11 @@ const toneStyles = {
 const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }) => {
   const headingId = `project-heading-${index}`;
   const tone = toneStyles[project.tone];
+  const [demoOpen, setDemoOpen] = useState(false);
+  // Archived demos open in-page since they're same-origin routes; an
+  // archived project pointing off-site would still need a normal link,
+  // since the target's frame headers are out of our control.
+  const showsDemoModal = project.status === "Archived" && !!project.link && !isExternalHref(project.link);
   return (
     <motion.article
       key={project.name}
@@ -188,7 +201,19 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
       )}
 
         <div className="relative z-10 mt-6 flex flex-wrap items-center gap-3">
-      {project.link && (
+      {project.link && showsDemoModal && (
+          <motion.button
+            type="button"
+            onClick={() => setDemoOpen(true)}
+            whileHover={actionHover}
+            whileTap={actionTap}
+            className="tap-target subtle-link-motion inline-flex items-center gap-2 rounded-sm bg-electric px-5 py-2.5 font-mono text-xs uppercase tracking-[0.12em] text-background outline-none transition-colors hover:bg-electric/85 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+          >
+            <span>{project.linkLabel}</span>
+            <ExternalLink className="size-3.5" aria-hidden />
+          </motion.button>
+      )}
+      {project.link && !showsDemoModal && (
           <motion.a
             href={project.link}
             target={isExternalHref(project.link) ? "_blank" : undefined}
@@ -214,6 +239,34 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
           </motion.a>
         </div>
       </div>
+
+      {showsDemoModal && (
+        <Dialog open={demoOpen} onOpenChange={setDemoOpen}>
+          <DialogContent className="max-w-4xl w-[min(96vw,64rem)] h-[min(85vh,44rem)] flex flex-col gap-3 p-4 sm:p-5">
+            <DialogHeader className="shrink-0">
+              <DialogTitle className="text-base">{project.name} — Demo</DialogTitle>
+              <DialogDescription>
+                Archived project. Demo runs live below —{" "}
+                <a
+                  href={project.link ?? "#"}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="underline underline-offset-2 hover:text-electric"
+                >
+                  open in a new tab
+                </a>{" "}
+                instead.
+              </DialogDescription>
+            </DialogHeader>
+            <iframe
+              src={demoOpen ? project.link ?? undefined : undefined}
+              title={`${project.name} demo`}
+              className="w-full flex-1 rounded-sm border border-border/60 bg-background"
+              loading="lazy"
+            />
+          </DialogContent>
+        </Dialog>
+      )}
     </motion.article>
   );
 };
