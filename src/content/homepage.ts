@@ -6,6 +6,8 @@
  *
  * Project links:
  *   • Navbar: open "Projects" in the top bar — same URLs as `suiteApps` below.
+ *     Entries with `isDemo: true` are archived/retired apps; the Navbar
+ *     menu hides them, Contact opens them in a demo modal instead of navigating.
  *   • Contact: scroll to Contact → right column "Projects".
  *   • Projects: each card has its own "Open …" button; URLs are in `projects`.
  *
@@ -68,18 +70,21 @@ export const suiteApps = [
     sub: "Archived — demo only",
     href: "/tools/github",
     icon: "GH",
+    isDemo: true,
   },
   {
     label: "Atomicity",
     sub: "Archived — demo only",
     href: "/atomicity/",
     icon: "AT",
+    isDemo: true,
   },
   {
     label: "EcoSist",
     sub: "Archived — demo only",
     href: "/ecosist/",
     icon: "ES",
+    isDemo: true,
   },
 ] as const;
 
@@ -388,6 +393,7 @@ export const contact = {
   errorFallback: "message failed — try dev@aliasist.com",
   suiteColumnLabel: "Projects",
   liveBadge: "Live",
+  demoBadge: "Demo",
   suiteStats: [
     { n: `${suiteAppCount}`, l: "Projects" },
     { n: "7+", l: "APIs" },
