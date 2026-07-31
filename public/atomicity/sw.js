@@ -1,5 +1,5 @@
 /** Offline shell for Atomicity — cache static assets only; no network uploads in-app. */
-const CACHE = "atomicity-crafted-v27-2026";
+const CACHE = "atomicity-crafted-v28-2026";
 const ROOT = new URL("./", self.location).href;
 const INDEX_URL = new URL("index.html", ROOT).href;
 const PRECACHE = [
