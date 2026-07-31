@@ -103,10 +103,15 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
   const headingId = `project-heading-${index}`;
   const tone = toneStyles[project.tone];
   const [demoOpen, setDemoOpen] = useState(false);
+  const [downloadsOpen, setDownloadsOpen] = useState(false);
   // Archived demos open in-page since they're same-origin routes; an
   // archived project pointing off-site would still need a normal link,
   // since the target's frame headers are out of our control.
   const showsDemoModal = project.status === "Archived" && !!project.link && !isExternalHref(project.link);
+  // Desktop apps like Files Abductor have no web demo to embed — no `link`
+  // at all — but do have real release assets, so give them a modal listing
+  // those instead of a bare row of small text links at the card's bottom.
+  const showsDownloadsModal = !project.link && project.downloads.length > 0;
   return (
     <motion.article
       key={project.name}
@@ -181,26 +186,19 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
         </div>
       </div>
 
-      {project.downloads.length > 0 && (
-        <div className="relative z-10 flex gap-4 flex-wrap mt-6 pt-6 border-t border-border/40">
-          {project.downloads.map((d) => (
-            <motion.a
-              key={d.label}
-              href={d.href}
-              target="_blank"
-              rel="noopener noreferrer"
-              whileHover={actionHover}
-              whileTap={actionTap}
-              className="tap-target subtle-link-motion inline-flex items-center gap-2 rounded-sm font-mono text-xs uppercase tracking-[0.1em] text-muted-foreground outline-none transition-colors hover:text-electric focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
-            >
-              <Download className="size-3.5" aria-hidden />
-              {d.label}
-            </motion.a>
-          ))}
-        </div>
-      )}
-
         <div className="relative z-10 mt-6 flex flex-wrap items-center gap-3">
+      {showsDownloadsModal && (
+          <motion.button
+            type="button"
+            onClick={() => setDownloadsOpen(true)}
+            whileHover={actionHover}
+            whileTap={actionTap}
+            className="tap-target subtle-link-motion inline-flex items-center gap-2 rounded-sm bg-electric px-5 py-2.5 font-mono text-xs uppercase tracking-[0.12em] text-background outline-none transition-colors hover:bg-electric/85 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+          >
+            <Download className="size-3.5" aria-hidden />
+            <span>{project.linkLabel}</span>
+          </motion.button>
+      )}
       {project.link && showsDemoModal && (
           <motion.button
             type="button"
@@ -264,6 +262,31 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
               className="w-full flex-1 rounded-sm border border-border/60 bg-background"
               loading="lazy"
             />
+          </DialogContent>
+        </Dialog>
+      )}
+
+      {showsDownloadsModal && (
+        <Dialog open={downloadsOpen} onOpenChange={setDownloadsOpen}>
+          <DialogContent className="max-w-md">
+            <DialogHeader>
+              <DialogTitle className="text-base">{project.name} — Downloads</DialogTitle>
+              <DialogDescription>Pick a build for your platform.</DialogDescription>
+            </DialogHeader>
+            <div className="flex flex-col gap-2">
+              {project.downloads.map((d) => (
+                <a
+                  key={d.label}
+                  href={d.href}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="tap-target flex items-center gap-3 rounded-sm border border-border/70 bg-background/40 px-4 py-3 font-mono text-xs uppercase tracking-[0.1em] text-foreground/85 outline-none transition-colors hover:border-electric/40 hover:text-electric focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+                >
+                  <Download className="size-4 shrink-0" aria-hidden />
+                  {d.label}
+                </a>
+              ))}
+            </div>
           </DialogContent>
         </Dialog>
       )}
