@@ -4,7 +4,14 @@
 import { initIntro } from "./intro.mjs";
 import { formatElapsed } from "./atomicity-core.mjs";
 
-await initIntro();
+// The intro is a full-viewport interactive game — skip it when embedded (e.g. the
+// archive-demo modal iframe) so the app boots immediately instead of blocking on it.
+const embedded = window.self !== window.top;
+if (!embedded) {
+  await initIntro();
+} else {
+  document.getElementById("axIntro")?.setAttribute("hidden", "");
+}
 
 const els = {
   display: document.getElementById("display"),
