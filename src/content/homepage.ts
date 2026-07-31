@@ -65,13 +65,13 @@ export const suiteApps = [
   },
   {
     label: "GitHub Companion",
-    sub: "Guided GitHub project tools",
+    sub: "Archived — demo only",
     href: "/tools/github",
     icon: "GH",
   },
   {
     label: "Atomicity",
-    sub: "Stopwatch",
+    sub: "Archived — demo only",
     href: "/atomicity/",
     icon: "AT",
   },
@@ -236,16 +236,16 @@ export const projects = [
   {
     name: "GitHub Companion",
     description:
-      "A GitHub tool for repository summaries and pull request review notes.",
+      "A GitHub tool for repository summaries and pull request review notes. Archived — the demo stays online, but it is no longer being developed.",
     tech: ["Repository maps", "Pull request review", "Project guidance", "Review notes"],
     github: "https://github.com/aliasist",
     downloads: [],
-    status: "Live",
+    status: "Archived",
     meta: ["Project guide", "PR review", "Public tool"] as const,
     tone: "violet",
     icon: "GH",
     link: "/tools/github",
-    linkLabel: "OPEN →",
+    linkLabel: "VIEW DEMO →",
     banner: githubCompanionBanner,
   },
   {
@@ -270,16 +270,16 @@ export const projects = [
   {
     name: "Atomicity",
     description:
-      "Simple, fast stopwatch. No tasks, no accounts, no data saved. Just start/stop/reset, plus a lightweight intro.",
+      "Simple, fast stopwatch. No tasks, no accounts, no data saved. Just start/stop/reset, plus a lightweight intro. Archived — the demo stays online, but it is no longer being developed.",
     tech: ["Vanilla JS", "PWA", "No storage"],
     github: "https://github.com/aliasist",
     downloads: [],
-    status: "Live",
+    status: "Archived",
     meta: ["Simple Stopwatch"] as const,
     tone: "amber",
     icon: "AT",
     link: "/atomicity/",
-    linkLabel: "OPEN →",
+    linkLabel: "VIEW DEMO →",
     banner: atomicityBanner,
   },
   {
