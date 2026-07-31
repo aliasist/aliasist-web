@@ -1,9 +1,8 @@
-import { lazy, Suspense, useState, useEffect } from "react";
+import { lazy, Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import ScrollProgress from "@/components/ScrollProgress";
 import AliasistChat from "@/components/AliasistChat";
-import IntroSplashScreen from "@/components/IntroSplashScreen";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { AdUnit, AD_SLOTS } from "@/components/AdUnit";
 
@@ -19,42 +18,9 @@ function SectionFallback() {
 }
 
 
-// Bump version suffix here to force all users to see a redesigned splash (e.g. "v2", "v3")
-const INTRO_SEEN_KEY = "aliasist-intro-v1";
-
 const Index = () => {
-  // Only show intro splash if not seen before
-  const [showSplash, setShowSplash] = useState(() => {
-    if (typeof window === "undefined") return true;
-    if (localStorage.getItem(INTRO_SEEN_KEY)) return false;
-    if (new URLSearchParams(window.location.search).get("beamed") === "1") {
-      localStorage.setItem(INTRO_SEEN_KEY, "1");
-      return false;
-    }
-    return true;
-  });
-
-  // Prevent background scroll while splash is up
-  useEffect(() => {
-    if (showSplash) {
-      document.body.style.overflow = "hidden";
-    } else {
-      document.body.style.overflow = "";
-    }
-    return () => { document.body.style.overflow = ""; };
-  }, [showSplash]);
-
-  // When splash is dismissed, mark intro as seen
-  const handleSplashDismiss = () => {
-    localStorage.setItem(INTRO_SEEN_KEY, "1");
-    setShowSplash(false);
-  };
-
   return (
     <div className="min-h-screen relative">
-      {showSplash && (
-        <IntroSplashScreen onDismiss={handleSplashDismiss} />
-      )}
       <ScrollProgress />
       <Navbar />
       <main id="main-content" className="relative z-10" tabIndex={-1}>
