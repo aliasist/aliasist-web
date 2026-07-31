@@ -4,6 +4,13 @@ import streetBanner from "@images/aliasist_banner_street.png";
 import { useState, useRef } from "react";
 import { contact, suiteApps } from "@/content/homepage";
 import { readJsonBody, siteEndpoints } from "@/config/api";
+import {
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogDescription,
+} from "@/components/ui/dialog";
 
 const CONTACT_API = siteEndpoints.contactApi;
 const isExternalHref = (href: string) => /^https?:\/\//.test(href);
@@ -54,6 +61,7 @@ const ContactSection = () => {
   const [formState, setFormState] = useState<FormState>("idle");
   const [errorMsg, setErrorMsg]   = useState("");
   const formRef = useRef<HTMLFormElement>(null);
+  const [demoApp, setDemoApp] = useState<(typeof suiteApps)[number] | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -249,42 +257,79 @@ const ContactSection = () => {
                 {contact.suiteColumnLabel}
               </p>
               <div className="flex flex-col gap-0.5">
-                {suiteApps.map((app, i) => (
-                  <motion.a
-                    key={app.label}
-                    href={app.href}
-                    target={isExternalHref(app.href) ? "_blank" : undefined}
-                    rel={isExternalHref(app.href) ? "noopener noreferrer" : undefined}
-                    initial={{ opacity: 0, x: 20 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, delay: i * 0.1 }}
-                    whileHover={contactLinkHover}
-                    whileTap={contactLinkTap}
-                    className="tap-target group flex items-center justify-between px-6 py-5 bg-background/5 border border-background/10 outline-none transition-[background-color,border-color,box-shadow] duration-300 hover:bg-electric/10 hover:border-electric/30 hover:shadow-electric-xs focus-visible:z-10 focus-visible:border-electric/40 focus-visible:bg-electric/10 focus-visible:shadow-electric-xs focus-visible:ring-2 focus-visible:ring-white/45 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
-                  >
-                    <div className="flex items-center gap-4">
-                      <span className="flex size-9 shrink-0 items-center justify-center rounded-sm border border-background/15 bg-background/5 font-mono text-[10px] font-semibold text-electric">
-                        {app.icon}
-                      </span>
-                      <div>
-                        <p className="font-mono text-sm font-semibold text-background/80 group-hover:text-electric transition-colors">
-                          {app.label}
-                        </p>
-                        <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-background/35 mt-0.5">
-                          {app.sub}
-                        </p>
+                {suiteApps.map((app, i) => {
+                  const isDemo = "isDemo" in app && app.isDemo;
+                  const linkProps = isDemo
+                    ? { type: "button" as const, onClick: () => setDemoApp(app) }
+                    : {
+                        href: app.href,
+                        target: isExternalHref(app.href) ? "_blank" : undefined,
+                        rel: isExternalHref(app.href) ? "noopener noreferrer" : undefined,
+                      };
+                  const Tag = isDemo ? motion.button : motion.a;
+                  return (
+                    <Tag
+                      key={app.label}
+                      {...linkProps}
+                      initial={{ opacity: 0, x: 20 }}
+                      whileInView={{ opacity: 1, x: 0 }}
+                      viewport={{ once: true }}
+                      transition={{ duration: 0.4, delay: i * 0.1 }}
+                      whileHover={contactLinkHover}
+                      whileTap={contactLinkTap}
+                      className="tap-target group flex w-full items-center justify-between px-6 py-5 bg-background/5 border border-background/10 outline-none transition-[background-color,border-color,box-shadow] duration-300 hover:bg-electric/10 hover:border-electric/30 hover:shadow-electric-xs focus-visible:z-10 focus-visible:border-electric/40 focus-visible:bg-electric/10 focus-visible:shadow-electric-xs focus-visible:ring-2 focus-visible:ring-white/45 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                    >
+                      <div className="flex items-center gap-4">
+                        <span className="flex size-9 shrink-0 items-center justify-center rounded-sm border border-background/15 bg-background/5 font-mono text-[10px] font-semibold text-electric">
+                          {app.icon}
+                        </span>
+                        <div>
+                          <p className="font-mono text-sm font-semibold text-background/80 group-hover:text-electric transition-colors">
+                            {app.label}
+                          </p>
+                          <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-background/35 mt-0.5">
+                            {app.sub}
+                          </p>
+                        </div>
                       </div>
-                    </div>
-                    <div className="flex items-center gap-2">
-                      <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-electric/60">
-                        {contact.liveBadge}
-                      </span>
-                      <span className="opacity-20 group-hover:opacity-100 group-hover:text-electric text-background transition-all font-mono">↗</span>
-                    </div>
-                  </motion.a>
-                ))}
+                      <div className="flex items-center gap-2">
+                        <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-electric/60">
+                          {isDemo ? contact.demoBadge : contact.liveBadge}
+                        </span>
+                        <span className="opacity-20 group-hover:opacity-100 group-hover:text-electric text-background transition-all font-mono">↗</span>
+                      </div>
+                    </Tag>
+                  );
+                })}
               </div>
+
+              {demoApp && (
+                <Dialog open={!!demoApp} onOpenChange={(open) => !open && setDemoApp(null)}>
+                  <DialogContent className="max-w-4xl w-[min(96vw,64rem)] h-[min(85vh,44rem)] flex flex-col gap-3 p-4 sm:p-5">
+                    <DialogHeader className="shrink-0">
+                      <DialogTitle className="text-base">{demoApp.label} — Demo</DialogTitle>
+                      <DialogDescription>
+                        Archived project. Demo runs live below —{" "}
+                        <a
+                          href={demoApp.href}
+                          target="_blank"
+                          rel="noopener noreferrer"
+                          className="underline underline-offset-2 hover:text-electric"
+                        >
+                          open in a new tab
+                        </a>{" "}
+                        instead.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <iframe
+                      src={demoApp.href}
+                      title={`${demoApp.label} demo`}
+                      className="w-full flex-1 rounded-sm border border-border/60 bg-background"
+                      loading="lazy"
+                    />
+                  </DialogContent>
+                </Dialog>
+              )}
 
               {/* Stats */}
               <div className="mt-4 grid grid-cols-3 gap-0.5">

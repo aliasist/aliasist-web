@@ -3,10 +3,14 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useAuth, UserButton } from "@clerk/react";
 import newLogo from "@/assets/apple-touch-icon.png";
 import { playClick, setEnabled } from "@/hooks/useSound";
-import { pageNavLinks, suiteAppCount, suiteApps } from "@/content/homepage";
+import { pageNavLinks, suiteApps } from "@/content/homepage";
 import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
 
 const isExternalHref = (href: string) => /^https?:\/\//.test(href);
+
+// Retired apps stay listed on the Contact section (as a demo-modal link) but
+// are dropped from the Menu dropdown / mobile nav, which is for live suite apps only.
+const liveSuiteApps = suiteApps.filter(app => !("isDemo" in app && app.isDemo));
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
 
@@ -82,11 +86,11 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
                 Projects
               </span>
               <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-electric/60">
-                {suiteAppCount} Links
+                {liveSuiteApps.length} Links
               </span>
             </div>
 
-            {suiteApps.map((app, i) => (
+            {liveSuiteApps.map((app, i) => (
               <motion.a
                 key={app.label}
                 href={app.href}
@@ -447,7 +451,7 @@ const Navbar = () => {
               <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40 py-1">
                 Projects
               </p>
-              {suiteApps.map(app => (
+              {liveSuiteApps.map(app => (
                 <a
                   key={app.label}
                   href={app.href}
