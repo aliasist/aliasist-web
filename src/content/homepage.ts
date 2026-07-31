@@ -234,21 +234,6 @@ export const projects = [
     banner: clearasistBanner,
   },
   {
-    name: "GitHub Companion",
-    description:
-      "A GitHub tool for repository summaries and pull request review notes. Archived — the demo stays online, but it is no longer being developed.",
-    tech: ["Repository maps", "Pull request review", "Project guidance", "Review notes"],
-    github: "https://github.com/aliasist",
-    downloads: [],
-    status: "Archived",
-    meta: ["Project guide", "PR review", "Public tool"] as const,
-    tone: "violet",
-    icon: "GH",
-    link: "/tools/github",
-    linkLabel: "VIEW DEMO →",
-    banner: githubCompanionBanner,
-  },
-  {
     name: "Aliasist-Files-Abductor",
     description:
       "A desktop GUI tool for downloading files from YouTube and direct URLs.",
@@ -264,8 +249,23 @@ export const projects = [
     tone: "teal",
     icon: "FA",
     link: null as string | null,
-    linkLabel: null as string | null,
+    linkLabel: "DOWNLOADS →",
     banner: filesAbductorBanner,
+  },
+  {
+    name: "GitHub Companion",
+    description:
+      "A GitHub tool for repository summaries and pull request review notes. Archived — the demo stays online, but it is no longer being developed.",
+    tech: ["Repository maps", "Pull request review", "Project guidance", "Review notes"],
+    github: "https://github.com/aliasist",
+    downloads: [],
+    status: "Archived",
+    meta: ["Project guide", "PR review", "Public tool"] as const,
+    tone: "violet",
+    icon: "GH",
+    link: "/tools/github",
+    linkLabel: "VIEW DEMO →",
+    banner: githubCompanionBanner,
   },
   {
     name: "Atomicity",
