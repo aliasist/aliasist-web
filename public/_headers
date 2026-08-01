@@ -1,0 +1,8 @@
+/
+  Link: </.well-known/api-catalog>; rel="api-catalog"
+  Link: </docs/>; rel="service-doc"
+  Link: </sitemap.xml>; rel="sitemap"
+
+/docs/*
+  Link: </.well-known/api-catalog>; rel="api-catalog"
+  Link: </sitemap.xml>; rel="sitemap"
