@@ -1,0 +1,5 @@
+User-agent: *
+Disallow:
+
+# Sitemap location (keeps crawlers & agents aware of site map)
+Sitemap: https://aliasist.com/sitemap.xml

@@ -1,0 +1,10 @@
+/
+  Link: </.well-known/ai-discovery.json>; rel="ai-discovery"
+  Link: </.well-known/api-catalog.json>; rel="api-catalog"
+  Link: </docs/>; rel="service-doc"
+  Link: </sitemap.xml>; rel="sitemap"
+
+/docs/*
+  Link: </.well-known/ai-discovery.json>; rel="ai-discovery"
+  Link: </.well-known/api-catalog.json>; rel="api-catalog"
+  Link: </sitemap.xml>; rel="sitemap"

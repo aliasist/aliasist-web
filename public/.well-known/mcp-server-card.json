@@ -1,0 +1,15 @@
+{
+  "serverInfo": {
+    "name": "Aliasist",
+    "version": "1.0.0"
+  },
+  "transport": {
+    "type": "sse",
+    "endpoint": "https://aliasist.com/mcp"
+  },
+  "capabilities": {
+    "tools": true,
+    "resources": true,
+    "prompts": false
+  }
+}
