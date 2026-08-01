@@ -1,0 +1,25 @@
+{
+	"$schema": "node_modules/wrangler/config-schema.json",
+	"name": "aliasist-updates",
+	"main": "src/index.ts",
+	"compatibility_date": "2025-10-08",
+	"compatibility_flags": [
+		"nodejs_compat",
+		"global_fetch_strictly_public"
+	],
+	"observability": {
+		"enabled": true
+	},
+	"upload_source_maps": true,
+	"vars": {
+		"ALLOWED_ORIGINS": "https://aliasist.com,https://www.aliasist.com,http://localhost:8080,http://127.0.0.1:8080,http://localhost:5173,http://127.0.0.1:5173,http://localhost:4173,http://127.0.0.1:4173"
+		// Admin write auth — set via: wrangler secret put UPDATES_ADMIN_TOKEN
+	},
+	"d1_databases": [
+		{
+			"binding": "DB",
+			"database_name": "aliasist-updates",
+			"database_id": "faad3b22-9f1b-46c7-95dd-2afd5f058fa0"
+		}
+	]
+}

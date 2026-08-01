@@ -27,6 +27,9 @@ const llmBase = pointsAtCurrentSite(configuredLlmBase)
   : configuredLlmBase;
 const newsBase = trimTrailingSlashes(import.meta.env.VITE_NEWS_WORKER_BASE_URL || DEFAULT_NEWS_BASE);
 
+const DEFAULT_UPDATES_BASE = "https://aliasist-updates.bchooper0730.workers.dev";
+const updatesBase = trimTrailingSlashes(import.meta.env.VITE_UPDATES_WORKER_BASE_URL || DEFAULT_UPDATES_BASE);
+
 export const siteEndpoints = {
   /** Contact form → Pages Function proxy (`functions/api/contact.ts`). */
   contactApi: "/api/contact",
@@ -52,6 +55,8 @@ export const siteEndpoints = {
   chatMessagesApi: "/api/chat-messages",
   /** Blog / news rail → news worker */
   newsApi: `${newsBase}/api/news`,
+  /** Project updates & events log → updates worker (managed from verity-console). */
+  updatesApi: `${updatesBase}/api/updates`,
   /** GitHub PR Reviewer → Pages Function proxy. */
   githubPrReviewApi: "/api/github-pr-review",
   /** GitHub Companion Project Guide → Pages Function proxy. */

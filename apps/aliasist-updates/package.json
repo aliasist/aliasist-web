@@ -1,0 +1,17 @@
+{
+	"name": "aliasist-updates",
+	"description": "Public API for the aliasist.com homepage \"Project Updates\" log, managed from verity-console.",
+	"private": true,
+	"devDependencies": {
+		"@cloudflare/workers-types": "^4.20250425.0",
+		"typescript": "5.9.3",
+		"wrangler": "4.56.0"
+	},
+	"scripts": {
+		"cf-typegen": "wrangler types",
+		"check": "tsc --noEmit && wrangler deploy --dry-run",
+		"deploy": "wrangler deploy",
+		"dev": "wrangler dev",
+		"start": "wrangler dev"
+	}
+}

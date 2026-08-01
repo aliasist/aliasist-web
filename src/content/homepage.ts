@@ -1,6 +1,6 @@
 /**
  * Homepage copy & navigation — edit this file to change marketing text and suite links.
- *  -_- The homepage is built with React + TypeScript + TailwindCSS. 
+ *  -_- The homepage is built with React + TypeScript + TailwindCSS.
  * Images:
  *   • Project banners + assets live under `./images` (imported via `@images/...`).
  *
@@ -30,7 +30,7 @@ import spaceBanner from "@images/spacesist_banner_cinematic.png";
 /** Used by Navbar "Projects" menu and Contact section project list — keep in sync. */
 export const suiteApps = [
   {
-    label: "Waterfall",
+    label: "AI RAG System ",
     sub: "Waterfall RAG system with AI chatbot and image generation",
     href: "https://www.aliasist.tech",
     icon: "AT",
@@ -142,14 +142,14 @@ const downloadLinks = {
 };
 
 export const projectsSection = {
-  dividerLabel: "Projects",
+  dividerLabel: "Shipped Projects",
   headline: "These are tools you can use.",
   subcopy: "These are the Aliasist apps and tools that are currently online.",
 } as const;
 
 export const projects = [
   {
-    name: "Aliasist Waterfall",
+    name: "Aliasist AI RAG system",
     description:
       "An AI RAG system with an AI chatbot and image generation.",
     tech: ["AI RAG System", "AI Chatbot + Image Generation"],
@@ -310,8 +310,8 @@ export const projects = [
 
 export const COMING_SOON_PROJECTS = [
   {
-    codename: "Next project",
-    description: "Planning and dvelopment in progress.",
+    codename: "Future projects are on hold. ",
+    description: "FREEZE",
     eta: "2027",
   },
 ] as const;
@@ -439,7 +439,7 @@ export type UpdateEntry = (typeof updates)[number];
 
 export const transmissions = {
   dividerLabel: "Blog",
-  headline: "Industry Inquiries",
+  headline: "Industry Links",
   scanning: "Updates are live.",
   offline: "Could not load the latest posts. Showing saved posts.",
   liveFeedPrefix: "Updated ",
