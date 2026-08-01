@@ -1,0 +1,14 @@
+{
+  "name": "Aliasist agent discovery",
+  "version": "1.0",
+  "description": "Discovery endpoint for AI agents (sample).",
+  "endpoints": {
+    "api_catalog": "https://aliasist.com/.well-known/api-catalog.json",
+    "docs": "https://aliasist.com/docs/",
+    "sitemap": "https://aliasist.com/sitemap.xml"
+  },
+  "contact": {
+    "email": "dev@aliasist.com",
+    "homepage": "https://aliasist.com"
+  }
+}
