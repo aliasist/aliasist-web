@@ -11,6 +11,7 @@ const ProjectsSection = lazy(() => import("@/components/ProjectsSection"));
 const UpdatesSection = lazy(() => import("@/components/UpdatesSection"));
 const TransmissionsSection = lazy(() => import("@/components/TransmissionsSection"));
 const ContactSection = lazy(() => import("@/components/ContactSection"));
+const SubscribeSection = lazy(() => import("@/components/SubscribeSection"));
 const Footer = lazy(() => import("@/components/Footer"));
 
 function SectionFallback() {
@@ -47,6 +48,7 @@ const Index = () => {
           {/* Bridges the seam between the lattice fade and Contact's own top overlay. */}
           <div className="pointer-events-none absolute inset-x-0 -top-36 z-10 h-36 bg-gradient-to-b from-transparent to-foreground" aria-hidden />
           <ErrorBoundary><Suspense fallback={<SectionFallback />}><ContactSection /></Suspense></ErrorBoundary>
+          <ErrorBoundary><Suspense fallback={<SectionFallback />}><SubscribeSection /></Suspense></ErrorBoundary>
         </div>
         <ErrorBoundary><Suspense fallback={<SectionFallback />}><Footer /></Suspense></ErrorBoundary>
       </main>

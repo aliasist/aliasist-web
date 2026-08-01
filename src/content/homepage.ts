@@ -405,6 +405,25 @@ export const contact = {
   ],
 } as const;
 
+// ── Subscribe (email signup) ────────────────────────────────────────────────
+
+export const subscribeSection = {
+  dividerLabel: "Signal",
+  introLabel: "Subscribe",
+  headline: "Get transmissions from the mothership.",
+  introStrong: "Occasional updates. No probing, we promise.",
+  introRest: "New tools, releases, and the odd bit of alien wisdom — straight to your inbox.",
+  placeholder: "your@email.com",
+  submitIdle: "Beam me in ↗",
+  submitSending: "Beaming...",
+  successTitle: "Signal received",
+  successBody: "Welcome to the fleet, human. Watch your inbox.",
+  sendAnother: "Subscribe another ↩",
+  errorPrefix: "Error:",
+  errorFallback: "transmission failed — our satellites are having a day",
+  disclaimer: "Unsubscribe anytime. We come in peace.",
+} as const;
+
 // ── Updates & events ───────────────────────────────────────────────────────
 
 export const updatesSection = {
