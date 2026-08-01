@@ -38,6 +38,8 @@ export const siteEndpoints = {
    * (Worker must allow CORS for browser calls; prefer `contactApi`.)
    */
   contactWorkerApi: `${llmBase}/api/contact`,
+  /** Homepage email signup → Pages Function proxy (`functions/api/subscribe.ts`). */
+  subscribeApi: "/api/subscribe",
   /**
    * Floating chat widget → Pages Function proxy (`functions/api/chat.ts`).
    * Requires `Authorization: Bearer <session JWT>` (enforced server-side).
