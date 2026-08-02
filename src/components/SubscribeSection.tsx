@@ -7,40 +7,6 @@ const SUBSCRIBE_API = siteEndpoints.subscribeApi;
 
 type FormState = "idle" | "sending" | "success" | "error";
 
-/** Small self-contained flying-saucer flourish — bespoke, not the fixed global AmbientUfo. */
-const SignalSaucer = () => (
-  <motion.svg
-    width="72"
-    height="52"
-    viewBox="0 0 72 52"
-    fill="none"
-    aria-hidden
-    className="drop-shadow-[0_0_18px_hsl(var(--electric)/0.35)]"
-    animate={{ y: [0, -6, 0] }}
-    transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut" }}
-  >
-    <ellipse cx="36" cy="30" rx="30" ry="8" fill="hsl(var(--electric) / 0.16)" />
-    <ellipse cx="36" cy="28" rx="22" ry="6.5" stroke="hsl(var(--electric))" strokeWidth="1.5" fill="hsl(var(--electric) / 0.1)" />
-    <path
-      d="M22 26 C22 14, 50 14, 50 26"
-      stroke="hsl(var(--violet))"
-      strokeWidth="1.5"
-      fill="hsl(var(--violet) / 0.14)"
-    />
-    <circle cx="30" cy="20" r="1.6" fill="hsl(var(--violet))" />
-    <circle cx="42" cy="20" r="1.6" fill="hsl(var(--violet))" />
-    <circle cx="36" cy="17" r="1.6" fill="hsl(var(--violet))" />
-    <motion.path
-      d="M28 34 L20 50 M36 34 L36 50 M44 34 L52 50"
-      stroke="hsl(var(--electric))"
-      strokeWidth="1.2"
-      strokeLinecap="round"
-      animate={{ opacity: [0.15, 0.5, 0.15] }}
-      transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}
-    />
-  </motion.svg>
-);
-
 const SubscribeSection = () => {
   const [email, setEmail] = useState("");
   const [formState, setFormState] = useState<FormState>("idle");
@@ -93,10 +59,6 @@ const SubscribeSection = () => {
           transition={{ duration: 0.6 }}
           className="mx-auto max-w-xl text-center"
         >
-          <div className="mb-4 flex justify-center">
-            <SignalSaucer />
-          </div>
-
           <div className="font-mono text-xs uppercase tracking-[0.14em] text-electric mb-4">
             {subscribeSection.introLabel}
           </div>
