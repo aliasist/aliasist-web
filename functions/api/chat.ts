@@ -37,7 +37,7 @@ type PagesContext = {
 const DEFAULT_RAG_BASE_URL = "https://api.aliasist.tech";
 
 /** Valid sist IDs on the RAG worker. */
-const SIST_IDS = ["agsc", "data", "eco", "pulse", "space"] as const;
+const SIST_IDS = ["agsc", "data", "eco", "general", "pulse", "space"] as const;
 type SistId = (typeof SIST_IDS)[number];
 
 /** Shape returned by POST /rag/ask */
@@ -66,6 +66,7 @@ export function detectSist(text: string): SistId | null {
   if (/\b(eco|weather|climate|storms?|hurricanes?|wildfires?|floods?|earthquakes?|quakes?|seismic|tsunamis?|air quality|space.?weather|geomagnetic)\b/.test(t)) return "eco";
   if (/\b(markets?|stocks?|tickers?|finance|crypto|macro|earnings|gdp|fed|interest rates?|inflation)\b/.test(t)) return "pulse";
   if (/\b(waterfall|agsc|globe|countr(y|ies)|data.?center.?maps?|undersea.?cables?|internet.?exchanges?|submarine.?cables?)\b/.test(t)) return "agsc";
+  if (/\bforum\b/.test(t)) return "general";
   return null;
 }
 
