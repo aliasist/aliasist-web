@@ -331,14 +331,14 @@ export const about = {
   pathBadge: "Working toward a CS degree · building for good",
   skillsLabel: "What I work with",
   skills: [
-    "Python",
+    "TypeScript",
     "JavaScript",
-    "HTML / CSS",
-    "Frontend systems",
-    "Node.js",
-    "Security-minded design",
-    "CLI tooling",
-    "File automation",
+    "SQL",
+    "Python",
+    "React",
+    "Cloudflare Workers",
+    "D1 databases",
+    "Vector databases",
   ] as const,
   /**
    * Each block: optional `kicker` (small label) + `body` (main text).
