@@ -40,13 +40,19 @@ const DEFAULT_RAG_BASE_URL = "https://api.aliasist.tech";
 const SIST_IDS = ["agsc", "data", "eco", "general", "pulse", "space"] as const;
 type SistId = (typeof SIST_IDS)[number];
 
-/** Shape returned by POST /rag/ask */
+/**
+ * Shape returned by POST /rag/ask. Canonical contract (shared with globalize's
+ * rag-gateway, which calls the same hub endpoint): see
+ * aliasist-platform/docs/RAG_ASK_CONTRACT.md. Only `sist` and `answer` are
+ * guaranteed present — the hub omits `model`/`source`/`latencyMs`/`chunks`
+ * whenever its own LLM providers aren't configured, so those must stay optional.
+ */
 interface RagAskResult {
   answer: string;
-  model: string;
-  source: string;
-  latencyMs: number;
-  chunks: Array<{ id: string; source: string; score: number; text: string }>;
+  model?: string;
+  source?: string;
+  latencyMs?: number;
+  chunks?: Array<{ id: string; source: string; score: number; text: string }>;
   sist: SistId;
   /**
    * Raw live-data snapshot (eco: active alerts/quakes/events/storms/Kp).

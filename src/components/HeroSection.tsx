@@ -83,14 +83,9 @@ const HeroSection = () => {
           />
         </motion.div>
 
-        <motion.h1
-          className="text-glow-violet mb-5 select-none text-6xl font-bold leading-none tracking-[0.04em] text-foreground sm:text-8xl md:text-[9rem]"
-          initial={{ opacity: 0, y: 24 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
-        >
+        <h1 className="text-glow-violet mb-5 select-none text-6xl font-bold leading-none tracking-[0.04em] text-foreground sm:text-8xl md:text-[9rem]">
           {hero.wordmark}
-        </motion.h1>
+        </h1>
 
         <motion.p
           className="mb-4 font-mono text-[11px] uppercase tracking-[0.24em] text-electric/65"
