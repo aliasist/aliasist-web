@@ -31,7 +31,7 @@ import spaceBanner from "@images/spacesist_banner_cinematic.webp";
 export const suiteApps = [
   {
     label: "AI RAG System ",
-    sub: "Waterfall RAG system with AI chatbot and image generation",
+    sub: "RAG system with AI chatbot and image generation",
     href: "https://www.aliasist.tech",
     icon: "AT",
   },
@@ -333,12 +333,15 @@ export const about = {
   skills: [
     "TypeScript",
     "JavaScript",
+    "Node.js",
     "SQL",
     "Python",
     "React",
+    "Tailwind CSS",
     "Cloudflare Workers",
     "D1 databases",
     "Vector databases",
+    "LLM / RAG systems",
   ] as const,
   /**
    * Each block: optional `kicker` (small label) + `body` (main text).
