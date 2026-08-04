@@ -1,6 +1,6 @@
 
 import { motion, AnimatePresence } from "framer-motion";
-import streetBanner from "@images/aliasist_banner_street.png";
+import streetBanner from "@images/aliasist_banner_street.webp";
 import { useState, useRef } from "react";
 import { contact, suiteApps } from "@/content/homepage";
 import { readJsonBody, siteEndpoints } from "@/config/api";
