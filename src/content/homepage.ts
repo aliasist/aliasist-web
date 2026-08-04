@@ -14,16 +14,16 @@
  * Backend/API URLs (for developers): see `src/config/api.ts` (`siteEndpoints`).
  */
 
-import atomicityBanner from "@images/atomicity_banner_cinematic.png";
-import aliasistTechBanner from "@images/aliasist_tech_waterfall_banner_cinematic.png";
-import clearasistBanner from "@images/clearasist_banner_cinematic.png";
-import dataBanner from "@images/datasist_banner_cinematic.png";
-import ecosistBanner from "@images/ecosist_banner_tornado.png";
-import filesAbductorBanner from "@images/files_abductor_banner_cinematic.png";
-import githubCompanionBanner from "@images/github_companion_banner_cinematic.png";
-import globalizeBanner from "@images/globalize_banner_cinematic.png";
-import pulseBanner from "@images/pulsesist_banner_cinematic.png";
-import spaceBanner from "@images/spacesist_banner_cinematic.png";
+import atomicityBanner from "@images/atomicity_banner_cinematic.webp";
+import aliasistTechBanner from "@images/aliasist_tech_waterfall_banner_cinematic.webp";
+import clearasistBanner from "@images/clearasist_banner_cinematic.webp";
+import dataBanner from "@images/datasist_banner_cinematic.webp";
+import ecosistBanner from "@images/ecosist_banner_tornado.webp";
+import filesAbductorBanner from "@images/files_abductor_banner_cinematic.webp";
+import githubCompanionBanner from "@images/github_companion_banner_cinematic.webp";
+import globalizeBanner from "@images/globalize_banner_cinematic.webp";
+import pulseBanner from "@images/pulsesist_banner_cinematic.webp";
+import spaceBanner from "@images/spacesist_banner_cinematic.webp";
 
 // ── Suite apps (live products) ───────────────────────────────────────────────
 

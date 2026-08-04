@@ -117,11 +117,7 @@ export default defineConfig(async ({ mode }) => {
       hmr: {
         overlay: false,
       },
-      allowedHosts: [
-        "debian-cursor-precipitation-really.trycloudflare.com",
-        ".trycloudflare.com",
-        "orbital-sky-q6utk.ondigitalocean.app",
-      ],
+      allowedHosts: [".trycloudflare.com"],
     },
     plugins: [react(), devSpaFallbackPlugin(), ...devPlugins, ...runtimePlugins],
     define: clerkPublishableKey
