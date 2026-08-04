@@ -1,0 +1,5 @@
+{
+  "resource": "https://aliasist.com/api",
+  "authorization_servers": ["https://aliasist.com"],
+  "scopes_supported": ["read", "write"]
+}
