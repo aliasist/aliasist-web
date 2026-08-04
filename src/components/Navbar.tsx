@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth, UserButton } from "@clerk/react";
 import newLogo from "@/assets/apple-touch-icon.png";
-import { playClick, setEnabled } from "@/hooks/useSound";
 import { pageNavLinks, suiteApps } from "@/content/homepage";
 import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
 
@@ -43,7 +42,7 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
     <div ref={ref} className="relative">
       <button
         type="button"
-        onClick={() => { setOpen(o => !o); playClick(); }}
+        onClick={() => setOpen(o => !o)}
         className={`group relative flex items-center gap-1.5 overflow-hidden rounded-full px-2.5 py-1.5 text-xs font-mono uppercase tracking-[0.16em] outline-none transition-all duration-300 ease-out focus-visible:ring-2 focus-visible:ring-electric/55 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
           highlighted
             ? "bg-electric/10 text-electric shadow-electric-xs"
@@ -96,7 +95,7 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
                 href={app.href}
                 target={isExternalHref(app.href) ? "_blank" : undefined}
                 rel={isExternalHref(app.href) ? "noopener noreferrer" : undefined}
-                onClick={() => { playClick(); setOpen(false); }}
+                onClick={() => setOpen(false)}
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
                 transition={{ duration: 0.15, delay: i * 0.04 }}
@@ -153,10 +152,7 @@ const DesktopAuthControl = () => {
       type="button"
       aria-busy={!isLoaded}
       aria-label="Sign in"
-      onClick={() => {
-        playClick();
-        openSiteSignIn();
-      }}
+      onClick={() => openSiteSignIn()}
       className={`${signInButtonClass} shrink-0 cursor-pointer text-foreground/90 ${!isLoaded ? "opacity-70" : ""}`}
     >
       Sign In
@@ -181,10 +177,7 @@ const MobileAuthControl = () => {
       type="button"
       aria-busy={!isLoaded}
       aria-label="Sign in"
-      onClick={() => {
-        playClick();
-        openSiteSignIn();
-      }}
+      onClick={() => openSiteSignIn()}
       className={`${mobileSignInButtonClass} cursor-pointer${!isLoaded ? " opacity-70" : ""}`}
     >
       Sign In
@@ -198,7 +191,6 @@ const Navbar = () => {
   const [scrolled, setScrolled]         = useState(false);
   const [mobileOpen, setMobileOpen]     = useState(false);
   const [isDark, setIsDark]             = useState(true);
-  const [soundOn, setSoundOn]           = useState(true);
   const [activeSection, setActiveSection] = useState("");
 
   useEffect(() => {
@@ -240,43 +232,11 @@ const Navbar = () => {
     document.documentElement.classList.toggle("light", !dark);
   }, []);
 
-  useEffect(() => {
-    try {
-      const stored = localStorage.getItem("aliasist-sound");
-      const on = stored ? stored === "on" : true;
-      setSoundOn(on);
-      setEnabled(on);
-    } catch {
-      setSoundOn(true);
-      setEnabled(true);
-    }
-  }, []);
-
   const toggleTheme = () => {
-    playClick();
     setIsDark(prev => {
       const next = !prev;
       document.documentElement.classList.toggle("light", !next);
       localStorage.setItem("aliasist-theme", next ? "dark" : "light");
-      return next;
-    });
-  };
-
-  const toggleSound = () => {
-    setSoundOn(prev => {
-      const next = !prev;
-      if (next) {
-        setEnabled(true);
-        playClick();
-      } else {
-        playClick();
-        setEnabled(false);
-      }
-      try {
-        localStorage.setItem("aliasist-sound", next ? "on" : "off");
-      } catch {
-        // ignore
-      }
       return next;
     });
   };
@@ -302,7 +262,7 @@ const Navbar = () => {
 
         {/* ── LEFT: Logo ── */}
         <a
-          href="/" onClick={() => playClick()}
+          href="/"
           className="group flex flex-shrink-0 items-center gap-3 rounded-xl border-0 bg-transparent py-1 pr-2 text-left transition-all duration-300 hover:bg-electric/[0.04] cursor-pointer outline-none appearance-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
           aria-label="Back to Aliasist homepage"
         >
@@ -324,7 +284,6 @@ const Navbar = () => {
               <a
                 key={link.href}
                 href={link.href}
-                onClick={() => playClick()}
                 className={`group relative overflow-hidden rounded-full px-4 py-2 text-xs font-mono uppercase tracking-[0.16em] transition-all duration-300 ease-out outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                   isActive
                     ? "bg-electric/[0.12] text-electric shadow-electric-xs"
@@ -356,25 +315,6 @@ const Navbar = () => {
         <div className="hidden md:flex items-center gap-3 flex-shrink-0">
           <div className="flex items-center gap-1 rounded-full border border-border/35 bg-background/50 p-1 shadow-electric-nav-well-inset backdrop-blur-md">
             <button
-              onClick={toggleSound}
-              title={soundOn ? "Mute" : "Unmute"}
-              className={utilityButtonClass}
-              aria-label={soundOn ? "Mute sounds" : "Enable sounds"}
-            >
-              {soundOn ? (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-                  <path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/>
-                </svg>
-              ) : (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/>
-                  <line x1="23" y1="9" x2="17" y2="15"/><line x1="17" y1="9" x2="23" y2="15"/>
-                </svg>
-              )}
-            </button>
-
-            <button
               onClick={toggleTheme}
               title={isDark ? "Light mode" : "Dark mode"}
               className={utilityButtonClass}
@@ -397,7 +337,6 @@ const Navbar = () => {
           <div className="flex items-center gap-3 shrink-0 min-w-0">
             <a
               href="#contact"
-              onClick={() => playClick()}
               className="rounded-full bg-electric px-5 py-2 text-xs font-mono uppercase tracking-[0.16em] text-background shadow-electric-sm transition-[background-color,box-shadow,transform] duration-300 ease-out hover:bg-electric/90 hover:shadow-electric-md active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               Contact
@@ -408,7 +347,7 @@ const Navbar = () => {
 
         {/* ── MOBILE: Hamburger ── */}
         <button
-          onClick={() => { playClick(); setMobileOpen(!mobileOpen); }}
+          onClick={() => setMobileOpen(!mobileOpen)}
           className="md:hidden text-foreground p-2 -mr-2 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           aria-label="Toggle menu"
         >
@@ -437,7 +376,7 @@ const Navbar = () => {
                 <a
                   key={link.href}
                   href={link.href}
-                  onClick={() => { playClick(); setMobileOpen(false); }}
+                  onClick={() => setMobileOpen(false)}
                   className="-mx-1 flex h-12 items-center rounded-lg px-3 text-xs font-mono uppercase tracking-[0.15em] text-muted-foreground transition-all duration-300 ease-out hover:bg-electric/[0.06] hover:pl-4 hover:text-foreground hover:shadow-[inset_3px_0_0_hsl(165_90%_42%_/_0.65)] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   {link.label}
@@ -457,7 +396,7 @@ const Navbar = () => {
                   href={app.href}
                   target={isExternalHref(app.href) ? "_blank" : undefined}
                   rel={isExternalHref(app.href) ? "noopener noreferrer" : undefined}
-                  onClick={() => { playClick(); setMobileOpen(false); }}
+                  onClick={() => setMobileOpen(false)}
                   className="group -mx-1 flex h-12 items-center gap-3 rounded-lg px-3 text-xs font-mono uppercase tracking-[0.15em] text-muted-foreground transition-all duration-300 hover:bg-electric/[0.06] hover:text-electric hover:shadow-[inset_3px_0_0_hsl(165_90%_42%_/_0.5)] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   <span className="flex size-7 shrink-0 items-center justify-center rounded-sm border border-border/60 bg-background/45 font-mono text-[10px] font-semibold text-electric transition-all duration-300 group-hover:border-violet/45 group-hover:shadow-[0_0_12px_hsl(var(--violet)/0.28)]">
@@ -473,9 +412,6 @@ const Navbar = () => {
 
               {/* Controls row */}
               <div className="flex items-center gap-4 py-2">
-                <button type="button" onClick={toggleSound} className="rounded-md px-2 py-1 text-xs font-mono text-muted-foreground transition-all duration-300 hover:bg-electric/[0.06] hover:text-electric">
-                  {soundOn ? "Sound On" : "Sound Off"}
-                </button>
                 <button type="button" onClick={toggleTheme} className="rounded-md px-2 py-1 text-xs font-mono text-muted-foreground transition-all duration-300 hover:bg-electric/[0.06] hover:text-electric">
                   {isDark ? "Light Mode" : "Dark Mode"}
                 </button>
@@ -484,7 +420,7 @@ const Navbar = () => {
               {/* Contact then Sign In — Sign In on the right */}
               <div className="flex gap-3 pt-2">
                 <a href="#contact"
-                  onClick={() => { playClick(); setMobileOpen(false); }}
+                  onClick={() => setMobileOpen(false)}
                   className="flex-1 rounded-md bg-electric py-2.5 text-center text-xs font-mono uppercase tracking-[0.16em] text-background shadow-electric-sm transition-[background-color,box-shadow,transform] duration-300 hover:bg-electric/90 hover:shadow-electric-md active:scale-[0.99] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
                   Contact
                 </a>
