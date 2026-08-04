@@ -1,0 +1,12 @@
+{
+  "$schema": "https://agentskills.io/schema.json",
+  "skills": [
+    {
+      "name": "search-posts",
+      "type": "search",
+      "description": "Search blog posts on Aliasist",
+      "url": "https://aliasist.com/skills/search",
+      "sha256": "" 
+    }
+  ]
+}

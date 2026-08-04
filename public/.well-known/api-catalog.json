@@ -1,0 +1,12 @@
+{
+  "linkset": [
+    {
+      "anchor": "https://aliasist.com/api",
+      "link": [
+        { "rel": "service-desc", "href": "/openapi.json" },
+        { "rel": "service-doc", "href": "/docs/api" },
+        { "rel": "status", "href": "/health" }
+      ]
+    }
+  ]
+}

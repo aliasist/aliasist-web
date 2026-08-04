@@ -1,0 +1,7 @@
+{
+  "issuer": "https://aliasist.com",
+  "authorization_endpoint": "https://aliasist.com/auth",
+  "token_endpoint": "https://aliasist.com/token",
+  "jwks_uri": "https://aliasist.com/.well-known/jwks.json",
+  "grant_types_supported": ["authorization_code", "client_credentials"]
+}
