@@ -17,6 +17,7 @@ const liveSuiteApps = suiteApps.filter(app => !("isDemo" in app && app.isDemo));
 const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const closeTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const highlighted = open || isActive;
 
   useEffect(() => {
@@ -38,8 +39,27 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
     };
   }, [open]);
 
+  useEffect(() => () => clearTimeout(closeTimerRef.current), []);
+
+  const openNow = () => {
+    clearTimeout(closeTimerRef.current);
+    setOpen(true);
+  };
+
+  // Short delay so moving the cursor from the button down into the dropdown
+  // panel doesn't close it — mouse briefly leaves both elements mid-transit.
+  const closeSoon = () => {
+    clearTimeout(closeTimerRef.current);
+    closeTimerRef.current = setTimeout(() => setOpen(false), 150);
+  };
+
   return (
-    <div ref={ref} className="relative">
+    <div
+      ref={ref}
+      className="relative"
+      onMouseEnter={openNow}
+      onMouseLeave={closeSoon}
+    >
       <button
         type="button"
         onClick={() => setOpen(o => !o)}
