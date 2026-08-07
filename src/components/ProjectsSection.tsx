@@ -224,17 +224,19 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
             <ExternalLink className="size-3.5" aria-hidden />
           </motion.a>
       )}
-          <motion.a
-            href={project.github}
-            target="_blank"
-            rel="noopener noreferrer"
-            whileHover={actionHover}
-            whileTap={actionTap}
-            className="tap-target subtle-link-motion inline-flex items-center gap-2 rounded-sm border border-border/70 bg-background/25 px-4 py-2.5 font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground outline-none transition-colors hover:border-violet/35 hover:text-electric focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
-          >
-            <Github className="size-3.5" aria-hidden />
-            GitHub
-          </motion.a>
+          {"github" in project && project.github && (
+            <motion.a
+              href={project.github}
+              target="_blank"
+              rel="noopener noreferrer"
+              whileHover={actionHover}
+              whileTap={actionTap}
+              className="tap-target subtle-link-motion inline-flex items-center gap-2 rounded-sm border border-border/70 bg-background/25 px-4 py-2.5 font-mono text-xs uppercase tracking-[0.12em] text-muted-foreground outline-none transition-colors hover:border-violet/35 hover:text-electric focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+            >
+              <Github className="size-3.5" aria-hidden />
+              GitHub
+            </motion.a>
+          )}
         </div>
       </div>
 
