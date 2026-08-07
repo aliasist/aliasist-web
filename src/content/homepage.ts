@@ -153,7 +153,6 @@ export const projects = [
     description:
       "An AI RAG system with an AI chatbot and image generation.",
     tech: ["AI RAG System", "AI Chatbot + Image Generation"],
-    github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
     meta: ["AI RAG System", "AI Chatbot + Image Generation"] as const,
@@ -168,7 +167,6 @@ export const projects = [
     description:
       "A 3D globe mapping global infrastructure — data centers, subsea cables, air traffic, and seismic activity.",
     tech: ["3D globe", "Infrastructure map", "Data signals", "Geospatial views"],
-    github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
     meta: ["Data centers", "Global map", "Live infrastructure"] as const,
@@ -183,7 +181,6 @@ export const projects = [
     description:
       "A data center research dashboard for facilities, power, water, risk, and investment data.",
     tech: ["Facility research", "Power data", "Water data", "Risk maps", "Data tables"],
-    github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
     meta: ["Data centers", "Power + water", "Risk research"] as const,
@@ -198,7 +195,6 @@ export const projects = [
     description:
       "A market dashboard with live charts, portfolio tools, and research views.",
     tech: ["Market charts", "Portfolio views", "Research panels", "Live dashboards"],
-    github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
     meta: ["Markets", "Portfolio tools", "Research views"] as const,
@@ -213,7 +209,6 @@ export const projects = [
     description:
       "A live space dashboard using NASA, SpaceX, ISS, asteroid, and exoplanet data.",
     tech: ["Launch data", "ISS tracking", "Asteroids", "Exoplanets", "Live space feeds"],
-    github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
     meta: ["NASA", "SpaceX", "Live orbital data"] as const,
@@ -228,7 +223,6 @@ export const projects = [
     description:
       "A browser-based metadata cleaner for images, PDFs, and Office files.",
     tech: ["Metadata removal", "Image cleanup", "PDF cleanup", "Office files", "Browser-based"],
-    github: "https://github.com/aliasist",
     downloads: [],
     status: "Live",
     meta: ["Privacy tool", "Browser-based", "File cleanup"] as const,
@@ -262,7 +256,6 @@ export const projects = [
     description:
       "A GitHub tool for repository summaries and pull request review notes. Archived — the demo stays online, but it is no longer being developed.",
     tech: ["Repository maps", "Pull request review", "Project guidance", "Review notes"],
-    github: "https://github.com/aliasist",
     downloads: [],
     status: "Archived",
     meta: ["Project guide", "PR review", "Public tool"] as const,
@@ -277,7 +270,6 @@ export const projects = [
     description:
       "Simple, fast stopwatch. No tasks, no accounts, no data saved. Just start/stop/reset, plus a lightweight intro. Archived — the demo stays online, but it is no longer being developed.",
     tech: ["Vanilla JS", "PWA", "No storage"],
-    github: "https://github.com/aliasist",
     downloads: [],
     status: "Archived",
     meta: ["Simple Stopwatch"] as const,
@@ -296,7 +288,6 @@ export const projects = [
       "Geospatial Data",
       "Live Monitoring",
     ],
-    github: "https://github.com/aliasist",
     downloads: [],
     status: "Archived",
     meta: ["Climate data", "Air quality", "Geospatial"] as const,
@@ -369,7 +360,6 @@ export const about = {
   stats: [
     { num: `${suiteAppCount}`,  label: "Projects online", sym: "" as const },
     { num: "7",  label: "External APIs integrated", sym: "+" as const },
-    { num: "100", label: "Open source · github.com/aliasist", sym: "%" as const },
   ],
 } as const;
 
