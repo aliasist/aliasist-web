@@ -151,11 +151,11 @@ export const projects = [
   {
     name: "Aliasist AI RAG system",
     description:
-      "An AI RAG system with an AI chatbot and image generation.",
-    tech: ["AI RAG System", "AI Chatbot + Image Generation"],
+      "A document-grounded chatbot and image generator — answers cite the sources they're pulled from.",
+    tech: ["Retrieval-augmented chat", "Image generation", "Source citations", "Multi-model routing"],
     downloads: [],
     status: "Live",
-    meta: ["AI RAG System", "AI Chatbot + Image Generation"] as const,
+    meta: ["AI Chat", "Image Generation", "Cited Sources"] as const,
     tone: "violet",
     icon: "AT",
     link: "https://www.aliasist.tech",
