@@ -344,15 +344,15 @@ export const about = {
   bioBlocks: [
     {
       kicker: "Who's behind it",
-      body: "I'm working toward a degree in computer science because I want to understand how reliable technology is built. My goal is to apply that knowledge to practical projects that can help people and make everyday work a little easier.",
+      body: "I'm working toward a degree in computer science because I want to understand how useful technology is built. My hope is to apply that knowledge to projects that help people, improve lives, and make a meaningful difference for good.",
     },
     {
       kicker: "What it is",
-      body: "Aliasist is where that learning turns into practice. Each app starts with a real need, then grows into a tool that is easier to understand, easier to use, and respectful of the person using it.",
+      body: "Aliasist is where that intention becomes practice. Each app explores a real need, a new idea, or a better way to make complex technology useful and approachable. The collection will keep growing as those ideas become tools people can actually use.",
     },
     {
       kicker: "Why it exists",
-      body: "It exists to learn by building and to give promising ideas room to improve. The larger goal is simple: build carefully, stay honest about what is still in progress, and keep working toward systems that are genuinely helpful.",
+      body: "It exists to learn by building and to give promising ideas room to become something valuable. The larger goal is simple: create technology with care, share it with people, and keep working toward projects that can make a positive difference at a meaningful scale.",
     },
   ] as const,
 
