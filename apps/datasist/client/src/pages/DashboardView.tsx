@@ -24,9 +24,9 @@ const STATUS_COLORS: Record<string, string> = {
 function KpiCard({ icon: Icon, label, value, sub, color }: { icon: any; label: string; value: string; sub?: string; color?: string }) {
   return (
     <div
-      className="flex flex-col gap-2 p-4 rounded"
+      className="datasist-kpi-card flex flex-col gap-2 p-4 rounded"
       style={{
-        background: "var(--color-surface)",
+        background: "linear-gradient(180deg, rgba(13, 27, 38, 0.88), rgba(8, 16, 23, 0.82))",
         border: "1px solid var(--color-border)",
       }}
     >
@@ -158,32 +158,36 @@ export default function DashboardView() {
       <div className="p-4 flex flex-col gap-4 max-w-screen-xl mx-auto">
 
         {/* Page header */}
-        <div className="flex items-end justify-between">
+        <div className="datasist-hero-panel flex flex-col gap-5 rounded p-5 md:flex-row md:items-end md:justify-between">
           <div>
+            <div style={{ fontSize: "10px", letterSpacing: "0.18em", color: "var(--color-cyan)", marginBottom: "8px" }}>
+              // DATASIST ORBITAL INFRASTRUCTURE VIEW
+            </div>
             <h1
               style={{
-                fontSize: "18px",
+                fontSize: "clamp(1.35rem, 3vw, 2.25rem)",
                 fontFamily: "'Space Grotesk', sans-serif",
                 color: "var(--color-green)",
                 fontWeight: 800,
-                letterSpacing: "0.05em",
+                letterSpacing: "0.03em",
               }}
               className="text-glow-green"
             >
               AI Infrastructure Intelligence
             </h1>
-            <p style={{ fontSize: "11px", color: "var(--color-text-muted)", marginTop: "2px" }}>
+            <p style={{ fontSize: "12px", color: "rgba(220,239,228,0.78)", marginTop: "8px", maxWidth: "54rem" }}>
               Global AI data center analysis · {centers.length} facilities tracked · Aliasist.com
             </p>
           </div>
           <div
             className="px-3 py-1 rounded text-xs"
             style={{
-              background: "rgba(113,255,156,0.06)",
-              border: "1px solid rgba(113,255,156,0.15)",
-              color: "var(--color-text-muted)",
+              background: "rgba(8, 16, 23, 0.72)",
+              border: "1px solid rgba(113,255,156,0.24)",
+              color: "var(--color-green)",
               fontSize: "10px",
               letterSpacing: "0.1em",
+              width: "fit-content",
             }}
           >
             DATA AS OF 2025–2026
