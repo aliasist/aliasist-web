@@ -1,6 +1,9 @@
 /**
- * Homepage copy & navigation — edit this file to change marketing text and suite links.
- *  -_- The homepage is built with React + TypeScript + TailwindCSS.
+ * Hello Welcome - This page is build with React, Tailwind CSS, and Typescript (Some Javascript ofc)
+ *
+ * I started this project 4/22/2026 (Blake)
+ *
+ *
  * Images:
  *   • Project banners + assets live under `./images` (imported via `@images/...`).
  *
