@@ -30,38 +30,38 @@ import spaceBanner from "@images/spacesist_banner_cinematic.webp";
 /** Used by Navbar "Projects" menu and Contact section project list — keep in sync. */
 export const suiteApps = [
   {
-    label: "AI RAG System ",
-    sub: "RAG system with AI chatbot and image generation",
+    label: "Aliasist AI",
+    sub: "Chat, images, and cited answers",
     href: "https://www.aliasist.tech",
     icon: "AT",
   },
   {
     label: "Globalize",
-    sub: "Global Infrastructure Map",
+    sub: "Interactive global infrastructure map",
     href: "https://www.aliasist.world",
     icon: "GL",
   },
   {
     label: "DataSist",
-    sub: "Data Center WebApp",
+    sub: "Data center research dashboard",
     href: "https://datasist-frontend.pages.dev",
     icon: "DS",
   },
   {
     label: "PulseSist",
-    sub: "Stock Market Dashboard",
+    sub: "Market research dashboard",
     href: "https://pulse.aliasist.com",
     icon: "PS",
   },
   {
     label: "SpaceSist",
-    sub: "Live Space Portal",
+    sub: "Live space dashboard",
     href: "https://space.aliasist.com",
     icon: "SS",
   },
   {
     label: "ClearSist",
-    sub: "Metadata Cleaner",
+    sub: "Private file metadata cleaner",
     href: "https://clearasist.pages.dev",
     icon: "CL",
   },
@@ -99,7 +99,7 @@ export const hero = {
   wordmark: "ALIASIST",
   tagline: "Tools, dashboards, and experiments for the web",
   subcopy:
-    "Aliasist is a growing suite of free tools — data dashboards, live infrastructure maps, and more — built to be useful the moment you open them.",
+    "Aliasist is a growing set of free tools for research, data, privacy, and the web. Each project is built to be clear, practical, and ready to use.",
   ctaContact: "Projects",
   ctaContactHref: "#projects",
   ctaSecondary: "Contact",
@@ -143,16 +143,16 @@ const downloadLinks = {
 
 export const projectsSection = {
   dividerLabel: "Shipped Projects",
-  headline: "These are tools you can use.",
-  subcopy: "These are the Aliasist apps and tools that are currently online.",
+  headline: "Projects that are available now.",
+  subcopy: "A small collection of tools built to make complex information easier to explore.",
 } as const;
 
 export const projects = [
   {
-    name: "Aliasist AI RAG system",
+    name: "Aliasist AI",
     description:
-      "A document-grounded chatbot and image generator — answers cite the sources they're pulled from.",
-    tech: ["Retrieval-augmented chat", "Image generation", "Source citations", "Multi-model routing"],
+      "A chatbot and image tool that can answer from documents and show the sources behind its answers.",
+    tech: ["Document chat", "Image generation", "Source citations", "Model routing"],
     downloads: [],
     status: "Live",
     meta: ["AI Chat", "Image Generation", "Cited Sources"] as const,
@@ -165,11 +165,11 @@ export const projects = [
   {
     name: "Globalize",
     description:
-      "A 3D globe mapping global infrastructure — data centers, subsea cables, air traffic, and seismic activity.",
-    tech: ["3D globe", "Infrastructure map", "Data signals", "Geospatial views"],
+      "An interactive globe for exploring data centers, subsea cables, air traffic, and seismic activity.",
+    tech: ["3D globe", "Infrastructure map", "Map layers", "Geospatial views"],
     downloads: [],
     status: "Live",
-    meta: ["Data centers", "Global map", "Live infrastructure"] as const,
+    meta: ["Data centers", "Global map", "Infrastructure layers"] as const,
     tone: "cyan",
     icon: "GL",
     link: "https://www.aliasist.world",
@@ -179,7 +179,7 @@ export const projects = [
   {
     name: "DataSist",
     description:
-      "A data center research dashboard for facilities, power, water, risk, and investment data.",
+      "A research dashboard for data center facilities, power use, water demand, risk, and investment.",
     tech: ["Facility research", "Power data", "Water data", "Risk maps", "Data tables"],
     downloads: [],
     status: "Live",
@@ -193,8 +193,8 @@ export const projects = [
   {
     name: "PulseSist",
     description:
-      "A market dashboard with live charts, portfolio tools, and research views.",
-    tech: ["Market charts", "Portfolio views", "Research panels", "Live dashboards"],
+      "A market research dashboard with live charts, watchlists, and company research views.",
+    tech: ["Market charts", "Watchlists", "Research panels", "Live dashboards"],
     downloads: [],
     status: "Live",
     meta: ["Markets", "Portfolio tools", "Research views"] as const,
@@ -207,7 +207,7 @@ export const projects = [
   {
     name: "SpaceSist",
     description:
-      "A live space dashboard using NASA, SpaceX, ISS, asteroid, and exoplanet data.",
+      "A space dashboard that brings together NASA, SpaceX, ISS, asteroid, and exoplanet data.",
     tech: ["Launch data", "ISS tracking", "Asteroids", "Exoplanets", "Live space feeds"],
     downloads: [],
     status: "Live",
@@ -221,7 +221,7 @@ export const projects = [
   {
     name: "ClearSist",
     description:
-      "A browser-based metadata cleaner for images, PDFs, and Office files.",
+      "A browser-based tool for removing metadata from images, PDFs, and Office files.",
     tech: ["Metadata removal", "Image cleanup", "PDF cleanup", "Office files", "Browser-based"],
     downloads: [],
     status: "Live",
@@ -235,7 +235,7 @@ export const projects = [
   {
     name: "Aliasist-Files-Abductor",
     description:
-      "A desktop GUI tool for downloading files from YouTube and direct URLs.",
+      "A desktop app for downloading files from YouTube and direct URLs.",
     tech: ["Python", "GUI", "CLI", "File Automation", "yt-dlp"],
     github: "https://github.com/aliasist/files-abductor/releases/tag/v2.7.0",
     downloads: [
@@ -254,7 +254,7 @@ export const projects = [
   {
     name: "GitHub Companion",
     description:
-      "A GitHub tool for repository summaries and pull request review notes. Archived — the demo stays online, but it is no longer being developed.",
+      "A GitHub helper for repository summaries and pull request notes. Archived: the demo stays online, but active development has stopped.",
     tech: ["Repository maps", "Pull request review", "Project guidance", "Review notes"],
     downloads: [],
     status: "Archived",
@@ -268,7 +268,7 @@ export const projects = [
   {
     name: "Atomicity",
     description:
-      "Simple, fast stopwatch. No tasks, no accounts, no data saved. Just start/stop/reset, plus a lightweight intro. Archived — the demo stays online, but it is no longer being developed.",
+      "A simple stopwatch with no accounts and no saved data. Archived: the demo stays online, but active development has stopped.",
     tech: ["Vanilla JS", "PWA", "No storage"],
     downloads: [],
     status: "Archived",
@@ -282,7 +282,7 @@ export const projects = [
   {
     name: "EcoSist",
     description:
-      "An environmental dashboard for air quality, climate data, and geospatial views. Archived — the demo stays online, but it is no longer being developed.",
+      "An environmental dashboard for air quality, climate data, and map views. Archived: the demo stays online, but active development has stopped.",
     tech: [
       "Environmental APIs",
       "Geospatial Data",
@@ -319,7 +319,7 @@ export type ProjectCard = (typeof projects)[number];
 export const about = {
   dividerLabel: "About",
   headline: "Meet Aliasist.",
-  pathBadge: "Working toward a CS degree · building for good",
+  pathBadge: "Studying computer science · building with care",
   skillsLabel: "What I work with",
   skills: [
     "TypeScript",
@@ -332,7 +332,7 @@ export const about = {
     "Cloudflare Workers",
     "D1 databases",
     "Vector databases",
-    "LLM / RAG systems",
+    "AI document systems",
   ] as const,
   /**
    * Each block: optional `kicker` (small label) + `body` (main text).
@@ -341,15 +341,15 @@ export const about = {
   bioBlocks: [
     {
       kicker: "Who's behind it",
-      body: "I'm working toward a degree in computer science because I want to understand how useful technology is built. My hope is to apply that knowledge to projects that help people, improve lives, and make a meaningful difference for good.",
+      body: "I'm working toward a degree in computer science because I want to understand how reliable technology is built. My goal is to apply that knowledge to practical projects that can help people and make everyday work a little easier.",
     },
     {
       kicker: "What it is",
-      body: "Aliasist is where that intention becomes practice. Each app explores a real need, a new idea, or a better way to make complex technology useful and approachable. The collection will keep growing as those ideas become tools people can actually use.",
+      body: "Aliasist is where that learning turns into practice. Each app starts with a real need, then grows into a tool that is easier to understand, easier to use, and respectful of the person using it.",
     },
     {
       kicker: "Why it exists",
-      body: "It exists to learn by building and to give promising ideas room to become something valuable. The larger goal is simple: create technology with care, share it with people, and keep working toward projects that can make a positive difference at a meaningful scale.",
+      body: "It exists to learn by building and to give promising ideas room to improve. The larger goal is simple: build carefully, stay honest about what is still in progress, and keep working toward systems that are genuinely helpful.",
     },
   ] as const,
 
@@ -358,8 +358,8 @@ export const about = {
   authorSlots: [] as unknown as readonly { kicker: string; body: string }[],
 
   stats: [
-    { num: `${suiteAppCount}`,  label: "Projects online", sym: "" as const },
-    { num: "7",  label: "External APIs integrated", sym: "+" as const },
+    { num: `${suiteAppCount}`,  label: "Projects listed", sym: "" as const },
+    { num: "7",  label: "APIs connected", sym: "+" as const },
   ],
 } as const;
 
@@ -370,10 +370,10 @@ export const contact = {
   introLabel: "Contact",
   headline: "Want to talk?",
   introStrong: "Questions, ideas, and project feedback are welcome.",
-  introRest: "Tell me what you're working on or what you need help with.",
+  introRest: "Share what you're working on, what you noticed, or where a project could be clearer.",
   successTitle: "Message received",
   successBody:
-    "Thanks for reaching out and hope to get back to you soon.",
+    "Thanks for reaching out. I'll get back to you when I can.",
   sendAnother: "Send another ↩",
   placeholders: {
     name: "Name",
@@ -401,16 +401,16 @@ export const contact = {
 // ── Subscribe (email signup) ────────────────────────────────────────────────
 
 export const subscribeSection = {
-  dividerLabel: "Signal",
+  dividerLabel: "Updates",
   introLabel: "Subscribe",
   headline: "Get updates from Aliasist.",
   introStrong: "Occasional updates only.",
-  introRest: "New tools, releases, and product notes — straight to your inbox.",
+  introRest: "New tools, releases, and project notes, sent only when there is something worth sharing.",
   placeholder: "your@email.com",
   submitIdle: "Subscribe ↗",
   submitSending: "Sending...",
   successTitle: "Subscribed",
-  successBody: "You're on the list. Watch your inbox.",
+  successBody: "You're on the list.",
   sendAnother: "Subscribe another ↩",
   errorPrefix: "Error:",
   errorFallback: "Something went wrong — please try again.",
@@ -430,8 +430,8 @@ export const updates = [
     id: "u2",
     kind: "update" as const,
     date: "2026-07-30",
-    title: "RAG Curation Dashboard is live",
-    body: "Upload documents, route them into one of six knowledge corpora, and every Aliasist chatbot can cite them moments later — full lifecycle verified end-to-end.",
+    title: "Document curation dashboard is live",
+    body: "Documents can now be added to the right knowledge area, then used by Aliasist chat tools with source citations.",
     href: "#",
   },
   {
@@ -452,7 +452,7 @@ export type UpdateEntry = (typeof updates)[number];
 export const transmissions = {
   dividerLabel: "Blog",
   headline: "Industry Links",
-  scanning: "Updates are live.",
+  scanning: "Latest links are loading.",
   offline: "Could not load the latest posts. Showing saved posts.",
   liveFeedPrefix: "Updated ",
   liveFeedRecent: "recently",
