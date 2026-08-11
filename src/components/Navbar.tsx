@@ -278,7 +278,7 @@ const Navbar = () => {
       >
         Skip to content
       </a>
-      <div className="mx-auto flex h-[4.5rem] w-full max-w-site items-center justify-between gap-5 px-4 sm:gap-8 sm:px-8 lg:px-12 xl:px-16">
+      <div className="relative z-30 mx-auto flex h-[4.5rem] w-full max-w-site items-center justify-between gap-5 px-4 sm:gap-8 sm:px-8 lg:px-12 xl:px-16">
 
         {/* ── LEFT: Logo ── */}
         <a
@@ -382,14 +382,25 @@ const Navbar = () => {
       {/* ── MOBILE MENU ── */}
       <AnimatePresence>
         {mobileOpen && (
-          <motion.div
-            initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: "auto" }}
-            exit={{ opacity: 0, height: 0 }}
-            transition={{ duration: 0.25 }}
-            className="md:hidden bg-background/98 backdrop-blur-xl border-b border-border overflow-hidden"
-          >
-            <div className="space-y-1 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-5 sm:px-8 lg:px-12 xl:px-16">
+          <>
+            <motion.button
+              type="button"
+              aria-label="Close menu"
+              className="fixed inset-0 z-10 block cursor-default bg-background/35 backdrop-blur-md md:hidden"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              transition={{ duration: 0.2 }}
+              onClick={() => setMobileOpen(false)}
+            />
+            <motion.div
+              initial={{ opacity: 0, height: 0 }}
+              animate={{ opacity: 1, height: "auto" }}
+              exit={{ opacity: 0, height: 0 }}
+              transition={{ duration: 0.25 }}
+              className="relative z-20 md:hidden overflow-hidden border-b border-border bg-background/98 backdrop-blur-xl"
+            >
+              <div className="space-y-1 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-5 sm:px-8 lg:px-12 xl:px-16">
 
               {/* Page links */}
               {pageNavLinks.map(link => (
@@ -446,8 +457,9 @@ const Navbar = () => {
                 </a>
                 <MobileAuthControl />
               </div>
-            </div>
-          </motion.div>
+              </div>
+            </motion.div>
+          </>
         )}
       </AnimatePresence>
     </motion.nav>
