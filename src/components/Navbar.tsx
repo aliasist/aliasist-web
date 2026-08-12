@@ -386,7 +386,7 @@ const Navbar = () => {
             <motion.button
               type="button"
               aria-label="Close menu"
-              className="fixed inset-0 z-10 block cursor-default bg-background/35 backdrop-blur-md md:hidden"
+              className="fixed inset-0 z-10 block cursor-default bg-background/50 backdrop-blur-lg md:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
