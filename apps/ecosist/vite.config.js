@@ -9,7 +9,7 @@ export default defineConfig({
             '/api/ecosist': {
                 target: 'https://api.aliasist.tech',
                 changeOrigin: true,
-                rewrite: (path) => path.replace(/^\/api\/ecosist/, '/eco'),
+                rewrite: function (path) { return path.replace(/^\/api\/ecosist/, '/eco'); },
             },
         },
     },
