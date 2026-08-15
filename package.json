@@ -20,7 +20,7 @@
     "app:spacesist": "npm run dev --prefix apps/spacesist",
     "build:clearasist": "npm --prefix apps/clearasist run build",
     "build:clearasist-admin": "npm --prefix apps/clearasist-admin run build",
-    "build:ecosist": "npm --prefix apps/ecosist run build",
+    "build:ecosist": "npm --prefix apps/ecosist ci && npm --prefix apps/ecosist run build",
     "sync:ecosist": "node scripts/sync-ecosist.mjs",
     "build:functions": "wrangler pages functions build functions --outdir dist/_worker.js --output-routes-path dist/_routes.json --compatibility-date 2025-04-01 --compatibility-flag nodejs_compat",
     "lint": "eslint .",
