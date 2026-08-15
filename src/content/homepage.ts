@@ -1,8 +1,4 @@
-/**
- * Hello Welcome - This page is build with React, Tailwind CSS, and Typescript (Some Javascript ofc)
- *
- * I started this project 4/22/2026 (Blake)
- *
+/*Aliasist Project 4/22/2026*
  *
  * Images:
  *   • Project banners + assets live under `./images` (imported via `@images/...`).
