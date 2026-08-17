@@ -8,7 +8,6 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
-import Starfield from "@/components/Starfield";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 const HUB_URL = "https://llm-chat.bchooper0730.workers.dev";
@@ -28,11 +27,14 @@ interface HistoryPoint {
   timestamp: number;
 }
 
+function toF(celsius: number): number {
+  return Math.round((celsius * 9) / 5 + 32);
+}
+
 function toChartPoint(r: HistoryPoint) {
   return {
     time: new Date(r.timestamp).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" }),
-    tempF: Math.round((r.temp_c * 9) / 5 + 32),
-    tempC: r.temp_c,
+    tempF: toF(r.temp_c),
     humidity: r.humidity,
   };
 }
@@ -79,21 +81,13 @@ const Sensor = () => {
   }, []);
 
   const chartData = history.map(toChartPoint);
-  const lastUpdated = latest ? new Date(latest.timestamp) : null;
 
   return (
-    <div className="relative min-h-screen bg-background overflow-hidden">
-      <Starfield />
+    <div className="relative min-h-screen bg-background">
       <div className="relative z-10 max-w-4xl mx-auto px-6 py-24">
-        <div className="font-mono text-[10px] uppercase tracking-[0.35em] text-electric/70 mb-4 text-center">
-          LIVE DEVICE TELEMETRY
-        </div>
-        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground text-center mb-2">
+        <h1 className="text-4xl sm:text-5xl font-bold tracking-tight text-foreground text-center mb-12">
           Sensor Dashboard
         </h1>
-        <p className="font-mono text-sm text-muted-foreground text-center mb-12">
-          TTGO T-Display + DHT11, reporting over WiFi every minute
-        </p>
 
         {error && (
           <div className="font-mono text-xs text-center text-destructive mb-8">
@@ -110,7 +104,7 @@ const Sensor = () => {
             </CardHeader>
             <CardContent>
               <div className="text-5xl font-bold text-electric">
-                {latest ? `${latest.temp_c.toFixed(1)}°C` : "—"}
+                {latest ? `${toF(latest.temp_c)}°F` : "—"}
               </div>
             </CardContent>
           </Card>
@@ -129,13 +123,8 @@ const Sensor = () => {
           </Card>
         </div>
 
-        <Card className="border-violet/10 bg-background/50 mb-6">
-          <CardHeader>
-            <CardTitle className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
-              Last 24 Hours
-            </CardTitle>
-          </CardHeader>
-          <CardContent>
+        <Card className="border-violet/10 bg-background/50">
+          <CardContent className="pt-6">
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData}>
@@ -156,8 +145,8 @@ const Sensor = () => {
                   />
                   <Line
                     type="monotone"
-                    dataKey="tempC"
-                    name="Temp °C"
+                    dataKey="tempF"
+                    name="Temp °F"
                     stroke="hsl(var(--electric))"
                     strokeWidth={2}
                     dot={false}
@@ -175,11 +164,6 @@ const Sensor = () => {
             </div>
           </CardContent>
         </Card>
-
-        <p className="font-mono text-[11px] text-muted-foreground text-center">
-          {lastUpdated ? `Last updated ${lastUpdated.toLocaleTimeString()}` : "Loading..."}
-          {" · refreshes every 30s"}
-        </p>
       </div>
     </div>
   );
