@@ -100,7 +100,7 @@ export const hero = {
   wordmark: "ALIASIST",
   tagline: "Tools, dashboards, and experiments for the web",
   subcopy:
-    "Aliasist is a growing set of free tools for research, data, privacy, and the web. Each project is built to be clear, practical, and ready to use.",
+    "Aliasist is a growing set of software related tools for research, data, privacy, and the web. Each project is built to be clear, practical, and ready to use.",
   ctaContact: "Projects",
   ctaContactHref: "#projects",
   ctaSecondary: "Contact",
@@ -342,7 +342,7 @@ export const about = {
   bioBlocks: [
     {
       kicker: "Who's behind it",
-      body: "I'm working toward a degree in computer science because I want to understand how useful technology is built. My hope is to apply that knowledge to projects that help people, improve lives, and make a meaningful difference for good.",
+      body: "I'm working toward a degree in computer science because I want to understand how state-of-the-art technology is built. My hope is to apply that knowledge to projects that help people, improve lives, and make a meaningful difference for good.",
     },
     {
       kicker: "What it is",
