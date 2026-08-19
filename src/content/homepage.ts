@@ -98,7 +98,7 @@ export const hero = {
   mascotAlt: "Aliasist",
   mascotTitle: "Aliasist",
   wordmark: "ALIASIST",
-  tagline: "Tools, dashboards, and experiments for the web",
+  tagline: "Tools, dashboards, and experiments for the web - Aliasist Arsenal",
   subcopy:
     "Aliasist is a growing set of software related tools for research, data, privacy, and the web. Each project is built to be clear, practical, and ready to use.",
   ctaContact: "Projects",
@@ -320,7 +320,7 @@ export type ProjectCard = (typeof projects)[number];
 export const about = {
   dividerLabel: "About",
   headline: "Meet Aliasist.",
-  pathBadge: "Studying computer science · building with care",
+  pathBadge: "Studying computer science · Designed with systems in mind.",
   skillsLabel: "What I work with",
   skills: [
     "TypeScript",
