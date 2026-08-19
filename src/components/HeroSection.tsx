@@ -83,9 +83,25 @@ const HeroSection = () => {
           />
         </motion.div>
 
-        <h1 className="text-glow-violet mb-5 select-none text-6xl font-bold leading-none tracking-[0.04em] text-foreground sm:text-8xl md:text-[9rem]">
-          {hero.wordmark}
-        </h1>
+        <motion.div
+          className="mb-6 w-full max-w-full overflow-hidden flex flex-col items-center justify-center"
+          initial={{ opacity: 0, y: 10, scale: 0.97 }}
+          animate={{ opacity: 1, y: 0, scale: 1 }}
+          transition={{ duration: 0.7, delay: 0.48, ease: [0.16, 1, 0.3, 1] }}
+        >
+          <h1 className="sr-only">{hero.wordmark}</h1>
+          <pre
+            aria-hidden="true"
+            className="font-mono select-none text-center font-black whitespace-pre leading-[1.12] sm:leading-[1.15] tracking-[-0.01em] bg-gradient-to-r from-electric via-emerald-300 to-electric bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(10,204,151,0.45)] text-[7.5px] min-[390px]:text-[9px] min-[480px]:text-[11.5px] sm:text-[14.5px] md:text-[18px] lg:text-[21px] xl:text-[23px] hover:drop-shadow-[0_0_40px_rgba(10,204,151,0.7)] transition-all duration-500"
+          >
+{` █████╗ ██╗     ██╗ █████╗ ███████╗██╗███████╗████████╗
+██╔══██╗██║     ██║██╔══██╗██╔════╝██║██╔════╝╚══██╔══╝
+███████║██║     ██║███████║███████╗██║███████╗   ██║   
+██╔══██║██║     ██║██╔══██║╚════██║██║╚════██║   ██║   
+██║  ██║███████╗██║██║  ██║███████║██║███████║   ██║   
+╚═╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═╝╚══════╝╚═╝╚══════╝   ╚═╝`}
+          </pre>
+        </motion.div>
 
         <motion.p
           className="mb-4 font-mono text-[11px] uppercase tracking-[0.24em] text-electric/65"
