@@ -18,8 +18,6 @@ import {
   Search, 
   Maximize2,
   Sparkles,
-  Tv2,
-  Telescope,
   HelpCircle,
   CheckCircle2,
   XCircle,
@@ -262,38 +260,6 @@ const CURATED_ODDS: OddsEvent[] = [
   },
 ];
 
-interface LiveTvCategory {
-  id: string;
-  name: string;
-}
-interface LiveTvChannel {
-  id: number;
-  name: string;
-  categoryId: string;
-  icon: string | null;
-}
-
-const CURATED_TV_CATEGORIES: LiveTvCategory[] = [
-  { id: "news", name: "News" },
-  { id: "sports", name: "Sports" },
-  { id: "entertainment", name: "Entertainment" },
-];
-
-const CURATED_TV_CHANNELS: Record<string, LiveTvChannel[]> = {
-  news: [
-    { id: 1, name: "Global News Network", categoryId: "news", icon: null },
-    { id: 2, name: "World Report 24", categoryId: "news", icon: null },
-  ],
-  sports: [
-    { id: 3, name: "Sports Central", categoryId: "sports", icon: null },
-    { id: 4, name: "Arena Live", categoryId: "sports", icon: null },
-  ],
-  entertainment: [
-    { id: 5, name: "Prime Entertainment", categoryId: "entertainment", icon: null },
-    { id: 6, name: "Studio 24", categoryId: "entertainment", icon: null },
-  ],
-};
-
 // ── 1. Movies & TV Tab (100% Resilient + In-App Cinema Trailer Streaming) ──────
 
 interface MovieItem {
@@ -336,6 +302,25 @@ const MoviesTab = () => {
     const matchesSearch = !searchQuery || item.title.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesType && matchesSearch;
   });
+
+  // The trending list has no trailer data, and real (non-curated) items have
+  // no trailerEmbed — fetch a real one on demand when the modal opens rather
+  // than falling back to a fake YouTube search-embed URL, which no longer works.
+  const trailerQuery = useQuery({
+    queryKey: ["entertainment-movie-trailer", selectedMovie?.id, selectedMovie?.mediaType],
+    queryFn: async () => {
+      const media = selectedMovie!.mediaType === "tv" ? "tv" : "movie";
+      const res = await fetch(
+        `${siteEndpoints.entertainmentMovieTrailerApi}?id=${selectedMovie!.id}&media=${media}`,
+      );
+      const body = await readJsonBody<{ embedUrl?: string | null; error?: string }>(res);
+      if (!res.ok || !body || body.error) return null;
+      return body.embedUrl ?? null;
+    },
+    enabled: !!selectedMovie && !selectedMovie.trailerEmbed,
+  });
+
+  const activeTrailerUrl = selectedMovie?.trailerEmbed || trailerQuery.data;
 
   return (
     <div className="space-y-6">
@@ -418,16 +403,23 @@ const MoviesTab = () => {
           <DialogContent className="max-w-3xl border-border/80 bg-card p-0 overflow-hidden shadow-2xl">
             {/* Embedded YouTube Trailer Player */}
             <div className="aspect-video w-full bg-black relative">
-              <iframe
-                src={
-                  selectedMovie.trailerEmbed ||
-                  `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(selectedMovie.title + " official trailer")}`
-                }
-                title={selectedMovie.title}
-                className="w-full h-full border-0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+              {activeTrailerUrl ? (
+                <iframe
+                  src={activeTrailerUrl}
+                  title={selectedMovie.title}
+                  className="w-full h-full border-0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : trailerQuery.isLoading ? (
+                <div className="flex h-full items-center justify-center font-mono text-xs text-muted-foreground">
+                  Loading trailer…
+                </div>
+              ) : (
+                <div className="flex h-full items-center justify-center font-mono text-xs text-muted-foreground">
+                  No trailer available
+                </div>
+              )}
             </div>
 
             <div className="p-6 space-y-4">
@@ -857,6 +849,23 @@ const GamesTab = () => {
 
   const displayGames = data || CURATED_GAMES;
 
+  // The trending list has no trailer data, and real (non-curated) items have
+  // no trailerEmbed — fetch a real one on demand when the modal opens. RAWG
+  // serves its own trailer clips as direct video files (not YouTube), so
+  // this is a native <video> source, not an iframe.
+  const trailerQuery = useQuery({
+    queryKey: ["entertainment-game-trailer", selectedGame?.id],
+    queryFn: async () => {
+      const res = await fetch(`${siteEndpoints.entertainmentGameTrailerApi}?id=${selectedGame!.id}`);
+      const body = await readJsonBody<{ videoUrl?: string | null; previewImage?: string | null; error?: string }>(res);
+      if (!res.ok || !body || body.error) return null;
+      return { videoUrl: body.videoUrl ?? null, previewImage: body.previewImage ?? null };
+    },
+    enabled: !!selectedGame && !selectedGame.trailerEmbed,
+  });
+
+  const activeVideoUrl = trailerQuery.data?.videoUrl;
+
   return (
     <div className="space-y-8">
       {/* Retro Mini-Arcade Highlight */}
@@ -914,16 +923,31 @@ const GamesTab = () => {
         {selectedGame && (
           <DialogContent className="max-w-2xl border-border/80 bg-card p-0 overflow-hidden shadow-2xl">
             <div className="aspect-video w-full bg-black relative">
-              <iframe
-                src={
-                  selectedGame.trailerEmbed ||
-                  `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(selectedGame.title + " gameplay trailer")}`
-                }
-                title={selectedGame.title}
-                className="w-full h-full border-0"
-                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                allowFullScreen
-              />
+              {selectedGame.trailerEmbed ? (
+                <iframe
+                  src={selectedGame.trailerEmbed}
+                  title={selectedGame.title}
+                  className="w-full h-full border-0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              ) : activeVideoUrl ? (
+                <video
+                  src={activeVideoUrl}
+                  poster={trailerQuery.data?.previewImage ?? selectedGame.backgroundImage ?? undefined}
+                  controls
+                  autoPlay
+                  className="w-full h-full object-cover"
+                />
+              ) : trailerQuery.isLoading ? (
+                <div className="flex h-full items-center justify-center font-mono text-xs text-muted-foreground">
+                  Loading trailer…
+                </div>
+              ) : (
+                <div className="flex h-full items-center justify-center font-mono text-xs text-muted-foreground">
+                  No trailer available
+                </div>
+              )}
             </div>
 
             <div className="p-6 space-y-4">
@@ -1140,80 +1164,6 @@ const AnimeTab = () => {
         )}
       </Dialog>
     </>
-  );
-};
-
-// ── 6. NASA Deep Space & Astronomy Picture of the Day ────────────────────────
-
-interface ApodData {
-  title: string;
-  explanation: string;
-  url: string;
-  hdurl?: string;
-  media_type: string;
-  date: string;
-  copyright?: string;
-}
-
-const NasaSpaceTab = () => {
-  const { data, isLoading } = useQuery({
-    queryKey: ["entertainment-nasa-apod"],
-    queryFn: async () => {
-      const res = await fetch(siteEndpoints.entertainmentNasaApodApi);
-      const body = await readJsonBody<ApodData & { error?: string }>(res);
-      if (!res.ok || !body || body.error) throw new Error(body?.error ?? "nasa_fetch_failed");
-      return body;
-    },
-    staleTime: 1000 * 60 * 60 * 12,
-  });
-
-  if (isLoading) return <Skeleton className="h-96 w-full max-w-3xl rounded-sm" />;
-  if (!data) return null;
-
-  return (
-    <div className="max-w-4xl space-y-6">
-      <Card className="overflow-hidden border-border/80 bg-card/80 shadow-2xl">
-        {data.media_type === "video" ? (
-          <div className="aspect-video w-full bg-black">
-            <iframe src={data.url} title={data.title} className="w-full h-full border-0" allowFullScreen />
-          </div>
-        ) : (
-          <div className="relative aspect-[16/9] w-full bg-black overflow-hidden group">
-            <img
-              src={data.hdurl || data.url}
-              alt={data.title}
-              className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105"
-            />
-            <div className="absolute top-4 right-4">
-              <a
-                href={data.hdurl || data.url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-1.5 rounded-sm bg-black/70 backdrop-blur-md border border-white/20 px-3 py-1.5 font-mono text-xs text-white hover:bg-white hover:text-black transition-all"
-              >
-                <Maximize2 className="size-3.5" /> Full HD View
-              </a>
-            </div>
-          </div>
-        )}
-
-        <CardContent className="p-6 space-y-3">
-          <div className="flex items-center justify-between border-b border-border/40 pb-3">
-            <div>
-              <span className="font-mono text-[10px] uppercase tracking-widest text-sky-400 flex items-center gap-1.5">
-                <Telescope className="size-3.5" /> NASA Astronomy Picture of the Day
-              </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-foreground mt-1">{data.title}</h2>
-            </div>
-            <span className="font-mono text-xs text-muted-foreground">{data.date}</span>
-          </div>
-
-          <p className="text-xs leading-relaxed text-muted-foreground max-h-60 overflow-y-auto pr-2">
-            {data.explanation}
-          </p>
-        </CardContent>
-      </Card>
-    </div>
   );
 };
 
@@ -1581,91 +1531,6 @@ const OddsTab = () => {
   );
 };
 
-// ── 9. Live TV Tab (Channel guide only — no stream playback) ──────────────────
-
-const LiveTvTab = () => {
-  const [categoryId, setCategoryId] = useState<string | null>(null);
-
-  const categoriesQuery = useQuery({
-    queryKey: ["entertainment-live-tv-categories"],
-    queryFn: async () => {
-      try {
-        const res = await fetch(siteEndpoints.entertainmentLiveTvApi);
-        const body = await readJsonBody<{ categories?: LiveTvCategory[]; error?: string }>(res);
-        if (res.ok && body && !body.error && body.categories?.length) {
-          return body.categories;
-        }
-      } catch (e) {
-        // Fallback gracefully
-      }
-      return CURATED_TV_CATEGORIES;
-    },
-    initialData: CURATED_TV_CATEGORIES,
-  });
-
-  const channelsQuery = useQuery({
-    queryKey: ["entertainment-live-tv-channels", categoryId],
-    enabled: !!categoryId,
-    queryFn: async () => {
-      try {
-        const res = await fetch(`${siteEndpoints.entertainmentLiveTvApi}?category=${encodeURIComponent(categoryId!)}`);
-        const body = await readJsonBody<{ channels?: LiveTvChannel[]; error?: string }>(res);
-        if (res.ok && body && !body.error && body.channels?.length) {
-          return body.channels;
-        }
-      } catch (e) {
-        // Fallback gracefully
-      }
-      return CURATED_TV_CHANNELS[categoryId!] || [];
-    },
-  });
-
-  const categories = categoriesQuery.data || CURATED_TV_CATEGORIES;
-  const channels = channelsQuery.data || (categoryId ? CURATED_TV_CHANNELS[categoryId] || [] : []);
-
-  return (
-    <div className="space-y-5">
-      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/60">
-        Channel guide only — listings, no video playback.
-      </p>
-      <div className="flex flex-wrap gap-2">
-        {categories.map((cat) => (
-          <button
-            key={cat.id}
-            type="button"
-            onClick={() => setCategoryId(cat.id)}
-            className={`border px-3 py-1.5 font-mono text-xs uppercase tracking-[0.1em] transition-colors flex items-center gap-1.5 ${
-              categoryId === cat.id
-                ? "border-electric/50 bg-electric/[0.12] text-electric"
-                : "border-border/60 bg-card/60 text-muted-foreground hover:border-electric/30 hover:text-foreground"
-            }`}
-          >
-            <Tv2 className="size-3.5" /> {cat.name}
-          </button>
-        ))}
-      </div>
-
-      {!categoryId && <p className="font-mono text-xs text-muted-foreground">Pick a category to see channels.</p>}
-      {categoryId && (
-        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-          {channels.map((channel) => (
-            <Card key={channel.id} className="flex items-center gap-3 border-border/60 bg-card/70 p-3">
-              {channel.icon ? (
-                <img src={channel.icon} alt="" className="size-8 shrink-0 object-contain" loading="lazy" />
-              ) : (
-                <div className="flex size-8 shrink-0 items-center justify-center rounded-sm bg-muted">
-                  <Tv2 className="size-4 text-muted-foreground" />
-                </div>
-              )}
-              <p className="line-clamp-2 text-sm text-foreground">{channel.name}</p>
-            </Card>
-          ))}
-        </div>
-      )}
-    </div>
-  );
-};
-
 // ── Main Entertainment Component ──────────────────────────────────────────────
 
 const Entertainment = () => (
@@ -1688,7 +1553,7 @@ const Entertainment = () => (
         </div>
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl">Entertainment</h1>
         <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
-          Interactive media & gaming workbench: stream live radio stations, play the space defender mini-arcade, watch movie & anime trailers, explore deep space APOD, and solve trivia challenges.
+          Interactive media & gaming workbench: stream live radio stations, play the space defender mini-arcade, watch movie & anime trailers, and solve trivia challenges.
         </p>
       </section>
 
@@ -1710,17 +1575,11 @@ const Entertainment = () => (
             <TabsTrigger value="anime" className="flex items-center gap-1.5">
               <Clapperboard className="size-3.5" /> Anime Trends
             </TabsTrigger>
-            <TabsTrigger value="space" className="flex items-center gap-1.5">
-              <Telescope className="size-3.5" /> NASA APOD
-            </TabsTrigger>
             <TabsTrigger value="trivia" className="flex items-center gap-1.5">
               <HelpCircle className="size-3.5" /> Trivia Arena
             </TabsTrigger>
             <TabsTrigger value="odds" className="flex items-center gap-1.5">
               <Trophy className="size-3.5" /> Odds
-            </TabsTrigger>
-            <TabsTrigger value="live-tv" className="flex items-center gap-1.5">
-              <Tv2 className="size-3.5" /> Live TV
             </TabsTrigger>
             <TabsTrigger value="weather" className="flex items-center gap-1.5">
               <CloudSun className="size-3.5" /> Weather
@@ -1739,17 +1598,11 @@ const Entertainment = () => (
           <TabsContent value="anime">
             <AnimeTab />
           </TabsContent>
-          <TabsContent value="space">
-            <NasaSpaceTab />
-          </TabsContent>
           <TabsContent value="trivia">
             <TriviaTab />
           </TabsContent>
           <TabsContent value="odds">
             <OddsTab />
-          </TabsContent>
-          <TabsContent value="live-tv">
-            <LiveTvTab />
           </TabsContent>
           <TabsContent value="weather">
             <WeatherTab />
