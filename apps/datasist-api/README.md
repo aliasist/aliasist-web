@@ -21,6 +21,8 @@ Part of the **[Aliasist](https://aliasist.com)** suite.
 - `POST /api/ai/rag-chat` — RAG chat proxy to a separate retrieval worker
 - `GET /api/stats` — aggregate statistics
 - `GET /api/observations/status` — saved external-provider observation counts and latest timestamp
+- `GET /api/facility-leads` — candidate new-facility leads (admin; `?status=new|reviewed|promoted|dismissed`)
+- `POST /api/facility-leads/discover` — manually trigger a discovery sweep (admin)
 - `GET /api/health` — health check
 
 ## Deploy
@@ -57,6 +59,23 @@ remains in `data_centers` and continues to sync to Neon separately.
 Successful DataSist AI and RAG responses are also logged to the shared
 `aliasist-analytics` D1 database using its existing `chat_sessions`,
 `chat_messages`, and `usage_events` tables.
+
+## Facility lead discovery
+
+A daily cron sweep (06:00 UTC) surfaces candidate new-facility signals into
+the `facility_leads` staging table — nothing here writes to `data_centers`
+automatically, leads are reviewed and promoted manually:
+
+- **SEC EDGAR full text search** — 8-K filings from the last 7 days
+  mentioning "data center", filtered to a hyperscaler watchlist
+  (Microsoft, Amazon, Google, Meta, Oracle, OpenAI, CoreWeave, etc.)
+- **Trade-press RSS** — DataCenterDynamics and DataCenterKnowledge, both
+  public syndication feeds, keyword-filtered for construction/announcement
+  language ("breaks ground", "megawatt campus", etc.)
+
+Deliberately not used: Google News RSS — its own terms restrict that feed
+to personal, non-commercial feed-reader use, which an automated backend
+sweep would violate.
 
 ## RAG Integration
 
