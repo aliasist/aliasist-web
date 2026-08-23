@@ -6,6 +6,8 @@ import { pageNavLinks, suiteApps } from "@/content/homepage";
 import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
 
 const isExternalHref = (href: string) => /^https?:\/\//.test(href);
+const opensInNewTab = (app: (typeof liveSuiteApps)[number]) =>
+  isExternalHref(app.href) || ("openInNewTab" in app && app.openInNewTab);
 
 // Retired apps stay listed on the Contact section (as a demo-modal link) but
 // are dropped from the Menu dropdown / mobile nav, which is for live suite apps only.
@@ -113,8 +115,8 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
               <motion.a
                 key={app.label}
                 href={app.href}
-                target={isExternalHref(app.href) ? "_blank" : undefined}
-                rel={isExternalHref(app.href) ? "noopener noreferrer" : undefined}
+                target={opensInNewTab(app) ? "_blank" : undefined}
+                rel={opensInNewTab(app) ? "noopener noreferrer" : undefined}
                 onClick={() => setOpen(false)}
                 initial={{ opacity: 0, x: -8 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -425,8 +427,8 @@ const Navbar = () => {
                 <a
                   key={app.label}
                   href={app.href}
-                  target={isExternalHref(app.href) ? "_blank" : undefined}
-                  rel={isExternalHref(app.href) ? "noopener noreferrer" : undefined}
+                  target={opensInNewTab(app) ? "_blank" : undefined}
+                  rel={opensInNewTab(app) ? "noopener noreferrer" : undefined}
                   onClick={() => setMobileOpen(false)}
                   className="group -mx-1 flex h-12 items-center gap-3 rounded-lg px-3 text-xs font-mono uppercase tracking-[0.15em] text-muted-foreground transition-all duration-300 hover:bg-electric/[0.06] hover:text-electric hover:shadow-[inset_3px_0_0_hsl(165_90%_42%_/_0.5)] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >

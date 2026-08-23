@@ -31,6 +31,13 @@ import spaceBanner from "@images/spacesist_banner_cinematic.webp";
 /** Used by Navbar "Projects" menu and Contact section project list — keep in sync. */
 export const suiteApps = [
   {
+    label: "Entertainment",
+    sub: "Movies, games, odds & weather",
+    href: "/entertainment",
+    icon: "EN",
+    openInNewTab: true,
+  },
+  {
     label: "Aliasist AI",
     sub: "Chat, images, and cited answers",
     href: "https://www.aliasist.tech",

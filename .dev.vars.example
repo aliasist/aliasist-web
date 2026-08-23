@@ -41,6 +41,13 @@ CLERK_PUBLISHABLE_KEY=pk_live_your_clerk_publishable_key
 # GITHUB_APP_PRIVATE_KEY="-----BEGIN RSA PRIVATE KEY-----\n...\n-----END RSA PRIVATE KEY-----"
 # GITHUB_WEBHOOK_SECRET=replace_with_openssl_rand_hex_32_output
 #
+# Entertainment page (/entertainment): trending movies/TV, games, and
+# display-only sports odds. Each is optional — a tab shows a "not configured"
+# message if its key is missing. Weather uses Open-Meteo, which needs no key.
+# TMDB_API_KEY=your_themoviedb_v3_api_key   # themoviedb.org → Settings → API
+# RAWG_API_KEY=your_rawg_api_key            # rawg.io/apidocs → sign up
+# ODDS_API_KEY=your_the_odds_api_key        # the-odds-api.com → sign up (free tier is metered)
+#
 # Related worker templates (same keys):
 #   apps/llm-chat/.dev.vars.example     — POST /api/chat JWT verification
 #   apps/datasist-api/.dev.vars.example — DataSist API + admin JWTs
