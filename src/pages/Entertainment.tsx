@@ -1547,12 +1547,17 @@ const Entertainment = () => (
         </Link>
       </header>
 
-      <section className="max-w-4xl py-10 sm:py-16">
-        <div className="section-divider mb-8">
+      <section className="relative mx-auto max-w-3xl py-14 text-center sm:py-20">
+        {/* Ambient premium glow, matching the site's hero treatment */}
+        <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_60%_at_50%_30%,_hsl(165_90%_42%_/_0.08)_0%,_transparent_65%)]" />
+
+        <div className="section-divider mx-auto mb-8 max-w-xs">
           <span>Entertainment</span>
         </div>
-        <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl">Entertainment</h1>
-        <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
+        <h1 className="bg-gradient-to-r from-electric via-emerald-300 to-electric bg-clip-text text-4xl font-black tracking-tight text-transparent drop-shadow-[0_0_30px_rgba(10,204,151,0.35)] sm:text-6xl">
+          Entertainment
+        </h1>
+        <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
           Interactive media & gaming workbench: stream live radio stations, play the space defender mini-arcade, watch movie & anime trailers, and solve trivia challenges.
         </p>
       </section>
@@ -1562,7 +1567,7 @@ const Entertainment = () => (
           Entertainment sections
         </h2>
         <Tabs defaultValue="movies" className="w-full">
-          <TabsList className="mb-6 flex-wrap">
+          <TabsList className="mx-auto mb-8 flex w-fit max-w-full flex-wrap justify-center gap-1 rounded-lg border border-violet/15 bg-background/76 p-1.5 shadow-[0_0_22px_hsl(var(--electric)_/_0.08),0_0_28px_hsl(var(--violet)_/_0.06),0_2px_14px_hsl(0_0%_0%_/_0.14)] backdrop-blur-md">
             <TabsTrigger value="movies" className="flex items-center gap-1.5">
               <Film className="size-3.5" /> Movies & TV
             </TabsTrigger>
