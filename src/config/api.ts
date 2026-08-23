@@ -71,6 +71,8 @@ export const siteEndpoints = {
   entertainmentGamesApi: "/api/entertainment/games",
   /** Entertainment page — display-only sports odds → Pages Function proxy (The Odds API). */
   entertainmentOddsApi: "/api/entertainment/odds",
+  /** Entertainment page — live TV channel guide (categories/channels, no stream URLs) → Pages Function proxy (Xtream Codes). */
+  entertainmentLiveTvApi: "/api/entertainment/live-tv",
 } as const;
 
 /** Safe JSON parse for worker responses (avoids throw on HTML error pages). */
