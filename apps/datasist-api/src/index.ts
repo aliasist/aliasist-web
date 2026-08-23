@@ -474,6 +474,27 @@ async function handleGetFacilityLeads(db: D1Database, url: URL, headers: Record<
   return json({ leads: results }, 200, headers);
 }
 
+const FACILITY_LEAD_STATUSES = ["new", "reviewed", "promoted", "dismissed"];
+
+async function handleUpdateFacilityLead(
+  db: D1Database,
+  id: string,
+  request: Request,
+  headers: Record<string, string>,
+) {
+  const body = await request.json().catch(() => null) as { status?: string } | null;
+  if (!body?.status || !FACILITY_LEAD_STATUSES.includes(body.status)) {
+    return json({ error: "invalid_status", allowed: FACILITY_LEAD_STATUSES }, 400, headers);
+  }
+
+  const result = await db.prepare("UPDATE facility_leads SET status = ? WHERE id = ?")
+    .bind(body.status, id)
+    .run();
+
+  if (result.meta.changes === 0) return json({ error: "not_found" }, 404, headers);
+  return json({ ok: true, id, status: body.status }, 200, headers);
+}
+
 // ── Live Facility Enrichment Sweep ───────────────────────────────────────────
 // data_centers.renewable_percent / grid_risk start as a one-time heuristic
 // guess from the source's energy_type string (see inferRenewablePercent /
@@ -667,6 +688,13 @@ export default {
         const auth = await requireAdmin(request, env, corsHeaders);
         if (!auth.ok) return auth.response;
         return handleGetFacilityLeads(env.DB, url, corsHeaders);
+      }
+      // PATCH /api/facility-leads/:id — update a lead's review status (admin only)
+      const facilityLeadMatch = p.match(/^\/api\/facility-leads\/([^/]+)$/);
+      if (facilityLeadMatch && request.method === "PATCH") {
+        const auth = await requireAdmin(request, env, corsHeaders);
+        if (!auth.ok) return auth.response;
+        return handleUpdateFacilityLead(env.DB, decodeURIComponent(facilityLeadMatch[1]), request, corsHeaders);
       }
       // POST /api/facility-leads/discover — manually trigger a discovery sweep (admin only)
       if (p === "/api/facility-leads/discover" && request.method === "POST") {
