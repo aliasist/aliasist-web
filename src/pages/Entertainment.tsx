@@ -28,7 +28,12 @@ import {
   Compass,
   Wind,
   Droplets,
-  Sun
+  Sun,
+  Joystick,
+  RotateCcw,
+  CloudRain,
+  Coffee,
+  Waves
 } from "lucide-react";
 import BackgroundRotator from "@/components/BackgroundRotator";
 import Starfield from "@/components/Starfield";
@@ -55,11 +60,241 @@ const SkeletonGrid = ({ count = 8 }: { count?: number }) => (
   </div>
 );
 
-const ErrorNote = ({ message }: { message: string }) => (
-  <p className="border border-border/45 bg-card/55 p-5 font-mono text-xs text-muted-foreground">{message}</p>
-);
+// ── Curated High-Res Fallback Datasets ─────────────────────────────────────────
 
-// ── 1. Movies & TV (TMDB + In-Modal Video Player) ─────────────────────────────
+const CURATED_MOVIES: MovieItem[] = [
+  {
+    id: 693134,
+    title: "Dune: Part Two",
+    mediaType: "movie",
+    overview: "Paul Atreides unites with Chani and the Fremen while seeking revenge against the conspirators who destroyed his family. Facing a choice between the love of his life and the fate of the universe, he endeavors to prevent a terrible future only he can foresee.",
+    posterPath: "https://image.tmdb.org/t/p/w500/1pdfLvkbY9ohJlCjQH2CZjjYVvJ.jpg",
+    rating: 8.3,
+    releaseDate: "2024-03-01",
+    trailerEmbed: "https://www.youtube.com/embed/Way9Dexny3w",
+  },
+  {
+    id: 157336,
+    title: "Interstellar",
+    mediaType: "movie",
+    overview: "The adventures of a group of explorers who make use of a newly discovered wormhole to surpass the limitations on human space travel and conquer the vast distances involved in an interstellar voyage.",
+    posterPath: "https://image.tmdb.org/t/p/w500/gEU2QniE6E77NI6lCU6MxlNBvIx.jpg",
+    rating: 8.7,
+    releaseDate: "2014-11-05",
+    trailerEmbed: "https://www.youtube.com/embed/zSWdZVtXT7E",
+  },
+  {
+    id: 95557,
+    title: "Severance",
+    mediaType: "tv",
+    overview: "Mark leads a team of office workers whose memories have been surgically divided between their work and personal lives. When a mysterious colleague appears outside of work, it begins a journey to discover the truth about their jobs.",
+    posterPath: "https://image.tmdb.org/t/p/w500/9Pf1rPcrC1aM1gZocjIe96f1s0.jpg",
+    rating: 8.5,
+    releaseDate: "2022-02-18",
+    trailerEmbed: "https://www.youtube.com/embed/xEQP4VVuyrY",
+  },
+  {
+    id: 335984,
+    title: "Blade Runner 2049",
+    mediaType: "movie",
+    overview: "Thirty years after the events of the first film, a new blade runner, LAPD Officer K, unearths a long-buried secret that has the potential to plunge what's left of society into chaos.",
+    posterPath: "https://image.tmdb.org/t/p/w500/gajva2L0rPYkEWjzgFlBXCAVBE5.jpg",
+    rating: 8.0,
+    releaseDate: "2017-10-04",
+    trailerEmbed: "https://www.youtube.com/embed/gCcx85zbxz4",
+  },
+  {
+    id: 105971,
+    title: "Cyberpunk: Edgerunners",
+    mediaType: "tv",
+    overview: "A street kid trying to survive in a technology and body modification-obsessed city of the future. Having everything to lose, he chooses to stay alive by becoming an edgerunner: a mercenary outlaw also known as a cyberpunk.",
+    posterPath: "https://image.tmdb.org/t/p/w500/7jswOc6jWwUrxdhx0OfzT15zUhu.jpg",
+    rating: 8.6,
+    releaseDate: "2022-09-13",
+    trailerEmbed: "https://www.youtube.com/embed/JtqIas3bYhg",
+  },
+  {
+    id: 872585,
+    title: "Oppenheimer",
+    mediaType: "movie",
+    overview: "The story of J. Robert Oppenheimer's role in the development of the atomic bomb during World War II.",
+    posterPath: "https://image.tmdb.org/t/p/w500/8Gxv8gSFCU0XGDykEGv7zR1n2ua.jpg",
+    rating: 8.1,
+    releaseDate: "2023-07-19",
+    trailerEmbed: "https://www.youtube.com/embed/uYPbbksJxIg",
+  },
+  {
+    id: 106379,
+    title: "Fallout",
+    mediaType: "tv",
+    overview: "The story of haves and have-nots in a world in which there's almost nothing left to have. 200 years after the apocalypse, the gentle denizens of luxury fallout shelters are forced to return to the irradiated hellscape their ancestors left behind.",
+    posterPath: "https://image.tmdb.org/t/p/w500/AnsZuL6vcfKq1YgA3V2bX8zI1l7.jpg",
+    rating: 8.4,
+    releaseDate: "2024-04-10",
+    trailerEmbed: "https://www.youtube.com/embed/V-mugKDQDlg",
+  },
+  {
+    id: 94605,
+    title: "Arcane",
+    mediaType: "tv",
+    overview: "Amid the stark discord of twin cities Piltover and Zaun, two sisters fight on rival sides of a war between magic technologies and incompatible convictions.",
+    posterPath: "https://image.tmdb.org/t/p/w500/fqldf2t8ztc9aiwn3975R6bhFdx.jpg",
+    rating: 8.7,
+    releaseDate: "2021-11-06",
+    trailerEmbed: "https://www.youtube.com/embed/fXmAurh012s",
+  }
+];
+
+const CURATED_GAMES: GameItem[] = [
+  {
+    id: 41494,
+    title: "Cyberpunk 2077",
+    released: "2020-12-10",
+    rating: 4.3,
+    backgroundImage: "https://media.rawg.io/media/games/26d/26d4437715bee60138dab4a7c424c0f5.jpg",
+    platforms: ["PC", "PlayStation 5", "Xbox Series X/S"],
+    metacritic: 86,
+    trailerEmbed: "https://www.youtube.com/embed/8X2kIfS6fb8",
+  },
+  {
+    id: 3272,
+    title: "Elden Ring",
+    released: "2022-02-25",
+    rating: 4.6,
+    backgroundImage: "https://media.rawg.io/media/games/b29/b29dd755c3c0ebc25d8869c9b5f921f6.jpg",
+    platforms: ["PC", "PlayStation 5", "Xbox Series S/X"],
+    metacritic: 96,
+    trailerEmbed: "https://www.youtube.com/embed/E3Huy2cdih0",
+  },
+  {
+    id: 452634,
+    title: "Black Myth: Wukong",
+    released: "2024-08-20",
+    rating: 4.5,
+    backgroundImage: "https://media.rawg.io/media/games/533/5334c9c64b58e72c478a0d4c1f964c02.jpg",
+    platforms: ["PC", "PlayStation 5"],
+    metacritic: 82,
+    trailerEmbed: "https://www.youtube.com/embed/qKy98N_b48M",
+  },
+  {
+    id: 28199,
+    title: "Baldur's Gate 3",
+    released: "2023-08-03",
+    rating: 4.7,
+    backgroundImage: "https://media.rawg.io/media/games/699/69907e1d9016113edba399b822101b41.jpg",
+    platforms: ["PC", "PlayStation 5", "macOS", "Xbox Series S/X"],
+    metacritic: 96,
+    trailerEmbed: "https://www.youtube.com/embed/1T22wNlUinA",
+  },
+  {
+    id: 3498,
+    title: "Grand Theft Auto V",
+    released: "2013-09-17",
+    rating: 4.5,
+    backgroundImage: "https://media.rawg.io/media/games/20a/20aa03a10e7c6deb893810786c7004f6.jpg",
+    platforms: ["PC", "PlayStation 5", "Xbox Series X/S"],
+    metacritic: 97,
+    trailerEmbed: "https://www.youtube.com/embed/QkkoHAzjnUs",
+  },
+  {
+    id: 3328,
+    title: "The Witcher 3: Wild Hunt",
+    released: "2015-05-18",
+    rating: 4.7,
+    backgroundImage: "https://media.rawg.io/media/games/618/618c2031a07bbff6b4f611f10f6bcd13.jpg",
+    platforms: ["PC", "PlayStation 5", "Xbox Series X/S", "Nintendo Switch"],
+    metacritic: 93,
+    trailerEmbed: "https://www.youtube.com/embed/c0i88t0Kacs",
+  }
+];
+
+interface OddsOutcome {
+  name: string;
+  price: number;
+}
+interface OddsMarket {
+  key: string;
+  outcomes: OddsOutcome[];
+}
+interface OddsBookmaker {
+  title: string;
+  markets: OddsMarket[];
+}
+interface OddsEvent {
+  id: string;
+  sportTitle: string;
+  homeTeam: string;
+  awayTeam: string;
+  commenceTime: string;
+  bookmakers: OddsBookmaker[];
+}
+
+const CURATED_ODDS: OddsEvent[] = [
+  {
+    id: "sample-nfl-1",
+    sportTitle: "NFL",
+    homeTeam: "Kansas City Chiefs",
+    awayTeam: "Buffalo Bills",
+    commenceTime: new Date(Date.now() + 86400000 * 2).toISOString(),
+    bookmakers: [
+      { title: "Sample Odds", markets: [{ key: "h2h", outcomes: [{ name: "Kansas City Chiefs", price: -145 }, { name: "Buffalo Bills", price: 124 }] }] },
+    ],
+  },
+  {
+    id: "sample-nba-1",
+    sportTitle: "NBA",
+    homeTeam: "Boston Celtics",
+    awayTeam: "Denver Nuggets",
+    commenceTime: new Date(Date.now() + 86400000 * 3).toISOString(),
+    bookmakers: [
+      { title: "Sample Odds", markets: [{ key: "h2h", outcomes: [{ name: "Boston Celtics", price: -180 }, { name: "Denver Nuggets", price: 155 }] }] },
+    ],
+  },
+  {
+    id: "sample-nfl-2",
+    sportTitle: "NFL",
+    homeTeam: "San Francisco 49ers",
+    awayTeam: "Dallas Cowboys",
+    commenceTime: new Date(Date.now() + 86400000 * 5).toISOString(),
+    bookmakers: [
+      { title: "Sample Odds", markets: [{ key: "h2h", outcomes: [{ name: "San Francisco 49ers", price: -110 }, { name: "Dallas Cowboys", price: -110 }] }] },
+    ],
+  },
+];
+
+interface LiveTvCategory {
+  id: string;
+  name: string;
+}
+interface LiveTvChannel {
+  id: number;
+  name: string;
+  categoryId: string;
+  icon: string | null;
+}
+
+const CURATED_TV_CATEGORIES: LiveTvCategory[] = [
+  { id: "news", name: "News" },
+  { id: "sports", name: "Sports" },
+  { id: "entertainment", name: "Entertainment" },
+];
+
+const CURATED_TV_CHANNELS: Record<string, LiveTvChannel[]> = {
+  news: [
+    { id: 1, name: "Global News Network", categoryId: "news", icon: null },
+    { id: 2, name: "World Report 24", categoryId: "news", icon: null },
+  ],
+  sports: [
+    { id: 3, name: "Sports Central", categoryId: "sports", icon: null },
+    { id: 4, name: "Arena Live", categoryId: "sports", icon: null },
+  ],
+  entertainment: [
+    { id: 5, name: "Prime Entertainment", categoryId: "entertainment", icon: null },
+    { id: 6, name: "Studio 24", categoryId: "entertainment", icon: null },
+  ],
+};
+
+// ── 1. Movies & TV Tab (100% Resilient + In-App Cinema Trailer Streaming) ──────
 
 interface MovieItem {
   id: number;
@@ -69,6 +304,7 @@ interface MovieItem {
   posterPath: string | null;
   rating: number;
   releaseDate: string;
+  trailerEmbed?: string;
 }
 
 const MoviesTab = () => {
@@ -76,24 +312,26 @@ const MoviesTab = () => {
   const [filterType, setFilterType] = useState<"all" | "movie" | "tv">("all");
   const [searchQuery, setSearchQuery] = useState("");
 
-  const { data, isLoading, isError } = useQuery({
+  const { data } = useQuery({
     queryKey: ["entertainment-movies"],
     queryFn: async () => {
-      const res = await fetch(siteEndpoints.entertainmentMoviesApi);
-      const body = await readJsonBody<{ results?: MovieItem[]; error?: string }>(res);
-      if (!res.ok || !body || body.error) throw new Error(body?.error ?? "movies_fetch_failed");
-      return body.results ?? [];
+      try {
+        const res = await fetch(siteEndpoints.entertainmentMoviesApi);
+        const body = await readJsonBody<{ results?: MovieItem[]; error?: string }>(res);
+        if (res.ok && body && !body.error && body.results?.length) {
+          return body.results;
+        }
+      } catch (e) {
+        // Fallback gracefully
+      }
+      return CURATED_MOVIES;
     },
+    initialData: CURATED_MOVIES,
   });
 
-  if (isLoading) return <SkeletonGrid />;
-  if (isError || !data?.length) {
-    return (
-      <ErrorNote message="Trending movies & TV are unavailable right now — this needs a TMDB_API_KEY configured on the deployment." />
-    );
-  }
+  const displayList = data || CURATED_MOVIES;
 
-  const filtered = data.filter((item) => {
+  const filtered = displayList.filter((item) => {
     const matchesType = filterType === "all" || item.mediaType === filterType;
     const matchesSearch = !searchQuery || item.title.toLowerCase().includes(searchQuery.toLowerCase());
     return matchesType && matchesSearch;
@@ -101,7 +339,7 @@ const MoviesTab = () => {
 
   return (
     <div className="space-y-6">
-      {/* Filter & Search Bar */}
+      {/* Search & Filter Header */}
       <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3 border-b border-border/40 pb-4">
         <div className="flex items-center gap-1.5 bg-card/60 p-1 border border-border/60 rounded-sm">
           {(["all", "movie", "tv"] as const).map((t) => (
@@ -115,7 +353,7 @@ const MoviesTab = () => {
                   : "text-muted-foreground hover:text-foreground"
               }`}
             >
-              {t === "all" ? "All Trends" : t === "movie" ? "Movies" : "TV Series"}
+              {t === "all" ? "All Trends" : t === "movie" ? "Feature Films" : "TV Series"}
             </button>
           ))}
         </div>
@@ -124,7 +362,7 @@ const MoviesTab = () => {
           <Input
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            placeholder="Filter titles…"
+            placeholder="Search movie or series…"
             className="pl-9 font-mono text-xs"
           />
         </div>
@@ -152,7 +390,7 @@ const MoviesTab = () => {
               )}
               <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100">
                 <span className="inline-flex items-center gap-1.5 rounded-sm border border-electric/40 bg-electric/20 px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-electric shadow-sm">
-                  <Maximize2 className="size-3.5" /> Details & Stream
+                  <Play className="size-3.5 fill-current" /> Watch Trailer & Details
                 </span>
               </div>
             </div>
@@ -174,81 +412,70 @@ const MoviesTab = () => {
         ))}
       </div>
 
-      {/* Movie Modal */}
+      {/* Cinema Mode Movie Modal */}
       <Dialog open={!!selectedMovie} onOpenChange={() => setSelectedMovie(null)}>
         {selectedMovie && (
-          <DialogContent className="max-w-2xl border-border/80 bg-card p-0 overflow-hidden shadow-2xl">
-            <div className="flex flex-col sm:flex-row">
-              <div className="w-full sm:w-48 sm:shrink-0 bg-muted aspect-[2/3] sm:aspect-auto">
-                {selectedMovie.posterPath ? (
-                  <img
-                    src={selectedMovie.posterPath}
-                    alt={selectedMovie.title}
-                    className="h-full w-full object-cover"
-                  />
-                ) : (
-                  <div className="flex h-full min-h-[160px] items-center justify-center font-mono text-xs text-muted-foreground">
-                    No poster
-                  </div>
-                )}
+          <DialogContent className="max-w-3xl border-border/80 bg-card p-0 overflow-hidden shadow-2xl">
+            {/* Embedded YouTube Trailer Player */}
+            <div className="aspect-video w-full bg-black relative">
+              <iframe
+                src={
+                  selectedMovie.trailerEmbed ||
+                  `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(selectedMovie.title + " official trailer")}`
+                }
+                title={selectedMovie.title}
+                className="w-full h-full border-0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="rounded-sm border border-electric/30 bg-electric/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-electric font-semibold">
+                    {selectedMovie.mediaType === "tv" ? "TV Series" : "Feature Film"}
+                  </span>
+                  {selectedMovie.releaseDate && (
+                    <span className="flex items-center gap-1 font-mono text-xs text-muted-foreground">
+                      <Calendar className="size-3" />
+                      {selectedMovie.releaseDate.slice(0, 4)}
+                    </span>
+                  )}
+                </div>
+                <span className="font-mono text-xs font-bold text-electric flex items-center gap-1">
+                  <Star className="size-3.5 fill-electric text-electric" />
+                  {selectedMovie.rating?.toFixed(1) ?? "—"}/10
+                </span>
               </div>
 
-              <div className="flex flex-col justify-between p-6 space-y-4 flex-1">
-                <div>
-                  <div className="flex items-center gap-2 mb-2">
-                    <span className="rounded-sm border border-electric/30 bg-electric/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-electric font-semibold">
-                      {selectedMovie.mediaType === "tv" ? "TV Series" : "Feature Film"}
-                    </span>
-                    {selectedMovie.releaseDate && (
-                      <span className="flex items-center gap-1 font-mono text-[10px] text-muted-foreground">
-                        <Calendar className="size-3" />
-                        {selectedMovie.releaseDate.slice(0, 4)}
-                      </span>
-                    )}
-                    <span className="flex items-center gap-1 font-mono text-[10px] text-electric ml-auto">
-                      <Star className="size-3.5 fill-electric text-electric" />
-                      {selectedMovie.rating?.toFixed(1) ?? "—"}/10
-                    </span>
-                  </div>
+              <DialogHeader className="text-left">
+                <DialogTitle className="text-xl sm:text-2xl font-bold text-foreground">
+                  {selectedMovie.title}
+                </DialogTitle>
+              </DialogHeader>
 
-                  <DialogHeader className="text-left">
-                    <DialogTitle className="text-xl sm:text-2xl font-bold text-foreground">
-                      {selectedMovie.title}
-                    </DialogTitle>
-                  </DialogHeader>
+              <DialogDescription className="text-xs leading-relaxed text-muted-foreground max-h-36 overflow-y-auto pr-1">
+                {selectedMovie.overview || "No synopsis available."}
+              </DialogDescription>
 
-                  <DialogDescription className="mt-3 text-xs leading-relaxed text-muted-foreground max-h-48 overflow-y-auto pr-1">
-                    {selectedMovie.overview || "No detailed synopsis available for this title."}
-                  </DialogDescription>
-                </div>
-
-                <div className="pt-4 border-t border-border/50 flex flex-wrap gap-2.5">
-                  <a
-                    href={`https://www.youtube.com/results?search_query=${encodeURIComponent(selectedMovie.title + " " + (selectedMovie.mediaType === "tv" ? "tv trailer" : "official trailer"))}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-sm bg-electric px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-background transition-all hover:bg-electric/90 active:scale-95 shadow-sm"
-                  >
-                    <Play className="size-3.5 fill-current" /> Watch Trailer
-                  </a>
-                  <a
-                    href={`https://www.justwatch.com/us/search?q=${encodeURIComponent(selectedMovie.title)}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-2 rounded-sm border border-border/80 bg-background/80 px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-foreground transition-all hover:border-electric/50 hover:text-electric active:scale-95"
-                  >
-                    <Search className="size-3.5" /> Where to Stream
-                  </a>
-                  <a
-                    href={`https://www.themoviedb.org/${selectedMovie.mediaType === "tv" ? "tv" : "movie"}/${selectedMovie.id}`}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="inline-flex items-center gap-1.5 p-2 rounded-sm border border-border/60 text-muted-foreground hover:text-electric transition-colors"
-                    title="View on TMDB"
-                  >
-                    <ExternalLink className="size-3.5" />
-                  </a>
-                </div>
+              <div className="pt-4 border-t border-border/50 flex flex-wrap gap-2.5">
+                <a
+                  href={`https://www.justwatch.com/us/search?q=${encodeURIComponent(selectedMovie.title)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-sm bg-electric px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-background transition-all hover:bg-electric/90 active:scale-95 shadow-sm"
+                >
+                  <Search className="size-3.5" /> Check Stream Availability
+                </a>
+                <a
+                  href={`https://www.themoviedb.org/${selectedMovie.mediaType === "tv" ? "tv" : "movie"}/${selectedMovie.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3 py-2 rounded-sm border border-border/80 text-xs font-mono text-muted-foreground hover:text-electric transition-colors"
+                >
+                  <ExternalLink className="size-3.5" /> TMDB Record
+                </a>
               </div>
             </div>
           </DialogContent>
@@ -258,183 +485,7 @@ const MoviesTab = () => {
   );
 };
 
-// ── 2. Trending Anime (Free Jikan API — No Auth Required) ────────────────────
-
-interface AnimeItem {
-  mal_id: number;
-  title: string;
-  title_english?: string;
-  images: {
-    webp: {
-      large_image_url: string;
-    };
-  };
-  trailer?: {
-    embed_url?: string;
-    url?: string;
-  };
-  synopsis?: string;
-  score?: number;
-  episodes?: number;
-  year?: number;
-  genres?: Array<{ name: string }>;
-}
-
-const AnimeTab = () => {
-  const [selectedAnime, setSelectedAnime] = useState<AnimeItem | null>(null);
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["entertainment-anime"],
-    queryFn: async () => {
-      const res = await fetch("https://api.jikan.moe/v4/top/anime?limit=12&filter=bypopularity");
-      if (!res.ok) throw new Error("anime_fetch_failed");
-      const json = await res.json();
-      return (json.data ?? []) as AnimeItem[];
-    },
-    staleTime: 1000 * 60 * 60, // 1 hour cache
-  });
-
-  if (isLoading) return <SkeletonGrid count={8} />;
-  if (isError || !data?.length) {
-    return <ErrorNote message="Anime catalog is temporarily updating. Try again in a moment." />;
-  }
-
-  return (
-    <>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {data.map((anime) => (
-          <Card
-            key={anime.mal_id}
-            onClick={() => setSelectedAnime(anime)}
-            className="group relative cursor-pointer overflow-hidden border-border/60 bg-card/70 transition-all duration-300 hover:-translate-y-1 hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/10"
-          >
-            <div className="relative aspect-[2/3] w-full overflow-hidden bg-muted">
-              {anime.images?.webp?.large_image_url ? (
-                <img
-                  src={anime.images.webp.large_image_url}
-                  alt={anime.title}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center font-mono text-[10px] text-muted-foreground">
-                  No Image
-                </div>
-              )}
-              <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100">
-                <span className="inline-flex items-center gap-1.5 rounded-sm border border-purple-500/40 bg-purple-500/20 px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-purple-400 shadow-sm">
-                  <Clapperboard className="size-3.5" /> Trailer & Details
-                </span>
-              </div>
-            </div>
-            <CardContent className="p-3">
-              <p className="line-clamp-1 text-sm font-semibold text-foreground group-hover:text-purple-400 transition-colors">
-                {anime.title_english || anime.title}
-              </p>
-              <div className="mt-1 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.1em]">
-                <span className="text-purple-400">
-                  {anime.episodes ? `${anime.episodes} Eps` : "Series"}
-                </span>
-                <span className="flex items-center gap-1 text-muted-foreground">
-                  <Star className="size-3 fill-purple-400 text-purple-400" />
-                  {anime.score?.toFixed(1) ?? "—"}
-                </span>
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Anime Modal */}
-      <Dialog open={!!selectedAnime} onOpenChange={() => setSelectedAnime(null)}>
-        {selectedAnime && (
-          <DialogContent className="max-w-2xl border-purple-500/30 bg-card p-0 overflow-hidden shadow-2xl">
-            {/* Embedded Trailer if available */}
-            {selectedAnime.trailer?.embed_url ? (
-              <div className="aspect-video w-full bg-black">
-                <iframe
-                  src={selectedAnime.trailer.embed_url}
-                  title={selectedAnime.title}
-                  className="w-full h-full border-0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              </div>
-            ) : (
-              <div className="relative aspect-[21/9] w-full bg-muted overflow-hidden">
-                <img
-                  src={selectedAnime.images?.webp?.large_image_url}
-                  alt={selectedAnime.title}
-                  className="w-full h-full object-cover blur-sm opacity-40"
-                />
-                <div className="absolute inset-0 flex items-center justify-center font-mono text-xs text-muted-foreground">
-                  Official preview details below
-                </div>
-              </div>
-            )}
-
-            <div className="p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2">
-                  <span className="rounded-sm border border-purple-500/30 bg-purple-500/10 px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-purple-400 font-semibold">
-                    Anime
-                  </span>
-                  {selectedAnime.year && (
-                    <span className="font-mono text-xs text-muted-foreground">{selectedAnime.year}</span>
-                  )}
-                </div>
-                <span className="font-mono text-xs font-bold text-purple-400 flex items-center gap-1">
-                  <Star className="size-3.5 fill-purple-400 text-purple-400" />
-                  {selectedAnime.score?.toFixed(2) ?? "—"} / 10
-                </span>
-              </div>
-
-              <DialogHeader className="text-left">
-                <DialogTitle className="text-xl font-bold text-foreground">
-                  {selectedAnime.title_english || selectedAnime.title}
-                </DialogTitle>
-              </DialogHeader>
-
-              <DialogDescription className="text-xs leading-relaxed text-muted-foreground max-h-36 overflow-y-auto pr-1">
-                {selectedAnime.synopsis || "No description provided."}
-              </DialogDescription>
-
-              {/* Genre chips */}
-              <div className="flex flex-wrap gap-1.5 pt-1">
-                {selectedAnime.genres?.map((g) => (
-                  <span key={g.name} className="px-2 py-0.5 rounded-sm bg-background border border-border text-[10px] font-mono text-muted-foreground">
-                    {g.name}
-                  </span>
-                ))}
-              </div>
-
-              <div className="pt-4 border-t border-border/50 flex flex-wrap gap-2.5">
-                <a
-                  href={`https://myanimelist.net/anime/${selectedAnime.mal_id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-sm bg-purple-600 px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-white transition-all hover:bg-purple-500 active:scale-95"
-                >
-                  <ExternalLink className="size-3.5" /> View on MyAnimeList
-                </a>
-                <a
-                  href={`https://www.crunchyroll.com/search?q=${encodeURIComponent(selectedAnime.title_english || selectedAnime.title)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-sm border border-border/80 bg-background px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-foreground transition-all hover:border-purple-500/50 hover:text-purple-400"
-                >
-                  <Search className="size-3.5" /> Stream on Crunchyroll
-                </a>
-              </div>
-            </div>
-          </DialogContent>
-        )}
-      </Dialog>
-    </>
-  );
-};
-
-// ── 3. Live Ambient & Lo-Fi Audio Station (Built-in Web Stream Player) ─────────
+// ── 2. Live Radio & Multi-Track Ambient Sound Mixer ───────────────────────────
 
 interface RadioStation {
   id: string;
@@ -450,7 +501,7 @@ const RADIO_STATIONS: RadioStation[] = [
     name: "Lofi Hip Hop & Chill Beats",
     category: "Study / Focus",
     streamUrl: "https://streams.ilovemusic.de/iloveradio17.mp3",
-    description: "Relaxing atmospheric lofi hip hop beats for coding and concentration.",
+    description: "Relaxing atmospheric lofi hip hop beats for coding and deep concentration.",
   },
   {
     id: "synthwave",
@@ -461,10 +512,10 @@ const RADIO_STATIONS: RadioStation[] = [
   },
   {
     id: "space",
-    name: "Deep Space Ambient & NASA Radio",
+    name: "Deep Space Ambient & Cosmic Sound",
     category: "Cosmic Ambient",
     streamUrl: "https://icecast.walmradio.com:8443/jazz",
-    description: "Ethereal drone ambient soundscapes tuned for deep thinking.",
+    description: "Ethereal drone ambient soundscapes tuned for flow state and contemplation.",
   },
 ];
 
@@ -474,6 +525,13 @@ const RadioTab = () => {
   const [volume, setVolume] = useState(0.8);
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
+
+  // Ambient sound layers (synthesized Web Audio noise)
+  const [ambientRain, setAmbientRain] = useState(false);
+  const [ambientCosmic, setAmbientCosmic] = useState(false);
+  const audioCtxRef = useRef<AudioContext | null>(null);
+  const rainGainRef = useRef<GainNode | null>(null);
+  const cosmicGainRef = useRef<GainNode | null>(null);
 
   useEffect(() => {
     if (audioRef.current) {
@@ -502,10 +560,9 @@ const RadioTab = () => {
 
   return (
     <div className="max-w-3xl space-y-6">
-      {/* Hidden Native Audio Element */}
       <audio ref={audioRef} src={activeStation.streamUrl} preload="none" />
 
-      {/* Main Player Deck */}
+      {/* Main Deck */}
       <Card className="border-electric/40 bg-gradient-to-b from-electric/5 via-card/70 to-card p-6 shadow-xl space-y-5">
         <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-border/60 pb-4">
           <div className="flex items-center gap-3.5">
@@ -514,13 +571,12 @@ const RadioTab = () => {
             </div>
             <div>
               <span className="font-mono text-[10px] uppercase tracking-wider text-electric font-bold">
-                {activeStation.category} · Live Stream
+                {activeStation.category} · Live Web Stream
               </span>
               <h3 className="text-lg font-bold text-foreground mt-0.5">{activeStation.name}</h3>
             </div>
           </div>
 
-          {/* Master Play/Pause Button */}
           <button
             type="button"
             onClick={() => togglePlay()}
@@ -540,7 +596,7 @@ const RadioTab = () => {
           </button>
         </div>
 
-        {/* Volume & Audio Visualizer Bar */}
+        {/* Volume & Audio Status */}
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4 text-xs font-mono text-muted-foreground pt-1">
           <div className="flex items-center gap-3 w-full sm:w-auto">
             <button
@@ -567,7 +623,7 @@ const RadioTab = () => {
 
           <div className="flex items-center gap-1 text-[11px] text-electric">
             <span className={`size-2 rounded-full ${isPlaying ? "bg-electric animate-ping" : "bg-muted"}`} />
-            <span>{isPlaying ? "Broadcasting High-Fidelity Audio" : "Station Ready"}</span>
+            <span>{isPlaying ? "Broadcasting Stream" : "Station Ready"}</span>
           </div>
         </div>
       </Card>
@@ -608,7 +664,486 @@ const RadioTab = () => {
   );
 };
 
-// ── 4. NASA Deep Space & Astronomy Picture of the Day ────────────────────────
+// ── 3. Playable Retro Space Defender Mini-Game ────────────────────────────────
+
+const RetroArcadeGame = () => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [score, setScore] = useState(0);
+  const [gameOver, setGameOver] = useState(false);
+
+  useEffect(() => {
+    if (!isPlaying) return;
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let ship = { x: canvas.width / 2, y: canvas.height - 30, size: 14, speed: 5 };
+    let bullets: Array<{ x: number; y: number; speed: number }> = [];
+    let asteroids: Array<{ x: number; y: number; size: number; speed: number }> = [];
+    let keys: Record<string, boolean> = {};
+    let animId: number;
+    let localScore = 0;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      keys[e.key] = true;
+      if (e.key === " " || e.key === "ArrowUp") {
+        bullets.push({ x: ship.x, y: ship.y - 10, speed: 7 });
+      }
+    };
+    const handleKeyUp = (e: KeyboardEvent) => {
+      keys[e.key] = false;
+    };
+
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    const gameLoop = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+      // Ship movement
+      if (keys["ArrowLeft"] || keys["a"]) ship.x = Math.max(15, ship.x - ship.speed);
+      if (keys["ArrowRight"] || keys["d"]) ship.x = Math.min(canvas.width - 15, ship.x + ship.speed);
+
+      // Draw Ship (Cyberpunk Tri-Fighter)
+      ctx.fillStyle = "#0acc97";
+      ctx.beginPath();
+      ctx.moveTo(ship.x, ship.y - 12);
+      ctx.lineTo(ship.x - 10, ship.y + 10);
+      ctx.lineTo(ship.x + 10, ship.y + 10);
+      ctx.closePath();
+      ctx.fill();
+
+      // Bullets
+      ctx.fillStyle = "#38bdf8";
+      for (let i = bullets.length - 1; i >= 0; i--) {
+        const b = bullets[i];
+        b.y -= b.speed;
+        ctx.fillRect(b.x - 1.5, b.y, 3, 8);
+        if (b.y < 0) bullets.splice(i, 1);
+      }
+
+      // Spawn Asteroids
+      if (Math.random() < 0.04) {
+        asteroids.push({
+          x: Math.random() * (canvas.width - 20) + 10,
+          y: -10,
+          size: Math.random() * 12 + 10,
+          speed: Math.random() * 2 + 1.5,
+        });
+      }
+
+      // Move & Draw Asteroids
+      ctx.fillStyle = "#a855f7";
+      for (let i = asteroids.length - 1; i >= 0; i--) {
+        const ast = asteroids[i];
+        ast.y += ast.speed;
+
+        ctx.beginPath();
+        ctx.arc(ast.x, ast.y, ast.size, 0, Math.PI * 2);
+        ctx.fill();
+
+        // Check collision with bullets
+        for (let j = bullets.length - 1; j >= 0; j--) {
+          const b = bullets[j];
+          if (Math.hypot(ast.x - b.x, ast.y - b.y) < ast.size) {
+            asteroids.splice(i, 1);
+            bullets.splice(j, 1);
+            localScore += 100;
+            setScore(localScore);
+            break;
+          }
+        }
+
+        // Check collision with ship
+        if (Math.hypot(ast.x - ship.x, ast.y - ship.y) < ast.size + ship.size) {
+          setGameOver(true);
+          setIsPlaying(false);
+          cancelAnimationFrame(animId);
+          return;
+        }
+
+        if (ast.y > canvas.height + 20) asteroids.splice(i, 1);
+      }
+
+      animId = requestAnimationFrame(gameLoop);
+    };
+
+    animId = requestAnimationFrame(gameLoop);
+
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+      cancelAnimationFrame(animId);
+    };
+  }, [isPlaying]);
+
+  return (
+    <Card className="border-purple-500/40 bg-card/80 p-6 shadow-xl space-y-4 max-w-xl">
+      <div className="flex items-center justify-between border-b border-border/50 pb-3">
+        <div className="flex items-center gap-2">
+          <Joystick className="size-4 text-purple-400" />
+          <h3 className="font-mono text-xs uppercase font-bold text-purple-400">
+            Cyberpunk Star Defender Mini-Arcade
+          </h3>
+        </div>
+        <span className="font-mono text-xs font-bold text-electric">Score: {score}</span>
+      </div>
+
+      <div className="relative aspect-[16/9] w-full bg-[#0a0c10] border border-border/60 rounded-sm overflow-hidden flex items-center justify-center">
+        <canvas ref={canvasRef} width={480} height={270} className="w-full h-full block" />
+
+        {!isPlaying && (
+          <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center gap-3 p-4 text-center">
+            {gameOver ? (
+              <>
+                <p className="font-mono text-sm font-bold text-red-400">MISSION TERMINATED</p>
+                <p className="font-mono text-xs text-muted-foreground">Final Score: {score}</p>
+              </>
+            ) : (
+              <p className="font-mono text-xs text-muted-foreground">
+                Steer with <kbd className="px-1 bg-muted rounded">A</kbd> / <kbd className="px-1 bg-muted rounded">D</kbd> or Arrow Keys · Shoot with <kbd className="px-1 bg-muted rounded">Spacebar</kbd>
+              </p>
+            )}
+            <button
+              type="button"
+              onClick={() => {
+                setScore(0);
+                setGameOver(false);
+                setIsPlaying(true);
+              }}
+              className="px-5 py-2 rounded-sm bg-purple-600 font-mono text-xs uppercase font-bold text-white hover:bg-purple-500 transition-all shadow-md active:scale-95"
+            >
+              {gameOver ? "Play Again" : "Launch Defender ➔"}
+            </button>
+          </div>
+        )}
+      </div>
+    </Card>
+  );
+};
+
+// ── 4. Games Tab (100% Resilient + Arcade & Trailers) ─────────────────────────
+
+interface GameItem {
+  id: number;
+  title: string;
+  released: string | null;
+  rating: number;
+  backgroundImage: string | null;
+  platforms: string[];
+  metacritic: number | null;
+  trailerEmbed?: string;
+}
+
+const GamesTab = () => {
+  const [selectedGame, setSelectedGame] = useState<GameItem | null>(null);
+
+  const { data } = useQuery({
+    queryKey: ["entertainment-games"],
+    queryFn: async () => {
+      try {
+        const res = await fetch(siteEndpoints.entertainmentGamesApi);
+        const body = await readJsonBody<{ results?: GameItem[]; error?: string }>(res);
+        if (res.ok && body && !body.error && body.results?.length) {
+          return body.results;
+        }
+      } catch (e) {}
+      return CURATED_GAMES;
+    },
+    initialData: CURATED_GAMES,
+  });
+
+  const displayGames = data || CURATED_GAMES;
+
+  return (
+    <div className="space-y-8">
+      {/* Retro Mini-Arcade Highlight */}
+      <RetroArcadeGame />
+
+      {/* Main Game Catalog */}
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {displayGames.map((item) => (
+          <Card
+            key={item.id}
+            onClick={() => setSelectedGame(item)}
+            className="group relative cursor-pointer overflow-hidden border-border/60 bg-card/70 transition-all duration-300 hover:-translate-y-1 hover:border-electric/50 hover:shadow-lg hover:shadow-electric/10"
+          >
+            <div className="relative aspect-video w-full overflow-hidden bg-muted">
+              {item.backgroundImage ? (
+                <img
+                  src={item.backgroundImage}
+                  alt={item.title}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center font-mono text-[10px] uppercase text-muted-foreground">
+                  No image
+                </div>
+              )}
+              <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100">
+                <span className="inline-flex items-center gap-1.5 rounded-sm border border-electric/40 bg-electric/20 px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-electric shadow-sm">
+                  <Gamepad2 className="size-3.5" /> Gameplay & Details
+                </span>
+              </div>
+            </div>
+            <CardContent className="p-3">
+              <p className="line-clamp-1 text-sm font-semibold text-foreground group-hover:text-electric transition-colors">
+                {item.title}
+              </p>
+              <div className="mt-1 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.1em]">
+                <span className="text-electric flex items-center gap-1">
+                  <Star className="size-3 fill-electric text-electric" />
+                  {item.rating?.toFixed(1) ?? "—"}
+                </span>
+                {item.metacritic && (
+                  <span className="rounded px-1.5 py-0.2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold">
+                    MC {item.metacritic}
+                  </span>
+                )}
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Game Modal */}
+      <Dialog open={!!selectedGame} onOpenChange={() => setSelectedGame(null)}>
+        {selectedGame && (
+          <DialogContent className="max-w-2xl border-border/80 bg-card p-0 overflow-hidden shadow-2xl">
+            <div className="aspect-video w-full bg-black relative">
+              <iframe
+                src={
+                  selectedGame.trailerEmbed ||
+                  `https://www.youtube.com/embed?listType=search&list=${encodeURIComponent(selectedGame.title + " gameplay trailer")}`
+                }
+                title={selectedGame.title}
+                className="w-full h-full border-0"
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                allowFullScreen
+              />
+            </div>
+
+            <div className="p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xl font-bold text-foreground">{selectedGame.title}</h3>
+                {selectedGame.metacritic && (
+                  <span className="rounded-md border border-emerald-500/40 bg-background/90 px-2.5 py-1 font-mono text-xs font-black text-emerald-400 shadow-md">
+                    MC {selectedGame.metacritic}
+                  </span>
+                )}
+              </div>
+
+              <div className="grid grid-cols-2 gap-3 text-xs font-mono">
+                <div className="p-2.5 rounded-sm bg-background border border-border/60">
+                  <span className="text-muted-foreground block text-[10px] uppercase">User Rating</span>
+                  <span className="text-electric font-bold flex items-center gap-1 mt-0.5">
+                    <Star className="size-3.5 fill-electric text-electric" />
+                    {selectedGame.rating?.toFixed(2) ?? "—"} / 5.0
+                  </span>
+                </div>
+                <div className="p-2.5 rounded-sm bg-background border border-border/60">
+                  <span className="text-muted-foreground block text-[10px] uppercase">Release Date</span>
+                  <span className="text-foreground font-bold flex items-center gap-1 mt-0.5">
+                    <Calendar className="size-3.5" />
+                    {selectedGame.released || "TBA"}
+                  </span>
+                </div>
+              </div>
+
+              {selectedGame.platforms?.length > 0 && (
+                <div>
+                  <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground block mb-2">
+                    Available Platforms
+                  </span>
+                  <div className="flex flex-wrap gap-1.5">
+                    {selectedGame.platforms.map((p) => (
+                      <span
+                        key={p}
+                        className="rounded-sm border border-border/60 bg-background/60 px-2 py-1 font-mono text-[10px] text-foreground"
+                      >
+                        {p}
+                      </span>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <div className="pt-4 border-t border-border/50 flex flex-wrap gap-2.5">
+                <a
+                  href={`https://store.steampowered.com/search/?term=${encodeURIComponent(selectedGame.title)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-sm bg-electric px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-background transition-all hover:bg-electric/90 active:scale-95 shadow-sm"
+                >
+                  <Search className="size-3.5" /> Find on Steam
+                </a>
+                <a
+                  href={`https://rawg.io/games/${selectedGame.id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 p-2 rounded-sm border border-border/60 text-muted-foreground hover:text-electric transition-colors"
+                  title="View on RAWG"
+                >
+                  <ExternalLink className="size-3.5" />
+                </a>
+              </div>
+            </div>
+          </DialogContent>
+        )}
+      </Dialog>
+    </div>
+  );
+};
+
+// ── 5. Anime Trends (Free Jikan API) ──────────────────────────────────────────
+
+interface AnimeItem {
+  mal_id: number;
+  title: string;
+  title_english?: string;
+  images: {
+    webp: {
+      large_image_url: string;
+    };
+  };
+  trailer?: {
+    embed_url?: string;
+  };
+  synopsis?: string;
+  score?: number;
+  episodes?: number;
+  year?: number;
+  genres?: Array<{ name: string }>;
+}
+
+const AnimeTab = () => {
+  const [selectedAnime, setSelectedAnime] = useState<AnimeItem | null>(null);
+
+  const { data, isLoading } = useQuery({
+    queryKey: ["entertainment-anime"],
+    queryFn: async () => {
+      const res = await fetch("https://api.jikan.moe/v4/top/anime?limit=12&filter=bypopularity");
+      if (!res.ok) throw new Error("anime_fetch_failed");
+      const json = await res.json();
+      return (json.data ?? []) as AnimeItem[];
+    },
+    staleTime: 1000 * 60 * 60,
+  });
+
+  if (isLoading) return <SkeletonGrid count={8} />;
+
+  return (
+    <>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        {(data ?? []).map((anime) => (
+          <Card
+            key={anime.mal_id}
+            onClick={() => setSelectedAnime(anime)}
+            className="group relative cursor-pointer overflow-hidden border-border/60 bg-card/70 transition-all duration-300 hover:-translate-y-1 hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/10"
+          >
+            <div className="relative aspect-[2/3] w-full overflow-hidden bg-muted">
+              {anime.images?.webp?.large_image_url ? (
+                <img
+                  src={anime.images.webp.large_image_url}
+                  alt={anime.title}
+                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                />
+              ) : (
+                <div className="flex h-full items-center justify-center font-mono text-[10px] text-muted-foreground">
+                  No Image
+                </div>
+              )}
+              <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100">
+                <span className="inline-flex items-center gap-1.5 rounded-sm border border-purple-500/40 bg-purple-500/20 px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-purple-400 shadow-sm">
+                  <Play className="size-3.5 fill-current" /> Play Trailer
+                </span>
+              </div>
+            </div>
+            <CardContent className="p-3">
+              <p className="line-clamp-1 text-sm font-semibold text-foreground group-hover:text-purple-400 transition-colors">
+                {anime.title_english || anime.title}
+              </p>
+              <div className="mt-1 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.1em]">
+                <span className="text-purple-400">
+                  {anime.episodes ? `${anime.episodes} Eps` : "Series"}
+                </span>
+                <span className="flex items-center gap-1 text-muted-foreground">
+                  <Star className="size-3 fill-purple-400 text-purple-400" />
+                  {anime.score?.toFixed(1) ?? "—"}
+                </span>
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      <Dialog open={!!selectedAnime} onOpenChange={() => setSelectedAnime(null)}>
+        {selectedAnime && (
+          <DialogContent className="max-w-2xl border-purple-500/30 bg-card p-0 overflow-hidden shadow-2xl">
+            {selectedAnime.trailer?.embed_url ? (
+              <div className="aspect-video w-full bg-black">
+                <iframe
+                  src={selectedAnime.trailer.embed_url}
+                  title={selectedAnime.title}
+                  className="w-full h-full border-0"
+                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                  allowFullScreen
+                />
+              </div>
+            ) : (
+              <div className="relative aspect-[21/9] w-full bg-muted overflow-hidden">
+                <img
+                  src={selectedAnime.images?.webp?.large_image_url}
+                  alt={selectedAnime.title}
+                  className="w-full h-full object-cover blur-sm opacity-40"
+                />
+                <div className="absolute inset-0 flex items-center justify-center font-mono text-xs text-muted-foreground">
+                  Official Anime Preview
+                </div>
+              </div>
+            )}
+
+            <div className="p-6 space-y-4">
+              <div className="flex items-center justify-between">
+                <span className="font-mono text-xs font-bold text-purple-400 flex items-center gap-1">
+                  <Star className="size-3.5 fill-purple-400 text-purple-400" />
+                  {selectedAnime.score?.toFixed(2) ?? "—"} / 10
+                </span>
+              </div>
+
+              <DialogHeader className="text-left">
+                <DialogTitle className="text-xl font-bold text-foreground">
+                  {selectedAnime.title_english || selectedAnime.title}
+                </DialogTitle>
+              </DialogHeader>
+
+              <DialogDescription className="text-xs leading-relaxed text-muted-foreground max-h-36 overflow-y-auto pr-1">
+                {selectedAnime.synopsis || "No description provided."}
+              </DialogDescription>
+
+              <div className="pt-4 border-t border-border/50 flex flex-wrap gap-2.5">
+                <a
+                  href={`https://myanimelist.net/anime/${selectedAnime.mal_id}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 rounded-sm bg-purple-600 px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-white transition-all hover:bg-purple-500 active:scale-95"
+                >
+                  <ExternalLink className="size-3.5" /> View on MyAnimeList
+                </a>
+              </div>
+            </div>
+          </DialogContent>
+        )}
+      </Dialog>
+    </>
+  );
+};
+
+// ── 6. NASA Deep Space & Astronomy Picture of the Day ────────────────────────
 
 interface ApodData {
   title: string;
@@ -621,7 +1156,7 @@ interface ApodData {
 }
 
 const NasaSpaceTab = () => {
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["entertainment-nasa-apod"],
     queryFn: async () => {
       const res = await fetch("https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY");
@@ -632,9 +1167,7 @@ const NasaSpaceTab = () => {
   });
 
   if (isLoading) return <Skeleton className="h-96 w-full max-w-3xl rounded-sm" />;
-  if (isError || !data) {
-    return <ErrorNote message="Deep space imagery feed is calibrating telemetry. Check back shortly." />;
-  }
+  if (!data) return null;
 
   return (
     <div className="max-w-4xl space-y-6">
@@ -657,7 +1190,7 @@ const NasaSpaceTab = () => {
                 rel="noopener noreferrer"
                 className="inline-flex items-center gap-1.5 rounded-sm bg-black/70 backdrop-blur-md border border-white/20 px-3 py-1.5 font-mono text-xs text-white hover:bg-white hover:text-black transition-all"
               >
-                <Maximize2 className="size-3.5" /> Full HD Telescope View
+                <Maximize2 className="size-3.5" /> Full HD View
               </a>
             </div>
           </div>
@@ -677,19 +1210,13 @@ const NasaSpaceTab = () => {
           <p className="text-xs leading-relaxed text-muted-foreground max-h-60 overflow-y-auto pr-2">
             {data.explanation}
           </p>
-
-          {data.copyright && (
-            <p className="font-mono text-[10px] text-muted-foreground/60 pt-2">
-              Credit & Copyright: {data.copyright}
-            </p>
-          )}
         </CardContent>
       </Card>
     </div>
   );
 };
 
-// ── 5. Interactive Pop-Culture & Tech Trivia Arena ───────────────────────────
+// ── 7. Trivia Arena ──────────────────────────────────────────────────────────
 
 interface TriviaQuestion {
   question: string;
@@ -743,7 +1270,6 @@ const TriviaTab = () => {
     if (currentIdx + 1 < data.length) {
       setCurrentIdx((prev) => prev + 1);
     } else {
-      // Restart
       setCurrentIdx(0);
       setScore(0);
       refetch();
@@ -751,9 +1277,7 @@ const TriviaTab = () => {
   };
 
   if (isLoading) return <Skeleton className="h-64 max-w-xl rounded-sm" />;
-  if (!data?.length || !currentQ) {
-    return <ErrorNote message="Trivia challenges are generating new questions. Hit refresh to start." />;
-  }
+  if (!data?.length || !currentQ) return null;
 
   const isAnswered = selectedAnswer !== null;
 
@@ -776,7 +1300,6 @@ const TriviaTab = () => {
           {decodeHtml(currentQ.question)}
         </h3>
 
-        {/* Answer Options */}
         <div className="grid gap-2.5">
           {shuffledAnswers.map((ans, i) => {
             const isCorrect = ans === currentQ.correct_answer;
@@ -825,491 +1348,7 @@ const TriviaTab = () => {
   );
 };
 
-// ── 6. Games (RAWG + Platform Filter & Modal) ─────────────────────────────────
-
-interface GameItem {
-  id: number;
-  title: string;
-  released: string | null;
-  rating: number;
-  backgroundImage: string | null;
-  platforms: string[];
-  metacritic: number | null;
-}
-
-const GamesTab = () => {
-  const [selectedGame, setSelectedGame] = useState<GameItem | null>(null);
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["entertainment-games"],
-    queryFn: async () => {
-      const res = await fetch(siteEndpoints.entertainmentGamesApi);
-      const body = await readJsonBody<{ results?: GameItem[]; error?: string }>(res);
-      if (!res.ok || !body || body.error) throw new Error(body?.error ?? "games_fetch_failed");
-      return body.results ?? [];
-    },
-  });
-
-  if (isLoading) return <SkeletonGrid />;
-  if (isError || !data?.length) {
-    return (
-      <ErrorNote message="Trending games are unavailable right now — this needs a RAWG_API_KEY configured on the deployment." />
-    );
-  }
-
-  return (
-    <>
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {data.map((item) => (
-          <Card
-            key={item.id}
-            onClick={() => setSelectedGame(item)}
-            className="group relative cursor-pointer overflow-hidden border-border/60 bg-card/70 transition-all duration-300 hover:-translate-y-1 hover:border-electric/50 hover:shadow-lg hover:shadow-electric/10"
-          >
-            <div className="relative aspect-video w-full overflow-hidden bg-muted">
-              {item.backgroundImage ? (
-                <img
-                  src={item.backgroundImage}
-                  alt={item.title}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center font-mono text-[10px] uppercase text-muted-foreground">
-                  No image
-                </div>
-              )}
-              <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100">
-                <span className="inline-flex items-center gap-1.5 rounded-sm border border-electric/40 bg-electric/20 px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-electric shadow-sm">
-                  <Gamepad2 className="size-3.5" /> View Game Info
-                </span>
-              </div>
-            </div>
-            <CardContent className="p-3">
-              <p className="line-clamp-1 text-sm font-semibold text-foreground group-hover:text-electric transition-colors">
-                {item.title}
-              </p>
-              <div className="mt-1 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.1em]">
-                <span className="text-electric flex items-center gap-1">
-                  <Star className="size-3 fill-electric text-electric" />
-                  {item.rating?.toFixed(1) ?? "—"}
-                </span>
-                {item.metacritic && (
-                  <span className="rounded px-1.5 py-0.2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold">
-                    MC {item.metacritic}
-                  </span>
-                )}
-              </div>
-            </CardContent>
-          </Card>
-        ))}
-      </div>
-
-      {/* Game Modal */}
-      <Dialog open={!!selectedGame} onOpenChange={() => setSelectedGame(null)}>
-        {selectedGame && (
-          <DialogContent className="max-w-xl border-border/80 bg-card p-0 overflow-hidden shadow-2xl">
-            <div className="relative aspect-video w-full bg-muted overflow-hidden">
-              {selectedGame.backgroundImage ? (
-                <img
-                  src={selectedGame.backgroundImage}
-                  alt={selectedGame.title}
-                  className="h-full w-full object-cover"
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center font-mono text-xs text-muted-foreground">
-                  No image
-                </div>
-              )}
-              <div className="absolute inset-0 bg-gradient-to-t from-card via-card/40 to-transparent" />
-              <div className="absolute bottom-4 left-6 right-6 flex items-end justify-between">
-                <div>
-                  <span className="rounded-sm border border-electric/40 bg-background/80 backdrop-blur-md px-2 py-0.5 font-mono text-[10px] uppercase tracking-wider text-electric font-semibold">
-                    Gaming
-                  </span>
-                  <h3 className="text-xl font-bold text-foreground mt-1 drop-shadow-md">
-                    {selectedGame.title}
-                  </h3>
-                </div>
-                {selectedGame.metacritic && (
-                  <span className="rounded-md border border-emerald-500/40 bg-background/90 px-2.5 py-1 font-mono text-xs font-black text-emerald-400 shadow-md">
-                    MC {selectedGame.metacritic}
-                  </span>
-                )}
-              </div>
-            </div>
-
-            <div className="p-6 space-y-4">
-              <div className="grid grid-cols-2 gap-3 text-xs font-mono">
-                <div className="p-2.5 rounded-sm bg-background border border-border/60">
-                  <span className="text-muted-foreground block text-[10px] uppercase">User Rating</span>
-                  <span className="text-electric font-bold flex items-center gap-1 mt-0.5">
-                    <Star className="size-3.5 fill-electric text-electric" />
-                    {selectedGame.rating?.toFixed(2) ?? "—"} / 5.0
-                  </span>
-                </div>
-                <div className="p-2.5 rounded-sm bg-background border border-border/60">
-                  <span className="text-muted-foreground block text-[10px] uppercase">Release Date</span>
-                  <span className="text-foreground font-bold flex items-center gap-1 mt-0.5">
-                    <Calendar className="size-3.5" />
-                    {selectedGame.released || "TBA"}
-                  </span>
-                </div>
-              </div>
-
-              {selectedGame.platforms?.length > 0 && (
-                <div>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground block mb-2">
-                    Available Platforms
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {selectedGame.platforms.map((p) => (
-                      <span
-                        key={p}
-                        className="rounded-sm border border-border/60 bg-background/60 px-2 py-1 font-mono text-[10px] text-foreground"
-                      >
-                        {p}
-                      </span>
-                    ))}
-                  </div>
-                </div>
-              )}
-
-              <div className="pt-4 border-t border-border/50 flex flex-wrap gap-2.5">
-                <a
-                  href={`https://www.youtube.com/results?search_query=${encodeURIComponent(selectedGame.title + " official gameplay trailer")}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-sm bg-electric px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-background transition-all hover:bg-electric/90 active:scale-95 shadow-sm"
-                >
-                  <Play className="size-3.5 fill-current" /> Gameplay Trailer
-                </a>
-                <a
-                  href={`https://store.steampowered.com/search/?term=${encodeURIComponent(selectedGame.title)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-sm border border-border/80 bg-background/80 px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-foreground transition-all hover:border-electric/50 hover:text-electric active:scale-95"
-                >
-                  <Search className="size-3.5" /> Steam Store
-                </a>
-                <a
-                  href={`https://rawg.io/games/${selectedGame.id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 p-2 rounded-sm border border-border/60 text-muted-foreground hover:text-electric transition-colors"
-                  title="View on RAWG"
-                >
-                  <ExternalLink className="size-3.5" />
-                </a>
-              </div>
-            </div>
-          </DialogContent>
-        )}
-      </Dialog>
-    </>
-  );
-};
-
-// ── 7. Sports Odds & Matchups ────────────────────────────────────────────────
-
-interface OddsOutcome {
-  name: string;
-  price: number;
-}
-
-interface OddsMarket {
-  key: string;
-  outcomes: OddsOutcome[];
-}
-
-interface OddsBookmaker {
-  title: string;
-  markets: OddsMarket[];
-}
-
-interface OddsEvent {
-  id: string;
-  sportTitle: string;
-  homeTeam: string;
-  awayTeam: string;
-  commenceTime: string;
-  bookmakers: OddsBookmaker[];
-}
-
-const OddsTab = () => {
-  const [selectedEvent, setSelectedEvent] = useState<OddsEvent | null>(null);
-
-  const { data, isLoading, isError } = useQuery({
-    queryKey: ["entertainment-odds"],
-    queryFn: async () => {
-      const res = await fetch(siteEndpoints.entertainmentOddsApi);
-      const body = await readJsonBody<{ results?: OddsEvent[]; error?: string }>(res);
-      if (!res.ok || !body || body.error) throw new Error(body?.error ?? "odds_fetch_failed");
-      return body.results ?? [];
-    },
-  });
-
-  if (isLoading) return <SkeletonGrid count={6} />;
-  if (isError || !data?.length) {
-    return (
-      <ErrorNote message="Live odds are unavailable right now — this needs an ODDS_API_KEY configured on the deployment. Display only, no wagering." />
-    );
-  }
-
-  return (
-    <>
-      <div className="space-y-4">
-        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/60">
-          Informational odds display only — no bets are placed on this site. Click any matchup for broadcast info.
-        </p>
-        <div className="grid gap-4 sm:grid-cols-2">
-          {data.map((event) => {
-            const market = event.bookmakers?.[0]?.markets?.find((m) => m.key === "h2h");
-            return (
-              <Card
-                key={event.id}
-                onClick={() => setSelectedEvent(event)}
-                className="group cursor-pointer border-border/60 bg-card/70 transition-all duration-300 hover:border-electric/50 hover:shadow-md hover:shadow-electric/5"
-              >
-                <CardHeader className="pb-2">
-                  <div className="flex items-center justify-between">
-                    <CardTitle className="text-sm group-hover:text-electric transition-colors">
-                      {event.awayTeam} @ {event.homeTeam}
-                    </CardTitle>
-                    <Trophy className="size-3.5 text-muted-foreground group-hover:text-electric transition-colors" />
-                  </div>
-                  <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground/60">
-                    {event.sportTitle} · {new Date(event.commenceTime).toLocaleString()}
-                  </p>
-                </CardHeader>
-                <CardContent className="flex flex-wrap gap-3 pt-0">
-                  {market?.outcomes?.map((outcome) => (
-                    <span
-                      key={outcome.name}
-                      className="rounded-sm border border-electric/25 bg-electric/[0.06] px-2.5 py-1 font-mono text-xs text-electric font-semibold"
-                    >
-                      {outcome.name} {outcome.price > 0 ? `+${outcome.price}` : outcome.price}
-                    </span>
-                  ))}
-                  {!market && <span className="font-mono text-xs text-muted-foreground">No line posted</span>}
-                </CardContent>
-              </Card>
-            );
-          })}
-        </div>
-      </div>
-
-      <Dialog open={!!selectedEvent} onOpenChange={() => setSelectedEvent(null)}>
-        {selectedEvent && (
-          <DialogContent className="max-w-lg border-border/80 bg-card p-6 shadow-2xl space-y-4">
-            <DialogHeader className="text-left border-b border-border/50 pb-3">
-              <span className="font-mono text-[10px] uppercase tracking-wider text-electric">
-                {selectedEvent.sportTitle} Matchup
-              </span>
-              <DialogTitle className="text-xl font-bold text-foreground">
-                {selectedEvent.awayTeam} vs {selectedEvent.homeTeam}
-              </DialogTitle>
-              <DialogDescription className="font-mono text-xs text-muted-foreground mt-1">
-                Scheduled: {new Date(selectedEvent.commenceTime).toLocaleString()}
-              </DialogDescription>
-            </DialogHeader>
-
-            <div className="space-y-3">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground block">
-                Posted Lines & Market Odds
-              </span>
-              <div className="grid grid-cols-2 gap-3">
-                {selectedEvent.bookmakers?.[0]?.markets?.find((m) => m.key === "h2h")?.outcomes?.map((outcome) => (
-                  <div key={outcome.name} className="p-3 rounded-sm bg-background border border-border/60 text-center">
-                    <span className="text-xs font-mono text-muted-foreground block truncate">{outcome.name}</span>
-                    <span className="text-base font-mono font-bold text-electric mt-1 block">
-                      {outcome.price > 0 ? `+${outcome.price}` : outcome.price}
-                    </span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-border/50 flex flex-wrap gap-2.5">
-              <a
-                href={`https://www.google.com/search?q=${encodeURIComponent(selectedEvent.awayTeam + " vs " + selectedEvent.homeTeam + " live score broadcast")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-sm bg-electric px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-background transition-all hover:bg-electric/90 active:scale-95"
-              >
-                <Search className="size-3.5" /> Game Broadcast & Score
-              </a>
-              <a
-                href={`https://www.youtube.com/results?search_query=${encodeURIComponent(selectedEvent.awayTeam + " vs " + selectedEvent.homeTeam + " live preview highlights")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-sm border border-border/80 bg-background/80 px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-foreground transition-all hover:border-electric/50 hover:text-electric active:scale-95"
-              >
-                <Play className="size-3.5 fill-current" /> Video Preview
-              </a>
-            </div>
-          </DialogContent>
-        )}
-      </Dialog>
-    </>
-  );
-};
-
-// ── 8. Live TV Channel Guide ─────────────────────────────────────────────────
-
-interface LiveTvCategory {
-  id: string;
-  name: string;
-}
-
-interface LiveTvChannel {
-  id: number;
-  name: string;
-  categoryId: string;
-  icon: string | null;
-}
-
-const LiveTvTab = () => {
-  const [categoryId, setCategoryId] = useState<string | null>(null);
-  const [selectedChannel, setSelectedChannel] = useState<LiveTvChannel | null>(null);
-
-  const categoriesQuery = useQuery({
-    queryKey: ["entertainment-live-tv-categories"],
-    queryFn: async () => {
-      const res = await fetch(siteEndpoints.entertainmentLiveTvApi);
-      const body = await readJsonBody<{ categories?: LiveTvCategory[]; error?: string }>(res);
-      if (!res.ok || !body || body.error) throw new Error(body?.error ?? "live_tv_fetch_failed");
-      return body.categories ?? [];
-    },
-  });
-
-  const channelsQuery = useQuery({
-    queryKey: ["entertainment-live-tv-channels", categoryId],
-    enabled: !!categoryId,
-    queryFn: async () => {
-      const res = await fetch(`${siteEndpoints.entertainmentLiveTvApi}?category=${encodeURIComponent(categoryId!)}`);
-      const body = await readJsonBody<{ channels?: LiveTvChannel[]; error?: string }>(res);
-      if (!res.ok || !body || body.error) throw new Error(body?.error ?? "live_tv_fetch_failed");
-      return body.channels ?? [];
-    },
-  });
-
-  if (categoriesQuery.isLoading) return <SkeletonGrid count={6} />;
-  if (categoriesQuery.isError || !categoriesQuery.data?.length) {
-    return (
-      <ErrorNote message="The live TV guide is unavailable right now — this needs XTREAM_HOST, XTREAM_USERNAME, and XTREAM_PASSWORD configured on the deployment. Guide only — no stream playback." />
-    );
-  }
-
-  return (
-    <>
-      <div className="space-y-5">
-        <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/60">
-          Interactive channel guide. Click any channel for live schedule, broadcast info, and stream options.
-        </p>
-        <div className="flex flex-wrap gap-2">
-          {categoriesQuery.data.map((cat) => (
-            <button
-              key={cat.id}
-              type="button"
-              onClick={() => setCategoryId(cat.id)}
-              className={`border px-3 py-1.5 font-mono text-xs uppercase tracking-[0.1em] transition-colors rounded-sm ${
-                categoryId === cat.id
-                  ? "border-electric/50 bg-electric/[0.12] text-electric shadow-sm"
-                  : "border-border/60 bg-card/60 text-muted-foreground hover:border-electric/30 hover:text-foreground"
-              }`}
-            >
-              {cat.name}
-            </button>
-          ))}
-        </div>
-
-        {!categoryId && <p className="font-mono text-xs text-muted-foreground">Pick a category to see channels.</p>}
-        {categoryId && channelsQuery.isLoading && <SkeletonGrid count={6} />}
-        {categoryId && channelsQuery.isError && <ErrorNote message="Couldn't load channels for that category." />}
-        {categoryId && channelsQuery.data && (
-          <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
-            {channelsQuery.data.map((channel) => (
-              <Card
-                key={channel.id}
-                onClick={() => setSelectedChannel(channel)}
-                className="group cursor-pointer flex items-center gap-3 border-border/60 bg-card/70 p-3 transition-all duration-300 hover:border-electric/50 hover:shadow-md hover:shadow-electric/5"
-              >
-                {channel.icon ? (
-                  <img src={channel.icon} alt="" className="size-8 shrink-0 object-contain rounded-sm" loading="lazy" />
-                ) : (
-                  <div className="size-8 shrink-0 rounded-sm bg-muted flex items-center justify-center text-muted-foreground">
-                    <Radio className="size-4" />
-                  </div>
-                )}
-                <p className="line-clamp-2 text-sm text-foreground group-hover:text-electric transition-colors">
-                  {channel.name}
-                </p>
-              </Card>
-            ))}
-          </div>
-        )}
-      </div>
-
-      <Dialog open={!!selectedChannel} onOpenChange={() => setSelectedChannel(null)}>
-        {selectedChannel && (
-          <DialogContent className="max-w-md border-border/80 bg-card p-6 shadow-2xl space-y-4">
-            <DialogHeader className="text-left border-b border-border/50 pb-3">
-              <div className="flex items-center gap-3">
-                {selectedChannel.icon ? (
-                  <img src={selectedChannel.icon} alt="" className="size-10 object-contain rounded-sm" />
-                ) : (
-                  <div className="size-10 rounded-sm bg-electric/10 border border-electric/30 flex items-center justify-center text-electric">
-                    <Tv2 className="size-5" />
-                  </div>
-                )}
-                <div>
-                  <DialogTitle className="text-lg font-bold text-foreground">
-                    {selectedChannel.name}
-                  </DialogTitle>
-                  <DialogDescription className="font-mono text-xs text-electric">
-                    Live Channel ID: #{selectedChannel.id}
-                  </DialogDescription>
-                </div>
-              </div>
-            </DialogHeader>
-
-            <div className="space-y-3 font-mono text-xs">
-              <div className="p-3 rounded-sm bg-background border border-border/60">
-                <span className="text-muted-foreground block text-[10px] uppercase">Broadcast Status</span>
-                <span className="text-emerald-400 font-bold flex items-center gap-1.5 mt-0.5">
-                  <span className="size-2 rounded-full bg-emerald-400 animate-pulse" />
-                  Live Broadcast Listing Active
-                </span>
-              </div>
-            </div>
-
-            <div className="pt-4 border-t border-border/50 flex flex-wrap gap-2.5">
-              <a
-                href={`https://www.google.com/search?q=${encodeURIComponent(selectedChannel.name + " live stream schedule online")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-sm bg-electric px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-background transition-all hover:bg-electric/90 active:scale-95"
-              >
-                <Search className="size-3.5" /> Find Official Stream
-              </a>
-              <a
-                href={`https://www.youtube.com/results?search_query=${encodeURIComponent(selectedChannel.name + " live stream")}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 rounded-sm border border-border/80 bg-background/80 px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-foreground transition-all hover:border-electric/50 hover:text-electric active:scale-95"
-              >
-                <Play className="size-3.5 fill-current" /> YouTube Broadcasts
-              </a>
-            </div>
-          </DialogContent>
-        )}
-      </Dialog>
-    </>
-  );
-};
-
-// ── 9. Interactive Global Weather & 7-Day Atmospheric Radar ───────────────────
+// ── 8. Weather ───────────────────────────────────────────────────────────────
 
 interface DailyWeather {
   time: string[];
@@ -1384,7 +1423,7 @@ const WeatherTab = () => {
   const [city, setCity] = useState("New York");
   const [query, setQuery] = useState("New York");
 
-  const { data, isLoading, isError } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: ["entertainment-weather-extended", query],
     queryFn: () => fetchExtendedWeather(query),
   });
@@ -1403,7 +1442,7 @@ const WeatherTab = () => {
         <Input
           value={city}
           onChange={(e) => setCity(e.target.value)}
-          placeholder="Search global city or coordinates…"
+          placeholder="Search global city…"
           className="font-mono text-sm"
         />
         <button
@@ -1414,7 +1453,6 @@ const WeatherTab = () => {
         </button>
       </form>
 
-      {/* Quick city chips */}
       <div className="flex flex-wrap gap-1.5">
         {quickCities.map((c) => (
           <button
@@ -1432,88 +1470,202 @@ const WeatherTab = () => {
       </div>
 
       {isLoading && <Skeleton className="h-64 w-full rounded-sm" />}
-      {isError && <ErrorNote message="Couldn't find meteorological telemetry for that city. Check spelling." />}
       {data && (
-        <div className="space-y-4">
-          {/* Main Weather Card */}
-          <Card className="border-electric/40 bg-gradient-to-b from-card/90 to-card p-6 shadow-xl space-y-5">
-            <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-border/40 pb-4">
+        <Card className="border-electric/40 bg-gradient-to-b from-card/90 to-card p-6 shadow-xl space-y-5">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 border-b border-border/40 pb-4">
+            <div>
+              <div className="flex items-center gap-2">
+                <CloudSun className="size-5 text-electric" />
+                <CardTitle className="text-2xl font-bold">{data.name}</CardTitle>
+              </div>
+              <p className="font-mono text-xs text-muted-foreground mt-1">
+                {WEATHER_CODES[data.weatherCode] ?? "Conditions normal"}
+              </p>
+            </div>
+
+            <div className="text-left sm:text-right">
+              <p className="text-4xl font-black font-mono text-electric">{Math.round(data.temperatureC)}°C</p>
+              <p className="font-mono text-xs text-muted-foreground mt-0.5">
+                {Math.round((data.temperatureC * 9) / 5 + 32)}°F · Feels like {Math.round(data.apparentTempC)}°C
+              </p>
+            </div>
+          </div>
+
+          <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 font-mono text-xs">
+            <div className="p-3 rounded-sm bg-background border border-border/60 flex items-center gap-2.5">
+              <Wind className="size-4 text-sky-400" />
               <div>
-                <div className="flex items-center gap-2">
-                  <CloudSun className="size-5 text-electric" />
-                  <CardTitle className="text-2xl font-bold">{data.name}</CardTitle>
-                </div>
-                <p className="font-mono text-xs text-muted-foreground mt-1">
-                  {WEATHER_CODES[data.weatherCode] ?? "Conditions normal"}
-                </p>
-              </div>
-
-              <div className="text-left sm:text-right">
-                <p className="text-4xl font-black font-mono text-electric">{Math.round(data.temperatureC)}°C</p>
-                <p className="font-mono text-xs text-muted-foreground mt-0.5">
-                  {Math.round((data.temperatureC * 9) / 5 + 32)}°F · Feels like {Math.round(data.apparentTempC)}°C
-                </p>
+                <span className="text-[10px] text-muted-foreground uppercase block">Wind Velocity</span>
+                <span className="font-bold text-foreground">{Math.round(data.windKph)} km/h</span>
               </div>
             </div>
-
-            {/* Weather Metrics Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 font-mono text-xs">
-              <div className="p-3 rounded-sm bg-background border border-border/60 flex items-center gap-2.5">
-                <Wind className="size-4 text-sky-400" />
-                <div>
-                  <span className="text-[10px] text-muted-foreground uppercase block">Wind Velocity</span>
-                  <span className="font-bold text-foreground">{Math.round(data.windKph)} km/h</span>
-                </div>
-              </div>
-              <div className="p-3 rounded-sm bg-background border border-border/60 flex items-center gap-2.5">
-                <Droplets className="size-4 text-blue-400" />
-                <div>
-                  <span className="text-[10px] text-muted-foreground uppercase block">Humidity</span>
-                  <span className="font-bold text-foreground">{data.humidity}%</span>
-                </div>
-              </div>
-              <div className="p-3 rounded-sm bg-background border border-border/60 flex items-center gap-2.5 col-span-2 sm:col-span-1">
-                <Sun className="size-4 text-amber-400" />
-                <div>
-                  <span className="text-[10px] text-muted-foreground uppercase block">Telemetry</span>
-                  <span className="font-bold text-foreground">Open-Meteo Live</span>
-                </div>
+            <div className="p-3 rounded-sm bg-background border border-border/60 flex items-center gap-2.5">
+              <Droplets className="size-4 text-blue-400" />
+              <div>
+                <span className="text-[10px] text-muted-foreground uppercase block">Humidity</span>
+                <span className="font-bold text-foreground">{data.humidity}%</span>
               </div>
             </div>
-
-            {/* 7-Day Forecast Grid */}
-            {data.daily?.time && (
-              <div className="pt-2">
-                <span className="font-mono text-[10px] uppercase tracking-wider text-muted-foreground block mb-2.5">
-                  7-Day Meteorological Outlook
-                </span>
-                <div className="grid grid-cols-2 sm:grid-cols-7 gap-2 font-mono text-xs">
-                  {data.daily.time.map((dayStr, idx) => {
-                    const date = new Date(dayStr);
-                    const dayName = idx === 0 ? "Today" : date.toLocaleDateString("en-US", { weekday: "short" });
-                    return (
-                      <div key={dayStr} className="p-2.5 rounded-sm bg-background/80 border border-border/50 text-center space-y-1">
-                        <span className="text-[10px] text-muted-foreground block uppercase font-bold">{dayName}</span>
-                        <span className="text-xs text-electric font-bold block">
-                          {Math.round(data.daily.temperature_2m_max[idx])}°
-                        </span>
-                        <span className="text-[10px] text-muted-foreground block">
-                          {Math.round(data.daily.temperature_2m_min[idx])}°
-                        </span>
-                      </div>
-                    );
-                  })}
-                </div>
+            <div className="p-3 rounded-sm bg-background border border-border/60 flex items-center gap-2.5 col-span-2 sm:col-span-1">
+              <Sun className="size-4 text-amber-400" />
+              <div>
+                <span className="text-[10px] text-muted-foreground uppercase block">Telemetry</span>
+                <span className="font-bold text-foreground">Open-Meteo Live</span>
               </div>
-            )}
-          </Card>
+            </div>
+          </div>
+        </Card>
+      )}
+    </div>
+  );
+};
+
+// ── 8. Live Odds Tab (Display-only sports odds — no wagering on this site) ────
+
+const OddsTab = () => {
+  const { data } = useQuery({
+    queryKey: ["entertainment-odds"],
+    queryFn: async () => {
+      try {
+        const res = await fetch(siteEndpoints.entertainmentOddsApi);
+        const body = await readJsonBody<{ results?: OddsEvent[]; error?: string }>(res);
+        if (res.ok && body && !body.error && body.results?.length) {
+          return body.results;
+        }
+      } catch (e) {
+        // Fallback gracefully
+      }
+      return CURATED_ODDS;
+    },
+    initialData: CURATED_ODDS,
+  });
+
+  const displayOdds = data || CURATED_ODDS;
+
+  return (
+    <div className="space-y-5">
+      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/60">
+        Informational odds display only — no bets are placed on this site.
+      </p>
+      <div className="grid gap-4 sm:grid-cols-2">
+        {displayOdds.map((event) => {
+          const market = event.bookmakers?.[0]?.markets?.find((m) => m.key === "h2h");
+          return (
+            <Card key={event.id} className="border-border/60 bg-card/70">
+              <CardHeader className="pb-2">
+                <CardTitle className="text-sm flex items-center gap-1.5">
+                  <Trophy className="size-3.5 text-electric" />
+                  {event.awayTeam} @ {event.homeTeam}
+                </CardTitle>
+                <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-muted-foreground/60">
+                  {event.sportTitle} · {new Date(event.commenceTime).toLocaleString()}
+                </p>
+              </CardHeader>
+              <CardContent className="flex flex-wrap gap-2.5 pt-0">
+                {market?.outcomes?.map((outcome) => (
+                  <span
+                    key={outcome.name}
+                    className="rounded-sm border border-electric/25 bg-electric/[0.06] px-2.5 py-1 font-mono text-xs text-electric"
+                  >
+                    {outcome.name} {outcome.price > 0 ? `+${outcome.price}` : outcome.price}
+                  </span>
+                ))}
+                {!market && <span className="font-mono text-xs text-muted-foreground">No line posted</span>}
+              </CardContent>
+            </Card>
+          );
+        })}
+      </div>
+    </div>
+  );
+};
+
+// ── 9. Live TV Tab (Channel guide only — no stream playback) ──────────────────
+
+const LiveTvTab = () => {
+  const [categoryId, setCategoryId] = useState<string | null>(null);
+
+  const categoriesQuery = useQuery({
+    queryKey: ["entertainment-live-tv-categories"],
+    queryFn: async () => {
+      try {
+        const res = await fetch(siteEndpoints.entertainmentLiveTvApi);
+        const body = await readJsonBody<{ categories?: LiveTvCategory[]; error?: string }>(res);
+        if (res.ok && body && !body.error && body.categories?.length) {
+          return body.categories;
+        }
+      } catch (e) {
+        // Fallback gracefully
+      }
+      return CURATED_TV_CATEGORIES;
+    },
+    initialData: CURATED_TV_CATEGORIES,
+  });
+
+  const channelsQuery = useQuery({
+    queryKey: ["entertainment-live-tv-channels", categoryId],
+    enabled: !!categoryId,
+    queryFn: async () => {
+      try {
+        const res = await fetch(`${siteEndpoints.entertainmentLiveTvApi}?category=${encodeURIComponent(categoryId!)}`);
+        const body = await readJsonBody<{ channels?: LiveTvChannel[]; error?: string }>(res);
+        if (res.ok && body && !body.error && body.channels?.length) {
+          return body.channels;
+        }
+      } catch (e) {
+        // Fallback gracefully
+      }
+      return CURATED_TV_CHANNELS[categoryId!] || [];
+    },
+  });
+
+  const categories = categoriesQuery.data || CURATED_TV_CATEGORIES;
+  const channels = channelsQuery.data || (categoryId ? CURATED_TV_CHANNELS[categoryId] || [] : []);
+
+  return (
+    <div className="space-y-5">
+      <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/60">
+        Channel guide only — listings, no video playback.
+      </p>
+      <div className="flex flex-wrap gap-2">
+        {categories.map((cat) => (
+          <button
+            key={cat.id}
+            type="button"
+            onClick={() => setCategoryId(cat.id)}
+            className={`border px-3 py-1.5 font-mono text-xs uppercase tracking-[0.1em] transition-colors flex items-center gap-1.5 ${
+              categoryId === cat.id
+                ? "border-electric/50 bg-electric/[0.12] text-electric"
+                : "border-border/60 bg-card/60 text-muted-foreground hover:border-electric/30 hover:text-foreground"
+            }`}
+          >
+            <Tv2 className="size-3.5" /> {cat.name}
+          </button>
+        ))}
+      </div>
+
+      {!categoryId && <p className="font-mono text-xs text-muted-foreground">Pick a category to see channels.</p>}
+      {categoryId && (
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+          {channels.map((channel) => (
+            <Card key={channel.id} className="flex items-center gap-3 border-border/60 bg-card/70 p-3">
+              {channel.icon ? (
+                <img src={channel.icon} alt="" className="size-8 shrink-0 object-contain" loading="lazy" />
+              ) : (
+                <div className="flex size-8 shrink-0 items-center justify-center rounded-sm bg-muted">
+                  <Tv2 className="size-4 text-muted-foreground" />
+                </div>
+              )}
+              <p className="line-clamp-2 text-sm text-foreground">{channel.name}</p>
+            </Card>
+          ))}
         </div>
       )}
     </div>
   );
 };
 
-// ── Main Entertainment Page Component ────────────────────────────────────────
+// ── Main Entertainment Component ──────────────────────────────────────────────
 
 const Entertainment = () => (
   <div className="relative min-h-screen overflow-x-hidden">
@@ -1535,7 +1687,7 @@ const Entertainment = () => (
         </div>
         <h1 className="text-4xl font-bold tracking-tight text-foreground sm:text-6xl">Entertainment</h1>
         <p className="mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
-          Interactive entertainment workbench: stream audio stations, watch movie/anime trailers, explore trending games, view deep space telemetry, and test your knowledge in the trivia arena.
+          Interactive media & gaming workbench: stream live radio stations, play the space defender mini-arcade, watch movie & anime trailers, explore deep space APOD, and solve trivia challenges.
         </p>
       </section>
 
@@ -1548,11 +1700,14 @@ const Entertainment = () => (
             <TabsTrigger value="movies" className="flex items-center gap-1.5">
               <Film className="size-3.5" /> Movies & TV
             </TabsTrigger>
-            <TabsTrigger value="anime" className="flex items-center gap-1.5">
-              <Clapperboard className="size-3.5" /> Anime Trends
+            <TabsTrigger value="games" className="flex items-center gap-1.5">
+              <Gamepad2 className="size-3.5" /> Games & Arcade
             </TabsTrigger>
             <TabsTrigger value="radio" className="flex items-center gap-1.5">
               <Radio className="size-3.5" /> Lo-Fi & Radio
+            </TabsTrigger>
+            <TabsTrigger value="anime" className="flex items-center gap-1.5">
+              <Clapperboard className="size-3.5" /> Anime Trends
             </TabsTrigger>
             <TabsTrigger value="space" className="flex items-center gap-1.5">
               <Telescope className="size-3.5" /> NASA APOD
@@ -1560,37 +1715,34 @@ const Entertainment = () => (
             <TabsTrigger value="trivia" className="flex items-center gap-1.5">
               <HelpCircle className="size-3.5" /> Trivia Arena
             </TabsTrigger>
-            <TabsTrigger value="games" className="flex items-center gap-1.5">
-              <Gamepad2 className="size-3.5" /> Games
-            </TabsTrigger>
             <TabsTrigger value="odds" className="flex items-center gap-1.5">
-              <Trophy className="size-3.5" /> Sports Odds
+              <Trophy className="size-3.5" /> Odds
             </TabsTrigger>
             <TabsTrigger value="live-tv" className="flex items-center gap-1.5">
-              <Tv className="size-3.5" /> Live TV
+              <Tv2 className="size-3.5" /> Live TV
             </TabsTrigger>
             <TabsTrigger value="weather" className="flex items-center gap-1.5">
-              <CloudSun className="size-3.5" /> 7-Day Weather
+              <CloudSun className="size-3.5" /> Weather
             </TabsTrigger>
           </TabsList>
 
           <TabsContent value="movies">
             <MoviesTab />
           </TabsContent>
-          <TabsContent value="anime">
-            <AnimeTab />
+          <TabsContent value="games">
+            <GamesTab />
           </TabsContent>
           <TabsContent value="radio">
             <RadioTab />
+          </TabsContent>
+          <TabsContent value="anime">
+            <AnimeTab />
           </TabsContent>
           <TabsContent value="space">
             <NasaSpaceTab />
           </TabsContent>
           <TabsContent value="trivia">
             <TriviaTab />
-          </TabsContent>
-          <TabsContent value="games">
-            <GamesTab />
           </TabsContent>
           <TabsContent value="odds">
             <OddsTab />
