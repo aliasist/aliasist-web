@@ -23,6 +23,7 @@ Part of the **[Aliasist](https://aliasist.com)** suite.
 - `GET /api/observations/status` — saved external-provider observation counts and latest timestamp
 - `GET /api/facility-leads` — candidate new-facility leads (admin; `?status=new|reviewed|promoted|dismissed`)
 - `POST /api/facility-leads/discover` — manually trigger a discovery sweep (admin)
+- `POST /api/enrichment/refresh` — manually trigger the live enrichment sweep (admin)
 - `GET /api/health` — health check
 
 ## Deploy
@@ -76,6 +77,27 @@ automatically, leads are reviewed and promoted manually:
 Deliberately not used: Google News RSS — its own terms restrict that feed
 to personal, non-commercial feed-reader use, which an automated backend
 sweep would violate.
+
+## Live enrichment sweep
+
+`data_centers.renewable_percent` and `.grid_risk` start as a one-time
+heuristic guess derived from the source's `energy_type` string at seed/sync
+time. A daily cron sweep (06:30 UTC) upgrades every facility to live,
+per-location signals where available:
+
+- **`renewable_percent`** — Electricity Maps' real-time grid mix
+  (`renewablePercentage` / `carbonFreeEnergyPercentage`) for that facility's
+  coordinates.
+- **`grid_risk`** — primarily NWS active severe weather alerts for U.S.
+  facilities (a literal outage-risk signal), falling back to Electricity
+  Maps' carbon intensity level outside the U.S. or when no alert is active.
+  Deliberately *not* a straight carbon-intensity relabel — a clean but
+  strained grid and a dirty but stable one are different kinds of risk.
+
+A facility is only updated when a live value was actually obtained — a
+failed fetch or missing `ELECTRICITY_MAPS_API_KEY` never clobbers existing
+data with a null. Requests to Electricity Maps are throttled (300ms between
+facilities) to stay under its free-tier rate limit.
 
 ## RAG Integration
 

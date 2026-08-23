@@ -24,9 +24,10 @@ CLERK_PUBLISHABLE_KEY = "pk_live_Y2xlcmsuYWxpYXNpc3QuY29tJA"
 #   npx wrangler secret put CLERK_SECRET_KEY          # sk_live_... from Clerk dashboard
 #   npx wrangler secret put ADMIN_USER_IDS            # comma-separated user_... ids
 
-# Cron — sync D1 → Neon every hour; daily facility lead discovery sweep at 06:00 UTC
+# Cron — sync D1 → Neon every hour; daily facility lead discovery sweep at
+# 06:00 UTC; daily live enrichment sweep (renewable %, grid risk) at 06:30 UTC
 [triggers]
-crons = ["0 * * * *", "0 6 * * *"]
+crons = ["0 * * * *", "0 6 * * *", "30 6 * * *"]
 
 [[d1_databases]]
 binding = "ANALYTICS"
