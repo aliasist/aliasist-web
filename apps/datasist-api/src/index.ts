@@ -474,6 +474,87 @@ async function handleGetFacilityLeads(db: D1Database, url: URL, headers: Record<
   return json({ leads: results }, 200, headers);
 }
 
+// ── Live Facility Enrichment Sweep ───────────────────────────────────────────
+// data_centers.renewable_percent / grid_risk start as a one-time heuristic
+// guess from the source's energy_type string (see inferRenewablePercent /
+// inferGridRisk below). This sweep upgrades them to live, per-location
+// signals where available — Electricity Maps' real grid mix for renewable %,
+// and NWS active severe weather alerts (a literal outage-risk signal, not a
+// carbon proxy) for grid_risk, falling back to Electricity Maps' carbon
+// intensity level outside the US where NWS has no coverage. A facility is
+// only updated when a live value was actually obtained — a failed fetch
+// never clobbers existing data with a null.
+function gridRiskFromCarbonLevel(level: string | null): string | null {
+  if (!level) return null;
+  const l = level.toLowerCase();
+  if (l.includes("very high") || l === "high") return "high";
+  if (l.includes("moderate") || l === "medium") return "medium";
+  if (l === "low") return "low";
+  return null;
+}
+
+function gridRiskFromNwsAlerts(alerts: Array<{ severity: string | null }>): string | null {
+  if (alerts.length === 0) return null;
+  if (alerts.some((a) => a.severity === "Extreme" || a.severity === "Severe")) return "high";
+  return "medium";
+}
+
+async function refreshFacilityEnrichment(env: Env): Promise<{ ok: boolean; updated: number; checked: number }> {
+  const { results } = await env.DB.prepare(
+    "SELECT id, lat, lng, country FROM data_centers",
+  ).all<{ id: number; lat: number; lng: number; country: string }>();
+
+  let updated = 0;
+
+  for (const facility of results) {
+    try {
+      const isUs = facility.country === "USA" || facility.country === "United States";
+
+      const [gridCarbon, nws] = await Promise.all([
+        env.ELECTRICITY_MAPS_API_KEY
+          ? getElectricityMapInsights(facility.lat, facility.lng, env.ELECTRICITY_MAPS_API_KEY).catch(() => null)
+          : Promise.resolve(null),
+        isUs ? getNwsInsights(facility.lat, facility.lng).catch(() => null) : Promise.resolve(null),
+      ]);
+
+      const renewablePercent = gridCarbon
+        ? Math.round(gridCarbon.renewablePercentage ?? gridCarbon.carbonFreeEnergyPercentage ?? NaN)
+        : NaN;
+
+      const gridRisk =
+        gridRiskFromNwsAlerts(nws?.activeAlerts ?? []) ??
+        gridRiskFromCarbonLevel(gridCarbon?.carbonIntensityLevel ?? null);
+
+      const hasRenewable = !Number.isNaN(renewablePercent);
+      if (!hasRenewable && !gridRisk) continue;
+
+      await env.DB.prepare(
+        `UPDATE data_centers SET
+           renewable_percent = COALESCE(?, renewable_percent),
+           grid_risk = COALESCE(?, grid_risk)
+         WHERE id = ?`,
+      ).bind(hasRenewable ? renewablePercent : null, gridRisk, facility.id).run();
+      updated++;
+
+      // Electricity Maps free tier is request-rate limited — stay well under it.
+      await new Promise((r) => setTimeout(r, 300));
+    } catch (err) {
+      console.warn(`Enrichment sweep failed for facility ${facility.id}:`, err);
+    }
+  }
+
+  await registerExternalApiObservation(
+    env.DB,
+    "facility-enrichment-sweep",
+    "daily-sweep",
+    { checked: results.length, updated },
+    undefined,
+    24 * 60 * 60 * 1000,
+  );
+
+  return { ok: true, updated, checked: results.length };
+}
+
 const CORS = (origin: string) => ({
   "Access-Control-Allow-Origin": origin,
   "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
@@ -543,10 +624,15 @@ function cors(_request: Request, _env: Env) {
 // ── Router ────────────────────────────────────────────────────────────────────
 
 export default {
-  // Cron triggers — hourly D1 → Neon sync, daily facility lead discovery
+  // Cron triggers — hourly D1 → Neon sync, daily facility lead discovery,
+  // daily live enrichment sweep (renewable %, grid risk)
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
     if (event.cron === "0 6 * * *") {
       ctx.waitUntil(discoverFacilityLeads(env));
+      return;
+    }
+    if (event.cron === "30 6 * * *") {
+      ctx.waitUntil(refreshFacilityEnrichment(env));
       return;
     }
     ctx.waitUntil(syncD1ToNeon(env));
@@ -587,6 +673,13 @@ export default {
         const auth = await requireAdmin(request, env, corsHeaders);
         if (!auth.ok) return auth.response;
         const result = await discoverFacilityLeads(env);
+        return json(result, 200, corsHeaders);
+      }
+      // POST /api/enrichment/refresh — manually trigger the live enrichment sweep (admin only)
+      if (p === "/api/enrichment/refresh" && request.method === "POST") {
+        const auth = await requireAdmin(request, env, corsHeaders);
+        if (!auth.ok) return auth.response;
+        const result = await refreshFacilityEnrichment(env);
         return json(result, 200, corsHeaders);
       }
       if (liveInsightsMatch && request.method === "GET") {
