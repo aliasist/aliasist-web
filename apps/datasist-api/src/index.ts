@@ -270,6 +270,210 @@ async function getNwsInsights(lat: number, lon: number) {
   };
 }
 
+// ── Facility Lead Discovery ──────────────────────────────────────────────────
+// Automated feeds that surface *candidate* new-facility signals into the
+// facility_leads staging table. Nothing here writes to data_centers directly —
+// leads are reviewed and promoted manually via the admin UI/API.
+
+const HYPERSCALER_WATCHLIST = [
+  "microsoft", "amazon", "aws", "google", "alphabet", "meta", "oracle",
+  "openai", "stargate", "anthropic", "corewave", "coreweave", "xai",
+  "equinix", "digital realty", "nvidia", "tesla",
+];
+
+function matchesHyperscalerWatchlist(text: string): boolean {
+  const lower = text.toLowerCase();
+  return HYPERSCALER_WATCHLIST.some((name) => lower.includes(name));
+}
+
+const FACILITY_SIGNAL_KEYWORDS = [
+  "data center", "data centre", "hyperscale", "megawatt", "campus",
+  "breaks ground", "broke ground", "groundbreaking", "announces new",
+  "under construction", "gigawatt",
+];
+
+function matchesFacilitySignal(text: string): boolean {
+  const lower = text.toLowerCase();
+  return FACILITY_SIGNAL_KEYWORDS.some((kw) => lower.includes(kw));
+}
+
+interface FacilityLead {
+  id: string;
+  source: "sec-edgar" | "news-rss";
+  externalRef: string;
+  title: string;
+  company: string | null;
+  snippet: string;
+  url: string;
+  discoveredAt: number;
+}
+
+async function fetchSecEdgarLeads(): Promise<FacilityLead[]> {
+  // SEC full text search — 8-K filings from the last 7 days mentioning "data center".
+  // SEC's fair-access policy requires a descriptive User-Agent with contact info.
+  const now = new Date();
+  const start = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
+  const fmt = (d: Date) => d.toISOString().slice(0, 10);
+
+  const url = `https://efts.sec.gov/LATEST/search-index?q=%22data+center%22&forms=8-K&dateRange=custom&startdt=${fmt(start)}&enddt=${fmt(now)}`;
+  const data = await fetchJson<{
+    hits?: {
+      hits?: Array<{
+        _id: string;
+        _source: {
+          adsh: string;
+          ciks?: string[];
+          display_names?: string[];
+          file_date?: string;
+          form?: string;
+        };
+      }>;
+    };
+  }>(url, { headers: { "User-Agent": "Aliasist DataSist admin@aliasist.com" } });
+
+  const hits = data.hits?.hits ?? [];
+  const leads: FacilityLead[] = [];
+
+  for (const hit of hits) {
+    const displayName = hit._source.display_names?.[0] ?? "";
+    if (!matchesHyperscalerWatchlist(displayName)) continue;
+
+    const cik = String(Number(hit._source.ciks?.[0] ?? "0"));
+    const accessionNoDashes = hit._source.adsh.replace(/-/g, "");
+    const filename = hit._id.split(":")[1] ?? "";
+    const filingUrl = `https://www.sec.gov/Archives/edgar/data/${cik}/${accessionNoDashes}/${filename}`;
+
+    leads.push({
+      id: `sec-edgar:${hit._source.adsh}`,
+      source: "sec-edgar",
+      externalRef: hit._source.adsh,
+      title: `${displayName} — Form ${hit._source.form ?? "8-K"}`,
+      company: displayName.replace(/\s*\(CIK\s*\d+\)/i, "").trim() || null,
+      snippet: `Filed ${hit._source.file_date ?? "recently"}, mentions "data center". Review filing for capex/construction details.`,
+      url: filingUrl,
+      discoveredAt: Date.now(),
+    });
+  }
+
+  return leads;
+}
+
+// Minimal RSS <item> extractor — avoids pulling in an XML dependency for
+// well-formed feeds. Tolerant of missing fields; skips malformed items.
+function parseRssItems(xml: string): Array<{ title: string; link: string; description: string; pubDate: string }> {
+  const items: Array<{ title: string; link: string; description: string; pubDate: string }> = [];
+  const itemBlocks = xml.match(/<item>[\s\S]*?<\/item>/g) ?? [];
+
+  const extract = (block: string, tag: string): string => {
+    const match = block.match(new RegExp(`<${tag}>(?:<!\\[CDATA\\[)?([\\s\\S]*?)(?:\\]\\]>)?<\\/${tag}>`));
+    return (match?.[1] ?? "").trim();
+  };
+
+  for (const block of itemBlocks) {
+    items.push({
+      title: extract(block, "title"),
+      link: extract(block, "link"),
+      description: extract(block, "description").replace(/<[^>]+>/g, ""),
+      pubDate: extract(block, "pubDate"),
+    });
+  }
+  return items;
+}
+
+// Trade-press RSS feeds meant for public syndication — distinct from
+// Google News RSS, whose own terms restrict it to personal feed-reader use.
+const NEWS_RSS_FEEDS = [
+  "https://www.datacenterdynamics.com/en/rss/",
+  "https://www.datacenterknowledge.com/rss.xml",
+];
+
+async function fetchNewsRssLeads(): Promise<FacilityLead[]> {
+  const leads: FacilityLead[] = [];
+
+  for (const feedUrl of NEWS_RSS_FEEDS) {
+    try {
+      const res = await fetch(feedUrl, { headers: { "User-Agent": "Aliasist DataSist admin@aliasist.com" } });
+      if (!res.ok) continue;
+      const xml = await res.text();
+      const items = parseRssItems(xml);
+
+      for (const item of items) {
+        if (!item.link || !item.title) continue;
+        const combined = `${item.title} ${item.description}`;
+        if (!matchesFacilitySignal(combined)) continue;
+
+        leads.push({
+          id: `news-rss:${item.link}`,
+          source: "news-rss",
+          externalRef: item.link,
+          title: item.title,
+          company: HYPERSCALER_WATCHLIST.find((name) => combined.toLowerCase().includes(name)) ?? null,
+          snippet: item.description.slice(0, 280),
+          url: item.link,
+          discoveredAt: Date.now(),
+        });
+      }
+    } catch (err) {
+      console.warn(`News RSS fetch failed (${feedUrl}):`, err);
+    }
+  }
+
+  return leads;
+}
+
+async function registerFacilityLead(db: D1Database, lead: FacilityLead): Promise<void> {
+  await db.prepare(`
+    INSERT INTO facility_leads
+      (id, source, external_ref, title, company, snippet, url, discovered_at, status)
+    VALUES (?, ?, ?, ?, ?, ?, ?, ?, 'new')
+    ON CONFLICT(id) DO NOTHING
+  `).bind(
+    lead.id, lead.source, lead.externalRef, lead.title,
+    lead.company, lead.snippet, lead.url, lead.discoveredAt,
+  ).run();
+}
+
+async function discoverFacilityLeads(env: Env): Promise<{ ok: boolean; found: number; error?: string }> {
+  try {
+    const [secResult, rssResult] = await Promise.allSettled([
+      fetchSecEdgarLeads(),
+      fetchNewsRssLeads(),
+    ]);
+
+    const leads: FacilityLead[] = [
+      ...(secResult.status === "fulfilled" ? secResult.value : []),
+      ...(rssResult.status === "fulfilled" ? rssResult.value : []),
+    ];
+
+    for (const lead of leads) {
+      await registerFacilityLead(env.DB, lead);
+    }
+
+    await registerExternalApiObservation(
+      env.DB,
+      "facility-lead-discovery",
+      "daily-sweep",
+      { found: leads.length, sources: { secEdgar: secResult.status, newsRss: rssResult.status } },
+      undefined,
+      24 * 60 * 60 * 1000,
+    );
+
+    return { ok: true, found: leads.length };
+  } catch (err) {
+    console.error("Facility lead discovery failed:", err);
+    return { ok: false, found: 0, error: err instanceof Error ? err.message : String(err) };
+  }
+}
+
+async function handleGetFacilityLeads(db: D1Database, url: URL, headers: Record<string, string>) {
+  const status = url.searchParams.get("status");
+  const query = status
+    ? db.prepare("SELECT * FROM facility_leads WHERE status = ? ORDER BY discovered_at DESC LIMIT 200").bind(status)
+    : db.prepare("SELECT * FROM facility_leads ORDER BY discovered_at DESC LIMIT 200");
+  const { results } = await query.all();
+  return json({ leads: results }, 200, headers);
+}
+
 const CORS = (origin: string) => ({
   "Access-Control-Allow-Origin": origin,
   "Access-Control-Allow-Methods": "GET, POST, PUT, PATCH, DELETE, OPTIONS",
@@ -339,8 +543,12 @@ function cors(_request: Request, _env: Env) {
 // ── Router ────────────────────────────────────────────────────────────────────
 
 export default {
-  // Cron trigger — runs every hour, syncs D1 → Neon
-  async scheduled(_event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
+  // Cron triggers — hourly D1 → Neon sync, daily facility lead discovery
+  async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
+    if (event.cron === "0 6 * * *") {
+      ctx.waitUntil(discoverFacilityLeads(env));
+      return;
+    }
     ctx.waitUntil(syncD1ToNeon(env));
   },
 
@@ -368,6 +576,18 @@ export default {
       if (isCollection && request.method === "GET") return handleGetAll(env.DB, corsHeaders, env);
       if (p === "/api/observations/status" && request.method === "GET") {
         return handleObservationStatus(env.DB, corsHeaders);
+      }
+      if (p === "/api/facility-leads" && request.method === "GET") {
+        const auth = await requireAdmin(request, env, corsHeaders);
+        if (!auth.ok) return auth.response;
+        return handleGetFacilityLeads(env.DB, url, corsHeaders);
+      }
+      // POST /api/facility-leads/discover — manually trigger a discovery sweep (admin only)
+      if (p === "/api/facility-leads/discover" && request.method === "POST") {
+        const auth = await requireAdmin(request, env, corsHeaders);
+        if (!auth.ok) return auth.response;
+        const result = await discoverFacilityLeads(env);
+        return json(result, 200, corsHeaders);
       }
       if (liveInsightsMatch && request.method === "GET") {
         return handleGetLiveInsights(env.DB, Number(liveInsightsMatch[1]), corsHeaders, env);
