@@ -67,14 +67,14 @@ export const siteEndpoints = {
   githubInstallStatusApi: "/api/github/install-status",
   /** Entertainment page — trending movies/TV → Pages Function proxy (TMDB). */
   entertainmentMoviesApi: "/api/entertainment/movies",
+  /** Entertainment page — on-demand movie/TV trailer lookup → Pages Function proxy (TMDB /videos). */
+  entertainmentMovieTrailerApi: "/api/entertainment/movie-trailer",
   /** Entertainment page — popular games → Pages Function proxy (RAWG). */
   entertainmentGamesApi: "/api/entertainment/games",
+  /** Entertainment page — on-demand game trailer lookup → Pages Function proxy (RAWG /movies, native video files). */
+  entertainmentGameTrailerApi: "/api/entertainment/game-trailer",
   /** Entertainment page — display-only sports odds → Pages Function proxy (The Odds API). */
   entertainmentOddsApi: "/api/entertainment/odds",
-  /** Entertainment page — live TV channel guide (categories/channels, no stream URLs) → Pages Function proxy (Xtream Codes). */
-  entertainmentLiveTvApi: "/api/entertainment/live-tv",
-  /** Entertainment page — NASA Astronomy Picture of the Day → Pages Function proxy (real key, not DEMO_KEY). */
-  entertainmentNasaApodApi: "/api/entertainment/nasa-apod",
 } as const;
 
 /** Safe JSON parse for worker responses (avoids throw on HTML error pages). */
