@@ -47,6 +47,7 @@ CLERK_PUBLISHABLE_KEY=pk_live_your_clerk_publishable_key
 # TMDB_API_KEY=your_themoviedb_v3_api_key   # themoviedb.org → Settings → API
 # RAWG_API_KEY=your_rawg_api_key            # rawg.io/apidocs → sign up
 # ODDS_API_KEY=your_the_odds_api_key        # the-odds-api.com → sign up (free tier is metered)
+# NASA_API_KEY=your_nasa_api_key            # api.nasa.gov/#signUp → instant key, 1,000 req/hour (vs shared DEMO_KEY)
 #
 # Live TV channel guide (categories + channel names only — no stream URLs are
 # ever sent to the client, and this proxy never plays video):

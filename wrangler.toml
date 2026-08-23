@@ -20,6 +20,7 @@
 #     TMDB_API_KEY  (secret; themoviedb.org → Settings → API — trending movies/TV)
 #     RAWG_API_KEY  (secret; rawg.io/apidocs — popular games)
 #     ODDS_API_KEY  (secret; the-odds-api.com — display-only sports odds, free tier is metered)
+#     NASA_API_KEY  (secret; api.nasa.gov/#signUp — Astronomy Picture of the Day, 1,000 req/hour)
 #     XTREAM_HOST, XTREAM_USERNAME, XTREAM_PASSWORD  (secrets; Xtream Codes panel —
 #       live TV channel guide only, no stream URLs sent to the client)
 
