@@ -14,6 +14,8 @@ import {
 
 const CONTACT_API = siteEndpoints.contactApi;
 const isExternalHref = (href: string) => /^https?:\/\//.test(href);
+const opensInNewTab = (app: (typeof suiteApps)[number]) =>
+  isExternalHref(app.href) || ("openInNewTab" in app && app.openInNewTab);
 
 const GitHubIcon = () => (
   <svg width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden>
@@ -263,8 +265,8 @@ const ContactSection = () => {
                     ? { type: "button" as const, onClick: () => setDemoApp(app) }
                     : {
                         href: app.href,
-                        target: isExternalHref(app.href) ? "_blank" : undefined,
-                        rel: isExternalHref(app.href) ? "noopener noreferrer" : undefined,
+                        target: opensInNewTab(app) ? "_blank" : undefined,
+                        rel: opensInNewTab(app) ? "noopener noreferrer" : undefined,
                       };
                   const Tag = isDemo ? motion.button : motion.a;
                   return (

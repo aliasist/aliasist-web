@@ -16,6 +16,10 @@
 # Other workers: see apps/llm-chat/.dev.vars.example, apps/datasist-api/.dev.vars.example, etc.
 # Homepage chat:
 #     CLERK_SECRET_KEY          (secret; required for signed-in visitor chat)
+# Entertainment page (/entertainment) — each is optional, missing key just disables that tab:
+#     TMDB_API_KEY  (secret; themoviedb.org → Settings → API — trending movies/TV)
+#     RAWG_API_KEY  (secret; rawg.io/apidocs — popular games)
+#     ODDS_API_KEY  (secret; the-odds-api.com — display-only sports odds, free tier is metered)
 
 name = "aliasistabductor"
 pages_build_output_dir = "dist"

@@ -65,6 +65,12 @@ export const siteEndpoints = {
   githubRepoGuideApi: "/api/github-repo-guide",
   /** GitHub App repository installation status → Pages Function. */
   githubInstallStatusApi: "/api/github/install-status",
+  /** Entertainment page — trending movies/TV → Pages Function proxy (TMDB). */
+  entertainmentMoviesApi: "/api/entertainment/movies",
+  /** Entertainment page — popular games → Pages Function proxy (RAWG). */
+  entertainmentGamesApi: "/api/entertainment/games",
+  /** Entertainment page — display-only sports odds → Pages Function proxy (The Odds API). */
+  entertainmentOddsApi: "/api/entertainment/odds",
 } as const;
 
 /** Safe JSON parse for worker responses (avoids throw on HTML error pages). */
