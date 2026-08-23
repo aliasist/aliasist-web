@@ -1551,8 +1551,21 @@ const Entertainment = () => (
         {/* Ambient premium glow, matching the site's hero treatment */}
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_60%_at_50%_30%,_hsl(165_90%_42%_/_0.08)_0%,_transparent_65%)]" />
 
+        {/* Animated gradient orb centerpiece — a soft, breathing blur behind
+            the title. Two overlapping colors (electric + violet) drifting at
+            slightly different rhythms so it never feels static. */}
+        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 flex justify-center" aria-hidden="true">
+          <div className="relative h-[280px] w-[280px] sm:h-[380px] sm:w-[380px]">
+            <div className="absolute inset-0 animate-pulse rounded-full bg-electric/25 blur-3xl [animation-duration:4s]" />
+            <div
+              className="absolute inset-0 animate-pulse rounded-full bg-violet/25 blur-3xl [animation-duration:5s]"
+              style={{ animationDelay: "1s" }}
+            />
+          </div>
+        </div>
+
         <div className="section-divider mx-auto mb-8 max-w-xs">
-          <span>Entertainment</span>
+          <span>Now Playing</span>
         </div>
         <h1 className="bg-gradient-to-r from-electric via-emerald-300 to-electric bg-clip-text text-4xl font-black tracking-tight text-transparent drop-shadow-[0_0_30px_rgba(10,204,151,0.35)] sm:text-6xl">
           Entertainment
