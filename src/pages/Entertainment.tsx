@@ -129,7 +129,7 @@ const CURATED_MOVIES: MovieItem[] = [
     posterPath: "https://image.tmdb.org/t/p/w500/AnsZuL6vcfKq1YgA3V2bX8zI1l7.jpg",
     rating: 8.4,
     releaseDate: "2024-04-10",
-    trailerEmbed: "https://www.youtube.com/embed/V-mugKDQDlg",
+    trailerEmbed: "https://www.youtube.com/embed/voqG4iaATuA",
   },
   {
     id: 94605,
@@ -172,7 +172,7 @@ const CURATED_GAMES: GameItem[] = [
     backgroundImage: "https://media.rawg.io/media/games/533/5334c9c64b58e72c478a0d4c1f964c02.jpg",
     platforms: ["PC", "PlayStation 5"],
     metacritic: 82,
-    trailerEmbed: "https://www.youtube.com/embed/qKy98N_b48M",
+    trailerEmbed: "https://www.youtube.com/embed/0Zw-mo0EFt0",
   },
   {
     id: 28199,
@@ -182,7 +182,7 @@ const CURATED_GAMES: GameItem[] = [
     backgroundImage: "https://media.rawg.io/media/games/699/69907e1d9016113edba399b822101b41.jpg",
     platforms: ["PC", "PlayStation 5", "macOS", "Xbox Series S/X"],
     metacritic: 96,
-    trailerEmbed: "https://www.youtube.com/embed/1T22wNlUinA",
+    trailerEmbed: "https://www.youtube.com/embed/1T22wNvoNiU",
   },
   {
     id: 3498,
@@ -1564,15 +1564,17 @@ const Entertainment = () => (
           </div>
         </div>
 
-        <div className="section-divider mx-auto mb-8 max-w-xs">
-          <span>Now Playing</span>
+        <div className="px-6 py-4">
+          <div className="section-divider mx-auto mb-8 max-w-xs font-sans tracking-[0.3em]">
+            <span>Now Playing</span>
+          </div>
+          <h1 className="bg-gradient-to-r from-electric via-emerald-300 to-electric bg-clip-text font-sans text-4xl font-black tracking-wide text-transparent drop-shadow-[0_0_30px_rgba(10,204,151,0.35)] sm:text-6xl sm:tracking-widest">
+            Entertainment
+          </h1>
+          <p className="mx-auto mt-5 max-w-2xl font-sans text-base leading-relaxed tracking-wide text-muted-foreground">
+            Interactive media & gaming workbench: stream live radio stations, play the space defender mini-arcade, watch movie & anime trailers, and solve trivia challenges.
+          </p>
         </div>
-        <h1 className="bg-gradient-to-r from-electric via-emerald-300 to-electric bg-clip-text text-4xl font-black tracking-tight text-transparent drop-shadow-[0_0_30px_rgba(10,204,151,0.35)] sm:text-6xl">
-          Entertainment
-        </h1>
-        <p className="mx-auto mt-5 max-w-2xl text-base leading-relaxed text-muted-foreground">
-          Interactive media & gaming workbench: stream live radio stations, play the space defender mini-arcade, watch movie & anime trailers, and solve trivia challenges.
-        </p>
       </section>
 
       <section aria-labelledby="entertainment-tabs">
