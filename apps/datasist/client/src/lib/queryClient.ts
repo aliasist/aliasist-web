@@ -30,12 +30,13 @@ async function throwIfResNotOk(res: Response) {
 }
 
 async function mergeAuthHeaders(
-  method: string,
   base: HeadersInit | undefined,
 ): Promise<HeadersInit> {
   const headers = new Headers(base);
-  const needsAuth = ["POST", "PUT", "PATCH", "DELETE"].includes(method.toUpperCase());
-  if (needsAuth && datasistClerkGetToken) {
+  // Attach the token whenever one is available, regardless of method — some
+  // GET routes (e.g. /api/facility-leads) are admin-gated too, and an
+  // Authorization header on an anonymous request to a public GET is a no-op.
+  if (datasistClerkGetToken) {
     try {
       const token = await datasistClerkGetToken();
       if (token && !headers.has("Authorization")) {
@@ -53,7 +54,7 @@ export async function apiRequest(
   url: string,
   data?: unknown | undefined,
 ): Promise<Response> {
-  const headers = await mergeAuthHeaders(method, data ? { "Content-Type": "application/json" } : {});
+  const headers = await mergeAuthHeaders(data ? { "Content-Type": "application/json" } : {});
   const res = await fetch(`${API_BASE}${url}`, {
     method,
     headers,

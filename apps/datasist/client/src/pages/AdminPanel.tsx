@@ -2,10 +2,30 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { DataCenter, InsertDataCenter } from "@shared/schema";
-import { Plus, Edit2, Trash2, X, Save, Shield, Search, Globe, ChevronDown } from "lucide-react";
+import { Plus, Edit2, Trash2, X, Save, Shield, Search, Globe, ChevronDown, Radar, ExternalLink, Check, Ban } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 type FormMode = "add" | "edit" | null;
+type AdminTab = "facilities" | "leads";
+
+interface FacilityLead {
+  id: string;
+  source: "sec-edgar" | "news-rss";
+  external_ref: string;
+  title: string;
+  company: string | null;
+  snippet: string;
+  url: string;
+  discovered_at: number;
+  status: "new" | "reviewed" | "promoted" | "dismissed";
+}
+
+const LEAD_STATUS_COLORS: Record<FacilityLead["status"], string> = {
+  new: "#5ef6ff",
+  reviewed: "#ffb347",
+  promoted: "#71ff9c",
+  dismissed: "var(--color-text-muted)",
+};
 
 const EMPTY_FORM: Partial<InsertDataCenter> = {
   name: "",
@@ -61,16 +81,58 @@ const inputStyle = {
 
 export default function AdminPanel() {
   const { toast } = useToast();
+  const [tab, setTab] = useState<AdminTab>("facilities");
   const [mode, setMode] = useState<FormMode>(null);
   const [editTarget, setEditTarget] = useState<DataCenter | null>(null);
   const [form, setForm] = useState<Partial<InsertDataCenter>>(EMPTY_FORM);
   const [searchQuery, setSearchQuery] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
+  const [leadStatusFilter, setLeadStatusFilter] = useState<FacilityLead["status"] | "all">("new");
 
   const { data: centers = [], isLoading } = useQuery<DataCenter[]>({
     queryKey: ["/api/data-centers"],
     queryFn: () => apiRequest("GET", "/api/data-centers").then((r) => r.json()),
   });
+
+  const { data: leadsData, isLoading: leadsLoading } = useQuery<{ leads: FacilityLead[] }>({
+    queryKey: ["/api/facility-leads", leadStatusFilter],
+    queryFn: () =>
+      apiRequest("GET", `/api/facility-leads${leadStatusFilter === "all" ? "" : `?status=${leadStatusFilter}`}`).then((r) => r.json()),
+    enabled: tab === "leads",
+  });
+  const leads = leadsData?.leads ?? [];
+
+  const discoverMutation = useMutation({
+    mutationFn: () => apiRequest("POST", "/api/facility-leads/discover").then((r) => r.json()),
+    onSuccess: (result: { found: number }) => {
+      queryClient.invalidateQueries({ queryKey: ["/api/facility-leads"] });
+      toast({ title: "Sweep complete", description: `Found ${result.found} lead(s).` });
+    },
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+  });
+
+  const setLeadStatusMutation = useMutation({
+    mutationFn: ({ id, status }: { id: string; status: FacilityLead["status"] }) =>
+      apiRequest("PATCH", `/api/facility-leads/${encodeURIComponent(id)}`, { status }).then((r) => r.json()),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/facility-leads"] });
+    },
+    onError: (e: any) => toast({ title: "Error", description: e.message, variant: "destructive" }),
+  });
+
+  function promoteLead(lead: FacilityLead) {
+    setForm({
+      ...EMPTY_FORM,
+      name: lead.title,
+      company: lead.company || "",
+      status: "planned",
+      notes: `Promoted from ${lead.source} lead: ${lead.url}`,
+    });
+    setEditTarget(null);
+    setMode("add");
+    setTab("facilities");
+    setLeadStatusMutation.mutate({ id: lead.id, status: "promoted" });
+  }
 
   const createMutation = useMutation({
     mutationFn: (data: InsertDataCenter) =>
@@ -192,45 +254,98 @@ export default function AdminPanel() {
             <span style={{ fontSize: "14px", fontWeight: 700, color: "var(--color-text)", fontFamily: "'Space Grotesk', sans-serif", letterSpacing: "0.05em" }}>
               Admin Panel
             </span>
+            <div className="flex items-center gap-1 ml-2">
+              {(["facilities", "leads"] as const).map((t) => (
+                <button
+                  key={t}
+                  data-testid={`admin-tab-${t}`}
+                  onClick={() => setTab(t)}
+                  className="px-2.5 py-1 rounded transition-all"
+                  style={{
+                    fontSize: "10px",
+                    letterSpacing: "0.08em",
+                    fontWeight: 600,
+                    background: tab === t ? "rgba(94,246,255,0.12)" : "transparent",
+                    border: `1px solid ${tab === t ? "rgba(94,246,255,0.35)" : "var(--color-border)"}`,
+                    color: tab === t ? "var(--color-cyan)" : "var(--color-text-muted)",
+                  }}
+                >
+                  {t === "facilities" ? "FACILITIES" : "LEADS"}
+                </button>
+              ))}
+            </div>
             <span
               className="px-2 py-0.5 rounded-full"
               style={{ fontSize: "10px", background: "rgba(255,179,71,0.1)", color: "#ffb347", border: "1px solid rgba(255,179,71,0.25)", letterSpacing: "0.08em" }}
             >
-              {centers.length} FACILITIES
+              {tab === "facilities" ? `${centers.length} FACILITIES` : `${leads.length} LEADS`}
             </span>
           </div>
-          <div className="flex items-center gap-2">
-            {/* Search */}
-            <div className="relative">
-              <Search size={11} style={{ position: "absolute", left: "7px", top: "50%", transform: "translateY(-50%)", color: "var(--color-text-muted)" }} />
-              <input
-                data-testid="admin-search"
-                type="text"
-                placeholder="Search..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                style={{ ...inputStyle, paddingLeft: "24px", width: "180px" }}
-              />
+          {tab === "facilities" ? (
+            <div className="flex items-center gap-2">
+              {/* Search */}
+              <div className="relative">
+                <Search size={11} style={{ position: "absolute", left: "7px", top: "50%", transform: "translateY(-50%)", color: "var(--color-text-muted)" }} />
+                <input
+                  data-testid="admin-search"
+                  type="text"
+                  placeholder="Search..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  style={{ ...inputStyle, paddingLeft: "24px", width: "180px" }}
+                />
+              </div>
+              <button
+                data-testid="btn-add-facility"
+                onClick={openAdd}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded transition-all"
+                style={{
+                  background: "rgba(113,255,156,0.1)",
+                  border: "1px solid rgba(113,255,156,0.3)",
+                  color: "var(--color-green)",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                }}
+              >
+                <Plus size={13} />
+                Add Facility
+              </button>
             </div>
-            <button
-              data-testid="btn-add-facility"
-              onClick={openAdd}
-              className="flex items-center gap-1.5 px-3 py-1.5 rounded transition-all"
-              style={{
-                background: "rgba(113,255,156,0.1)",
-                border: "1px solid rgba(113,255,156,0.3)",
-                color: "var(--color-green)",
-                fontSize: "12px",
-                fontWeight: 600,
-              }}
-            >
-              <Plus size={13} />
-              Add Facility
-            </button>
-          </div>
+          ) : (
+            <div className="flex items-center gap-2">
+              <select
+                value={leadStatusFilter}
+                onChange={(e) => setLeadStatusFilter(e.target.value as FacilityLead["status"] | "all")}
+                style={{ ...inputStyle, width: "140px" }}
+              >
+                <option value="new">New</option>
+                <option value="reviewed">Reviewed</option>
+                <option value="promoted">Promoted</option>
+                <option value="dismissed">Dismissed</option>
+                <option value="all">All</option>
+              </select>
+              <button
+                data-testid="btn-run-discovery"
+                onClick={() => discoverMutation.mutate()}
+                disabled={discoverMutation.isPending}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded transition-all"
+                style={{
+                  background: "rgba(94,246,255,0.1)",
+                  border: "1px solid rgba(94,246,255,0.3)",
+                  color: "var(--color-cyan)",
+                  fontSize: "12px",
+                  fontWeight: 600,
+                }}
+              >
+                <Radar size={13} />
+                {discoverMutation.isPending ? "Scanning..." : "Run Discovery"}
+              </button>
+            </div>
+          )}
         </div>
 
         {/* Table */}
+        {tab === "facilities" ? (
         <div className="flex-1 overflow-auto">
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
@@ -376,6 +491,124 @@ export default function AdminPanel() {
             </tbody>
           </table>
         </div>
+        ) : (
+        <div className="flex-1 overflow-auto">
+          <table style={{ width: "100%", borderCollapse: "collapse" }}>
+            <thead>
+              <tr style={{ background: "var(--color-surface)", borderBottom: "1px solid var(--color-border)" }}>
+                {["Title", "Company", "Source", "Discovered", "Status", "Actions"].map((h) => (
+                  <th
+                    key={h}
+                    style={{
+                      padding: "8px 12px",
+                      textAlign: "left",
+                      fontSize: "9px",
+                      letterSpacing: "0.12em",
+                      color: "var(--color-text-muted)",
+                      fontWeight: 600,
+                      whiteSpace: "nowrap",
+                    }}
+                  >
+                    {h}
+                  </th>
+                ))}
+              </tr>
+            </thead>
+            <tbody>
+              {leadsLoading && (
+                <tr>
+                  <td colSpan={6} style={{ padding: "24px", textAlign: "center", fontSize: "12px", color: "var(--color-text-muted)" }}>
+                    Loading leads...
+                  </td>
+                </tr>
+              )}
+              {!leadsLoading && leads.length === 0 && (
+                <tr>
+                  <td colSpan={6} style={{ padding: "24px", textAlign: "center", fontSize: "12px", color: "var(--color-text-muted)" }}>
+                    No leads in this status. Try "Run Discovery" or a different filter.
+                  </td>
+                </tr>
+              )}
+              {leads.map((lead, i) => (
+                <tr
+                  key={lead.id}
+                  data-testid={`lead-row-${lead.id}`}
+                  style={{
+                    borderBottom: "1px solid var(--color-border)",
+                    background: i % 2 === 0 ? "transparent" : "rgba(255,255,255,0.01)",
+                  }}
+                >
+                  <td style={{ padding: "8px 12px", maxWidth: "280px" }}>
+                    <a
+                      href={lead.url}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="inline-flex items-center gap-1"
+                      style={{ fontSize: "12px", color: "var(--color-text)", fontWeight: 600 }}
+                    >
+                      {lead.title}
+                      <ExternalLink size={10} style={{ color: "var(--color-text-muted)" }} />
+                    </a>
+                    <div style={{ fontSize: "10px", color: "var(--color-text-muted)", marginTop: "2px" }}>
+                      {lead.snippet}
+                    </div>
+                  </td>
+                  <td style={{ padding: "8px 12px", fontSize: "11px", color: "var(--color-text-muted)", whiteSpace: "nowrap" }}>
+                    {lead.company || "—"}
+                  </td>
+                  <td style={{ padding: "8px 12px", fontSize: "10px", color: "var(--color-text-muted)", whiteSpace: "nowrap" }}>
+                    {lead.source === "sec-edgar" ? "SEC EDGAR" : "Trade Press"}
+                  </td>
+                  <td style={{ padding: "8px 12px", fontSize: "10px", color: "var(--color-text-muted)", whiteSpace: "nowrap" }}>
+                    {new Date(lead.discovered_at).toLocaleDateString()}
+                  </td>
+                  <td style={{ padding: "8px 12px" }}>
+                    <span
+                      className="px-2 py-0.5 rounded-full"
+                      style={{
+                        fontSize: "9px",
+                        color: LEAD_STATUS_COLORS[lead.status],
+                        background: `${LEAD_STATUS_COLORS[lead.status]}15`,
+                        border: `1px solid ${LEAD_STATUS_COLORS[lead.status]}35`,
+                        letterSpacing: "0.05em",
+                        whiteSpace: "nowrap",
+                      }}
+                    >
+                      {lead.status.toUpperCase()}
+                    </span>
+                  </td>
+                  <td style={{ padding: "8px 12px" }}>
+                    <div className="flex items-center gap-1">
+                      {lead.status !== "promoted" && (
+                        <button
+                          data-testid={`btn-promote-${lead.id}`}
+                          onClick={() => promoteLead(lead)}
+                          title="Promote to facility"
+                          className="p-1.5 rounded transition-all hover:opacity-80"
+                          style={{ background: "rgba(113,255,156,0.08)", border: "1px solid rgba(113,255,156,0.2)", color: "var(--color-green)" }}
+                        >
+                          <Check size={11} />
+                        </button>
+                      )}
+                      {lead.status !== "dismissed" && (
+                        <button
+                          data-testid={`btn-dismiss-${lead.id}`}
+                          onClick={() => setLeadStatusMutation.mutate({ id: lead.id, status: "dismissed" })}
+                          title="Dismiss"
+                          className="p-1.5 rounded transition-all hover:opacity-80"
+                          style={{ background: "rgba(255,85,85,0.08)", border: "1px solid rgba(255,85,85,0.2)", color: "#ff5555" }}
+                        >
+                          <Ban size={11} />
+                        </button>
+                      )}
+                    </div>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        )}
       </div>
 
       {/* Form slide-in */}
