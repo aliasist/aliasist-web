@@ -143,68 +143,6 @@ const CURATED_MOVIES: MovieItem[] = [
   }
 ];
 
-const CURATED_GAMES: GameItem[] = [
-  {
-    id: 41494,
-    title: "Cyberpunk 2077",
-    released: "2020-12-10",
-    rating: 4.3,
-    backgroundImage: "https://media.rawg.io/media/games/26d/26d4437715bee60138dab4a7c8c59c92.jpg",
-    platforms: ["PC", "PlayStation 5", "Xbox Series X/S"],
-    metacritic: 86,
-    trailerEmbed: "https://www.youtube.com/embed/8X2kIfS6fb8",
-  },
-  {
-    id: 326243,
-    title: "Elden Ring",
-    released: "2022-02-25",
-    rating: 4.6,
-    backgroundImage: "https://media.rawg.io/media/games/b29/b294fdd866dcdb643e7bab370a552855.jpg",
-    platforms: ["PC", "PlayStation 5", "Xbox Series S/X"],
-    metacritic: 96,
-    trailerEmbed: "https://www.youtube.com/embed/E3Huy2cdih0",
-  },
-  {
-    id: 987537,
-    title: "Black Myth: Wukong",
-    released: "2024-08-20",
-    rating: 4.5,
-    backgroundImage: "https://media.rawg.io/media/screenshots/496/4963a02fb0315e5327ee4944e2f3d73b.jpg",
-    platforms: ["PC", "PlayStation 5"],
-    metacritic: 82,
-    trailerEmbed: "https://www.youtube.com/embed/0Zw-mo0EFt0",
-  },
-  {
-    id: 324997,
-    title: "Baldur's Gate 3",
-    released: "2023-08-03",
-    rating: 4.7,
-    backgroundImage: "https://media.rawg.io/media/games/699/69907ecf13f172e9e144069769c3be73.jpg",
-    platforms: ["PC", "PlayStation 5", "macOS", "Xbox Series S/X"],
-    metacritic: 96,
-    trailerEmbed: "https://www.youtube.com/embed/1T22wNvoNiU",
-  },
-  {
-    id: 3498,
-    title: "Grand Theft Auto V",
-    released: "2013-09-17",
-    rating: 4.5,
-    backgroundImage: "https://media.rawg.io/media/games/20a/20aa03a10cda45239fe22d035c0ebe64.jpg",
-    platforms: ["PC", "PlayStation 5", "Xbox Series X/S"],
-    metacritic: 97,
-    trailerEmbed: "https://www.youtube.com/embed/QkkoHAzjnUs",
-  },
-  {
-    id: 3328,
-    title: "The Witcher 3: Wild Hunt",
-    released: "2015-05-18",
-    rating: 4.7,
-    backgroundImage: "https://media.rawg.io/media/games/618/618c2031a07bbff6b4f611f10b6bcdbc.jpg",
-    platforms: ["PC", "PlayStation 5", "Xbox Series X/S", "Nintendo Switch"],
-    metacritic: 93,
-    trailerEmbed: "https://www.youtube.com/embed/c0i88t0Kacs",
-  }
-];
 
 interface OddsOutcome {
   name: string;
@@ -656,54 +594,157 @@ const RadioTab = () => {
   );
 };
 
-// ── 3. Playable Retro Space Defender Mini-Game ────────────────────────────────
+// ── 3. Retro Arcade Sound Synth (Web Audio API - Zero External Assets) ────────
 
-const RetroArcadeGame = () => {
+class RetroSynth {
+  private ctx: AudioContext | null = null;
+  public enabled: boolean = true;
+
+  private init() {
+    if (!this.ctx && typeof window !== "undefined") {
+      const AudioCtx = window.AudioContext || (window as unknown as { webkitAudioContext: typeof AudioContext }).webkitAudioContext;
+      if (AudioCtx) this.ctx = new AudioCtx();
+    }
+    if (this.ctx && this.ctx.state === "suspended") this.ctx.resume();
+  }
+
+  playLaser() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = "sawtooth";
+      osc.frequency.setValueAtTime(880, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(110, this.ctx.currentTime + 0.1);
+      gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.1);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.1);
+    } catch (e) {}
+  }
+
+  playScore() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    try {
+      const now = this.ctx.currentTime;
+      [523.25, 659.25, 783.99].forEach((freq, i) => {
+        const osc = this.ctx!.createOscillator();
+        const gain = this.ctx!.createGain();
+        osc.type = "sine";
+        osc.frequency.setValueAtTime(freq, now + i * 0.04);
+        gain.gain.setValueAtTime(0.12, now + i * 0.04);
+        gain.gain.linearRampToValueAtTime(0.01, now + i * 0.04 + 0.1);
+        osc.connect(gain);
+        gain.connect(this.ctx!.destination);
+        osc.start(now + i * 0.04);
+        osc.stop(now + i * 0.04 + 0.1);
+      });
+    } catch (e) {}
+  }
+
+  playBounce() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = "triangle";
+      osc.frequency.setValueAtTime(320, this.ctx.currentTime);
+      osc.frequency.setValueAtTime(440, this.ctx.currentTime + 0.02);
+      gain.gain.setValueAtTime(0.15, this.ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.05);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.05);
+    } catch (e) {}
+  }
+
+  playExplosion() {
+    if (!this.enabled) return;
+    this.init();
+    if (!this.ctx) return;
+    try {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = "square";
+      osc.frequency.setValueAtTime(120, this.ctx.currentTime);
+      osc.frequency.exponentialRampToValueAtTime(30, this.ctx.currentTime + 0.2);
+      gain.gain.setValueAtTime(0.2, this.ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(0.01, this.ctx.currentTime + 0.2);
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start();
+      osc.stop(this.ctx.currentTime + 0.2);
+    } catch (e) {}
+  }
+}
+
+const synth = new RetroSynth();
+
+// ── 4. ARCADE GAME COLLECTION (12 Playable Retro Cyberpunk Games) ─────────────
+
+// GAME 1: Space Defender (Enhanced with Starfield & Boss Waves)
+const GameSpaceDefender = ({ onGameOver }: { onGameOver: (score: number) => void }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
   const [score, setScore] = useState(0);
-  const [gameOver, setGameOver] = useState(false);
 
   useEffect(() => {
-    if (!isPlaying) return;
     const canvas = canvasRef.current;
     if (!canvas) return;
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let ship = { x: canvas.width / 2, y: canvas.height - 30, size: 14, speed: 5 };
+    let ship = { x: canvas.width / 2, y: canvas.height - 35, size: 14, speed: 5.5 };
     let bullets: Array<{ x: number; y: number; speed: number }> = [];
-    let asteroids: Array<{ x: number; y: number; size: number; speed: number }> = [];
+    let asteroids: Array<{ x: number; y: number; size: number; speed: number; hp: number }> = [];
+    let particles: Array<{ x: number; y: number; vx: number; vy: number; life: number; color: string }> = [];
     let keys: Record<string, boolean> = {};
     let animId: number;
     let localScore = 0;
+    let lastShot = 0;
 
     const handleKeyDown = (e: KeyboardEvent) => {
       keys[e.key] = true;
-      if (e.key === " " || e.key === "ArrowUp") {
-        bullets.push({ x: ship.x, y: ship.y - 10, speed: 7 });
+      if (e.key === " " && Date.now() - lastShot > 140) {
+        bullets.push({ x: ship.x, y: ship.y - 12, speed: 8 });
+        synth.playLaser();
+        lastShot = Date.now();
       }
     };
-    const handleKeyUp = (e: KeyboardEvent) => {
-      keys[e.key] = false;
-    };
-
+    const handleKeyUp = (e: KeyboardEvent) => { keys[e.key] = false; };
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
 
-    const gameLoop = () => {
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    const loop = () => {
+      ctx.fillStyle = "#07090e";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Starfield background
+      ctx.fillStyle = "rgba(255,255,255,0.4)";
+      for (let s = 0; s < 25; s++) {
+        const sx = (s * 37 + (Date.now() * 0.05)) % canvas.width;
+        const sy = (s * 41 + (Date.now() * 0.1)) % canvas.height;
+        ctx.fillRect(sx, sy, 1.5, 1.5);
+      }
 
       // Ship movement
       if (keys["ArrowLeft"] || keys["a"]) ship.x = Math.max(15, ship.x - ship.speed);
       if (keys["ArrowRight"] || keys["d"]) ship.x = Math.min(canvas.width - 15, ship.x + ship.speed);
 
-      // Draw Ship (Cyberpunk Tri-Fighter)
+      // Draw Ship
       ctx.fillStyle = "#0acc97";
       ctx.beginPath();
       ctx.moveTo(ship.x, ship.y - 12);
-      ctx.lineTo(ship.x - 10, ship.y + 10);
-      ctx.lineTo(ship.x + 10, ship.y + 10);
+      ctx.lineTo(ship.x - 12, ship.y + 10);
+      ctx.lineTo(ship.x + 12, ship.y + 10);
       ctx.closePath();
       ctx.fill();
 
@@ -712,17 +753,18 @@ const RetroArcadeGame = () => {
       for (let i = bullets.length - 1; i >= 0; i--) {
         const b = bullets[i];
         b.y -= b.speed;
-        ctx.fillRect(b.x - 1.5, b.y, 3, 8);
+        ctx.fillRect(b.x - 1.5, b.y, 3, 9);
         if (b.y < 0) bullets.splice(i, 1);
       }
 
       // Spawn Asteroids
-      if (Math.random() < 0.04) {
+      if (Math.random() < 0.038) {
         asteroids.push({
-          x: Math.random() * (canvas.width - 20) + 10,
-          y: -10,
+          x: Math.random() * (canvas.width - 30) + 15,
+          y: -15,
           size: Math.random() * 12 + 10,
-          speed: Math.random() * 2 + 1.5,
+          speed: Math.random() * 2 + 1.2,
+          hp: 1,
         });
       }
 
@@ -736,22 +778,34 @@ const RetroArcadeGame = () => {
         ctx.arc(ast.x, ast.y, ast.size, 0, Math.PI * 2);
         ctx.fill();
 
-        // Check collision with bullets
+        // Check bullet hit
         for (let j = bullets.length - 1; j >= 0; j--) {
           const b = bullets[j];
           if (Math.hypot(ast.x - b.x, ast.y - b.y) < ast.size) {
+            // Spawn explosion particles
+            for (let p = 0; p < 8; p++) {
+              particles.push({
+                x: ast.x,
+                y: ast.y,
+                vx: (Math.random() - 0.5) * 4,
+                vy: (Math.random() - 0.5) * 4,
+                life: 1,
+                color: "#a855f7",
+              });
+            }
             asteroids.splice(i, 1);
             bullets.splice(j, 1);
             localScore += 100;
             setScore(localScore);
+            synth.playScore();
             break;
           }
         }
 
-        // Check collision with ship
+        // Ship collision
         if (Math.hypot(ast.x - ship.x, ast.y - ship.y) < ast.size + ship.size) {
-          setGameOver(true);
-          setIsPlaying(false);
+          synth.playExplosion();
+          onGameOver(localScore);
           cancelAnimationFrame(animId);
           return;
         }
@@ -759,267 +813,1473 @@ const RetroArcadeGame = () => {
         if (ast.y > canvas.height + 20) asteroids.splice(i, 1);
       }
 
-      animId = requestAnimationFrame(gameLoop);
+      // Draw Particles
+      for (let p = particles.length - 1; p >= 0; p--) {
+        const pt = particles[p];
+        pt.x += pt.vx;
+        pt.y += pt.vy;
+        pt.life -= 0.05;
+        ctx.fillStyle = pt.color;
+        ctx.globalAlpha = Math.max(0, pt.life);
+        ctx.fillRect(pt.x, pt.y, 2, 2);
+        ctx.globalAlpha = 1;
+        if (pt.life <= 0) particles.splice(p, 1);
+      }
+
+      animId = requestAnimationFrame(loop);
     };
 
-    animId = requestAnimationFrame(gameLoop);
-
+    animId = requestAnimationFrame(loop);
     return () => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
       cancelAnimationFrame(animId);
     };
-  }, [isPlaying]);
+  }, [onGameOver]);
+
+  return <canvas ref={canvasRef} width={500} height={280} className="w-full h-full block" />;
+};
+
+// GAME 2: Neural Snake (Neon Light Trail & Power Nodes)
+const GameNeuralSnake = ({ onGameOver }: { onGameOver: (score: number) => void }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const gridSize = 16;
+    const cols = Math.floor(canvas.width / gridSize);
+    const rows = Math.floor(canvas.height / gridSize);
+
+    let snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
+    let dir = { x: 1, y: 0 };
+    let nextDir = { x: 1, y: 0 };
+    let food = { x: 15, y: 10 };
+    let localScore = 0;
+    let lastTick = 0;
+    let animId: number;
+
+    const spawnFood = () => {
+      food = {
+        x: Math.floor(Math.random() * (cols - 2)) + 1,
+        y: Math.floor(Math.random() * (rows - 2)) + 1,
+      };
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.key === "ArrowUp" || e.key === "w") && dir.y === 0) nextDir = { x: 0, y: -1 };
+      if ((e.key === "ArrowDown" || e.key === "s") && dir.y === 0) nextDir = { x: 0, y: 1 };
+      if ((e.key === "ArrowLeft" || e.key === "a") && dir.x === 0) nextDir = { x: -1, y: 0 };
+      if ((e.key === "ArrowRight" || e.key === "d") && dir.x === 0) nextDir = { x: 1, y: 0 };
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
+    const loop = (time: number) => {
+      if (time - lastTick > 90) {
+        lastTick = time;
+        dir = nextDir;
+        const head = { x: snake[0].x + dir.x, y: snake[0].y + dir.y };
+
+        // Wall collision
+        if (head.x < 0 || head.x >= cols || head.y < 0 || head.y >= rows) {
+          synth.playExplosion();
+          onGameOver(localScore);
+          return;
+        }
+
+        // Self collision
+        if (snake.some(seg => seg.x === head.x && seg.y === head.y)) {
+          synth.playExplosion();
+          onGameOver(localScore);
+          return;
+        }
+
+        snake.unshift(head);
+
+        // Eat food
+        if (head.x === food.x && head.y === food.y) {
+          localScore += 150;
+          synth.playScore();
+          spawnFood();
+        } else {
+          snake.pop();
+        }
+      }
+
+      // Draw Grid & Snake
+      ctx.fillStyle = "#07090e";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Grid Lines
+      ctx.strokeStyle = "rgba(255,255,255,0.03)";
+      for (let x = 0; x < canvas.width; x += gridSize) {
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, canvas.height); ctx.stroke();
+      }
+      for (let y = 0; y < canvas.height; y += gridSize) {
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+      }
+
+      // Draw Food (Pulsing Glow)
+      ctx.fillStyle = "#fbbf24";
+      ctx.shadowColor = "#fbbf24";
+      ctx.shadowBlur = 8;
+      ctx.fillRect(food.x * gridSize + 2, food.y * gridSize + 2, gridSize - 4, gridSize - 4);
+      ctx.shadowBlur = 0;
+
+      // Draw Snake
+      snake.forEach((seg, i) => {
+        ctx.fillStyle = i === 0 ? "#0acc97" : "#059669";
+        ctx.fillRect(seg.x * gridSize + 1, seg.y * gridSize + 1, gridSize - 2, gridSize - 2);
+      });
+
+      animId = requestAnimationFrame(loop);
+    };
+
+    animId = requestAnimationFrame(loop);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      cancelAnimationFrame(animId);
+    };
+  }, [onGameOver]);
+
+  return <canvas ref={canvasRef} width={500} height={280} className="w-full h-full block" />;
+};
+
+// GAME 3: Quantum Breakout (Arkanoid with Particle Trails)
+const GameQuantumBreakout = ({ onGameOver }: { onGameOver: (score: number) => void }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let paddle = { x: canvas.width / 2 - 40, w: 80, h: 10, speed: 7 };
+    let ball = { x: canvas.width / 2, y: canvas.height - 60, r: 5, vx: 3.5, vy: -3.5 };
+    let bricks: Array<{ x: number; y: number; w: number; h: number; color: string; alive: boolean }> = [];
+    let localScore = 0;
+    let keys: Record<string, boolean> = {};
+    let animId: number;
+
+    const cols = 8;
+    const rows = 4;
+    const colors = ["#f43f5e", "#fbbf24", "#0acc97", "#38bdf8"];
+    const brickW = (canvas.width - 40) / cols;
+    const brickH = 14;
+
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        bricks.push({
+          x: 20 + c * brickW,
+          y: 25 + r * (brickH + 5),
+          w: brickW - 4,
+          h: brickH,
+          color: colors[r % colors.length],
+          alive: true,
+        });
+      }
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => { keys[e.key] = true; };
+    const handleKeyUp = (e: KeyboardEvent) => { keys[e.key] = false; };
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    const loop = () => {
+      ctx.fillStyle = "#07090e";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Paddle move
+      if (keys["ArrowLeft"] || keys["a"]) paddle.x = Math.max(0, paddle.x - paddle.speed);
+      if (keys["ArrowRight"] || keys["d"]) paddle.x = Math.min(canvas.width - paddle.w, paddle.x + paddle.speed);
+
+      // Ball move
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+
+      // Wall bounces
+      if (ball.x < ball.r || ball.x > canvas.width - ball.r) {
+        ball.vx = -ball.vx;
+        synth.playBounce();
+      }
+      if (ball.y < ball.r) {
+        ball.vy = -ball.vy;
+        synth.playBounce();
+      }
+
+      // Paddle bounce
+      if (
+        ball.y + ball.r >= canvas.height - 25 &&
+        ball.y - ball.r <= canvas.height - 15 &&
+        ball.x >= paddle.x &&
+        ball.x <= paddle.x + paddle.w
+      ) {
+        const hitOffset = (ball.x - (paddle.x + paddle.w / 2)) / (paddle.w / 2);
+        ball.vx = hitOffset * 5;
+        ball.vy = -Math.abs(ball.vy);
+        synth.playBounce();
+      }
+
+      // Brick collision
+      bricks.forEach(b => {
+        if (!b.alive) return;
+        if (
+          ball.x > b.x &&
+          ball.x < b.x + b.w &&
+          ball.y > b.y &&
+          ball.y < b.y + b.h
+        ) {
+          b.alive = false;
+          ball.vy = -ball.vy;
+          localScore += 50;
+          synth.playScore();
+        }
+      });
+
+      // Bottom death
+      if (ball.y > canvas.height) {
+        synth.playExplosion();
+        onGameOver(localScore);
+        return;
+      }
+
+      // Draw Paddle
+      ctx.fillStyle = "#0acc97";
+      ctx.fillRect(paddle.x, canvas.height - 25, paddle.w, paddle.h);
+
+      // Draw Ball
+      ctx.fillStyle = "#38bdf8";
+      ctx.beginPath();
+      ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Draw Bricks
+      bricks.forEach(b => {
+        if (!b.alive) return;
+        ctx.fillStyle = b.color;
+        ctx.fillRect(b.x, b.y, b.w, b.h);
+      });
+
+      animId = requestAnimationFrame(loop);
+    };
+
+    animId = requestAnimationFrame(loop);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+      cancelAnimationFrame(animId);
+    };
+  }, [onGameOver]);
+
+  return <canvas ref={canvasRef} width={500} height={280} className="w-full h-full block" />;
+};
+
+// GAME 4: Firewall Invaders (Space Invaders Waves)
+const GameFirewallInvaders = ({ onGameOver }: { onGameOver: (score: number) => void }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let ship = { x: canvas.width / 2, y: canvas.height - 25, w: 24, speed: 5 };
+    let bullets: Array<{ x: number; y: number }> = [];
+    let invaders: Array<{ x: number; y: number; alive: boolean }> = [];
+    let invaderDir = 1;
+    let lastStep = 0;
+    let localScore = 0;
+    let keys: Record<string, boolean> = {};
+    let animId: number;
+
+    for (let r = 0; r < 3; r++) {
+      for (let c = 0; c < 7; c++) {
+        invaders.push({ x: 40 + c * 50, y: 30 + r * 30, alive: true });
+      }
+    }
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      keys[e.key] = true;
+      if (e.key === " " && bullets.length < 3) {
+        bullets.push({ x: ship.x, y: ship.y - 10 });
+        synth.playLaser();
+      }
+    };
+    const handleKeyUp = (e: KeyboardEvent) => { keys[e.key] = false; };
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    const loop = (time: number) => {
+      ctx.fillStyle = "#07090e";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      if (keys["ArrowLeft"] || keys["a"]) ship.x = Math.max(15, ship.x - ship.speed);
+      if (keys["ArrowRight"] || keys["d"]) ship.x = Math.min(canvas.width - 15, ship.x + ship.speed);
+
+      // Invaders step
+      if (time - lastStep > 450) {
+        lastStep = time;
+        let edgeReached = false;
+        invaders.forEach(inv => {
+          if (!inv.alive) return;
+          inv.x += invaderDir * 12;
+          if (inv.x > canvas.width - 30 || inv.x < 20) edgeReached = true;
+        });
+        if (edgeReached) {
+          invaderDir = -invaderDir;
+          invaders.forEach(inv => { inv.y += 12; });
+        }
+      }
+
+      // Bullets
+      for (let i = bullets.length - 1; i >= 0; i--) {
+        const b = bullets[i];
+        b.y -= 7;
+        ctx.fillStyle = "#0acc97";
+        ctx.fillRect(b.x - 1.5, b.y, 3, 8);
+
+        invaders.forEach(inv => {
+          if (inv.alive && Math.hypot(inv.x - b.x, inv.y - b.y) < 16) {
+            inv.alive = false;
+            bullets.splice(i, 1);
+            localScore += 100;
+            synth.playScore();
+          }
+        });
+
+        if (b.y < 0) bullets.splice(i, 1);
+      }
+
+      // Check Invaders bottom reach
+      if (invaders.some(inv => inv.alive && inv.y > canvas.height - 40)) {
+        synth.playExplosion();
+        onGameOver(localScore);
+        return;
+      }
+
+      // Draw Ship
+      ctx.fillStyle = "#38bdf8";
+      ctx.fillRect(ship.x - 12, ship.y, 24, 10);
+      ctx.fillRect(ship.x - 4, ship.y - 6, 8, 6);
+
+      // Draw Invaders
+      invaders.forEach(inv => {
+        if (!inv.alive) return;
+        ctx.fillStyle = "#f43f5e";
+        ctx.fillRect(inv.x - 8, inv.y - 8, 16, 12);
+        ctx.fillStyle = "#fbbf24";
+        ctx.fillRect(inv.x - 4, inv.y - 4, 3, 3);
+        ctx.fillRect(inv.x + 1, inv.y - 4, 3, 3);
+      });
+
+      animId = requestAnimationFrame(loop);
+    };
+
+    animId = requestAnimationFrame(loop);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+      cancelAnimationFrame(animId);
+    };
+  }, [onGameOver]);
+
+  return <canvas ref={canvasRef} width={500} height={280} className="w-full h-full block" />;
+};
+
+// GAME 5: Cyber Pong 2088 (vs Adaptive AI)
+const GameCyberPong = ({ onGameOver }: { onGameOver: (score: number) => void }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let playerY = canvas.height / 2 - 25;
+    let aiY = canvas.height / 2 - 25;
+    let ball = { x: canvas.width / 2, y: canvas.height / 2, vx: 4, vy: 2.5, r: 5 };
+    let pScore = 0;
+    let aiScore = 0;
+    let keys: Record<string, boolean> = {};
+    let animId: number;
+
+    const handleKeyDown = (e: KeyboardEvent) => { keys[e.key] = true; };
+    const handleKeyUp = (e: KeyboardEvent) => { keys[e.key] = false; };
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    const loop = () => {
+      ctx.fillStyle = "#07090e";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Center Line
+      ctx.strokeStyle = "rgba(255,255,255,0.1)";
+      ctx.setLineDash([4, 4]);
+      ctx.beginPath(); ctx.moveTo(canvas.width / 2, 0); ctx.lineTo(canvas.width / 2, canvas.height); ctx.stroke();
+      ctx.setLineDash([]);
+
+      // Player move
+      if (keys["ArrowUp"] || keys["w"]) playerY = Math.max(0, playerY - 5);
+      if (keys["ArrowDown"] || keys["s"]) playerY = Math.min(canvas.height - 50, playerY + 5);
+
+      // AI move (smooth tracking)
+      const aiTarget = ball.y - 25;
+      aiY += (aiTarget - aiY) * 0.085;
+      aiY = Math.max(0, Math.min(canvas.height - 50, aiY));
+
+      // Ball move
+      ball.x += ball.vx;
+      ball.y += ball.vy;
+
+      // Top/Bottom bounce
+      if (ball.y < ball.r || ball.y > canvas.height - ball.r) {
+        ball.vy = -ball.vy;
+        synth.playBounce();
+      }
+
+      // Player paddle hit
+      if (ball.x - ball.r <= 25 && ball.y >= playerY && ball.y <= playerY + 50 && ball.vx < 0) {
+        ball.vx = -ball.vx * 1.05;
+        ball.vy += (Math.random() - 0.5) * 2;
+        synth.playBounce();
+      }
+
+      // AI paddle hit
+      if (ball.x + ball.r >= canvas.width - 25 && ball.y >= aiY && ball.y <= aiY + 50 && ball.vx > 0) {
+        ball.vx = -ball.vx * 1.05;
+        synth.playBounce();
+      }
+
+      // Scoring
+      if (ball.x < 0) {
+        aiScore++;
+        ball = { x: canvas.width / 2, y: canvas.height / 2, vx: 4, vy: 2, r: 5 };
+        if (aiScore >= 5) {
+          synth.playExplosion();
+          onGameOver(pScore * 100);
+          return;
+        }
+      }
+      if (ball.x > canvas.width) {
+        pScore++;
+        synth.playScore();
+        ball = { x: canvas.width / 2, y: canvas.height / 2, vx: -4, vy: -2, r: 5 };
+      }
+
+      // Draw Paddles
+      ctx.fillStyle = "#0acc97";
+      ctx.fillRect(15, playerY, 10, 50);
+      ctx.fillStyle = "#f43f5e";
+      ctx.fillRect(canvas.width - 25, aiY, 10, 50);
+
+      // Draw Ball
+      ctx.fillStyle = "#38bdf8";
+      ctx.beginPath(); ctx.arc(ball.x, ball.y, ball.r, 0, Math.PI * 2); ctx.fill();
+
+      // Scores
+      ctx.font = "bold 14px monospace";
+      ctx.fillStyle = "#0acc97";
+      ctx.fillText(`P1: ${pScore}`, canvas.width / 4, 25);
+      ctx.fillStyle = "#f43f5e";
+      ctx.fillText(`AI: ${aiScore}`, (canvas.width * 3) / 4, 25);
+
+      animId = requestAnimationFrame(loop);
+    };
+
+    animId = requestAnimationFrame(loop);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+      cancelAnimationFrame(animId);
+    };
+  }, [onGameOver]);
+
+  return <canvas ref={canvasRef} width={500} height={280} className="w-full h-full block" />;
+};
+
+// GAME 6: Neon Grid Runner (3D Pseudo-Perspective Dodger)
+const GameNeonRunner = ({ onGameOver }: { onGameOver: (score: number) => void }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let playerX = 1; // 0: left, 1: center, 2: right
+    let obstacles: Array<{ lane: number; z: number }> = [];
+    let localScore = 0;
+    let animId: number;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft" || e.key === "a") playerX = Math.max(0, playerX - 1);
+      if (e.key === "ArrowRight" || e.key === "d") playerX = Math.min(2, playerX + 1);
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
+    const loop = () => {
+      ctx.fillStyle = "#07090e";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Perspective Grid Lines
+      const horizonY = 70;
+      const vp = { x: canvas.width / 2, y: horizonY };
+      const laneXs = [canvas.width * 0.2, canvas.width * 0.5, canvas.width * 0.8];
+
+      ctx.strokeStyle = "rgba(10,204,151,0.25)";
+      ctx.beginPath();
+      laneXs.forEach(lx => {
+        ctx.moveTo(vp.x, vp.y);
+        ctx.lineTo(lx, canvas.height);
+      });
+      ctx.stroke();
+
+      // Spawn Obstacles
+      if (Math.random() < 0.035) {
+        obstacles.push({ lane: Math.floor(Math.random() * 3), z: 0 });
+      }
+
+      // Move & Draw Obstacles
+      for (let i = obstacles.length - 1; i >= 0; i--) {
+        const obs = obstacles[i];
+        obs.z += 0.018;
+
+        const screenY = horizonY + obs.z * (canvas.height - horizonY);
+        const screenX = vp.x + (laneXs[obs.lane] - vp.x) * obs.z;
+        const size = 15 + obs.z * 35;
+
+        ctx.fillStyle = "#f43f5e";
+        ctx.fillRect(screenX - size / 2, screenY - size / 2, size, size * 0.7);
+
+        // Check collision at bottom
+        if (obs.z > 0.88 && obs.z < 0.98 && obs.lane === playerX) {
+          synth.playExplosion();
+          onGameOver(localScore);
+          return;
+        }
+
+        if (obs.z >= 1) {
+          obstacles.splice(i, 1);
+          localScore += 50;
+          synth.playScore();
+        }
+      }
+
+      // Draw Player Bike
+      const px = laneXs[playerX];
+      const py = canvas.height - 35;
+      ctx.fillStyle = "#0acc97";
+      ctx.fillRect(px - 14, py, 28, 12);
+      ctx.fillStyle = "#38bdf8";
+      ctx.fillRect(px - 6, py - 6, 12, 6);
+
+      animId = requestAnimationFrame(loop);
+    };
+
+    animId = requestAnimationFrame(loop);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      cancelAnimationFrame(animId);
+    };
+  }, [onGameOver]);
+
+  return <canvas ref={canvasRef} width={500} height={280} className="w-full h-full block" />;
+};
+
+// GAME 7: Drone Hopper (Laser Gate Precision Booster)
+const GameDroneHopper = ({ onGameOver }: { onGameOver: (score: number) => void }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let drone = { y: canvas.height / 2, vy: 0, gravity: 0.28, lift: -5.5 };
+    let pipes: Array<{ x: number; top: number; bottom: number; passed: boolean }> = [];
+    let localScore = 0;
+    let animId: number;
+
+    const flap = () => {
+      drone.vy = drone.lift;
+      synth.playBounce();
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === " " || e.key === "ArrowUp") flap();
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
+    const loop = () => {
+      ctx.fillStyle = "#07090e";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Drone physics
+      drone.vy += drone.gravity;
+      drone.y += drone.vy;
+
+      // Spawn Laser Gates
+      if (pipes.length === 0 || pipes[pipes.length - 1].x < canvas.width - 150) {
+        const gap = 85;
+        const topH = Math.random() * (canvas.height - gap - 60) + 30;
+        pipes.push({ x: canvas.width, top: topH, bottom: topH + gap, passed: false });
+      }
+
+      // Move & Draw Pipes
+      for (let i = pipes.length - 1; i >= 0; i--) {
+        const p = pipes[i];
+        p.x -= 2.2;
+
+        ctx.fillStyle = "rgba(168, 85, 247, 0.4)";
+        ctx.fillRect(p.x, 0, 24, p.top);
+        ctx.fillRect(p.x, p.bottom, 24, canvas.height - p.bottom);
+
+        // Laser edge
+        ctx.fillStyle = "#a855f7";
+        ctx.fillRect(p.x + 10, p.top - 4, 4, 4);
+        ctx.fillRect(p.x + 10, p.bottom, 4, 4);
+
+        // Collision
+        if (
+          70 + 8 > p.x &&
+          70 - 8 < p.x + 24 &&
+          (drone.y - 8 < p.top || drone.y + 8 > p.bottom)
+        ) {
+          synth.playExplosion();
+          onGameOver(localScore);
+          return;
+        }
+
+        if (!p.passed && p.x < 70) {
+          p.passed = true;
+          localScore += 100;
+          synth.playScore();
+        }
+
+        if (p.x < -30) pipes.splice(i, 1);
+      }
+
+      // Ground/Ceiling collision
+      if (drone.y < 0 || drone.y > canvas.height) {
+        synth.playExplosion();
+        onGameOver(localScore);
+        return;
+      }
+
+      // Draw Drone
+      ctx.fillStyle = "#0acc97";
+      ctx.beginPath();
+      ctx.arc(70, drone.y, 8, 0, Math.PI * 2);
+      ctx.fill();
+
+      animId = requestAnimationFrame(loop);
+    };
+
+    animId = requestAnimationFrame(loop);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      cancelAnimationFrame(animId);
+    };
+  }, [onGameOver]);
+
+  return <canvas ref={canvasRef} width={500} height={280} className="w-full h-full block" />;
+};
+
+// GAME 8: Lunar Descent (Physics Thruster Landing)
+const GameLunarDescent = ({ onGameOver }: { onGameOver: (score: number) => void }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let lander = { x: canvas.width / 2, y: 30, vx: 1.2, vy: 0, fuel: 100, landed: false };
+    const pad = { x: canvas.width / 2 - 35, y: canvas.height - 20, w: 70, h: 8 };
+    let keys: Record<string, boolean> = {};
+    let animId: number;
+
+    const handleKeyDown = (e: KeyboardEvent) => { keys[e.key] = true; };
+    const handleKeyUp = (e: KeyboardEvent) => { keys[e.key] = false; };
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    const loop = () => {
+      ctx.fillStyle = "#07090e";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Gravity & Thrust
+      lander.vy += 0.045; // Gravity
+
+      if ((keys["ArrowUp"] || keys["w"] || keys[" "]) && lander.fuel > 0) {
+        lander.vy -= 0.11;
+        lander.fuel -= 0.35;
+        synth.playBounce();
+      }
+      if ((keys["ArrowLeft"] || keys["a"]) && lander.fuel > 0) {
+        lander.vx -= 0.06;
+        lander.fuel -= 0.15;
+      }
+      if ((keys["ArrowRight"] || keys["d"]) && lander.fuel > 0) {
+        lander.vx += 0.06;
+        lander.fuel -= 0.15;
+      }
+
+      lander.x += lander.vx;
+      lander.y += lander.vy;
+
+      // Landing check
+      if (lander.y >= pad.y - 10) {
+        const onPad = lander.x >= pad.x && lander.x <= pad.x + pad.w;
+        const safeSpeed = Math.abs(lander.vy) < 1.4 && Math.abs(lander.vx) < 1.2;
+
+        if (onPad && safeSpeed) {
+          synth.playScore();
+          const score = Math.round(lander.fuel * 20 + 500);
+          onGameOver(score);
+          return;
+        } else {
+          synth.playExplosion();
+          onGameOver(0);
+          return;
+        }
+      }
+
+      // Bounds
+      if (lander.x < 10 || lander.x > canvas.width - 10) {
+        synth.playExplosion();
+        onGameOver(0);
+        return;
+      }
+
+      // Draw Terrain & Landing Pad
+      ctx.fillStyle = "#1e293b";
+      ctx.fillRect(0, canvas.height - 15, canvas.width, 15);
+      ctx.fillStyle = "#0acc97";
+      ctx.fillRect(pad.x, pad.y, pad.w, pad.h);
+
+      // Draw Lander
+      ctx.fillStyle = "#38bdf8";
+      ctx.fillRect(lander.x - 8, lander.y - 8, 16, 12);
+      ctx.fillStyle = "#fbbf24";
+      ctx.fillRect(lander.x - 10, lander.y + 4, 4, 6);
+      ctx.fillRect(lander.x + 6, lander.y + 4, 4, 6);
+
+      // HUD
+      ctx.font = "bold 11px monospace";
+      ctx.fillStyle = lander.fuel > 20 ? "#0acc97" : "#f43f5e";
+      ctx.fillText(`FUEL: ${Math.max(0, Math.round(lander.fuel))}%`, 15, 20);
+      ctx.fillStyle = Math.abs(lander.vy) < 1.4 ? "#0acc97" : "#f43f5e";
+      ctx.fillText(`V-SPD: ${lander.vy.toFixed(1)}`, 15, 35);
+
+      animId = requestAnimationFrame(loop);
+    };
+
+    animId = requestAnimationFrame(loop);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+      cancelAnimationFrame(animId);
+    };
+  }, [onGameOver]);
+
+  return <canvas ref={canvasRef} width={500} height={280} className="w-full h-full block" />;
+};
+
+// GAME 9: Tetra Blocks (Cyberpunk Tetris)
+const GameTetraBlocks = ({ onGameOver }: { onGameOver: (score: number) => void }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    const cols = 10;
+    const rows = 16;
+    const size = 16;
+    const offsetX = (canvas.width - cols * size) / 2;
+    const offsetY = 12;
+
+    const board: number[][] = Array.from({ length: rows }, () => Array(cols).fill(0));
+    const SHAPES = [
+      [[1, 1, 1, 1]], // I
+      [[1, 1], [1, 1]], // O
+      [[0, 1, 0], [1, 1, 1]], // T
+      [[1, 1, 0], [0, 1, 1]], // S
+      [[0, 1, 1], [1, 1, 0]], // Z
+      [[1, 0, 0], [1, 1, 1]], // J
+      [[0, 0, 1], [1, 1, 1]], // L
+    ];
+    const COLORS = ["#38bdf8", "#fbbf24", "#a855f7", "#0acc97", "#f43f5e", "#3b82f6", "#f97316"];
+
+    let curShape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+    let curColor = COLORS[Math.floor(Math.random() * COLORS.length)];
+    let curX = 3;
+    let curY = 0;
+    let localScore = 0;
+    let lastDrop = 0;
+    let animId: number;
+
+    const collides = (nx: number, ny: number, shape: number[][]) => {
+      for (let r = 0; r < shape.length; r++) {
+        for (let c = 0; c < shape[r].length; c++) {
+          if (shape[r][c]) {
+            const bx = nx + c;
+            const by = ny + r;
+            if (bx < 0 || bx >= cols || by >= rows) return true;
+            if (by >= 0 && board[by][bx]) return true;
+          }
+        }
+      }
+      return false;
+    };
+
+    const rotate = () => {
+      const rotated = curShape[0].map((_, i) => curShape.map(row => row[i]).reverse());
+      if (!collides(curX, curY, rotated)) {
+        curShape = rotated;
+        synth.playBounce();
+      }
+    };
+
+    const lockAndClear = () => {
+      curShape.forEach((row, r) => {
+        row.forEach((val, c) => {
+          if (val && curY + r >= 0) {
+            board[curY + r][curX + c] = 1;
+          }
+        });
+      });
+
+      // Clear full lines
+      let lines = 0;
+      for (let r = rows - 1; r >= 0; r--) {
+        if (board[r].every(v => v === 1)) {
+          board.splice(r, 1);
+          board.unshift(Array(cols).fill(0));
+          lines++;
+          r++;
+        }
+      }
+      if (lines > 0) {
+        localScore += lines * 250;
+        synth.playScore();
+      }
+
+      // Spawn next
+      curShape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
+      curColor = COLORS[Math.floor(Math.random() * COLORS.length)];
+      curX = 3;
+      curY = 0;
+
+      if (collides(curX, curY, curShape)) {
+        synth.playExplosion();
+        onGameOver(localScore);
+      }
+    };
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft" || e.key === "a") {
+        if (!collides(curX - 1, curY, curShape)) curX--;
+      }
+      if (e.key === "ArrowRight" || e.key === "d") {
+        if (!collides(curX + 1, curY, curShape)) curX++;
+      }
+      if (e.key === "ArrowDown" || e.key === "s") {
+        if (!collides(curX, curY + 1, curShape)) curY++;
+      }
+      if (e.key === "ArrowUp" || e.key === "w") rotate();
+      if (e.key === " ") {
+        while (!collides(curX, curY + 1, curShape)) curY++;
+        lockAndClear();
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+
+    const loop = (time: number) => {
+      if (time - lastDrop > 480) {
+        lastDrop = time;
+        if (!collides(curX, curY + 1, curShape)) {
+          curY++;
+        } else {
+          lockAndClear();
+        }
+      }
+
+      ctx.fillStyle = "#07090e";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Draw Board Boundary
+      ctx.strokeStyle = "rgba(10,204,151,0.3)";
+      ctx.strokeRect(offsetX - 2, offsetY - 2, cols * size + 4, rows * size + 4);
+
+      // Draw Board Blocks
+      for (let r = 0; r < rows; r++) {
+        for (let c = 0; c < cols; c++) {
+          if (board[r][c]) {
+            ctx.fillStyle = "#0acc97";
+            ctx.fillRect(offsetX + c * size + 1, offsetY + r * size + 1, size - 2, size - 2);
+          }
+        }
+      }
+
+      // Draw Current Falling Piece
+      ctx.fillStyle = curColor;
+      curShape.forEach((row, r) => {
+        row.forEach((val, c) => {
+          if (val) {
+            ctx.fillRect(offsetX + (curX + c) * size + 1, offsetY + (curY + r) * size + 1, size - 2, size - 2);
+          }
+        });
+      });
+
+      // Score
+      ctx.font = "bold 12px monospace";
+      ctx.fillStyle = "#38bdf8";
+      ctx.fillText(`SCORE: ${localScore}`, 15, 25);
+
+      animId = requestAnimationFrame(loop);
+    };
+
+    animId = requestAnimationFrame(loop);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      cancelAnimationFrame(animId);
+    };
+  }, [onGameOver]);
+
+  return <canvas ref={canvasRef} width={500} height={280} className="w-full h-full block" />;
+};
+
+// GAME 10: Missile Defense Matrix (Point Defense Flak Command)
+const GameMissileDefense = ({ onGameOver }: { onGameOver: (score: number) => void }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let missiles: Array<{ x: number; y: number; tx: number; ty: number; speed: number }> = [];
+    let explosions: Array<{ x: number; y: number; r: number; maxR: number; expanding: boolean }> = [];
+    let cities = [{ x: 80, alive: true }, { x: 250, alive: true }, { x: 420, alive: true }];
+    let crosshair = { x: canvas.width / 2, y: canvas.height / 2 };
+    let localScore = 0;
+    let animId: number;
+
+    const handleMouseMove = (e: MouseEvent) => {
+      const rect = canvas.getBoundingClientRect();
+      crosshair.x = ((e.clientX - rect.left) / rect.width) * canvas.width;
+      crosshair.y = ((e.clientY - rect.top) / rect.height) * canvas.height;
+    };
+
+    const handleClick = () => {
+      explosions.push({ x: crosshair.x, y: crosshair.y, r: 2, maxR: 28, expanding: true });
+      synth.playLaser();
+    };
+
+    canvas.addEventListener("mousemove", handleMouseMove);
+    canvas.addEventListener("click", handleClick);
+
+    const loop = () => {
+      ctx.fillStyle = "#07090e";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Spawn Missiles
+      if (Math.random() < 0.03) {
+        const targetCity = cities.filter(c => c.alive)[Math.floor(Math.random() * cities.filter(c => c.alive).length)];
+        const tx = targetCity ? targetCity.x : Math.random() * canvas.width;
+        missiles.push({
+          x: Math.random() * canvas.width,
+          y: 0,
+          tx: tx,
+          ty: canvas.height - 15,
+          speed: Math.random() * 0.8 + 0.9,
+        });
+      }
+
+      // Update & Draw Missiles
+      for (let i = missiles.length - 1; i >= 0; i--) {
+        const m = missiles[i];
+        const angle = Math.atan2(m.ty - m.y, m.tx - m.x);
+        m.x += Math.cos(angle) * m.speed;
+        m.y += Math.sin(angle) * m.speed;
+
+        ctx.strokeStyle = "#f43f5e";
+        ctx.beginPath(); ctx.moveTo(m.x, m.y); ctx.lineTo(m.x - Math.cos(angle) * 12, m.y - Math.sin(angle) * 12); ctx.stroke();
+
+        // Check if caught in explosion
+        explosions.forEach(exp => {
+          if (Math.hypot(m.x - exp.x, m.y - exp.y) < exp.r) {
+            missiles.splice(i, 1);
+            localScore += 100;
+            synth.playScore();
+          }
+        });
+
+        // City impact
+        if (m.y >= canvas.height - 20) {
+          cities.forEach(c => {
+            if (c.alive && Math.abs(m.x - c.x) < 25) c.alive = false;
+          });
+          missiles.splice(i, 1);
+          synth.playExplosion();
+        }
+      }
+
+      // Check all cities lost
+      if (cities.every(c => !c.alive)) {
+        synth.playExplosion();
+        onGameOver(localScore);
+        return;
+      }
+
+      // Update & Draw Explosions
+      for (let i = explosions.length - 1; i >= 0; i--) {
+        const exp = explosions[i];
+        if (exp.expanding) {
+          exp.r += 1.5;
+          if (exp.r >= exp.maxR) exp.expanding = false;
+        } else {
+          exp.r -= 1.2;
+          if (exp.r <= 0) explosions.splice(i, 1);
+        }
+
+        ctx.fillStyle = "rgba(56, 189, 248, 0.35)";
+        ctx.beginPath(); ctx.arc(exp.x, exp.y, Math.max(0, exp.r), 0, Math.PI * 2); ctx.fill();
+        ctx.strokeStyle = "#38bdf8"; ctx.stroke();
+      }
+
+      // Draw Cities / Power Hubs
+      cities.forEach(c => {
+        ctx.fillStyle = c.alive ? "#0acc97" : "#334155";
+        ctx.fillRect(c.x - 18, canvas.height - 18, 36, 18);
+      });
+
+      // Draw Crosshair
+      ctx.strokeStyle = "#fbbf24";
+      ctx.beginPath();
+      ctx.arc(crosshair.x, crosshair.y, 8, 0, Math.PI * 2);
+      ctx.moveTo(crosshair.x - 12, crosshair.y); ctx.lineTo(crosshair.x + 12, crosshair.y);
+      ctx.moveTo(crosshair.x, crosshair.y - 12); ctx.lineTo(crosshair.x, crosshair.y + 12);
+      ctx.stroke();
+
+      animId = requestAnimationFrame(loop);
+    };
+
+    animId = requestAnimationFrame(loop);
+    return () => {
+      canvas.removeEventListener("mousemove", handleMouseMove);
+      canvas.removeEventListener("click", handleClick);
+      cancelAnimationFrame(animId);
+    };
+  }, [onGameOver]);
+
+  return <canvas ref={canvasRef} width={500} height={280} className="w-full h-full block cursor-crosshair" />;
+};
+
+// GAME 11: Laser Tank Duel (Ricochet Arena Combat)
+const GameLaserTank = ({ onGameOver }: { onGameOver: (score: number) => void }) => {
+  const canvasRef = useRef<HTMLCanvasElement | null>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext("2d");
+    if (!ctx) return;
+
+    let tank = { x: 60, y: canvas.height / 2, angle: 0, speed: 3 };
+    let bullets: Array<{ x: number; y: number; vx: number; vy: number; bounces: number }> = [];
+    let enemy = { x: canvas.width - 60, y: canvas.height / 2, angle: Math.PI, alive: true };
+    let localScore = 0;
+    let keys: Record<string, boolean> = {};
+    let animId: number;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      keys[e.key] = true;
+      if (e.key === " " && bullets.length < 4) {
+        bullets.push({
+          x: tank.x + Math.cos(tank.angle) * 16,
+          y: tank.y + Math.sin(tank.angle) * 16,
+          vx: Math.cos(tank.angle) * 5,
+          vy: Math.sin(tank.angle) * 5,
+          bounces: 0,
+        });
+        synth.playLaser();
+      }
+    };
+    const handleKeyUp = (e: KeyboardEvent) => { keys[e.key] = false; };
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
+
+    const loop = () => {
+      ctx.fillStyle = "#07090e";
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      // Tank Controls
+      if (keys["ArrowLeft"] || keys["a"]) tank.angle -= 0.06;
+      if (keys["ArrowRight"] || keys["d"]) tank.angle += 0.06;
+      if (keys["ArrowUp"] || keys["w"]) {
+        tank.x += Math.cos(tank.angle) * tank.speed;
+        tank.y += Math.sin(tank.angle) * tank.speed;
+      }
+
+      tank.x = Math.max(20, Math.min(canvas.width - 20, tank.x));
+      tank.y = Math.max(20, Math.min(canvas.height - 20, tank.y));
+
+      // Bullets Ricochet
+      for (let i = bullets.length - 1; i >= 0; i--) {
+        const b = bullets[i];
+        b.x += b.vx;
+        b.y += b.vy;
+
+        if (b.x < 5 || b.x > canvas.width - 5) { b.vx = -b.vx; b.bounces++; synth.playBounce(); }
+        if (b.y < 5 || b.y > canvas.height - 5) { b.vy = -b.vy; b.bounces++; synth.playBounce(); }
+
+        // Hit enemy
+        if (enemy.alive && Math.hypot(b.x - enemy.x, b.y - enemy.y) < 18) {
+          enemy.alive = false;
+          localScore += 500;
+          synth.playScore();
+          bullets.splice(i, 1);
+          // Respawn enemy after delay
+          setTimeout(() => {
+            enemy.x = Math.random() * (canvas.width - 150) + 75;
+            enemy.y = Math.random() * (canvas.height - 100) + 50;
+            enemy.alive = true;
+          }, 1200);
+          continue;
+        }
+
+        if (b.bounces > 4) bullets.splice(i, 1);
+
+        ctx.fillStyle = "#38bdf8";
+        ctx.beginPath(); ctx.arc(b.x, b.y, 3, 0, Math.PI * 2); ctx.fill();
+      }
+
+      // Draw Player Tank
+      ctx.save();
+      ctx.translate(tank.x, tank.y);
+      ctx.rotate(tank.angle);
+      ctx.fillStyle = "#0acc97";
+      ctx.fillRect(-12, -10, 24, 20);
+      ctx.fillStyle = "#38bdf8";
+      ctx.fillRect(0, -3, 16, 6);
+      ctx.restore();
+
+      // Draw Enemy Drone
+      if (enemy.alive) {
+        ctx.fillStyle = "#f43f5e";
+        ctx.beginPath(); ctx.arc(enemy.x, enemy.y, 14, 0, Math.PI * 2); ctx.fill();
+        ctx.fillStyle = "#fbbf24";
+        ctx.fillRect(enemy.x - 4, enemy.y - 4, 8, 8);
+      }
+
+      animId = requestAnimationFrame(loop);
+    };
+
+    animId = requestAnimationFrame(loop);
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
+      cancelAnimationFrame(animId);
+    };
+  }, [onGameOver]);
+
+  return <canvas ref={canvasRef} width={500} height={280} className="w-full h-full block" />;
+};
+
+// GAME 12: Cyber 2048 (Neural Tile Merging)
+const GameCyber2048 = ({ onGameOver }: { onGameOver: (score: number) => void }) => {
+  const [board, setBoard] = useState<number[][]>([
+    [0, 2, 0, 0],
+    [0, 0, 4, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 2],
+  ]);
+  const [score, setScore] = useState(0);
+
+  const addRandomTile = (grid: number[][]) => {
+    const empties: Array<{ r: number; c: number }> = [];
+    for (let r = 0; r < 4; r++) {
+      for (let c = 0; c < 4; c++) {
+        if (grid[r][c] === 0) empties.push({ r, c });
+      }
+    }
+    if (empties.length > 0) {
+      const { r, c } = empties[Math.floor(Math.random() * empties.length)];
+      grid[r][c] = Math.random() < 0.9 ? 2 : 4;
+    }
+  };
+
+  const move = (dir: "left" | "right" | "up" | "down") => {
+    let newGrid = board.map(row => [...row]);
+    let gained = 0;
+    let changed = false;
+
+    const slide = (row: number[]) => {
+      let filtered = row.filter(v => v !== 0);
+      for (let i = 0; i < filtered.length - 1; i++) {
+        if (filtered[i] === filtered[i + 1]) {
+          filtered[i] *= 2;
+          gained += filtered[i];
+          filtered.splice(i + 1, 1);
+        }
+      }
+      while (filtered.length < 4) filtered.push(0);
+      return filtered;
+    };
+
+    if (dir === "left") {
+      newGrid = newGrid.map(row => {
+        const s = slide(row);
+        if (s.some((v, idx) => v !== row[idx])) changed = true;
+        return s;
+      });
+    } else if (dir === "right") {
+      newGrid = newGrid.map(row => {
+        const s = slide(row.reverse()).reverse();
+        if (s.some((v, idx) => v !== row[idx])) changed = true;
+        return s;
+      });
+    } else if (dir === "up") {
+      for (let c = 0; c < 4; c++) {
+        const col = [newGrid[0][c], newGrid[1][c], newGrid[2][c], newGrid[3][c]];
+        const s = slide(col);
+        for (let r = 0; r < 4; r++) {
+          if (newGrid[r][c] !== s[r]) changed = true;
+          newGrid[r][c] = s[r];
+        }
+      }
+    } else if (dir === "down") {
+      for (let c = 0; c < 4; c++) {
+        const col = [newGrid[3][c], newGrid[2][c], newGrid[1][c], newGrid[0][c]];
+        const s = slide(col);
+        for (let r = 0; r < 4; r++) {
+          if (newGrid[3 - r][c] !== s[r]) changed = true;
+          newGrid[3 - r][c] = s[r];
+        }
+      }
+    }
+
+    if (changed) {
+      addRandomTile(newGrid);
+      setBoard(newGrid);
+      const newScore = score + gained;
+      setScore(newScore);
+      synth.playScore();
+    }
+  };
+
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "ArrowLeft" || e.key === "a") move("left");
+      if (e.key === "ArrowRight" || e.key === "d") move("right");
+      if (e.key === "ArrowUp" || e.key === "w") move("up");
+      if (e.key === "ArrowDown" || e.key === "s") move("down");
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  });
 
   return (
-    <Card className="border-purple-500/40 bg-card/80 p-6 shadow-xl space-y-4 max-w-xl">
-      <div className="flex items-center justify-between border-b border-border/50 pb-3">
-        <div className="flex items-center gap-2">
-          <Joystick className="size-4 text-purple-400" />
-          <h3 className="font-mono text-xs uppercase font-bold text-purple-400">
-            Cyberpunk Star Defender Mini-Arcade
-          </h3>
-        </div>
-        <span className="font-mono text-xs font-bold text-electric">Score: {score}</span>
+    <div className="w-full h-full flex flex-col items-center justify-center p-4 bg-[#07090e]">
+      <div className="flex items-center justify-between w-64 mb-3 text-xs font-mono">
+        <span className="text-muted-foreground uppercase">Target: 2048</span>
+        <span className="text-electric font-bold">SCORE: {score}</span>
       </div>
-
-      <div className="relative aspect-[16/9] w-full bg-[#0a0c10] border border-border/60 rounded-sm overflow-hidden flex items-center justify-center">
-        <canvas ref={canvasRef} width={480} height={270} className="w-full h-full block" />
-
-        {!isPlaying && (
-          <div className="absolute inset-0 bg-black/80 flex flex-col items-center justify-center gap-3 p-4 text-center">
-            {gameOver ? (
-              <>
-                <p className="font-mono text-sm font-bold text-red-400">MISSION TERMINATED</p>
-                <p className="font-mono text-xs text-muted-foreground">Final Score: {score}</p>
-              </>
-            ) : (
-              <p className="font-mono text-xs text-muted-foreground">
-                Steer with <kbd className="px-1 bg-muted rounded">A</kbd> / <kbd className="px-1 bg-muted rounded">D</kbd> or Arrow Keys · Shoot with <kbd className="px-1 bg-muted rounded">Spacebar</kbd>
-              </p>
-            )}
-            <button
-              type="button"
-              onClick={() => {
-                setScore(0);
-                setGameOver(false);
-                setIsPlaying(true);
-              }}
-              className="px-5 py-2 rounded-sm bg-purple-600 font-mono text-xs uppercase font-bold text-white hover:bg-purple-500 transition-all shadow-md active:scale-95"
+      <div className="grid grid-cols-4 gap-2 bg-card/60 p-2.5 rounded-lg border border-border/60">
+        {board.map((row, r) =>
+          row.map((val, c) => (
+            <div
+              key={`${r}-${c}`}
+              className={`w-12 h-12 flex items-center justify-center rounded font-mono font-black text-xs transition-all ${
+                val === 0 ? "bg-background/40" :
+                val === 2 ? "bg-emerald-500/20 text-emerald-300 border border-emerald-500/40" :
+                val === 4 ? "bg-teal-500/20 text-teal-300 border border-teal-500/40" :
+                val === 8 ? "bg-cyan-500/25 text-cyan-300 border border-cyan-500/50" :
+                val === 16 ? "bg-blue-500/30 text-blue-300 border border-blue-500/50" :
+                val === 32 ? "bg-indigo-500/35 text-indigo-300 border border-indigo-500/50" :
+                val === 64 ? "bg-purple-500/40 text-purple-300 border border-purple-500/50" :
+                "bg-amber-500/50 text-amber-200 border border-amber-500/70 shadow-lg"
+              }`}
             >
-              {gameOver ? "Play Again" : "Launch Defender ➔"}
-            </button>
-          </div>
+              {val > 0 ? val : ""}
+            </div>
+          ))
         )}
       </div>
-    </Card>
+    </div>
   );
 };
 
-// ── 4. Games Tab (100% Resilient + Arcade & Trailers) ─────────────────────────
+// ── 5. ARCADE CABINET MASTER COMPONENT ────────────────────────────────────────
 
-interface GameItem {
-  id: number;
-  title: string;
-  released: string | null;
-  rating: number;
-  backgroundImage: string | null;
-  platforms: string[];
-  metacritic: number | null;
-  trailerEmbed?: string;
-}
+const ARCADE_GAMES = [
+  { id: "space", title: "Space Defender", icon: "🚀", genre: "Arcade Shooter", diff: "Medium", desc: "Blast descending asteroids & interceptors." },
+  { id: "snake", title: "Neural Snake", icon: "🐍", genre: "Grid Hunter", diff: "Easy", desc: "Eat quantum data nodes and extend your light trail." },
+  { id: "breakout", title: "Quantum Breakout", icon: "🧱", genre: "Brick Breaker", diff: "Medium", desc: "Deflect energy orbs into data clusters." },
+  { id: "invaders", title: "Firewall Invaders", icon: "👾", genre: "Wave Defense", diff: "Hard", desc: "Repel descending waves of hostile drones." },
+  { id: "pong", title: "Cyber Pong 2088", icon: "🏓", genre: "Laser Tennis", diff: "Adaptive", desc: "High-voltage 1v1 paddle duel vs smart AI." },
+  { id: "runner", title: "Neon Grid Runner", icon: "⚡", genre: "Cyber Highway", diff: "Fast", desc: "Dodge firewall spikes on an infinite 3D grid." },
+  { id: "hopper", title: "Drone Hopper", icon: "🐦", genre: "Flap Precision", diff: "Hard", desc: "Navigate pulsating laser conduits." },
+  { id: "lunar", title: "Lunar Descent", icon: "🛸", genre: "Physics Lander", diff: "Hard", desc: "Control thrusters and touch down safely." },
+  { id: "tetra", title: "Tetra Blocks", icon: "🧩", genre: "Polyomino Drop", diff: "Classic", desc: "Clear lines with falling cyber pieces." },
+  { id: "missile", title: "Missile Command", icon: "🎯", genre: "Point Defense", diff: "Fast", desc: "Intercept cluster warheads with flak." },
+  { id: "tank", title: "Laser Tank Duel", icon: "⚔️", genre: "Arena Combat", diff: "Medium", desc: "Ricochet laser projectiles in tactical arena." },
+  { id: "2048", title: "Cyber 2048", icon: "🔢", genre: "Neural Puzzle", diff: "Logic", desc: "Merge numeric tiles up to the Singularity." },
+];
 
-const GamesTab = () => {
-  const [selectedGame, setSelectedGame] = useState<GameItem | null>(null);
+const ArcadeTab = () => {
+  const [selectedGameId, setSelectedGameId] = useState("space");
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [lastScore, setLastScore] = useState<number | null>(null);
+  const [soundOn, setSoundOn] = useState(true);
+  const [crtMode, setCrtMode] = useState(true);
 
-  const { data } = useQuery({
-    queryKey: ["entertainment-games"],
-    queryFn: async () => {
-      try {
-        const res = await fetch(siteEndpoints.entertainmentGamesApi);
-        const body = await readJsonBody<{ results?: GameItem[]; error?: string }>(res);
-        if (res.ok && body && !body.error && body.results?.length) {
-          return body.results;
-        }
-      } catch (e) {}
-      return CURATED_GAMES;
-    },
-    initialData: CURATED_GAMES,
-  });
+  const handleGameOver = (score: number) => {
+    setLastScore(score);
+    setIsPlaying(false);
+  };
 
-  const displayGames = data || CURATED_GAMES;
-
-  // The trending list has no trailer data, and real (non-curated) items have
-  // no trailerEmbed — fetch a real one on demand when the modal opens. RAWG
-  // serves its own trailer clips as direct video files (not YouTube), so
-  // this is a native <video> source, not an iframe.
-  const trailerQuery = useQuery({
-    queryKey: ["entertainment-game-trailer", selectedGame?.id],
-    queryFn: async () => {
-      const res = await fetch(`${siteEndpoints.entertainmentGameTrailerApi}?id=${selectedGame!.id}`);
-      const body = await readJsonBody<{ videoUrl?: string | null; previewImage?: string | null; error?: string }>(res);
-      if (!res.ok || !body || body.error) return null;
-      return { videoUrl: body.videoUrl ?? null, previewImage: body.previewImage ?? null };
-    },
-    enabled: !!selectedGame && !selectedGame.trailerEmbed,
-  });
-
-  const activeVideoUrl = trailerQuery.data?.videoUrl;
+  const activeGame = ARCADE_GAMES.find(g => g.id === selectedGameId) || ARCADE_GAMES[0];
 
   return (
-    <div className="space-y-8">
-      {/* Retro Mini-Arcade Highlight */}
-      <RetroArcadeGame />
-
-      {/* Main Game Catalog */}
-      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
-        {displayGames.map((item) => (
-          <Card
-            key={item.id}
-            onClick={() => setSelectedGame(item)}
-            className="group relative cursor-pointer overflow-hidden border-border/60 bg-card/70 transition-all duration-300 hover:-translate-y-1 hover:border-electric/50 hover:shadow-lg hover:shadow-electric/10"
-          >
-            <div className="relative aspect-video w-full overflow-hidden bg-muted">
-              {item.backgroundImage ? (
-                <img
-                  src={item.backgroundImage}
-                  alt={item.title}
-                  className="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                />
-              ) : (
-                <div className="flex h-full items-center justify-center font-mono text-[10px] uppercase text-muted-foreground">
-                  No image
-                </div>
-              )}
-              <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100">
-                <span className="inline-flex items-center gap-1.5 rounded-sm border border-electric/40 bg-electric/20 px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-electric shadow-sm">
-                  <Gamepad2 className="size-3.5" /> Gameplay & Details
-                </span>
+    <div className="space-y-6">
+      {/* Top Game Selector Carousel */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-2.5">
+        {ARCADE_GAMES.map((game) => {
+          const isSelected = game.id === selectedGameId;
+          return (
+            <button
+              key={game.id}
+              type="button"
+              onClick={() => {
+                setSelectedGameId(game.id);
+                setIsPlaying(false);
+                setLastScore(null);
+              }}
+              className={`p-2.5 rounded-lg border text-left transition-all flex flex-col justify-between cursor-pointer ${
+                isSelected
+                  ? "bg-electric/15 border-electric text-foreground shadow-md shadow-electric/10 scale-[1.02]"
+                  : "bg-card/70 hover:bg-white/5 border-border/60 text-muted-foreground hover:text-foreground"
+              }`}
+            >
+              <div className="flex items-center gap-1.5 font-bold text-xs truncate">
+                <span className="text-sm">{game.icon}</span>
+                <span className="truncate">{game.title}</span>
               </div>
-            </div>
-            <CardContent className="p-3">
-              <p className="line-clamp-1 text-sm font-semibold text-foreground group-hover:text-electric transition-colors">
-                {item.title}
-              </p>
-              <div className="mt-1 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.1em]">
-                <span className="text-electric flex items-center gap-1">
-                  <Star className="size-3 fill-electric text-electric" />
-                  {item.rating?.toFixed(1) ?? "—"}
-                </span>
-                {item.metacritic && (
-                  <span className="rounded px-1.5 py-0.2 bg-emerald-500/10 border border-emerald-500/30 text-emerald-400 font-bold">
-                    MC {item.metacritic}
-                  </span>
-                )}
+              <div className="flex items-center justify-between text-[9px] font-mono opacity-70 mt-1">
+                <span>{game.genre}</span>
+                <span className="text-electric">{game.diff}</span>
               </div>
-            </CardContent>
-          </Card>
-        ))}
+            </button>
+          );
+        })}
       </div>
 
-      {/* Game Modal */}
-      <Dialog open={!!selectedGame} onOpenChange={() => setSelectedGame(null)}>
-        {selectedGame && (
-          <DialogContent className="max-w-2xl border-border/80 bg-card p-0 overflow-hidden shadow-2xl">
-            <div className="aspect-video w-full bg-black relative">
-              {selectedGame.trailerEmbed ? (
-                <iframe
-                  src={selectedGame.trailerEmbed}
-                  title={selectedGame.title}
-                  className="w-full h-full border-0"
-                  allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                  allowFullScreen
-                />
-              ) : activeVideoUrl ? (
-                <video
-                  src={activeVideoUrl}
-                  poster={trailerQuery.data?.previewImage ?? selectedGame.backgroundImage ?? undefined}
-                  controls
-                  autoPlay
-                  className="w-full h-full object-cover"
-                />
-              ) : trailerQuery.isLoading ? (
-                <div className="flex h-full items-center justify-center font-mono text-xs text-muted-foreground">
-                  Loading trailer…
+      {/* Main Arcade Screen Card */}
+      <Card className="border-electric/40 bg-card/90 p-6 shadow-2xl space-y-4 max-w-2xl mx-auto">
+        <div className="flex flex-wrap items-center justify-between gap-3 border-b border-border/50 pb-3">
+          <div className="flex items-center gap-2">
+            <span className="text-lg">{activeGame.icon}</span>
+            <div>
+              <h3 className="font-mono text-xs uppercase font-black text-electric">
+                {activeGame.title}
+              </h3>
+              <p className="text-[10px] text-muted-foreground font-mono">{activeGame.desc}</p>
+            </div>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => {
+                synth.enabled = !soundOn;
+                setSoundOn(!soundOn);
+              }}
+              className="p-1.5 rounded bg-background border border-border/60 text-muted-foreground hover:text-electric text-[10px] font-mono flex items-center gap-1 cursor-pointer"
+            >
+              {soundOn ? <Volume2 className="size-3 text-electric" /> : <VolumeX className="size-3 text-red-400" />}
+              <span>{soundOn ? "SFX ON" : "MUTED"}</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => setCrtMode(!crtMode)}
+              className={`px-2 py-1 rounded border text-[10px] font-mono cursor-pointer ${
+                crtMode ? "bg-purple-500/20 text-purple-300 border-purple-500/40" : "bg-background border-border/60 text-muted-foreground"
+              }`}
+            >
+              CRT SCANLINES
+            </button>
+          </div>
+        </div>
+
+        {/* Screen Bezel & Canvas */}
+        <div className="relative aspect-[16/9] w-full bg-[#07090e] border border-border/70 rounded-md overflow-hidden flex items-center justify-center shadow-inner">
+          {crtMode && (
+            <div className="pointer-events-none absolute inset-0 bg-[linear-gradient(rgba(18,16,16,0)_50%,rgba(0,0,0,0.25)_50%)] bg-[length:100%_4px] opacity-40 z-10" />
+          )}
+
+          {isPlaying ? (
+            <>
+              {selectedGameId === "space" && <GameSpaceDefender onGameOver={handleGameOver} />}
+              {selectedGameId === "snake" && <GameNeuralSnake onGameOver={handleGameOver} />}
+              {selectedGameId === "breakout" && <GameQuantumBreakout onGameOver={handleGameOver} />}
+              {selectedGameId === "invaders" && <GameFirewallInvaders onGameOver={handleGameOver} />}
+              {selectedGameId === "pong" && <GameCyberPong onGameOver={handleGameOver} />}
+              {selectedGameId === "runner" && <GameNeonRunner onGameOver={handleGameOver} />}
+              {selectedGameId === "hopper" && <GameDroneHopper onGameOver={handleGameOver} />}
+              {selectedGameId === "lunar" && <GameLunarDescent onGameOver={handleGameOver} />}
+              {selectedGameId === "tetra" && <GameTetraBlocks onGameOver={handleGameOver} />}
+              {selectedGameId === "missile" && <GameMissileDefense onGameOver={handleGameOver} />}
+              {selectedGameId === "tank" && <GameLaserTank onGameOver={handleGameOver} />}
+              {selectedGameId === "2048" && <GameCyber2048 onGameOver={handleGameOver} />}
+            </>
+          ) : (
+            <div className="absolute inset-0 bg-black/85 flex flex-col items-center justify-center gap-3 p-6 text-center z-20">
+              <span className="text-3xl animate-bounce">{activeGame.icon}</span>
+              <h4 className="font-mono text-sm font-black text-foreground uppercase tracking-widest">
+                {activeGame.title}
+              </h4>
+              {lastScore !== null ? (
+                <div className="space-y-1">
+                  <p className="font-mono text-xs font-bold text-red-400">SESSION TERMINATED</p>
+                  <p className="font-mono text-xs text-electric font-bold">Final Score: {lastScore}</p>
                 </div>
               ) : (
-                <div className="flex h-full items-center justify-center font-mono text-xs text-muted-foreground">
-                  No trailer available
-                </div>
-              )}
-            </div>
-
-            <div className="p-6 space-y-4">
-              <div className="flex items-center justify-between">
-                <DialogHeader className="text-left">
-                  <DialogTitle className="text-xl font-bold text-foreground">{selectedGame.title}</DialogTitle>
-                </DialogHeader>
-                {selectedGame.metacritic && (
-                  <span className="rounded-md border border-emerald-500/40 bg-background/90 px-2.5 py-1 font-mono text-xs font-black text-emerald-400 shadow-md">
-                    MC {selectedGame.metacritic}
-                  </span>
-                )}
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 text-xs font-mono">
-                <div className="p-2.5 rounded-sm bg-background border border-border/60">
-                  <span className="text-muted-foreground block text-[10px] uppercase">User Rating</span>
-                  <span className="text-electric font-bold flex items-center gap-1 mt-0.5">
-                    <Star className="size-3.5 fill-electric text-electric" />
-                    {selectedGame.rating?.toFixed(2) ?? "—"} / 5.0
-                  </span>
-                </div>
-                <div className="p-2.5 rounded-sm bg-background border border-border/60">
-                  <span className="text-muted-foreground block text-[10px] uppercase">Release Date</span>
-                  <span className="text-foreground font-bold flex items-center gap-1 mt-0.5">
-                    <Calendar className="size-3.5" />
-                    {selectedGame.released || "TBA"}
-                  </span>
-                </div>
-              </div>
-
-              {selectedGame.platforms?.length > 0 && (
-                <div>
-                  <span className="text-[10px] font-mono uppercase tracking-wider text-muted-foreground block mb-2">
-                    Available Platforms
-                  </span>
-                  <div className="flex flex-wrap gap-1.5">
-                    {selectedGame.platforms.map((p) => (
-                      <span
-                        key={p}
-                        className="rounded-sm border border-border/60 bg-background/60 px-2 py-1 font-mono text-[10px] text-foreground"
-                      >
-                        {p}
-                      </span>
-                    ))}
-                  </div>
-                </div>
+                <p className="font-mono text-xs text-muted-foreground max-w-sm">
+                  Controls: <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">WASD</kbd> / <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">Arrow Keys</kbd> · Action: <kbd className="px-1.5 py-0.5 bg-muted rounded text-[10px]">Spacebar</kbd>
+                </p>
               )}
 
-              <div className="pt-4 border-t border-border/50 flex flex-wrap gap-2.5">
-                <a
-                  href={`https://store.steampowered.com/search/?term=${encodeURIComponent(selectedGame.title)}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-sm bg-electric px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-background transition-all hover:bg-electric/90 active:scale-95 shadow-sm"
-                >
-                  <Search className="size-3.5" /> Find on Steam
-                </a>
-                <a
-                  href={`https://rawg.io/games/${selectedGame.id}`}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1.5 p-2 rounded-sm border border-border/60 text-muted-foreground hover:text-electric transition-colors"
-                  title="View on RAWG"
-                >
-                  <ExternalLink className="size-3.5" />
-                </a>
-              </div>
+              <button
+                type="button"
+                onClick={() => {
+                  setLastScore(null);
+                  setIsPlaying(true);
+                }}
+                className="mt-2 px-6 py-2.5 rounded-sm bg-electric text-black font-mono text-xs uppercase font-black hover:bg-electric/90 transition-all shadow-lg active:scale-95 cursor-pointer"
+              >
+                {lastScore !== null ? "Play Again ➔" : "Insert Coin & Start ➔"}
+              </button>
             </div>
-          </DialogContent>
-        )}
-      </Dialog>
+          )}
+        </div>
+      </Card>
     </div>
   );
 };
@@ -1588,8 +2848,8 @@ const Entertainment = () => (
             <TabsTrigger value="movies" className="flex items-center gap-1.5">
               <Film className="size-3.5" /> Movies & TV
             </TabsTrigger>
-            <TabsTrigger value="games" className="flex items-center gap-1.5">
-              <Gamepad2 className="size-3.5" /> Games & Arcade
+            <TabsTrigger value="arcade" className="flex items-center gap-1.5">
+              <Joystick className="size-3.5" /> Retro Arcade
             </TabsTrigger>
             <TabsTrigger value="radio" className="flex items-center gap-1.5">
               <Radio className="size-3.5" /> Lo-Fi & Radio
@@ -1611,8 +2871,8 @@ const Entertainment = () => (
           <TabsContent value="movies">
             <MoviesTab />
           </TabsContent>
-          <TabsContent value="games">
-            <GamesTab />
+          <TabsContent value="arcade">
+            <ArcadeTab />
           </TabsContent>
           <TabsContent value="radio">
             <RadioTab />
