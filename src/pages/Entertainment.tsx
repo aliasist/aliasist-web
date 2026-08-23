@@ -1159,9 +1159,10 @@ const NasaSpaceTab = () => {
   const { data, isLoading } = useQuery({
     queryKey: ["entertainment-nasa-apod"],
     queryFn: async () => {
-      const res = await fetch("https://api.nasa.gov/planetary/apod?api_key=DEMO_KEY");
-      if (!res.ok) throw new Error("nasa_fetch_failed");
-      return (await res.json()) as ApodData;
+      const res = await fetch(siteEndpoints.entertainmentNasaApodApi);
+      const body = await readJsonBody<ApodData & { error?: string }>(res);
+      if (!res.ok || !body || body.error) throw new Error(body?.error ?? "nasa_fetch_failed");
+      return body;
     },
     staleTime: 1000 * 60 * 60 * 12,
   });

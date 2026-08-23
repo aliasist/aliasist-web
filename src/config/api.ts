@@ -73,6 +73,8 @@ export const siteEndpoints = {
   entertainmentOddsApi: "/api/entertainment/odds",
   /** Entertainment page — live TV channel guide (categories/channels, no stream URLs) → Pages Function proxy (Xtream Codes). */
   entertainmentLiveTvApi: "/api/entertainment/live-tv",
+  /** Entertainment page — NASA Astronomy Picture of the Day → Pages Function proxy (real key, not DEMO_KEY). */
+  entertainmentNasaApodApi: "/api/entertainment/nasa-apod",
 } as const;
 
 /** Safe JSON parse for worker responses (avoids throw on HTML error pages). */
