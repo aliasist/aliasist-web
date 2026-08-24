@@ -1,5 +1,4 @@
 import mascot from "@/assets/apple-touch-icon.png";
-import bmcButton from "@/assets/bmc-button.svg";
 import { footer } from "@/content/homepage";
 
 const Footer = () => {
@@ -30,18 +29,6 @@ const Footer = () => {
             className="font-mono text-[10px] uppercase tracking-[0.15em] text-background/30 hover:text-electric transition-colors duration-200 hover:drop-shadow-[0_0_10px_hsl(165_90%_42%_/_0.45)] rounded-sm outline-none focus-visible:text-electric focus-visible:ring-2 focus-visible:ring-white/55 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
           >
             {footer.emailLabel}
-          </a>
-          <a
-            href={footer.buyMeACoffeeHref}
-            target="_blank"
-            rel="noopener noreferrer"
-            className="opacity-70 hover:opacity-100 transition-opacity duration-200 rounded-sm outline-none focus-visible:ring-2 focus-visible:ring-white/55 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
-          >
-            <img
-              src="https://img.buymeacoffee.com/button-api/?text=Buy me a coffee&emoji=☕&slug=aliasist&button_colour=40DCA5&font_colour=ffffff&font_family=Inter&outline_colour=000000&coffee_colour=FFDD00"
-              alt="Buy me a coffee"
-              className="h-8 w-auto"
-            />
           </a>
         </div>
 
