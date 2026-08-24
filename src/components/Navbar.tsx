@@ -11,7 +11,11 @@ const opensInNewTab = (app: (typeof liveSuiteApps)[number]) =>
 
 // Retired apps stay listed on the Contact section (as a demo-modal link) but
 // are dropped from the Menu dropdown / mobile nav, which is for live suite apps only.
-const liveSuiteApps = suiteApps.filter(app => !("isDemo" in app && app.isDemo));
+// AliasOS is likewise dropped from the Menu/mobile nav here (but not Contact,
+// and not the /os route or its blog post, which stay reachable directly).
+const liveSuiteApps = suiteApps.filter(
+  app => !("isDemo" in app && app.isDemo) && app.href !== "/os"
+);
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
 
