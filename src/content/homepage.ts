@@ -31,8 +31,14 @@ import spaceBanner from "@images/spacesist_banner_cinematic.webp";
 /** Used by Navbar "Projects" menu and Contact section project list — keep in sync. */
 export const suiteApps = [
   {
+    label: "AliasOS",
+    sub: "Next-gen polyglot OS runtime & orchestrator",
+    href: "/os",
+    icon: "OS",
+  },
+  {
     label: "Entertainment",
-    sub: "Movies, games, odds & weather",
+    sub: "12-game retro arcade & radio",
     href: "/entertainment",
     icon: "EN",
     openInNewTab: true,
@@ -136,6 +142,7 @@ export const footer = {
   githubHref: "https://github.com/aliasist",
   linkedinHref: "",
   emailHref: "mailto:dev@aliasist.com",
+  buyMeACoffeeHref: "https://www.buymeacoffee.com/aliasist",
 } as const;
 
 // ── Projects section ──────────────────────────────────────────────────────────

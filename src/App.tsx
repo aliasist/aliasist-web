@@ -12,6 +12,8 @@ import GithubToolkit from "./pages/GithubToolkit";
 import NotFound from "./pages/NotFound";
 import Sensor from "./pages/Sensor";
 import TechLanding from "./pages/TechLanding";
+import CosmicOs from "./pages/CosmicOs";
+import BlogCosmicOs from "./pages/BlogCosmicOs";
 
 const queryClient = new QueryClient();
 
@@ -32,6 +34,10 @@ const App = () => (
           <Route path="/tools/github-pr-reviewer" element={<GithubPrReviewer />} />
           <Route path="/sensor" element={<Sensor />} />
           <Route path="/entertainment" element={<Entertainment />} />
+          <Route path="/os" element={<CosmicOs />} />
+          <Route path="/apps" element={<CosmicOs />} />
+          <Route path="/blog" element={<BlogCosmicOs />} />
+          <Route path="/blog/cosmic-os" element={<BlogCosmicOs />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
