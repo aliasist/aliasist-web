@@ -644,6 +644,15 @@ function cors(_request: Request, _env: Env) {
 
 // ── Router ────────────────────────────────────────────────────────────────────
 
+// Production hold gate. When MAINTENANCE_MODE is true, every non-OPTIONS
+// request gets a 503 instead of hitting DB/routing logic below. Flip to
+// true and `wrangler deploy` to take this Worker down for maintenance;
+// flip back to false and redeploy to restore it. A Worker has no
+// preview/production split the way Pages does, so unlike the
+// functions/_middleware.ts gates on aliasist-web/waterfall/datasist, this
+// always applies once deployed — there's no separate domain check.
+const MAINTENANCE_MODE = false;
+
 export default {
   // Cron triggers — hourly D1 → Neon sync, daily facility lead discovery,
   // daily live enrichment sweep (renewable %, grid risk)
@@ -666,6 +675,13 @@ export default {
     // Preflight
     if (request.method === "OPTIONS") {
       return new Response(null, { status: 204, headers: corsHeaders });
+    }
+
+    if (MAINTENANCE_MODE) {
+      return new Response(
+        JSON.stringify({ error: "DataSist API is temporarily unavailable for maintenance" }),
+        { status: 503, headers: { ...corsHeaders, "content-type": "application/json", "retry-after": "3600" } },
+      );
     }
 
     try {
