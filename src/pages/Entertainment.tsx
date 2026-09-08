@@ -1595,173 +1595,6 @@ const GameLunarDescent = ({ onGameOver }: { onGameOver: (score: number) => void 
   return <canvas ref={canvasRef} width={500} height={280} className="w-full h-full block" />;
 };
 
-// GAME 9: Tetra Blocks (Cyberpunk Tetris)
-const GameTetraBlocks = ({ onGameOver }: { onGameOver: (score: number) => void }) => {
-  const canvasRef = useRef<HTMLCanvasElement | null>(null);
-
-  useEffect(() => {
-    const canvas = canvasRef.current;
-    if (!canvas) return;
-    const ctx = canvas.getContext("2d");
-    if (!ctx) return;
-
-    const cols = 10;
-    const rows = 16;
-    const size = 16;
-    const offsetX = (canvas.width - cols * size) / 2;
-    const offsetY = 12;
-
-    const board: number[][] = Array.from({ length: rows }, () => Array(cols).fill(0));
-    const SHAPES = [
-      [[1, 1, 1, 1]], // I
-      [[1, 1], [1, 1]], // O
-      [[0, 1, 0], [1, 1, 1]], // T
-      [[1, 1, 0], [0, 1, 1]], // S
-      [[0, 1, 1], [1, 1, 0]], // Z
-      [[1, 0, 0], [1, 1, 1]], // J
-      [[0, 0, 1], [1, 1, 1]], // L
-    ];
-    const COLORS = ["#38bdf8", "#fbbf24", "#a855f7", "#0acc97", "#f43f5e", "#3b82f6", "#f97316"];
-
-    let curShape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
-    let curColor = COLORS[Math.floor(Math.random() * COLORS.length)];
-    let curX = 3;
-    let curY = 0;
-    let localScore = 0;
-    let lastDrop = 0;
-    let animId: number;
-
-    const collides = (nx: number, ny: number, shape: number[][]) => {
-      for (let r = 0; r < shape.length; r++) {
-        for (let c = 0; c < shape[r].length; c++) {
-          if (shape[r][c]) {
-            const bx = nx + c;
-            const by = ny + r;
-            if (bx < 0 || bx >= cols || by >= rows) return true;
-            if (by >= 0 && board[by][bx]) return true;
-          }
-        }
-      }
-      return false;
-    };
-
-    const rotate = () => {
-      const rotated = curShape[0].map((_, i) => curShape.map(row => row[i]).reverse());
-      if (!collides(curX, curY, rotated)) {
-        curShape = rotated;
-        synth.playBounce();
-      }
-    };
-
-    const lockAndClear = () => {
-      curShape.forEach((row, r) => {
-        row.forEach((val, c) => {
-          if (val && curY + r >= 0) {
-            board[curY + r][curX + c] = 1;
-          }
-        });
-      });
-
-      // Clear full lines
-      let lines = 0;
-      for (let r = rows - 1; r >= 0; r--) {
-        if (board[r].every(v => v === 1)) {
-          board.splice(r, 1);
-          board.unshift(Array(cols).fill(0));
-          lines++;
-          r++;
-        }
-      }
-      if (lines > 0) {
-        localScore += lines * 250;
-        synth.playScore();
-      }
-
-      // Spawn next
-      curShape = SHAPES[Math.floor(Math.random() * SHAPES.length)];
-      curColor = COLORS[Math.floor(Math.random() * COLORS.length)];
-      curX = 3;
-      curY = 0;
-
-      if (collides(curX, curY, curShape)) {
-        synth.playExplosion();
-        onGameOver(localScore);
-      }
-    };
-
-    const handleKeyDown = (e: KeyboardEvent) => {
-      if (e.key === "ArrowLeft" || e.key === "a") {
-        if (!collides(curX - 1, curY, curShape)) curX--;
-      }
-      if (e.key === "ArrowRight" || e.key === "d") {
-        if (!collides(curX + 1, curY, curShape)) curX++;
-      }
-      if (e.key === "ArrowDown" || e.key === "s") {
-        if (!collides(curX, curY + 1, curShape)) curY++;
-      }
-      if (e.key === "ArrowUp" || e.key === "w") rotate();
-      if (e.key === " ") {
-        while (!collides(curX, curY + 1, curShape)) curY++;
-        lockAndClear();
-      }
-    };
-    window.addEventListener("keydown", handleKeyDown);
-
-    const loop = (time: number) => {
-      if (time - lastDrop > 480) {
-        lastDrop = time;
-        if (!collides(curX, curY + 1, curShape)) {
-          curY++;
-        } else {
-          lockAndClear();
-        }
-      }
-
-      ctx.fillStyle = "#07090e";
-      ctx.fillRect(0, 0, canvas.width, canvas.height);
-
-      // Draw Board Boundary
-      ctx.strokeStyle = "rgba(10,204,151,0.3)";
-      ctx.strokeRect(offsetX - 2, offsetY - 2, cols * size + 4, rows * size + 4);
-
-      // Draw Board Blocks
-      for (let r = 0; r < rows; r++) {
-        for (let c = 0; c < cols; c++) {
-          if (board[r][c]) {
-            ctx.fillStyle = "#0acc97";
-            ctx.fillRect(offsetX + c * size + 1, offsetY + r * size + 1, size - 2, size - 2);
-          }
-        }
-      }
-
-      // Draw Current Falling Piece
-      ctx.fillStyle = curColor;
-      curShape.forEach((row, r) => {
-        row.forEach((val, c) => {
-          if (val) {
-            ctx.fillRect(offsetX + (curX + c) * size + 1, offsetY + (curY + r) * size + 1, size - 2, size - 2);
-          }
-        });
-      });
-
-      // Score
-      ctx.font = "bold 12px monospace";
-      ctx.fillStyle = "#38bdf8";
-      ctx.fillText(`SCORE: ${localScore}`, 15, 25);
-
-      animId = requestAnimationFrame(loop);
-    };
-
-    animId = requestAnimationFrame(loop);
-    return () => {
-      window.removeEventListener("keydown", handleKeyDown);
-      cancelAnimationFrame(animId);
-    };
-  }, [onGameOver]);
-
-  return <canvas ref={canvasRef} width={500} height={280} className="w-full h-full block" />;
-};
-
 // GAME 10: Missile Defense Matrix (Point Defense Flak Command)
 const GameMissileDefense = ({ onGameOver }: { onGameOver: (score: number) => void }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
@@ -2136,7 +1969,7 @@ const ARCADE_GAMES = [
   { id: "runner", title: "Neon Grid Runner", icon: "⚡", genre: "Cyber Highway", diff: "Fast", desc: "Dodge firewall spikes on an infinite 3D grid." },
   { id: "hopper", title: "Drone Hopper", icon: "🐦", genre: "Flap Precision", diff: "Hard", desc: "Navigate pulsating laser conduits." },
   { id: "lunar", title: "Lunar Descent", icon: "🛸", genre: "Physics Lander", diff: "Hard", desc: "Control thrusters and touch down safely." },
-  { id: "tetra", title: "Tetra Blocks", icon: "🧩", genre: "Polyomino Drop", diff: "Classic", desc: "Clear lines with falling cyber pieces." },
+  { id: "tetra", title: "Tetra", icon: "🧩", genre: "Guideline Tetris", diff: "SRS", desc: "Full guideline Tetris — Classic, Marathon, Sprint & Zen modes.", external: "/tetra/index.html" },
   { id: "missile", title: "Missile Command", icon: "🎯", genre: "Point Defense", diff: "Fast", desc: "Intercept cluster warheads with flak." },
   { id: "tank", title: "Laser Tank Duel", icon: "⚔️", genre: "Arena Combat", diff: "Medium", desc: "Ricochet laser projectiles in tactical arena." },
   { id: "2048", title: "Cyber 2048", icon: "🔢", genre: "Neural Puzzle", diff: "Logic", desc: "Merge numeric tiles up to the Singularity." },
@@ -2167,6 +2000,10 @@ const ArcadeTab = () => {
               key={game.id}
               type="button"
               onClick={() => {
+                if (game.external) {
+                  window.location.href = game.external;
+                  return;
+                }
                 setSelectedGameId(game.id);
                 setIsPlaying(false);
                 setLastScore(null);
@@ -2244,7 +2081,6 @@ const ArcadeTab = () => {
               {selectedGameId === "runner" && <GameNeonRunner onGameOver={handleGameOver} />}
               {selectedGameId === "hopper" && <GameDroneHopper onGameOver={handleGameOver} />}
               {selectedGameId === "lunar" && <GameLunarDescent onGameOver={handleGameOver} />}
-              {selectedGameId === "tetra" && <GameTetraBlocks onGameOver={handleGameOver} />}
               {selectedGameId === "missile" && <GameMissileDefense onGameOver={handleGameOver} />}
               {selectedGameId === "tank" && <GameLaserTank onGameOver={handleGameOver} />}
               {selectedGameId === "2048" && <GameCyber2048 onGameOver={handleGameOver} />}
@@ -2255,7 +2091,11 @@ const ArcadeTab = () => {
               <h4 className="font-mono text-sm font-black text-foreground uppercase tracking-widest">
                 {activeGame.title}
               </h4>
-              {lastScore !== null ? (
+              {activeGame.external ? (
+                <p className="font-mono text-xs text-muted-foreground max-w-sm">
+                  Full guideline SRS engine · Classic 1989, Marathon, Sprint & Zen modes · touch &amp; keyboard controls · opens in a dedicated full-screen page.
+                </p>
+              ) : lastScore !== null ? (
                 <div className="space-y-1">
                   <p className="font-mono text-xs font-bold text-red-400">SESSION TERMINATED</p>
                   <p className="font-mono text-xs text-electric font-bold">Final Score: {lastScore}</p>
@@ -2269,12 +2109,16 @@ const ArcadeTab = () => {
               <button
                 type="button"
                 onClick={() => {
+                  if (activeGame.external) {
+                    window.location.href = activeGame.external;
+                    return;
+                  }
                   setLastScore(null);
                   setIsPlaying(true);
                 }}
                 className="mt-2 px-6 py-2.5 rounded-sm bg-electric text-black font-mono text-xs uppercase font-black hover:bg-electric/90 transition-all shadow-lg active:scale-95 cursor-pointer"
               >
-                {lastScore !== null ? "Play Again ➔" : "Insert Coin & Start ➔"}
+                {activeGame.external ? "Launch Full Game ➔" : lastScore !== null ? "Play Again ➔" : "Insert Coin & Start ➔"}
               </button>
             </div>
           )}

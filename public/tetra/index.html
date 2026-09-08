@@ -1,0 +1,1903 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="description" content="TETRA: a cyberpunk guideline Tetris built for mobile and desktop, with SRS rotation, T-Spins, Perfect Clears, and touch-first controls.">
+  <meta name="theme-color" content="#000000">
+  <!-- iOS "Add to Home Screen" launches in a standalone window (no Safari
+       chrome) once these are set, even without a full manifest.json. -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="TETRA">
+  <title>TETRA — Mobile-First Modern & Classic Tetris</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@500;700;800&display=swap" rel="stylesheet">
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-user-select: none;
+      -webkit-touch-callout: none;
+      touch-action: manipulation;
+    }
+
+    :root {
+      --bg: #000000;
+      --surface: #070a10;
+      --card-bg: rgba(12, 16, 26, 0.95);
+      --border: rgba(255, 255, 255, 0.1);
+      --txt: #f1f5f9;
+      --muted: #738a9c;
+      --cyan: #00f0ff;
+      --green: #00e676;
+      --gold: #ffd166;
+      --purple: #c084fc;
+      --coral: #ff5370;
+      --btn: #111827;
+      --btn-h: #1e293b;
+    }
+
+    html, body {
+      width: 100%;
+      height: 100%;
+      height: 100dvh;
+      background: var(--bg);
+      color: var(--txt);
+      font-family: 'Inter', system-ui, -apple-system, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      overscroll-behavior: none;
+    }
+
+    #app-container {
+      position: relative;
+      width: 960px;
+      height: 720px;
+      max-width: 100vw;
+      max-height: 100vh;
+      max-height: 100dvh;
+      display: flex;
+      flex-direction: column;
+      background: #030508;
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      box-shadow: 0 25px 70px rgba(0, 0, 0, 0.95);
+      overflow: hidden;
+    }
+
+    /* Top Navigation / Titlebar */
+    .titlebar {
+      height: 42px;
+      min-height: 42px;
+      background: #000000;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      padding-top: env(safe-area-inset-top, 0px);
+      height: calc(42px + env(safe-area-inset-top, 0px));
+      min-height: calc(42px + env(safe-area-inset-top, 0px));
+      padding-left: calc(16px + env(safe-area-inset-left, 0px));
+      padding-right: calc(16px + env(safe-area-inset-right, 0px));
+      font-size: 12px;
+      color: var(--muted);
+      z-index: 10;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 800;
+      color: var(--txt);
+      letter-spacing: 0.5px;
+    }
+
+    .status-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 700;
+      color: var(--cyan);
+      background: rgba(0, 240, 255, 0.08);
+      border: 1px solid rgba(0, 240, 255, 0.25);
+      padding: 2px 10px;
+      border-radius: 6px;
+    }
+
+    .titlebar-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .action-btn {
+      background: var(--btn);
+      border: 1px solid var(--border);
+      color: var(--txt);
+      padding: 5px 12px;
+      border-radius: 6px;
+      font-size: 11px;
+      font-weight: 600;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      transition: all 0.15s;
+    }
+
+    .action-btn:hover {
+      background: var(--btn-h);
+      border-color: rgba(255, 255, 255, 0.2);
+    }
+
+    /* Canvas Viewport */
+    .canvas-stage {
+      position: relative;
+      flex: 1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: #000000;
+      touch-action: none;
+      overflow: hidden;
+    }
+
+    canvas {
+      display: block;
+      /* Sizing (width/height) is set inline by resizeCanvas() in JS, per
+         viewport/orientation -- landscape keeps the original 960x600
+         dashboard scaled to fit; portrait fills the stage edge-to-edge with
+         its own compact layout. max-width/max-height stay as a safety net. */
+      max-width: 100%;
+      max-height: 100%;
+      cursor: default;
+    }
+
+    /* Mobile / Touch Responsive Controls Deck */
+    .touch-controls {
+      display: flex;
+      height: 78px;
+      min-height: 78px;
+      background: #000000;
+      border-top: 1px solid var(--border);
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 16px;
+      padding-bottom: env(safe-area-inset-bottom, 0px);
+      height: calc(78px + env(safe-area-inset-bottom, 0px));
+      min-height: calc(78px + env(safe-area-inset-bottom, 0px));
+      padding-left: calc(16px + env(safe-area-inset-left, 0px));
+      padding-right: calc(16px + env(safe-area-inset-right, 0px));
+      gap: 10px;
+      z-index: 10;
+    }
+
+    .touch-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      flex: 1;
+    }
+
+    .touch-group.left {
+      justify-content: flex-start;
+    }
+
+    .touch-group.right {
+      justify-content: flex-end;
+    }
+
+    .touch-btn {
+      height: 52px;
+      padding: 0 18px;
+      background: #0f172a;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      border-radius: 12px;
+      color: #f1f5f9;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      cursor: pointer;
+      touch-action: manipulation;
+      transition: background 0.1s, transform 0.1s;
+      flex: 1;
+      max-width: 130px;
+    }
+
+    .touch-btn:active {
+      transform: scale(0.95);
+      background: #1e293b;
+    }
+
+    .touch-btn.primary {
+      background: #00e676;
+      border-color: #00e676;
+      color: #000000;
+      font-weight: 800;
+    }
+
+    .touch-btn.primary:active {
+      background: #34d399;
+    }
+
+    .touch-btn.accent {
+      background: #1e1b4b;
+      border-color: rgba(192, 132, 252, 0.4);
+      color: #c084fc;
+    }
+
+    .touch-btn.accent:active {
+      background: #2e1065;
+    }
+
+    /* Mobile Fullscreen Portrait Adjustments */
+    @media (max-width: 768px) {
+      #app-container {
+        width: 100vw;
+        height: 100vh;
+        height: 100dvh;
+        border-radius: 0;
+        border: none;
+      }
+      .titlebar {
+        /* Re-declared here (not just inherited from the base rule) so the
+           safe-area-inset-top accommodation isn't silently dropped on the
+           exact devices -- notched phones -- where it matters most. */
+        height: calc(38px + env(safe-area-inset-top, 0px));
+        min-height: calc(38px + env(safe-area-inset-top, 0px));
+        padding: 0 10px;
+        padding-top: env(safe-area-inset-top, 0px);
+        padding-left: calc(10px + env(safe-area-inset-left, 0px));
+        padding-right: calc(10px + env(safe-area-inset-right, 0px));
+      }
+      /* Narrow portrait titlebars don't have room for the subtitle label
+         and the FPS/engine badge alongside the brand name and 4 action
+         buttons -- drop them rather than let the row wrap and collide with
+         the buttons (matches the treatment already used for short-height
+         landscape below). */
+      .titlebar .brand span:last-child { display: none; }
+      .status-badge { display: none; }
+      .touch-controls {
+        height: calc(84px + env(safe-area-inset-bottom, 0px));
+        min-height: calc(84px + env(safe-area-inset-bottom, 0px));
+        padding: 0 8px;
+        padding-bottom: env(safe-area-inset-bottom, 0px);
+        padding-left: calc(8px + env(safe-area-inset-left, 0px));
+        padding-right: calc(8px + env(safe-area-inset-right, 0px));
+        gap: 6px;
+      }
+      .touch-btn {
+        height: 56px;
+        padding: 0 10px;
+        font-size: 12px;
+        border-radius: 10px;
+      }
+    }
+
+    /* Short-height landscape phones (rotated sideways) -- the board's
+       aspect-ratio is fixed, so on a squat viewport the titlebar and
+       control deck eating their usual portrait-sized height would shrink
+       the playable board dramatically. Trim both chrome bars down so the
+       board keeps as much of the limited height as possible. */
+    @media (max-height: 500px) and (orientation: landscape) {
+      .titlebar {
+        height: calc(28px + env(safe-area-inset-top, 0px));
+        min-height: calc(28px + env(safe-area-inset-top, 0px));
+        font-size: 10px;
+      }
+      .titlebar .brand span:last-child { display: none; }
+      .status-badge { display: none; }
+      .action-btn { padding: 4px 8px; font-size: 10px; }
+      .touch-controls {
+        height: calc(52px + env(safe-area-inset-bottom, 0px));
+        min-height: calc(52px + env(safe-area-inset-bottom, 0px));
+        gap: 4px;
+      }
+      .touch-btn {
+        height: 44px;
+        padding: 0 8px;
+        font-size: 11px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div id="app-container">
+    <!-- Clean Title Bar -->
+    <div class="titlebar">
+      <div class="brand">
+        <span style="color: var(--cyan); font-size: 16px;">◈</span>
+        <span>TETRA</span>
+        <span style="color: var(--muted); font-size: 11px; font-weight: 500;">MOBILE & ARCADE</span>
+      </div>
+      <div class="titlebar-actions">
+        <div class="status-badge">● RUST 60 FPS</div>
+        <button type="button" class="action-btn" id="btn-pause" title="Pause / Resume (P)">⏸</button>
+        <button type="button" class="action-btn" id="btn-sound-toggle" title="Toggle Sound">🔊 ON</button>
+        <button type="button" class="action-btn" id="btn-fullscreen" title="Fullscreen (more room on mobile)">⛶</button>
+        <button type="button" class="action-btn" id="btn-menu-top" title="Main Menu">☰ MENU</button>
+      </div>
+    </div>
+
+    <!-- Canvas Stage -->
+    <div class="canvas-stage">
+      <canvas id="game-canvas" width="960" height="600"></canvas>
+    </div>
+
+    <!-- Mobile-First Responsive Directional Touch Deck -->
+    <div class="touch-controls" id="control-deck">
+      <div class="touch-group left">
+        <button type="button" class="touch-btn" id="btn-left" title="Move Left (A / Left Arrow)">◀ Left</button>
+        <button type="button" class="touch-btn" id="btn-right" title="Move Right (D / Right Arrow)">Right ▶</button>
+        <button type="button" class="touch-btn primary" id="btn-drop" title="Instant Hard Drop (Space / Down / S)">⚡ Drop</button>
+      </div>
+      <div class="touch-group right">
+        <button type="button" class="touch-btn accent" id="btn-hold" title="Hold Piece (C / Shift)">📦 Hold</button>
+        <button type="button" class="touch-btn" id="btn-rot-ccw" title="Rotate CCW (Z / Ctrl)">↺ CCW</button>
+        <button type="button" class="touch-btn" id="btn-rot-cw" title="Rotate CW (W / Up / Tap)">↻ Rotate</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  (async () => {
+    // =========================================================================
+    // 1. TACTILE AUDIO & MOBILE HAPTIC FEEDBACK
+    // =========================================================================
+    class FeedbackEngine {
+      constructor() {
+        this.ctx = null;
+        this.muted = false;
+      }
+
+      init() {
+        if (!this.ctx) {
+          const AudioContext = window.AudioContext || window.webkitAudioContext;
+          this.ctx = new AudioContext();
+        }
+        if (this.ctx.state === 'suspended') {
+          this.ctx.resume();
+        }
+      }
+
+      vibrate(pattern = 15) {
+        if (navigator.vibrate) {
+          try { navigator.vibrate(pattern); } catch (e) {}
+        }
+      }
+
+      playTone(freq, type = 'sine', duration = 0.05, gainLevel = 0.05, startOffset = 0) {
+        if (this.muted || !this.ctx) return;
+        try {
+          const t = this.ctx.currentTime + startOffset;
+          const osc = this.ctx.createOscillator();
+          const gain = this.ctx.createGain();
+          osc.type = type;
+          osc.frequency.setValueAtTime(freq, t);
+          gain.gain.setValueAtTime(gainLevel, t);
+          gain.gain.exponentialRampToValueAtTime(0.0001, t + duration);
+          osc.connect(gain);
+          gain.connect(this.ctx.destination);
+          osc.start(t);
+          osc.stop(t + duration);
+        } catch (e) {}
+      }
+
+      sfx(type) {
+        this.init();
+        if (this.muted || !this.ctx) return;
+        switch (type) {
+          case 'move':
+            this.playTone(540, 'sine', 0.025, 0.035);
+            break;
+          case 'rotate':
+            this.playTone(720, 'sine', 0.04, 0.045);
+            this.vibrate(12);
+            break;
+          case 'drop':
+            this.playTone(160, 'triangle', 0.06, 0.08);
+            this.vibrate(25);
+            break;
+          case 'hold':
+            this.playTone(440, 'sine', 0.04, 0.04);
+            this.playTone(880, 'sine', 0.06, 0.03, 0.02);
+            this.vibrate(15);
+            break;
+          case 'line':
+            [523, 659, 783].forEach((f, i) => this.playTone(f, 'sine', 0.09, 0.05, i * 0.03));
+            this.vibrate([20, 30, 20]);
+            break;
+          case 'tetris':
+            [523, 659, 783, 1046].forEach((f, i) => this.playTone(f, 'triangle', 0.14, 0.06, i * 0.03));
+            this.vibrate([30, 40, 30, 40]);
+            break;
+          case 'tspin':
+            [659, 830, 987, 1318].forEach((f, i) => this.playTone(f, 'sawtooth', 0.1, 0.05, i * 0.025));
+            this.vibrate([25, 20, 25, 20, 40]);
+            break;
+          case 'perfect':
+            [523, 659, 783, 1046, 1318].forEach((f, i) => this.playTone(f, 'triangle', 0.18, 0.06, i * 0.04));
+            this.vibrate([40, 30, 40, 30, 80]);
+            break;
+          case 'gameover':
+            [440, 392, 349, 311].forEach((f, i) => this.playTone(f, 'sawtooth', 0.12, 0.04, i * 0.08));
+            this.vibrate(80);
+            break;
+        }
+      }
+
+      toggleMute() {
+        this.muted = !this.muted;
+        return this.muted;
+      }
+    }
+
+    const feedback = new FeedbackEngine();
+
+    // =========================================================================
+    // 1b. SCREEN WAKE LOCK -- mobile browsers dim/lock the screen after a
+    // short idle period, which on a touch-only Tetris session (long stretches
+    // with no scrolling/tapping outside the control deck) can interrupt a
+    // marathon run. Best-effort: unsupported browsers (desktop Safari,
+    // older Android WebViews) just silently get the old behavior back.
+    // =========================================================================
+    let wakeLockSentinel = null;
+    async function requestWakeLock() {
+      if (!('wakeLock' in navigator)) return;
+      try {
+        wakeLockSentinel = await navigator.wakeLock.request('screen');
+      } catch (e) {
+        // Common on iOS Safari / when the tab isn't visible yet -- not fatal.
+      }
+    }
+    function releaseWakeLock() {
+      if (wakeLockSentinel) {
+        wakeLockSentinel.release().catch(() => {});
+        wakeLockSentinel = null;
+      }
+    }
+    // A wake lock is auto-released by the browser whenever the page goes
+    // background (tab switch, phone locked); silently re-acquire it once
+    // the player comes back mid-game instead of leaving it lost for the
+    // rest of the session.
+    document.addEventListener('visibilitychange', () => {
+      if (document.visibilityState === 'visible' && game && game.screen === 'game' && !game.paused) {
+        requestWakeLock();
+      }
+    });
+
+    // =========================================================================
+    // 2. GUIDELINE SRS & CLASSIC TETROMINO TABLES
+    // =========================================================================
+    const PIECE_SHAPES = {
+      I: {
+        0: [[0, 1], [1, 1], [2, 1], [3, 1]],
+        1: [[2, 0], [2, 1], [2, 2], [2, 3]],
+        2: [[0, 2], [1, 2], [2, 2], [3, 2]],
+        3: [[1, 0], [1, 1], [1, 2], [1, 3]]
+      },
+      O: {
+        0: [[1, 0], [2, 0], [1, 1], [2, 1]],
+        1: [[1, 0], [2, 0], [1, 1], [2, 1]],
+        2: [[1, 0], [2, 0], [1, 1], [2, 1]],
+        3: [[1, 0], [2, 0], [1, 1], [2, 1]]
+      },
+      T: {
+        0: [[1, 0], [0, 1], [1, 1], [2, 1]],
+        1: [[1, 0], [1, 1], [2, 1], [1, 2]],
+        2: [[0, 1], [1, 1], [2, 1], [1, 2]],
+        3: [[1, 0], [0, 1], [1, 1], [1, 2]]
+      },
+      S: {
+        0: [[1, 0], [2, 0], [0, 1], [1, 1]],
+        1: [[1, 0], [1, 1], [2, 1], [2, 2]],
+        2: [[1, 1], [2, 1], [0, 2], [1, 2]],
+        3: [[0, 0], [0, 1], [1, 1], [1, 2]]
+      },
+      Z: {
+        0: [[0, 0], [1, 0], [1, 1], [2, 1]],
+        1: [[2, 0], [1, 1], [2, 1], [1, 2]],
+        2: [[0, 1], [1, 1], [1, 2], [2, 2]],
+        3: [[1, 0], [0, 1], [1, 1], [0, 2]]
+      },
+      J: {
+        0: [[0, 0], [0, 1], [1, 1], [2, 1]],
+        1: [[1, 0], [2, 0], [1, 1], [1, 2]],
+        2: [[0, 1], [1, 1], [2, 1], [2, 2]],
+        3: [[1, 0], [1, 1], [0, 2], [1, 2]]
+      },
+      L: {
+        0: [[2, 0], [0, 1], [1, 1], [2, 1]],
+        1: [[1, 0], [1, 1], [1, 2], [2, 2]],
+        2: [[0, 1], [1, 1], [2, 1], [0, 2]],
+        3: [[0, 0], [1, 0], [1, 1], [1, 2]]
+      }
+    };
+
+    const PIECE_COLORS = {
+      I: { fill: '#00f0ff', stroke: '#0891b2', glow: 'rgba(0, 240, 255, 0.4)' },
+      O: { fill: '#ffd166', stroke: '#d97706', glow: 'rgba(255, 209, 102, 0.4)' },
+      T: { fill: '#c084fc', stroke: '#9333ea', glow: 'rgba(192, 132, 252, 0.4)' },
+      S: { fill: '#00e676', stroke: '#16a34a', glow: 'rgba(0, 230, 118, 0.4)' },
+      Z: { fill: '#ff5370', stroke: '#e11d48', glow: 'rgba(255, 83, 112, 0.4)' },
+      J: { fill: '#38bdf8', stroke: '#2563eb', glow: 'rgba(56, 189, 248, 0.4)' },
+      L: { fill: '#ff9f43', stroke: '#ea580c', glow: 'rgba(255, 159, 67, 0.4)' }
+    };
+
+    // Colorblind-safe alternate palette -- the default palette's S/Z (green
+    // vs. red-pink) is the classic hard-to-distinguish pair for
+    // protanopia/deuteranopia. Built from the Okabe-Ito categorical
+    // palette (a widely-used set of colors picked specifically to stay
+    // distinguishable across the common forms of color vision deficiency).
+    const PIECE_COLORS_CB = {
+      I: { fill: '#56B4E9', stroke: '#2E86C1', glow: 'rgba(86, 180, 233, 0.4)' },
+      O: { fill: '#F0E442', stroke: '#B7A500', glow: 'rgba(240, 228, 66, 0.4)' },
+      T: { fill: '#CC79A7', stroke: '#9E4A7C', glow: 'rgba(204, 121, 167, 0.4)' },
+      S: { fill: '#009E73', stroke: '#00714F', glow: 'rgba(0, 158, 115, 0.4)' },
+      Z: { fill: '#D55E00', stroke: '#A34700', glow: 'rgba(213, 94, 0, 0.4)' },
+      J: { fill: '#0072B2', stroke: '#00507E', glow: 'rgba(0, 114, 178, 0.4)' },
+      L: { fill: '#E69F00', stroke: '#B37D00', glow: 'rgba(230, 159, 0, 0.4)' }
+    };
+
+    let colorblindMode = localStorage.getItem('tetra_colorblind') === '1';
+    function pieceColor(type) {
+      const palette = colorblindMode ? PIECE_COLORS_CB : PIECE_COLORS;
+      return palette[type] || { fill: '#64748b', stroke: '#334155', glow: 'rgba(100, 116, 139, 0.4)' };
+    }
+    function toggleColorblindMode() {
+      colorblindMode = !colorblindMode;
+      localStorage.setItem('tetra_colorblind', colorblindMode ? '1' : '0');
+    }
+
+    const SRS_KICKS_JLSTZ = {
+      '0->1': [[0, 0], [-1, 0], [-1, -1], [0, 2], [-1, 2]],
+      '1->0': [[0, 0], [1, 0], [1, 1], [0, -2], [1, -2]],
+      '1->2': [[0, 0], [1, 0], [1, 1], [0, -2], [1, -2]],
+      '2->1': [[0, 0], [-1, 0], [-1, -1], [0, 2], [-1, 2]],
+      '2->3': [[0, 0], [1, 0], [1, -1], [0, 2], [1, 2]],
+      '3->2': [[0, 0], [-1, 0], [-1, 1], [0, -2], [-1, -2]],
+      '3->0': [[0, 0], [-1, 0], [-1, 1], [0, -2], [-1, -2]],
+      '0->3': [[0, 0], [1, 0], [1, -1], [0, 2], [1, 2]]
+    };
+
+    const SRS_KICKS_I = {
+      '0->1': [[0, 0], [-2, 0], [1, 0], [-2, 1], [1, -2]],
+      '1->0': [[0, 0], [2, 0], [-1, 0], [2, -1], [-1, 2]],
+      '1->2': [[0, 0], [-1, 0], [2, 0], [-1, -2], [2, 1]],
+      '2->1': [[0, 0], [1, 0], [-2, 0], [1, 2], [-2, -1]],
+      '2->3': [[0, 0], [2, 0], [-1, 0], [2, -1], [-1, 2]],
+      '3->2': [[0, 0], [-2, 0], [1, 0], [-2, 1], [1, -2]],
+      '3->0': [[0, 0], [1, 0], [-2, 0], [1, 2], [-2, -1]],
+      '0->3': [[0, 0], [-1, 0], [2, 0], [-1, -2], [2, 1]]
+    };
+
+    const BOARD_WIDTH = 10;
+    const BOARD_HEIGHT = 20;
+    // Board/grid placement -- fixed defaults for the landscape dashboard
+    // layout (unchanged from the original design). Portrait mode
+    // recomputes these three every resize in computePortraitGrid() below,
+    // since a phone's actual width/height varies by device; landscape
+    // resets them back to these literals each resize (see resizeCanvas()).
+    let CELL_SIZE = 27;
+    let GRID_X = 345;
+    let GRID_Y = 28;
+
+    // =========================================================================
+    // WASM ENGINE LOADING (tetra-rust-engine) -- inlined as base64, not
+    // fetch()'d, so this still works when index.html is opened directly as
+    // a file:// URL (no server) per this project's own README, which
+    // fetch() of a sibling .wasm file would break under Chrome's file://
+    // CORS restrictions.
+    // =========================================================================
+    const WASM_B64 = "AGFzbQEAAAABWQ5gAn9/AGADf39/AX9gAn9/AX9gBX9/f39/AX9gAX8AYAABf2ABfwF/YAF+AGAAAGADf39/AGAEf39/fwF/YAV/f39/fwBgBn9/f39/fwBgBn9/f39/fwF/A2FgAwQABAICBAQFAgUFBQUFBQUFBQUFBgUFBQUFBQcFAggGBAYIAgkKCAIABAQLBAQEBAwLAAACAgYICQQKAAAEAAAABgAAAgAAAAICAQAAAAEJAAAICQkCCgkNAgMBAQIJBAUBcAETEwUDAQARBgkBfwFBgIDAAAsHwwQdBm1lbW9yeQIAEnRldHJhX2dldF9jYW5faG9sZAAIDnRldHJhX2dldF9jZWxsAAkPdGV0cmFfZ2V0X2NvbWJvAAoXdGV0cmFfZ2V0X2N1cnJlbnRfcGllY2UACxF0ZXRyYV9nZXRfZ2hvc3RfeQAMFHRldHJhX2dldF9ob2xkX3BpZWNlAA0adGV0cmFfZ2V0X2xhc3RfY2xlYXJfY291bnQADiB0ZXRyYV9nZXRfbGFzdF9jbGVhcl93YXNfcGVyZmVjdAAPHnRldHJhX2dldF9sYXN0X2NsZWFyX3dhc190c3BpbgAQD3RldHJhX2dldF9sZXZlbAARD3RldHJhX2dldF9saW5lcwASFHRldHJhX2dldF9sb2NrX2NvdW50ABMVdGV0cmFfZ2V0X2xvY2tfcmVzZXRzABQUdGV0cmFfZ2V0X25leHRfcGllY2UAFRN0ZXRyYV9nZXRfcGllY2Vfcm90ABYRdGV0cmFfZ2V0X3BpZWNlX3gAFxF0ZXRyYV9nZXRfcGllY2VfeQAYD3RldHJhX2dldF9zY29yZQAZD3RldHJhX2hhcmRfZHJvcAAaCnRldHJhX2hvbGQAGwp0ZXRyYV9pbml0ABwSdGV0cmFfaXNfZ2FtZV9vdmVyAB0KdGV0cmFfbW92ZQAeC3RldHJhX3Jlc2V0AB8MdGV0cmFfcm90YXRlACARdGV0cmFfc2V0X2NsYXNzaWMAIRJ0ZXRyYV9zbGlkZV90b19jb2wAIgp0ZXRyYV90aWNrACMJGAEAQQELEjMqS0pPSUhGRytFTUxORENeVgq2rAFgwAICAX8BfkEAIQUCQAJAIAFB/wFxIgFFDQAgAyABQQV0IAJBA3FBA3RyKQCIhMCAACIGpyIBaiICQf8BcUEJSw0B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ODQ4NTg2ODc4ODg5OTA5MTkyOTM5NDk1OTY5Nzk4OTkAQYiLwAALuAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAIAhC4EbmFtZQAXFnRldHJhX3J1c3RfZW5naW5lLndhc20BvC1gAERfUk52TXNfQ3NnWmpFcnhyQ2FrZF8xN3RldHJhX3J1c3RfZW5naW5lTnRCNF8xMlRldHJpc0VuZ2luZThpc192YWxpZAFHX1JOdk1zX0NzZ1pqRXJ4ckNha2RfMTd0ZXRyYV9ydXN0X2VuZ2luZU50QjRfMTJUZXRyaXNFbmdpbmUxMHJlZmlsbF9iYWcCSF9STnZNc19Dc2daakVyeHJDYWtkXzE3dGV0cmFfcnVzdF9lbmdpbmVOdEI0XzEyVGV0cmlzRW5naW5lMTFjbGVhcl9saW5lcwNIX1JOdk1zX0NzZ1pqRXJ4ckNha2RfMTd0ZXRyYV9ydXN0X2VuZ2luZU50QjRfMTJUZXRyaXNFbmdpbmUxMXNwYXduX3BpZWNlBElfUk52TXNfQ3NnWmpFcnhyQ2FrZF8xN3RldHJhX3J1c3RfZW5naW5lTnRCNF8xMlRldHJpc0VuZ2luZTEycm90YXRlX3BpZWNlBUlfUk52TXNfQ3NnWmpFcnhyQ2FrZF8xN3RldHJhX3J1c3RfZW5naW5lTnRCNF8xMlRldHJpc0VuZ2luZTEyc2xpZGVfdG9fY29sBkpfUk52TXNfQ3NnWmpFcnhyQ2FrZF8xN3RldHJhX3J1c3RfZW5naW5lTnRCNF8xMlRldHJpc0VuZ2luZTEzbG9ja19hbmRfbmV4dAdAX1JOdk1zX0NzZ1pqRXJ4ckNha2RfMTd0ZXRyYV9ydXN0X2VuZ2luZU50QjRfMTJUZXRyaXNFbmdpbmU0dGljawgSdGV0cmFfZ2V0X2Nhbl9ob2xkCQ50ZXRyYV9nZXRfY2VsbAoPdGV0cmFfZ2V0X2NvbWJvCxd0ZXRyYV9nZXRfY3VycmVudF9waWVjZQwRdGV0cmFfZ2V0X2dob3N0X3kNFHRldHJhX2dldF9ob2xkX3BpZWNlDhp0ZXRyYV9nZXRfbGFzdF9jbGVhcl9jb3VudA8gdGV0cmFfZ2V0X2xhc3RfY2xlYXJfd2FzX3BlcmZlY3QQHnRldHJhX2dldF9sYXN0X2NsZWFyX3dhc190c3BpbhEPdGV0cmFfZ2V0X2xldmVsEg90ZXRyYV9nZXRfbGluZXMTFHRldHJhX2dldF9sb2NrX2NvdW50FBV0ZXRyYV9nZXRfbG9ja19yZXNldHMVFHRldHJhX2dldF9uZXh0X3BpZWNlFhN0ZXRyYV9nZXRfcGllY2Vfcm90FxF0ZXRyYV9nZXRfcGllY2VfeBgRdGV0cmFfZ2V0X3BpZWNlX3kZD3RldHJhX2dldF9zY29yZRoPdGV0cmFfaGFyZF9kcm9wGwp0ZXRyYV9ob2xkHAp0ZXRyYV9pbml0HRJ0ZXRyYV9pc19nYW1lX292ZXIeCnRldHJhX21vdmUfC3RldHJhX3Jlc2V0IAx0ZXRyYV9yb3RhdGUhEXRldHJhX3NldF9jbGFzc2ljIhJ0ZXRyYV9zbGlkZV90b19jb2wjCnRldHJhX3RpY2skKl9STnZDczl3RlFydmN6WHNLXzdfX19ydXN0YzEyX19fcnVzdF9hbGxvYyUsX1JOdkNzOXdGUXJ2Y3pYc0tfN19fX3J1c3RjMTRfX19ydXN0X2RlYWxsb2MmLF9STnZDczl3RlFydmN6WHNLXzdfX19ydXN0YzE0X19fcnVzdF9yZWFsbG9jJ0FfUk52Q3M5d0ZRcnZjelhzS183X19fcnVzdGMzNV9fX3J1c3Rfbm9fYWxsb2Nfc2hpbV9pc191bnN0YWJsZV92MigwX1JOdkNzOXdGUXJ2Y3pYc0tfN19fX3J1c3RjMThfX19ydXN0X3N0YXJ0X3BhbmljKXVfUklOdk50Q3Nka2R0MWFhQWcxVF80Y29yZTNwdHI5ZHJvcF9nbHVlSU50TnRCNF82b3B0aW9uNk9wdGlvbklOdE50Q3Nld1dMazlUa003d181YWxsb2MzdmVjM1ZlY2hFRUVDc2RsNXNHZ25OWHZZXzNzdGQqYV9SSU52TnRDc2RrZHQxYWFBZzFUXzRjb3JlM3B0cjlkcm9wX2dsdWVOdE50Q3Nld1dMazlUa003d181YWxsb2M2c3RyaW5nNlN0cmluZ0VDc2RsNXNHZ25OWHZZXzNzdGQrcl9SSU52TnRDc2RrZHQxYWFBZzFUXzRjb3JlM3B0cjlkcm9wX2dsdWVOdE52TnRDc2RsNXNHZ25OWHZZXzNzdGQ5cGFuaWNraW5nMTNwYW5pY19oYW5kbGVyMTlGb3JtYXRTdHJpbmdQYXlsb2FkRUJIXyyEAV9SSU52TnZNczJfTnRDc2V3V0xrOVRrTTd3XzVhbGxvYzdyYXdfdmVjSU50QjhfMTFSYXdWZWNJbm5lcnBFN3Jlc2VydmUyMWRvX3Jlc2VydmVfYW5kX2hhbmRsZU50TnRCYV81YWxsb2M2R2xvYmFsRUNzZGw1c0dnbk5YdllfM3N0ZC1kX1JJTnZOdE50Q3NkbDVzR2duTlh2WV8zc3RkM3N5czliYWNrdHJhY2UyNl9fX3J1c3RfZW5kX3Nob3J0X2JhY2t0cmFjZU5DTnZOdEI2XzVhbGxvYzhydXN0X29vbTB6RUI2Xy4tX1JOQ052TnRDc2RsNXNHZ25OWHZZXzNzdGQ1YWxsb2M4cnVzdF9vb20wQjVfL25fUklOdk50TnRDc2RsNXNHZ25OWHZZXzNzdGQzc3lzOWJhY2t0cmFjZTI2X19fcnVzdF9lbmRfc2hvcnRfYmFja3RyYWNlTkNOdk50QjZfOXBhbmlja2luZzEzcGFuaWNfaGFuZGxlcjB6RUI2XzA3X1JOQ052TnRDc2RsNXNHZ25OWHZZXzNzdGQ5cGFuaWNraW5nMTNwYW5pY19oYW5kbGVyMEI1XzFXX1JOdk1zNF9OdENzZXdXTGs5VGtNN3dfNWFsbG9jN3Jhd192ZWNOdEI1XzExUmF3VmVjSW5uZXIxMWZpbmlzaF9ncm93Q3NkbDVzR2duTlh2WV8zc3RkMjNfUk52TnRDc2RsNXNHZ25OWHZZXzNzdGQ5cGFuaWNraW5nMTVwYW5pY193aXRoX2hvb2szOF9STnZOdENzZGw1c0dnbk5YdllfM3N0ZDVhbGxvYzI0ZGVmYXVsdF9hbGxvY19lcnJvcl9ob29rNCdfUk52Q3M5d0ZRcnZjelhzS183X19fcnVzdGMxMHJ1c3RfcGFuaWM1KV9STnZDczl3RlFydmN6WHNLXzdfX19ydXN0YzExX19fcmRsX2FsbG9jNmdfUk52TXMwX050Q3NnaXM1TVdObUZMbF84ZGxtYWxsb2M4ZGxtYWxsb2NJTnRCNV84RGxtYWxsb2NOdE50QjdfM3N5czZTeXN0ZW1FOG1lbWFsaWduQ3NkbDVzR2duTlh2WV8zc3RkN2VfUk52TXMwX050Q3NnaXM1TVdObUZMbF84ZGxtYWxsb2M4ZGxtYWxsb2NJTnRCNV84RGxtYWxsb2NOdE50QjdfM3N5czZTeXN0ZW1FNm1hbGxvY0NzZGw1c0dnbk5YdllfM3N0ZDgqX1JOdkNzOXdGUXJ2Y3pYc0tfN19fX3J1c3RjMTJfX19ydXN0X2Fib3J0OStfUk52Q3M5d0ZRcnZjelhzS183X19fcnVzdGMxM19fX3JkbF9kZWFsbG9jOmNfUk52TXMwX050Q3NnaXM1TVdObUZMbF84ZGxtYWxsb2M4ZGxtYWxsb2NJTnRCNV84RGxtYWxsb2NOdE50QjdfM3N5czZTeXN0ZW1FNGZyZWVDc2RsNXNHZ25OWHZZXzNzdGQ7K19STnZDczl3RlFydmN6WHNLXzdfX19ydXN0YzEzX19fcmRsX3JlYWxsb2M8bF9STnZNczBfTnRDc2dpczVNV05tRkxsXzhkbG1hbGxvYzhkbG1hbGxvY0lOdEI1XzhEbG1hbGxvY050TnRCN18zc3lzNlN5c3RlbUUxMnVubGlua19jaHVua0NzZGw1c0dnbk5YdllfM3N0ZD1tX1JOdk1zMF9OdENzZ2lzNU1XTm1GTGxfOGRsbWFsbG9jOGRsbWFsbG9jSU50QjVfOERsbWFsbG9jTnROdEI3XzNzeXM2U3lzdGVtRTEzZGlzcG9zZV9jaHVua0NzZGw1c0dnbk5YdllfM3N0ZD4uX1JOdkNzOXdGUXJ2Y3pYc0tfN19fX3J1c3RjMTdydXN0X2JlZ2luX3Vud2luZD84X1JOdkNzOXdGUXJ2Y3pYc0tfN19fX3J1c3RjMjZfX19ydXN0X2FsbG9jX2Vycm9yX2hhbmRsZXJAJ19STnZOdENzZGw1c0dnbk5YdllfM3N0ZDVhbGxvYzhydXN0X29vbUFyX1JOdk1zMF9OdENzZ2lzNU1XTm1GTGxfOGRsbWFsbG9jOGRsbWFsbG9jSU50QjVfOERsbWFsbG9jTnROdEI3XzNzeXM2U3lzdGVtRTE4aW5zZXJ0X2xhcmdlX2NodW5rQ3NkbDVzR2duTlh2WV8zc3RkQjpfUk52TnROdENzZGw1c0dnbk5YdllfM3N0ZDlwYW5pY2tpbmcxMXBhbmljX2NvdW50OGluY3JlYXNlQ2dfUk52WE50Q3Nka2R0MWFhQWcxVF80Y29yZTNhbnlOdE50Q3Nld1dMazlUa003d181YWxsb2M2c3RyaW5nNlN0cmluZ050QjJfM0FueTd0eXBlX2lkQ3NkbDVzR2duTlh2WV8zc3RkRENfUk52WE50Q3Nka2R0MWFhQWcxVF80Y29yZTNhbnlSZU50QjJfM0FueTd0eXBlX2lkQ3NkbDVzR2duTlh2WV8zc3RkRXhfUk52WHMwX052TnRDc2RsNXNHZ25OWHZZXzNzdGQ5cGFuaWNraW5nMTNwYW5pY19oYW5kbGVyTnRCNV8xOUZvcm1hdFN0cmluZ1BheWxvYWROdE50Q3Nka2R0MWFhQWcxVF80Y29yZTNmbXQ3RGlzcGxheTNmbXRGfV9STnZYczFfTnZOdENzZGw1c0dnbk5YdllfM3N0ZDlwYW5pY2tpbmcxM3BhbmljX2hhbmRsZXJOdEI1XzE2U3RhdGljU3RyUGF5bG9hZE50TnRDc2RrZHQxYWFBZzFUXzRjb3JlNXBhbmljMTJQYW5pY1BheWxvYWQzZ2V0R4ABX1JOdlhzMV9Odk50Q3NkbDVzR2duTlh2WV8zc3RkOXBhbmlja2luZzEzcGFuaWNfaGFuZGxlck50QjVfMTZTdGF0aWNTdHJQYXlsb2FkTnROdENzZGtkdDFhYUFnMVRfNGNvcmU1cGFuaWMxMlBhbmljUGF5bG9hZDZhc19zdHJIggFfUk52WHMxX052TnRDc2RsNXNHZ25OWHZZXzNzdGQ5cGFuaWNraW5nMTNwYW5pY19oYW5kbGVyTnRCNV8xNlN0YXRpY1N0clBheWxvYWROdE50Q3Nka2R0MWFhQWcxVF80Y29yZTVwYW5pYzEyUGFuaWNQYXlsb2FkOHRha2VfYm94SXVfUk52WHMyX052TnRDc2RsNXNHZ25OWHZZXzNzdGQ5cGFuaWNraW5nMTNwYW5pY19oYW5kbGVyTnRCNV8xNlN0YXRpY1N0clBheWxvYWROdE50Q3Nka2R0MWFhQWcxVF80Y29yZTNmbXQ3RGlzcGxheTNmbXRKXl9STnZYc1pfTnRDc2V3V0xrOVRrTTd3XzVhbGxvYzZzdHJpbmdOdEI1XzZTdHJpbmdOdE50Q3Nka2R0MWFhQWcxVF80Y29yZTNmbXQ1V3JpdGUxMHdyaXRlX2NoYXJLXF9STnZYc1pfTnRDc2V3V0xrOVRrTTd3XzVhbGxvYzZzdHJpbmdOdEI1XzZTdHJpbmdOdE50Q3Nka2R0MWFhQWcxVF80Y29yZTNmbXQ1V3JpdGU5d3JpdGVfc3RyTH9fUk52WHNfTnZOdENzZGw1c0dnbk5YdllfM3N0ZDlwYW5pY2tpbmcxM3BhbmljX2hhbmRsZXJOdEI0XzE5Rm9ybWF0U3RyaW5nUGF5bG9hZE50TnRDc2RrZHQxYWFBZzFUXzRjb3JlNXBhbmljMTJQYW5pY1BheWxvYWQzZ2V0TYQBX1JOdlhzX052TnRDc2RsNXNHZ25OWHZZXzNzdGQ5cGFuaWNraW5nMTNwYW5pY19oYW5kbGVyTnRCNF8xOUZvcm1hdFN0cmluZ1BheWxvYWROdE50Q3Nka2R0MWFhQWcxVF80Y29yZTVwYW5pYzEyUGFuaWNQYXlsb2FkOHRha2VfYm94TnVfUk52WUlOdE52TnRDc2RsNXNHZ25OWHZZXzNzdGQ5cGFuaWNraW5nMTFiZWdpbl9wYW5pYzdQYXlsb2FkUmVFTnROdENzZGtkdDFhYUFnMVRfNGNvcmU1cGFuaWMxMlBhbmljUGF5bG9hZDZhc19zdHJCOV9PaF9STnZZTnROdENzZXdXTGs5VGtNN3dfNWFsbG9jNnN0cmluZzZTdHJpbmdOdE50Q3Nka2R0MWFhQWcxVF80Y29yZTNmbXQ1V3JpdGU5d3JpdGVfZm10Q3NkbDVzR2duTlh2WV8zc3RkUEVfUk52WHNfTnRDc2dpczVNV05tRkxsXzhkbG1hbGxvYzNzeXNOdEI0XzZTeXN0ZW1OdEI2XzlBbGxvY2F0b3I1YWxsb2NRMF9STnZOdENzZXdXTGs5VGtNN3dfNWFsbG9jN3Jhd192ZWMxMmhhbmRsZV9lcnJvclI0X1JOdk50Q3Nld1dMazlUa003d181YWxsb2M1YWxsb2MxOGhhbmRsZV9hbGxvY19lcnJvclM1X1JOdk50Q3Nld1dMazlUa003d181YWxsb2M3cmF3X3ZlYzE3Y2FwYWNpdHlfb3ZlcmZsb3dUKV9STnZOdENzZGtkdDFhYUFnMVRfNGNvcmU5cGFuaWNraW5nNXBhbmljVS1fUk52TnRDc2RrZHQxYWFBZzFUXzRjb3JlOXBhbmlja2luZzlwYW5pY19mbXRWOF9STnZYczFpX050Q3Nka2R0MWFhQWcxVF80Y29yZTNmbXRSZU50QjZfN0Rpc3BsYXkzZm10QjhfVyNfUk52TnRDc2RrZHQxYWFBZzFUXzRjb3JlM2ZtdDV3cml0ZVg3X1JOdk50Q3Nka2R0MWFhQWcxVF80Y29yZTlwYW5pY2tpbmcxOHBhbmljX2JvdW5kc19jaGVja1k+X1JOdk1zYV9OdENzZGtkdDFhYUFnMVRfNGNvcmUzZm10TnRCNV85Rm9ybWF0dGVyMTJwYWRfaW50ZWdyYWxaNV9STnZOdE50Q3Nka2R0MWFhQWcxVF80Y29yZTNzdHI1Y291bnQxNGRvX2NvdW50X2NoYXJzW05fUk52TnZNc2FfTnRDc2RrZHQxYWFBZzFUXzRjb3JlM2ZtdE50QjdfOUZvcm1hdHRlcjEycGFkX2ludGVncmFsMTJ3cml0ZV9wcmVmaXhcNF9STnZNc2FfTnRDc2RrZHQxYWFBZzFUXzRjb3JlM2ZtdE50QjVfOUZvcm1hdHRlcjNwYWRdOl9STnZNc2FfTnRDc2RrZHQxYWFBZzFUXzRjb3JlM2ZtdE50QjVfOUZvcm1hdHRlcjl3cml0ZV9zdHJeP19STnZYczhfTnROdE50Q3Nka2R0MWFhQWcxVF80Y29yZTNmbXQzbnVtM2ltcG1OdEI5XzdEaXNwbGF5M2ZtdF8vX1JOdk50Q3Nka2R0MWFhQWcxVF80Y29yZTZvcHRpb24xM2V4cGVjdF9mYWlsZWQHEgEAD19fc3RhY2tfcG9pbnRlcgkRAgAHLnJvZGF0YQEFLmRhdGEATQlwcm9kdWNlcnMCCGxhbmd1YWdlAQRSdXN0AAxwcm9jZXNzZWQtYnkBBXJ1c3RjHTEuOTcuMSAoOGJhYjI2ZjRmIDIwMjYtMDctMTQpAJQBD3RhcmdldF9mZWF0dXJlcwgrC2J1bGstbWVtb3J5Kw9idWxrLW1lbW9yeS1vcHQrFmNhbGwtaW5kaXJlY3Qtb3ZlcmxvbmcrCm11bHRpdmFsdWUrD211dGFibGUtZ2xvYmFscysTbm9udHJhcHBpbmctZnB0b2ludCsPcmVmZXJlbmNlLXR5cGVzKwhzaWduLWV4dA==";
+
+    function base64ToBytes(b64str) {
+      const binary = atob(b64str);
+      const bytes = new Uint8Array(binary.length);
+      for (let i = 0; i < binary.length; i++) bytes[i] = binary.charCodeAt(i);
+      return bytes;
+    }
+
+    const { instance: wasmInstance } = await WebAssembly.instantiate(base64ToBytes(WASM_B64), {});
+    const wasm = wasmInstance.exports;
+
+    // Maps the Rust engine's numeric PieceType (0=None, 1..7) back to the
+    // string keys PIECE_SHAPES/PIECE_COLORS/rendering already use -- keeps
+    // every existing render()/drawBlock() call unchanged.
+    const PIECE_TYPE_NAMES = [null, 'I', 'O', 'T', 'S', 'Z', 'J', 'L'];
+
+    // =========================================================================
+    // 3. GAME STATE ENGINE
+    // =========================================================================
+    class GameEngine {
+      constructor() {
+        this.screen = 'menu'; // 'menu' | 'game'
+        this.menuIndex = 0;
+        this.mode = 'classic'; // 'classic' | 'marathon' | 'sprint' | 'zen'
+        this.highScores = {
+          classic: parseInt(localStorage.getItem('tetra_hs_classic') || '0', 10),
+          marathon: parseInt(localStorage.getItem('tetra_hs_marathon') || '0', 10),
+          sprint: parseFloat(localStorage.getItem('tetra_hs_sprint') || '0'),
+          zen: parseInt(localStorage.getItem('tetra_hs_zen') || '0')
+        };
+        this.resetJsState();
+      }
+
+      // JS-only bookkeeping the Rust engine doesn't own: cosmetic VFX,
+      // per-run timers, and menu/sprint/game-over UI state. Board/piece/
+      // score/lines state lives in WASM and arrives via syncFromWasm().
+      resetJsState() {
+        this.grid = Array.from({ length: BOARD_HEIGHT }, () => Array(BOARD_WIDTH).fill(null));
+        this.bag = [null, null, null];
+        this.currentPiece = null;
+        this.holdPiece = null;
+        this.canHold = true;
+        this.score = 0;
+        this.lines = 0;
+        this.level = 1;
+        this.combo = 0;
+        this.paused = false;
+        this.gameOver = false;
+        this.particles = [];
+        this.floatingTexts = [];
+        this.gameStartTime = Date.now();
+        this.elapsedMs = 0;
+        this.sprintDone = false;
+        this.lastSeenLockCount = 0;
+        this.lastLockY = BOARD_HEIGHT - 4;
+        this.shakeAmount = 0; // decays to 0 each tick(); render() reads it, doesn't own it
+        this.lastSeenLevel = 1;
+        this.newBestAnnounced = false; // fires "NEW BEST!" once per run, the moment the old high score is beaten
+        this.dangerPulse = 0; // 0..1, driven each frame by how close the stack is to topping out
+      }
+
+      startMode(mode) {
+        this.mode = mode;
+        this.screen = 'game';
+        this.resetJsState();
+        // xorshift64 needs a non-zero seed; Date.now() alone repeats within
+        // the same millisecond on a fast double-tap of Enter, so fold in a
+        // random component too.
+        const seed = (BigInt(Date.now()) ^ (BigInt(Math.floor(Math.random() * 0xffffffff)) << 32n)) & 0xffffffffffffffffn;
+        wasm.tetra_init(seed || 1n);
+        wasm.tetra_set_classic(mode === 'classic' ? 1 : 0);
+        this.syncFromWasm();
+        updateCursorState();
+        requestWakeLock();
+      }
+
+      returnToMenu() {
+        this.screen = 'menu';
+        updateCursorState();
+        releaseWakeLock();
+      }
+
+      // Pulls all board/piece/score state from the WASM engine into plain JS
+      // properties, so render() and everything else can keep reading
+      // `game.grid`/`game.currentPiece`/etc. exactly as before -- this is
+      // the only place that talks to `wasm` for state (mutations go through
+      // move/rotate/hardDrop/hold below, each of which calls this after).
+      syncFromWasm() {
+        let topOccupiedRow = BOARD_HEIGHT;
+        for (let y = 0; y < BOARD_HEIGHT; y++) {
+          for (let x = 0; x < BOARD_WIDTH; x++) {
+            this.grid[y][x] = PIECE_TYPE_NAMES[wasm.tetra_get_cell(x, y)];
+            if (this.grid[y][x] !== null && y < topOccupiedRow) topOccupiedRow = y;
+          }
+        }
+        // Tension cue: once the stack creeps into the top few rows, a
+        // topping-out is genuinely close -- pulse a red warning so it reads
+        // as pressure building, not just a silent loss a piece later.
+        const DANGER_ZONE_ROWS = 6;
+        const stackHeight = BOARD_HEIGHT - topOccupiedRow;
+        const dangerRatio = (stackHeight - (BOARD_HEIGHT - DANGER_ZONE_ROWS)) / DANGER_ZONE_ROWS;
+        this.dangerPulse = Math.max(0, Math.min(1, dangerRatio));
+
+        const curType = PIECE_TYPE_NAMES[wasm.tetra_get_current_piece()];
+        this.currentPiece = curType ? {
+          type: curType,
+          rotation: wasm.tetra_get_piece_rot(),
+          pos: [wasm.tetra_get_piece_x(), wasm.tetra_get_piece_y()]
+        } : null;
+
+        this.holdPiece = PIECE_TYPE_NAMES[wasm.tetra_get_hold_piece()];
+        this.canHold = wasm.tetra_get_can_hold() !== 0;
+        this.bag = [0, 1, 2].map(i => PIECE_TYPE_NAMES[wasm.tetra_get_next_piece(i)]);
+        this.score = wasm.tetra_get_score();
+        this.lines = wasm.tetra_get_lines();
+        this.level = wasm.tetra_get_level();
+        this.combo = wasm.tetra_get_combo();
+        this.gameOver = wasm.tetra_is_game_over() !== 0;
+      }
+
+      // Shared tail for any action that might have locked a piece (hard
+      // drop, or gravity auto-lock inside tick()) -- line-clear VFX/sfx,
+      // the sprint 40-line win condition (a JS-only concept; the engine
+      // has no notion of "sprint," it just reports lines/game_over), and
+      // the one-time game-over transition (sfx + high-score save) all have
+      // to be decided here, in one place, right after a resync.
+      afterPossibleLock(wasGameOver) {
+        // last_clear_count only *changes* on an actual lock event, but it
+        // doesn't reset to 0 on frames where nothing locked -- without this
+        // lock_count check, the clear VFX/sfx would re-fire on every single
+        // frame after a clear until the next lock happens to overwrite it.
+        const lockCount = wasm.tetra_get_lock_count();
+        const isNewLock = lockCount !== this.lastSeenLockCount;
+        this.lastSeenLockCount = lockCount;
+
+        const cleared = isNewLock ? wasm.tetra_get_last_clear_count() : 0;
+        if (cleared > 0) {
+          // Exact cleared-row positions aren't in the WASM ABI (only the
+          // count is) -- approximating with a burst near the piece's last
+          // known board position instead of the precise row(s). Visually
+          // close enough; not pixel-identical to the pre-WASM behavior.
+          const approxRow = Math.min(BOARD_HEIGHT - 1, Math.max(0, this.lastLockY ?? (BOARD_HEIGHT - 4)));
+          this.spawnLineParticles(approxRow);
+          const isTSpin = wasm.tetra_get_last_clear_was_tspin() !== 0;
+          const isPerfect = wasm.tetra_get_last_clear_was_perfect() !== 0;
+          // Shake scales with lines cleared -- a single is barely felt, a
+          // Tetris (4 lines) should land with real weight. T-spins and
+          // Perfect Clears are rarer/harder than a raw line count implies,
+          // so they get a floor bump even at low clear counts.
+          let shake = cleared >= 4 ? 14 : 2 + cleared * 2;
+          if (isTSpin) shake = Math.max(shake, 10);
+          if (isPerfect) shake = 20;
+          this.shakeAmount = Math.max(this.shakeAmount, shake);
+
+          if (isTSpin) {
+            feedback.sfx('tspin');
+            const tspinLabels = ['', 'T-SPIN SINGLE', 'T-SPIN DOUBLE', 'T-SPIN TRIPLE'];
+            this.addFloatingText(tspinLabels[cleared] || 'T-SPIN', 410, 250, '#c77dff');
+          } else if (cleared >= 4) {
+            feedback.sfx('tetris');
+            this.addFloatingText('TETRIS +800', 410, 260, '#00f0ff');
+          } else {
+            feedback.sfx('line');
+            const labels = ['', '+100 SINGLE', '+300 DOUBLE', '+500 TRIPLE'];
+            this.addFloatingText(labels[cleared] || '+100', 410, 270, '#00e676');
+          }
+          // The combo score bonus (see tetra-rust-engine's clear_lines()) is
+          // otherwise an invisible score bump -- call it out explicitly so
+          // it actually reads as a reward, not just a bigger number.
+          const combo = wasm.tetra_get_combo();
+          if (combo >= 2) {
+            // Escalating size/color as the combo climbs -- a x2 combo barely
+            // needs to shout, a x8+ combo should feel like an event. Caps
+            // out rather than growing forever so a x30 combo doesn't cover
+            // the board in text.
+            const comboSize = Math.min(30, 15 + combo * 1.5);
+            const comboColor = combo >= 6 ? '#ff5370' : (combo >= 3 ? '#ff9f43' : '#ffd166');
+            this.addFloatingText(`COMBO x${combo}`, 410, 300, comboColor, comboSize);
+            if (combo >= 5) feedback.vibrate([15, 15, 15, 15, 30]);
+          }
+          if (isPerfect) {
+            feedback.sfx('perfect');
+            this.addFloatingText('PERFECT CLEAR!', 410, 330, '#ffffff');
+          }
+
+          // Live "beat your own high score" moment -- fires the instant the
+          // player's score crosses their previous best, mid-run, not just
+          // as a game-over summary. Score-based modes only; sprint's
+          // "best" is a time (lower is better) and gets its own win-path
+          // celebration instead.
+          if (!this.newBestAnnounced && this.mode !== 'sprint') {
+            const prevBest = this.highScores[this.mode] || 0;
+            if (prevBest > 0 && this.score > prevBest) {
+              this.newBestAnnounced = true;
+              this.addFloatingText('NEW BEST!', 410, 200, '#00f0ff', 22);
+              feedback.vibrate([20, 30, 20, 30, 50]);
+            }
+          }
+        }
+
+        // Level-Up celebration -- level is otherwise just a small HUD
+        // number ticking up; calling out the moment it happens gives the
+        // difficulty ramp an actual beat instead of a silent speed-up.
+        if (this.level > this.lastSeenLevel) {
+          this.lastSeenLevel = this.level;
+          this.addFloatingText(`LEVEL ${this.level}`, 410, 230, '#00e676', 20);
+          feedback.sfx('hold'); // reuses the existing two-tone chime, distinct from clear/tetris sfx
+          this.shakeAmount = Math.max(this.shakeAmount, 6);
+        }
+
+        if (this.mode === 'sprint' && !this.sprintDone && this.lines >= 40) {
+          this.sprintDone = true;
+          this.gameOver = true; // JS-only win condition, on top of whatever wasm reports
+          feedback.sfx('tetris');
+        }
+
+        if (this.gameOver && !wasGameOver) {
+          feedback.sfx('gameover');
+          this.saveHighScore();
+          updateCursorState();
+        }
+      }
+
+      saveHighScore() {
+        if (this.mode === 'classic' && this.score > this.highScores.classic) {
+          this.highScores.classic = this.score;
+          localStorage.setItem('tetra_hs_classic', String(this.score));
+        } else if (this.mode === 'marathon' && this.score > this.highScores.marathon) {
+          this.highScores.marathon = this.score;
+          localStorage.setItem('tetra_hs_marathon', String(this.score));
+        } else if (this.mode === 'zen' && this.score > this.highScores.zen) {
+          this.highScores.zen = this.score;
+          localStorage.setItem('tetra_hs_zen', String(this.score));
+        } else if (this.mode === 'sprint' && this.sprintDone) {
+          const timeSec = (this.elapsedMs / 1000);
+          if (this.highScores.sprint === 0 || timeSec < this.highScores.sprint) {
+            this.highScores.sprint = timeSec;
+            localStorage.setItem('tetra_hs_sprint', timeSec.toFixed(2));
+          }
+        }
+      }
+
+      move([dx, dy]) {
+        if (this.gameOver || this.paused || !this.currentPiece) return false;
+        const moved = wasm.tetra_move(dx, dy) !== 0;
+        this.syncFromWasm();
+        return moved;
+      }
+
+      rotate(dir = 'cw') {
+        if (this.gameOver || this.paused || !this.currentPiece) return false;
+        const rotated = wasm.tetra_rotate(dir === 'cw' ? 1 : 0) !== 0;
+        this.syncFromWasm();
+        return rotated;
+      }
+
+      getGhost() {
+        if (!this.currentPiece) return [0, 0];
+        return [this.currentPiece.pos[0], wasm.tetra_get_ghost_y()];
+      }
+
+      hardDrop() {
+        if (this.gameOver || this.paused || !this.currentPiece) return;
+        this.lastLockY = this.currentPiece.pos[1];
+        const wasGameOver = this.gameOver;
+        const dropDistance = wasm.tetra_hard_drop();
+        feedback.sfx('drop');
+        this.syncFromWasm();
+        // Small, distance-scaled shake even without a line clear -- a
+        // near-instant top-of-board tap barely registers, a full-height
+        // slam has real impact. Capped well below a Tetris's shake so
+        // clears still read as the bigger event.
+        this.shakeAmount = Math.max(this.shakeAmount, Math.min(6, dropDistance * 0.35));
+        this.afterPossibleLock(wasGameOver);
+      }
+
+      hold() {
+        if (this.mode === 'classic') return; // Classic (1989) rules have no hold -- also enforced in wasm
+        if (this.gameOver || this.paused || !this.canHold || !this.currentPiece) return;
+        const held = wasm.tetra_hold() !== 0;
+        if (held) feedback.sfx('hold');
+        this.syncFromWasm();
+      }
+
+      spawnLineParticles(rowY) {
+        for (let i = 0; i < 24; i++) {
+          this.particles.push({
+            x: GRID_X + Math.random() * (BOARD_WIDTH * CELL_SIZE),
+            y: GRID_Y + rowY * CELL_SIZE + CELL_SIZE / 2,
+            vx: (Math.random() - 0.5) * 6,
+            vy: (Math.random() - 0.5) * 6 - 1.5,
+            life: 1.0,
+            color: ['#00f0ff', '#00e676', '#ffd166', '#c084fc'][Math.floor(Math.random() * 4)]
+          });
+        }
+      }
+
+      addFloatingText(text, x, y, color = '#ffffff', size = 15) {
+        this.floatingTexts.push({ text, x, y, vy: -1.0, life: 1.0, color, size });
+      }
+
+      tick() {
+        this.particles.forEach(p => {
+          p.x += p.vx;
+          p.y += p.vy;
+          p.life -= 0.03;
+        });
+        this.particles = this.particles.filter(p => p.life > 0);
+
+        this.floatingTexts.forEach(t => {
+          t.y += t.vy;
+          t.life -= 0.025;
+        });
+        this.floatingTexts = this.floatingTexts.filter(t => t.life > 0);
+
+        this.shakeAmount *= 0.85; // exponential decay -- snappy, not a lingering wobble
+        if (this.shakeAmount < 0.05) this.shakeAmount = 0;
+
+        if (this.screen !== 'game' || this.gameOver || this.paused) return;
+
+        this.elapsedMs = Date.now() - this.gameStartTime;
+
+        if (this.currentPiece) this.lastLockY = this.currentPiece.pos[1];
+        const wasGameOver = this.gameOver;
+        wasm.tetra_tick();
+        this.syncFromWasm();
+        this.afterPossibleLock(wasGameOver);
+      }
+    }
+
+    const game = new GameEngine();
+
+    // =========================================================================
+    // 4. CANVAS RENDERER (Classic & Modern Themes)
+    // =========================================================================
+    const canvas = document.getElementById('game-canvas');
+    const ctx = canvas.getContext('2d');
+
+    // =========================================================================
+    // RESPONSIVE CANVAS SIZING -- landscape (desktop/tablet/rotated phone)
+    // keeps the original 960x600 dashboard, scaled (not stretched) to fit;
+    // portrait (a phone held normally, which is most play sessions) gets an
+    // entirely separate compact layout that fills the actual device width
+    // instead of being letterboxed inside a landscape-shaped canvas. Every
+    // canvas.width/height combo below is a devicePixelRatio-scaled backing
+    // store with a ctx transform absorbing the DPR, so all drawing code
+    // (both layouts) works in plain CSS-pixel logical coordinates -- crisp
+    // on retina/high-DPI phones instead of the browser stretching a
+    // fixed-resolution bitmap.
+    let layoutMode = 'landscape'; // 'landscape' | 'portrait'
+    let CANVAS_LOGICAL_W = 960;
+    let CANVAS_LOGICAL_H = 600;
+    const LANDSCAPE_ASPECT = 960 / 600;
+    const PORTRAIT_ASPECT_THRESHOLD = 1.15; // box aspect below this -> portrait layout
+
+    function computePortraitGrid() {
+      // Board fills the width below a top HUD strip, cell size picked to
+      // fit both available width and height (whichever is tighter) so nothing
+      // gets clipped on unusually short or narrow phones.
+      const hudH = 108;
+      const marginX = 10;
+      const marginBottom = 10;
+      const availW = CANVAS_LOGICAL_W - marginX * 2;
+      const availH = CANVAS_LOGICAL_H - hudH - marginBottom;
+      const cell = Math.max(10, Math.floor(Math.min(availW / BOARD_WIDTH, availH / BOARD_HEIGHT)));
+      CELL_SIZE = cell;
+      GRID_X = Math.round((CANVAS_LOGICAL_W - BOARD_WIDTH * cell) / 2);
+      GRID_Y = hudH;
+    }
+
+    function resizeCanvas() {
+      const stage = canvas.parentElement;
+      const rect = stage.getBoundingClientRect();
+      const boxW = Math.max(1, Math.floor(rect.width));
+      const boxH = Math.max(1, Math.floor(rect.height));
+      const boxAspect = boxW / boxH;
+
+      if (boxAspect < PORTRAIT_ASPECT_THRESHOLD) {
+        layoutMode = 'portrait';
+        CANVAS_LOGICAL_W = boxW;
+        CANVAS_LOGICAL_H = boxH;
+        computePortraitGrid();
+      } else {
+        layoutMode = 'landscape';
+        // Scale the fixed 960x600 design to the largest size that fits the
+        // box without cropping -- same visual result the old CSS
+        // max-width/max-height/aspect-ratio rules produced, just computed
+        // in JS now so a DPR-scaled backing store can be sized to match.
+        if (boxAspect > LANDSCAPE_ASPECT) {
+          CANVAS_LOGICAL_H = boxH;
+          CANVAS_LOGICAL_W = Math.floor(boxH * LANDSCAPE_ASPECT);
+        } else {
+          CANVAS_LOGICAL_W = boxW;
+          CANVAS_LOGICAL_H = Math.floor(boxW / LANDSCAPE_ASPECT);
+        }
+        CELL_SIZE = 27;
+        GRID_X = 345;
+        GRID_Y = 28;
+      }
+
+      const dpr = Math.min(window.devicePixelRatio || 1, 3); // capped so old/low-end phones aren't pushed into a huge fill-rate
+      canvas.width = Math.round(CANVAS_LOGICAL_W * dpr);
+      canvas.height = Math.round(CANVAS_LOGICAL_H * dpr);
+      canvas.style.width = CANVAS_LOGICAL_W + 'px';
+      canvas.style.height = CANVAS_LOGICAL_H + 'px';
+      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    }
+
+    // Menu-screen mode-card list + colorblind-palette toggle hit boxes
+    // (canvas-drawn, not HTML elements) -- one function shared by render()
+    // and the touchstart/mousedown menu hit-testing so the drawn rects and
+    // the clickable rects can never drift apart, and so portrait gets its
+    // own single-column layout without duplicating the hit-test logic.
+    function getModeLayout() {
+      if (layoutMode === 'portrait') {
+        // Sized as a function of the actual canvas height, not fixed
+        // pixel offsets -- on a short viewport (small phone, or a browser
+        // window resized quite short) fixed offsets tuned for a tall phone
+        // would push the colorblind toggle and footer text past the bottom
+        // edge and into each other.
+        const margin = 14;
+        const cardW = CANVAS_LOGICAL_W - margin * 2;
+        const titleY = Math.round(CANVAS_LOGICAL_H * 0.07) + 24;
+        const subtitleY = titleY + 22;
+        const startY = subtitleY + 26;
+        const footerY = CANVAS_LOGICAL_H - 14;
+        const gap = 8;
+        const cbH = 32;
+        const bottomReserve = 22; // gap between cb toggle and footer text
+        const availableForCards = footerY - bottomReserve - cbH - gap - startY;
+        const cardH = Math.max(44, Math.min(70, (availableForCards - 3 * gap) / 4));
+        const rects = [0, 1, 2, 3].map((i) => ({ x: margin, y: startY + i * (cardH + gap), w: cardW, h: cardH }));
+        const cbY = rects[3].y + cardH + gap;
+        return {
+          rects,
+          cb: { x: margin, y: cbY, w: cardW, h: cbH },
+          titleY,
+          subtitleY,
+          footerY
+        };
+      }
+      const rects = [0, 1, 2, 3].map((i) => ({ x: 220, y: 168 + i * 74, w: 520, h: 62 }));
+      return {
+        rects,
+        cb: { x: 220, y: 468, w: 320, h: 34 },
+        titleY: 105,
+        subtitleY: 135,
+        footerY: 520
+      };
+    }
+
+    function updateCursorState() {
+      if (game.screen === 'game' && !game.gameOver && !game.paused) {
+        canvas.style.cursor = 'none';
+      } else {
+        canvas.style.cursor = 'default';
+      }
+      // Every code path that flips game.paused/game.screen already calls
+      // this function right after -- piggyback the pause-button icon sync
+      // here instead of duplicating it at each call site (keyboard 'P',
+      // canvas tap-to-resume, the on-screen pause button itself).
+      const pauseBtn = document.getElementById('btn-pause');
+      if (pauseBtn) pauseBtn.textContent = (game.screen === 'game' && game.paused && !game.gameOver) ? '▶' : '⏸';
+    }
+
+    function drawCard(x, y, w, h, title) {
+      ctx.save();
+      ctx.fillStyle = '#080c14';
+      ctx.beginPath();
+      ctx.roundRect(x, y, w, h, 10);
+      ctx.fill();
+
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+      ctx.lineWidth = 1;
+      ctx.stroke();
+
+      if (title) {
+        ctx.fillStyle = '#0a0f1a';
+        ctx.beginPath();
+        ctx.roundRect(x, y, w, 26, [10, 10, 0, 0]);
+        ctx.fill();
+
+        ctx.font = '700 11px "JetBrains Mono", monospace';
+        ctx.fillStyle = '#738a9c';
+        ctx.fillText(title, x + 12, y + 17);
+      }
+      ctx.restore();
+    }
+
+    function drawBlock(x, y, type, ghost = false) {
+      const color = pieceColor(type);
+      const size = CELL_SIZE;
+
+      ctx.save();
+      if (ghost) {
+        if (game.mode === 'classic') {
+          ctx.restore();
+          return; // No ghost in classic 1989 mode
+        }
+        ctx.strokeStyle = color.fill;
+        ctx.lineWidth = 1.5;
+        ctx.setLineDash([3, 3]);
+        ctx.strokeRect(x + 2, y + 2, size - 4, size - 4);
+      } else {
+        ctx.fillStyle = color.fill;
+        ctx.fillRect(x + 1, y + 1, size - 2, size - 2);
+
+        // Highlight
+        ctx.fillStyle = 'rgba(255, 255, 255, 0.28)';
+        ctx.fillRect(x + 1, y + 1, size - 2, 2);
+        ctx.fillRect(x + 1, y + 1, 2, size - 2);
+
+        // Shadow
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.35)';
+        ctx.fillRect(x + 1, y + size - 3, size - 2, 2);
+        ctx.fillRect(x + size - 3, y + 1, 2, size - 2);
+
+        ctx.strokeStyle = 'rgba(0, 0, 0, 0.5)';
+        ctx.lineWidth = 1;
+        ctx.strokeRect(x + 1, y + 1, size - 2, size - 2);
+      }
+      ctx.restore();
+    }
+
+    function drawMini(type, cx, cy, sz = 15) {
+      if (!type) return;
+      const offsets = PIECE_SHAPES[type][0];
+      const minX = Math.min(...offsets.map(o => o[0]));
+      const maxX = Math.max(...offsets.map(o => o[0]));
+      const minY = Math.min(...offsets.map(o => o[1]));
+      const maxY = Math.max(...offsets.map(o => o[1]));
+      const pw = (maxX - minX + 1) * sz;
+      const ph = (maxY - minY + 1) * sz;
+      const startX = cx - Math.floor(pw / 2);
+      const startY = cy - Math.floor(ph / 2);
+
+      offsets.forEach(([dx, dy]) => {
+        const bx = startX + (dx - minX) * sz;
+        const by = startY + (dy - minY) * sz;
+        const color = pieceColor(type);
+        ctx.fillStyle = color.fill;
+        ctx.fillRect(bx, by, sz - 2, sz - 2);
+      });
+    }
+
+    function render() {
+      ctx.clearRect(0, 0, CANVAS_LOGICAL_W, CANVAS_LOGICAL_H);
+
+      // ==========================================
+      // A. MAIN MENU RENDER
+      // ==========================================
+      if (game.screen === 'menu') {
+        const isPortrait = layoutMode === 'portrait';
+        const layout = getModeLayout();
+
+        ctx.fillStyle = '#000000';
+        ctx.fillRect(0, 0, CANVAS_LOGICAL_W, CANVAS_LOGICAL_H);
+
+        // Title Header
+        ctx.save();
+        if (isPortrait) ctx.textAlign = 'center';
+        ctx.font = isPortrait ? '900 32px "Inter", sans-serif' : '900 46px "Inter", sans-serif';
+        ctx.fillStyle = '#f1f5f9';
+        ctx.fillText('TETRA', isPortrait ? CANVAS_LOGICAL_W / 2 : 380, layout.titleY);
+
+        ctx.font = isPortrait ? '700 11px "JetBrains Mono", monospace' : '700 12px "JetBrains Mono", monospace';
+        ctx.fillStyle = '#00f0ff';
+        ctx.fillText('⚡ ARCADE & MOBILE SUITE', isPortrait ? CANVAS_LOGICAL_W / 2 : 370, layout.subtitleY);
+        ctx.restore();
+
+        // 4 Core Popular Modes
+        const modes = [
+          { id: 'classic', name: 'CLASSIC TETRIS (1989)', desc: 'Original authentic rules, classic gravity & retro scoring', icon: '🕹️', hs: `${game.highScores.classic.toLocaleString()} PTS` },
+          { id: 'marathon', name: 'MODERN MARATHON', desc: 'Guideline SRS, Hold queue, 15 escalating speed levels', icon: '🏆', hs: `${game.highScores.marathon.toLocaleString()} PTS` },
+          { id: 'sprint', name: '40-LINE SPRINT', desc: 'Clear 40 lines as fast as humanly possible with timer', icon: '⚡', hs: game.highScores.sprint > 0 ? `${game.highScores.sprint.toFixed(2)}s` : 'NO RECORD' },
+          { id: 'zen', name: 'ZEN ENDLESS', desc: 'Relaxed endless practice with zero game-over rush', icon: '🧘', hs: `${game.highScores.zen.toLocaleString()} PTS` }
+        ];
+
+        modes.forEach((m, idx) => {
+          const r = layout.rects[idx];
+          const isSelected = idx === game.menuIndex;
+
+          ctx.save();
+          if (isSelected) {
+            ctx.fillStyle = 'rgba(0, 240, 255, 0.12)';
+            ctx.strokeStyle = '#00f0ff';
+            ctx.shadowColor = 'rgba(0, 240, 255, 0.3)';
+            ctx.shadowBlur = 12;
+          } else {
+            ctx.fillStyle = '#080c14';
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.08)';
+          }
+
+          ctx.beginPath();
+          ctx.roundRect(r.x, r.y, r.w, r.h, 12);
+          ctx.fill();
+          ctx.stroke();
+
+          // Title & Icon
+          ctx.font = isPortrait ? '800 14px "Inter", sans-serif' : '800 15px "Inter", sans-serif';
+          ctx.fillStyle = isSelected ? '#ffffff' : '#e2e8f0';
+          ctx.fillText(`${m.icon} ${m.name}`, r.x + 16, r.y + (isPortrait ? 26 : 27));
+
+          // Description doesn't wrap on canvas -- narrow portrait cards
+          // don't have room for it without overflowing, so skip it there.
+          if (!isPortrait) {
+            ctx.font = '500 11px "Inter", sans-serif';
+            ctx.fillStyle = '#738a9c';
+            ctx.fillText(m.desc, r.x + 28, r.y + 48);
+          }
+
+          // Best Record
+          ctx.font = '700 11px "JetBrains Mono", monospace';
+          ctx.fillStyle = isSelected ? '#00f0ff' : '#00e676';
+          if (isPortrait) {
+            ctx.textAlign = 'right';
+            ctx.fillText(m.hs, r.x + r.w - 12, r.y + 27);
+            ctx.textAlign = 'left';
+          } else {
+            ctx.fillText(m.hs, 640, r.y + 36);
+          }
+          ctx.restore();
+        });
+
+        // Colorblind Palette Toggle -- placed between the mode list and the
+        // instructions footer, hit-tested the same way as the mode cards.
+        const cb = layout.cb;
+        ctx.save();
+        ctx.fillStyle = colorblindMode ? 'rgba(0, 240, 255, 0.14)' : '#080c14';
+        ctx.strokeStyle = colorblindMode ? '#00f0ff' : 'rgba(255, 255, 255, 0.12)';
+        ctx.beginPath();
+        ctx.roundRect(cb.x, cb.y, cb.w, cb.h, 8);
+        ctx.fill();
+        ctx.stroke();
+        ctx.font = '700 12px "Inter", sans-serif';
+        ctx.fillStyle = colorblindMode ? '#00f0ff' : '#94a3b8';
+        ctx.fillText(`👁 Colorblind-Safe Palette: ${colorblindMode ? 'ON' : 'OFF'}`, cb.x + 14, cb.y + 22);
+        ctx.restore();
+
+        // Instructions Footer
+        ctx.save();
+        if (isPortrait) ctx.textAlign = 'center';
+        ctx.font = isPortrait ? '500 11px "Inter", sans-serif' : '500 12px "Inter", sans-serif';
+        ctx.fillStyle = 'rgba(148, 163, 184, 0.75)';
+        ctx.fillText('Tap / Click Mode to Play • Optimized for Touch & Mobile Play', isPortrait ? CANVAS_LOGICAL_W / 2 : 270, layout.footerY);
+        ctx.restore();
+        return;
+      }
+
+      // ==========================================
+      // B. ACTIVE GAMEPLAY RENDER
+      // ==========================================
+      // Screen shake: one outer save/translate wraps everything in this
+      // section (grid, pieces, HUD, any overlay) -- matching ctx.restore()
+      // is the very last thing render() does, below.
+      ctx.save();
+      if (game.shakeAmount > 0.1) {
+        const mag = game.shakeAmount;
+        ctx.translate((Math.random() - 0.5) * mag, (Math.random() - 0.5) * mag);
+      }
+
+      const isPortrait = layoutMode === 'portrait';
+      const gw = BOARD_WIDTH * CELL_SIZE;
+      const gh = BOARD_HEIGHT * CELL_SIZE;
+
+      // 1. Matrix Grid (Pitch Black)
+      ctx.save();
+      ctx.fillStyle = '#000000';
+      ctx.fillRect(GRID_X, GRID_Y, gw, gh);
+
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.14)';
+      ctx.lineWidth = 1;
+      ctx.strokeRect(GRID_X, GRID_Y, gw, gh);
+
+      // Gridlines
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.035)';
+      for (let c = 1; c < BOARD_WIDTH; c++) {
+        const x = GRID_X + c * CELL_SIZE;
+        ctx.beginPath(); ctx.moveTo(x, GRID_Y); ctx.lineTo(x, GRID_Y + gh); ctx.stroke();
+      }
+      for (let r = 1; r < BOARD_HEIGHT; r++) {
+        const y = GRID_Y + r * CELL_SIZE;
+        ctx.beginPath(); ctx.moveTo(GRID_X, y); ctx.lineTo(GRID_X + gw, y); ctx.stroke();
+      }
+      ctx.restore();
+
+      // 2. Locked Grid Blocks. A completely-filled row can only exist in
+      // `game.grid` during the WASM engine's clear-delay flash window (see
+      // tetra-rust-engine's CLEAR_DELAY_FRAMES) -- clear_lines() marks a
+      // full row for the flash the instant it's detected, so there's no
+      // other moment a row is ever fully filled. That means "is this row
+      // full" is a safe, correct signal to flash it, with no separate
+      // per-row state needed from WASM.
+      const flashPhase = (performance.now() % 160) < 80; // ~6.25Hz strobe
+      for (let y = 0; y < BOARD_HEIGHT; y++) {
+        let rowFull = true;
+        for (let x = 0; x < BOARD_WIDTH; x++) {
+          if (game.grid[y][x] === null) { rowFull = false; break; }
+        }
+        if (rowFull) {
+          ctx.fillStyle = flashPhase ? '#ffffff' : '#0a0e16';
+          ctx.fillRect(GRID_X, GRID_Y + y * CELL_SIZE, BOARD_WIDTH * CELL_SIZE, CELL_SIZE - 1);
+          continue;
+        }
+        for (let x = 0; x < BOARD_WIDTH; x++) {
+          if (game.grid[y][x] !== null) {
+            drawBlock(GRID_X + x * CELL_SIZE, GRID_Y + y * CELL_SIZE, game.grid[y][x]);
+          }
+        }
+      }
+
+      // 3. Ghost Piece & Active Piece
+      if (game.currentPiece) {
+        const ghost = game.getGhost();
+        const offsets = PIECE_SHAPES[game.currentPiece.type][game.currentPiece.rotation];
+        offsets.forEach(([ox, oy]) => {
+          const x = ghost[0] + ox;
+          const y = ghost[1] + oy;
+          if (y >= 0) drawBlock(GRID_X + x * CELL_SIZE, GRID_Y + y * CELL_SIZE, game.currentPiece.type, true);
+        });
+
+        offsets.forEach(([ox, oy]) => {
+          const x = game.currentPiece.pos[0] + ox;
+          const y = game.currentPiece.pos[1] + oy;
+          if (y >= 0) drawBlock(GRID_X + x * CELL_SIZE, GRID_Y + y * CELL_SIZE, game.currentPiece.type);
+        });
+      }
+
+      if (isPortrait) {
+        // Compact top HUD strip: HOLD (left) · SCORE/LINES/LEVEL (center) ·
+        // NEXT (right) -- no side dashboard columns (no room on a phone),
+        // and no MODE INFO tips panel (the board dominating the screen
+        // matters far more than a tips card on mobile).
+        const hudPad = 10;
+        const boxSize = 64;
+        const miniSz = 12; // smaller than the default 15 -- at 15, a 4-wide
+                            // I-piece (60px) barely fits a single 64px box
+                            // and badly overlaps its neighbor once 3 of
+                            // these sit side by side in the NEXT strip.
+
+        if (game.mode !== 'classic') {
+          drawCard(hudPad, hudPad, boxSize, boxSize, 'HOLD');
+          if (game.holdPiece) {
+            drawMini(game.holdPiece, hudPad + boxSize / 2, hudPad + boxSize / 2 + 8, miniSz);
+          }
+        }
+
+        const nextCount = game.mode === 'classic' ? 1 : 3;
+        const nextPitch = miniSz * 4 + 10; // widest piece (I, 4 cells wide) plus a gap
+        const nextBoxW = 16 + nextCount * nextPitch;
+        const nextX = CANVAS_LOGICAL_W - hudPad - nextBoxW;
+        drawCard(nextX, hudPad, nextBoxW, boxSize, 'NEXT');
+        for (let i = 0; i < nextCount; i++) {
+          const nextType = game.bag[i];
+          if (nextType) drawMini(nextType, nextX + nextPitch / 2 + 16 + i * nextPitch, hudPad + boxSize / 2 + 8, miniSz);
+        }
+
+        let modeSpecificVal = `${game.highScores[game.mode] || 0}`;
+        let modeSpecificLabel = 'BEST';
+        if (game.mode === 'sprint') {
+          modeSpecificLabel = 'LEFT';
+          modeSpecificVal = `${Math.max(0, 40 - game.lines)}`;
+        }
+        const midStats = [
+          { label: 'SCORE', val: game.score.toLocaleString(), col: '#00f0ff' },
+          { label: 'LINES', val: game.lines, col: '#00e676' },
+          { label: 'LVL', val: game.level, col: '#f1f5f9' },
+          { label: modeSpecificLabel, val: modeSpecificVal, col: '#ffd166' }
+        ];
+        const midX = hudPad + boxSize + 8;
+        const midW = nextX - 8 - midX;
+        const colW = midW / midStats.length;
+        midStats.forEach((s, idx) => {
+          const cx = midX + colW * idx + colW / 2;
+          ctx.save();
+          ctx.textAlign = 'center';
+          ctx.font = '700 9px "JetBrains Mono", monospace';
+          ctx.fillStyle = '#738a9c';
+          ctx.fillText(s.label, cx, hudPad + 30);
+          ctx.font = '800 14px "JetBrains Mono", monospace';
+          ctx.fillStyle = s.col;
+          ctx.fillText(String(s.val), cx, hudPad + 50);
+          ctx.restore();
+        });
+      } else {
+        // 4. Left Cards: Hold & Stats
+        if (game.mode !== 'classic') {
+          drawCard(130, 28, 175, 135, 'HOLD');
+          if (game.holdPiece) {
+            drawMini(game.holdPiece, 217, 105);
+          } else {
+            ctx.font = '500 11px "Inter", sans-serif';
+            ctx.fillStyle = '#475569';
+            ctx.fillText('Tap Hold / Key C', 165, 105);
+          }
+        }
+
+        const statsY = game.mode === 'classic' ? 28 : 180;
+        const statsH = game.mode === 'classic' ? 320 : 275;
+        drawCard(130, statsY, 175, statsH, 'STATS');
+
+        let modeSpecificVal = `${game.highScores[game.mode] || 0}`;
+        let modeSpecificLabel = 'BEST SCORE';
+        if (game.mode === 'sprint') {
+          const remainingLines = Math.max(0, 40 - game.lines);
+          modeSpecificLabel = 'LINES LEFT';
+          modeSpecificVal = `${remainingLines}`;
+        }
+
+        const statsList = [
+          { label: 'SCORE', val: game.score.toLocaleString(), col: '#00f0ff' },
+          { label: modeSpecificLabel, val: modeSpecificVal, col: '#ffd166' },
+          { label: 'LINES', val: game.lines, col: '#00e676' },
+          { label: 'LEVEL', val: game.level, col: '#f1f5f9' }
+        ];
+        statsList.forEach((s, idx) => {
+          const sy = statsY + 45 + idx * 52;
+          ctx.font = '700 10px "JetBrains Mono", monospace';
+          ctx.fillStyle = '#738a9c';
+          ctx.fillText(s.label, 148, sy);
+          ctx.font = '800 18px "JetBrains Mono", monospace';
+          ctx.fillStyle = s.col;
+          ctx.fillText(String(s.val), 148, sy + 22);
+        });
+
+        // 5. Right Cards: Next Queue & Mode Guide
+        const nextCount = game.mode === 'classic' ? 1 : 3;
+        const nextH = game.mode === 'classic' ? 140 : 335;
+        drawCard(655, 28, 175, nextH, 'NEXT');
+        for (let i = 0; i < nextCount; i++) {
+          const nextType = game.bag[i];
+          if (nextType) {
+            drawMini(nextType, 742, 90 + i * 90);
+          }
+        }
+
+        const guideY = game.mode === 'classic' ? 185 : 380;
+        drawCard(655, guideY, 175, 185, 'MODE INFO');
+        ctx.font = '800 12px "Inter", sans-serif';
+        ctx.fillStyle = '#00f0ff';
+        ctx.fillText(game.mode.toUpperCase(), 672, guideY + 38);
+
+        const modeTips = {
+          classic: ['Classic 1989 Rules', 'Original NES gravity', '1-Piece Next queue', 'No hold / no kicks'],
+          marathon: ['150 Lines Challenge', 'SRS Wall Kicks', 'Hold queue enabled', 'Escalating speed'],
+          sprint: ['40-Line Speedrun', 'Sprint against clock', 'Hard drop for speed', 'Clean efficient clears'],
+          zen: ['Endless Free Play', 'Zero rush / no game over', 'Practice your stacks', 'Pure relaxed flow']
+        };
+        (modeTips[game.mode] || []).forEach((tip, idx) => {
+          ctx.font = '500 10px "Inter", sans-serif';
+          ctx.fillStyle = '#94a3b8';
+          ctx.fillText(tip, 672, guideY + 65 + idx * 22);
+        });
+      }
+
+      // 6. Particles & Floating Text
+      game.particles.forEach(p => {
+        ctx.save();
+        ctx.globalAlpha = p.life;
+        ctx.fillStyle = p.color;
+        ctx.fillRect(p.x, p.y, 3, 3);
+        ctx.restore();
+      });
+
+      game.floatingTexts.forEach(t => {
+        ctx.save();
+        ctx.globalAlpha = t.life;
+        ctx.font = `800 ${t.size || 15}px "JetBrains Mono", monospace`;
+        ctx.fillStyle = t.color;
+        ctx.fillText(t.text, t.x, t.y);
+        ctx.restore();
+      });
+
+      // 7. Pause Modal. Text is centered on the board's actual midpoint
+      // (GRID_X + gw/2) rather than fixed offsets so this works whether gw
+      // is the landscape default (270) or portrait's wider, device-fit
+      // board.
+      const boardCx = GRID_X + gw / 2;
+      if (game.paused && !game.gameOver) {
+        ctx.save();
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.88)';
+        ctx.fillRect(GRID_X, GRID_Y, gw, gh);
+        ctx.textAlign = 'center';
+        ctx.font = '800 20px "Inter", sans-serif';
+        ctx.fillStyle = '#00f0ff';
+        ctx.fillText('PAUSED', boardCx, GRID_Y + gh / 2);
+        ctx.font = '500 12px "Inter", sans-serif';
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText('Tap to Resume', boardCx, GRID_Y + gh / 2 + 30);
+        ctx.restore();
+      }
+
+      // 8. Game Over Modal
+      if (game.gameOver) {
+        ctx.save();
+        ctx.fillStyle = 'rgba(0, 0, 0, 0.92)';
+        ctx.fillRect(GRID_X, GRID_Y, gw, gh);
+        ctx.textAlign = 'center';
+
+        const isWin = game.mode === 'sprint' && game.sprintDone;
+        ctx.font = '900 22px "Inter", sans-serif';
+        ctx.fillStyle = isWin ? '#00e676' : '#ff5370';
+        ctx.fillText(isWin ? 'SPRINT CLEAR!' : 'GAME OVER', boardCx, GRID_Y + 160);
+
+        ctx.font = '700 11px "JetBrains Mono", monospace';
+        ctx.fillStyle = '#738a9c';
+        ctx.fillText(isWin ? 'FINAL TIME' : 'FINAL SCORE', boardCx, GRID_Y + 215);
+
+        ctx.font = '800 24px "JetBrains Mono", monospace';
+        ctx.fillStyle = '#00f0ff';
+        const displayScore = isWin ? `${(game.elapsedMs / 1000).toFixed(2)}s` : game.score.toLocaleString();
+        ctx.fillText(displayScore, boardCx, GRID_Y + 248);
+
+        ctx.font = '700 11px "JetBrains Mono", monospace';
+        ctx.fillStyle = '#738a9c';
+        ctx.fillText('LINES CLEARED', boardCx, GRID_Y + 290);
+        ctx.font = '800 18px "JetBrains Mono", monospace';
+        ctx.fillStyle = '#00e676';
+        ctx.fillText(String(game.lines), boardCx, GRID_Y + 316);
+
+        // Play Again Button
+        ctx.fillStyle = '#00e676';
+        ctx.beginPath();
+        ctx.roundRect(GRID_X + 35, GRID_Y + 370, gw - 70, 42, 8);
+        ctx.fill();
+
+        ctx.font = '800 13px "Inter", sans-serif';
+        ctx.fillStyle = '#000000';
+        ctx.fillText('PLAY AGAIN (R)', boardCx, GRID_Y + 396);
+        ctx.restore();
+      }
+      // Danger vignette -- full-canvas pulsing red border when the stack
+      // is near the top. Drawn last so it sits above the board/HUD, but
+      // still inside the shake wrapper so a hard drop under pressure jitters
+      // it along with everything else instead of looking pasted on.
+      if (game.dangerPulse > 0 && !game.paused && !game.gameOver) {
+        ctx.save();
+        const pulse = 0.35 + 0.35 * Math.sin(performance.now() / 180);
+        ctx.strokeStyle = `rgba(255, 30, 30, ${(0.25 + 0.55 * pulse) * game.dangerPulse})`;
+        ctx.lineWidth = 6 + 4 * game.dangerPulse;
+        ctx.strokeRect(3, 3, CANVAS_LOGICAL_W - 6, CANVAS_LOGICAL_H - 6);
+        ctx.restore();
+      }
+
+      ctx.restore(); // matches the shake ctx.save() at the top of section B
+    }
+
+    // =========================================================================
+    // 5. MOBILE TOUCH GESTURES & CONTROLS
+    // =========================================================================
+    function getCanvasPos(e) {
+      const rect = canvas.getBoundingClientRect();
+      // Scale against the logical (CSS-pixel) canvas size, not the raw
+      // devicePixelRatio-scaled backing store (canvas.width/height) --
+      // render() draws in logical coordinates, so hit-testing must match.
+      const scaleX = CANVAS_LOGICAL_W / rect.width;
+      const scaleY = CANVAS_LOGICAL_H / rect.height;
+      return {
+        x: (e.clientX - rect.left) * scaleX,
+        y: (e.clientY - rect.top) * scaleY
+      };
+    }
+
+    // Mobile Board Touch Gestures (Tap to Rotate, Swipe Down to Drop, Drag to Slide)
+    let touchStartX = 0;
+    let touchStartY = 0;
+    let touchMoved = false;
+
+    canvas.addEventListener('touchstart', (e) => {
+      feedback.init();
+      const touch = e.touches[0];
+      const pos = getCanvasPos(touch);
+      touchStartX = pos.x;
+      touchStartY = pos.y;
+      touchMoved = false;
+
+      if (game.screen === 'menu') {
+        const modes = ['classic', 'marathon', 'sprint', 'zen'];
+        const layout = getModeLayout();
+        for (let idx = 0; idx < 4; idx++) {
+          const r = layout.rects[idx];
+          if (pos.x >= r.x && pos.x <= r.x + r.w && pos.y >= r.y && pos.y <= r.y + r.h) {
+            game.startMode(modes[idx]);
+            return;
+          }
+        }
+        const cb = layout.cb;
+        if (pos.x >= cb.x && pos.x <= cb.x + cb.w && pos.y >= cb.y && pos.y <= cb.y + cb.h) {
+          toggleColorblindMode();
+          return;
+        }
+      }
+
+      if (game.gameOver) {
+        game.startMode(game.mode);
+        return;
+      }
+
+      if (game.paused) {
+        game.paused = false;
+        updateCursorState();
+        return;
+      }
+    }, { passive: false });
+
+    canvas.addEventListener('touchmove', (e) => {
+      e.preventDefault();
+      if (game.screen !== 'game' || game.gameOver || game.paused) return;
+
+      const touch = e.touches[0];
+      const pos = getCanvasPos(touch);
+      const dx = pos.x - touchStartX;
+      const dy = pos.y - touchStartY;
+
+      // Horizontal Drag
+      if (Math.abs(dx) > CELL_SIZE * 0.8) {
+        touchMoved = true;
+        if (dx > 0) {
+          if (game.move([1, 0])) feedback.sfx('move');
+        } else {
+          if (game.move([-1, 0])) feedback.sfx('move');
+        }
+        touchStartX = pos.x;
+      }
+
+      // Quick Swipe Down
+      if (dy > CELL_SIZE * 2.5) {
+        touchMoved = true;
+        game.hardDrop();
+        touchStartY = pos.y;
+      }
+    }, { passive: false });
+
+    canvas.addEventListener('touchend', (e) => {
+      if (game.screen === 'game' && !game.gameOver && !game.paused && !touchMoved) {
+        // Quick Tap on Board -> Rotate Clockwise!
+        if (game.rotate('cw')) feedback.sfx('rotate');
+      }
+    });
+
+    // Mouse Clicks for Menu & Desktop
+    canvas.addEventListener('mousedown', (e) => {
+      feedback.init();
+      const pos = getCanvasPos(e);
+
+      if (game.screen === 'menu') {
+        const modes = ['classic', 'marathon', 'sprint', 'zen'];
+        const layout = getModeLayout();
+        for (let idx = 0; idx < 4; idx++) {
+          const r = layout.rects[idx];
+          if (pos.x >= r.x && pos.x <= r.x + r.w && pos.y >= r.y && pos.y <= r.y + r.h) {
+            game.startMode(modes[idx]);
+            return;
+          }
+        }
+        const cb = layout.cb;
+        if (pos.x >= cb.x && pos.x <= cb.x + cb.w && pos.y >= cb.y && pos.y <= cb.y + cb.h) {
+          toggleColorblindMode();
+        }
+        return;
+      }
+
+      if (game.gameOver) {
+        game.startMode(game.mode);
+        return;
+      }
+
+      if (game.paused) {
+        game.paused = false;
+        updateCursorState();
+        return;
+      }
+    });
+
+    canvas.addEventListener('contextmenu', (e) => e.preventDefault());
+
+    // Keyboard Directional Controls
+    // DAS/ARR (Delayed Auto Shift / Auto Repeat Rate) for horizontal
+    // movement -- a real gap from a "feels professional" standpoint, not
+    // cosmetic: without it, holding a direction key relies on the browser's
+    // own OS-level key-repeat, which is inconsistent across browsers/OSes,
+    // has an unpredictable delay, and isn't something a player can rely on
+    // for precise placement.
+    //
+    // Down is hard drop (matches the touch swipe-down gesture below and the
+    // on-screen Drop button -- one "down = instantly drop" behavior across
+    // every input method, which matters far more on mobile than a
+    // competitive soft-drop-hold would). Guarded by `!e.repeat` exactly like
+    // Space, so holding the key doesn't repeat-fire native key-repeat into
+    // a hard-drop-lock loop every frame.
+    const DAS_MS = 133; // time held before auto-repeat kicks in (common competitive default)
+    const ARR_MS = 25;  // time between repeated moves once auto-repeat is active
+    let leftHeld = false, rightHeld = false;
+    let dasDirection = 0;   // -1 left, 0 none, 1 right -- which direction DAS is currently tracking
+    let dasStartTime = 0;
+    let lastArrMoveTime = 0;
+
+    function handleDasArr(timestamp) {
+      if (game.screen !== 'game' || game.gameOver || game.paused) return;
+      const dir = (rightHeld && !leftHeld) ? 1 : ((leftHeld && !rightHeld) ? -1 : 0);
+      if (dir !== dasDirection) {
+        // Direction just changed (new press, release, or both/neither held)
+        // -- (re)start the DAS timer and take one immediate step so tapping
+        // still feels instant, not delayed by DAS on every tap.
+        dasDirection = dir;
+        dasStartTime = timestamp;
+        lastArrMoveTime = timestamp;
+        if (dir !== 0 && game.move([dir, 0])) feedback.sfx('move');
+        return;
+      }
+      if (dir === 0) return;
+      if (timestamp - dasStartTime >= DAS_MS && timestamp - lastArrMoveTime >= ARR_MS) {
+        lastArrMoveTime = timestamp;
+        if (game.move([dir, 0])) feedback.sfx('move');
+      }
+    }
+
+    window.addEventListener('keydown', (e) => {
+      feedback.init();
+
+      if (game.screen === 'menu') {
+        if (e.repeat) return;
+        if (e.code === 'ArrowUp' || e.code === 'KeyW') game.menuIndex = (game.menuIndex + 3) % 4;
+        else if (e.code === 'ArrowDown' || e.code === 'KeyS') game.menuIndex = (game.menuIndex + 1) % 4;
+        else if (e.code === 'Enter' || e.code === 'Space') {
+          const modes = ['classic', 'marathon', 'sprint', 'zen'];
+          game.startMode(modes[game.menuIndex]);
+        } else if (e.code === 'KeyC') {
+          // 'C' is only free here -- during gameplay it's Hold Piece.
+          toggleColorblindMode();
+        }
+        return;
+      }
+
+      if (e.code === 'KeyR') {
+        if (!e.repeat) game.startMode(game.mode);
+        return;
+      }
+
+      if (e.code === 'KeyP') {
+        if (!e.repeat) { game.paused = !game.paused; updateCursorState(); }
+        return;
+      }
+
+      if (e.code === 'Escape') {
+        if (!e.repeat) game.returnToMenu();
+        return;
+      }
+
+      if (game.gameOver) {
+        if (!e.repeat && (e.code === 'Space' || e.code === 'Enter')) game.startMode(game.mode);
+        return;
+      }
+
+      switch (e.code) {
+        case 'ArrowLeft':
+        case 'KeyA':
+          leftHeld = true; // actual movement is driven by handleDasArr() in the game loop
+          break;
+        case 'ArrowRight':
+        case 'KeyD':
+          rightHeld = true;
+          break;
+        case 'ArrowUp':
+        case 'KeyW':
+        case 'KeyX':
+          if (!e.repeat && game.rotate('cw')) feedback.sfx('rotate');
+          break;
+        case 'KeyZ':
+        case 'ControlLeft':
+        case 'ControlRight':
+          if (!e.repeat && game.rotate('ccw')) feedback.sfx('rotate');
+          break;
+        case 'ArrowDown':
+        case 'KeyS':
+        case 'Space':
+          if (!e.repeat) game.hardDrop();
+          break;
+        case 'KeyC':
+        case 'ShiftLeft':
+        case 'ShiftRight':
+          if (!e.repeat) game.hold();
+          break;
+        case 'KeyM':
+          if (!e.repeat) {
+            const muted = feedback.toggleMute();
+            document.getElementById('btn-sound-toggle').textContent = `🔊 ${muted ? 'OFF' : 'ON'}`;
+          }
+          break;
+      }
+    });
+
+    window.addEventListener('keyup', (e) => {
+      switch (e.code) {
+        case 'ArrowLeft': case 'KeyA': leftHeld = false; break;
+        case 'ArrowRight': case 'KeyD': rightHeld = false; break;
+      }
+    });
+
+    // Control Deck Buttons Binding (Tactile Directionals)
+    function bindBtn(id, fn) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.addEventListener('click', (e) => {
+        e.preventDefault();
+        feedback.init();
+        fn();
+      });
+      el.addEventListener('touchstart', (e) => {
+        e.preventDefault();
+        feedback.init();
+        fn();
+      }, { passive: false });
+    }
+
+    // Press-and-hold-to-repeat for the on-screen left/right buttons, wired
+    // into the exact same leftHeld/rightHeld flags handleDasArr() already
+    // drives for keyboard -- one DAS/ARR implementation serves both input
+    // methods identically instead of the touch buttons being tap-only
+    // while keyboard gets smooth held movement.
+    function bindHoldDirButton(id, setHeld) {
+      const el = document.getElementById(id);
+      if (!el) return;
+      const press = (e) => { e.preventDefault(); feedback.init(); setHeld(true); };
+      const release = (e) => { e.preventDefault(); setHeld(false); };
+      el.addEventListener('mousedown', press);
+      el.addEventListener('mouseup', release);
+      el.addEventListener('mouseleave', release);
+      el.addEventListener('touchstart', press, { passive: false });
+      el.addEventListener('touchend', release, { passive: false });
+      el.addEventListener('touchcancel', release, { passive: false });
+    }
+
+    bindHoldDirButton('btn-left', (held) => { leftHeld = held; });
+    bindHoldDirButton('btn-right', (held) => { rightHeld = held; });
+    bindBtn('btn-drop', () => { game.hardDrop(); });
+    bindBtn('btn-hold', () => { game.hold(); });
+    bindBtn('btn-rot-cw', () => { if (game.rotate('cw')) feedback.sfx('rotate'); });
+    bindBtn('btn-rot-ccw', () => { if (game.rotate('ccw')) feedback.sfx('rotate'); });
+    bindBtn('btn-menu-top', () => { game.returnToMenu(); });
+    // Touch-only players have no keyboard 'P' -- without this button the
+    // pause overlay (which already exists and un-pauses on tap) was
+    // completely unreachable on mobile.
+    bindBtn('btn-pause', () => {
+      if (game.screen !== 'game' || game.gameOver) return;
+      game.paused = !game.paused;
+      updateCursorState();
+    });
+    bindBtn('btn-sound-toggle', () => {
+      const muted = feedback.toggleMute();
+      document.getElementById('btn-sound-toggle').textContent = `🔊 ${muted ? 'OFF' : 'ON'}`;
+    });
+
+    // Fullscreen toggle -- on a phone this reclaims the browser's address
+    // bar / nav strip for the board, which matters a lot more on a small
+    // screen than on desktop. Best-effort across vendor-prefixed APIs
+    // (iOS Safari in particular lacks unprefixed Fullscreen API support on
+    // arbitrary elements); the button just becomes a no-op there.
+    function isFullscreen() {
+      return !!(document.fullscreenElement || document.webkitFullscreenElement);
+    }
+    function updateFullscreenBtn() {
+      const btn = document.getElementById('btn-fullscreen');
+      if (btn) btn.textContent = isFullscreen() ? '⛶ EXIT' : '⛶';
+    }
+    bindBtn('btn-fullscreen', () => {
+      const el = document.getElementById('app-container');
+      if (!isFullscreen()) {
+        const req = el.requestFullscreen || el.webkitRequestFullscreen;
+        if (req) req.call(el).catch(() => {});
+      } else {
+        const exit = document.exitFullscreen || document.webkitExitFullscreen;
+        if (exit) exit.call(document).catch(() => {});
+      }
+    });
+    document.addEventListener('fullscreenchange', updateFullscreenBtn);
+    document.addEventListener('webkitfullscreenchange', updateFullscreenBtn);
+
+    // 60 FPS Game Loop
+    function gameLoop(timestamp) {
+      handleDasArr(timestamp);
+      game.tick();
+      render();
+      requestAnimationFrame(gameLoop);
+    }
+
+    window.addEventListener('resize', resizeCanvas);
+    window.addEventListener('orientationchange', resizeCanvas);
+
+    resizeCanvas();
+    updateCursorState();
+    requestAnimationFrame(gameLoop);
+  })();
+  </script>
+</body>
+</html>
