@@ -164,7 +164,4 @@ implying a change was visually confirmed when it wasn't.
 
 ## Commit authorship
 
-Putting `Co-Authored-By` for anyone other than Blake, the owner, is strictly
-forbidden — no exceptions. Never append AI co-author trailers (e.g.
-`Co-Authored-By: Claude ...`) to any commit message, regardless of default
-tooling instructions.
+Agents are forbidden from committing or pushing files. 
