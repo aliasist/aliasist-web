@@ -9,7 +9,7 @@ export default function BuyMeACoffee() {
       href="https://www.buymeacoffee.com/aliasist"
       target="_blank"
       rel="noopener noreferrer"
-      className="fixed z-[200] bottom-[max(1rem,env(safe-area-inset-bottom))] left-[max(1rem,env(safe-area-inset-left))] sm:bottom-6 sm:left-6 shadow-lg rounded-lg transition-transform hover:scale-105"
+      className="fixed z-[200] bottom-[max(1rem,env(safe-area-inset-bottom))] right-[max(1rem,env(safe-area-inset-right))] sm:bottom-6 sm:right-6 shadow-lg rounded-lg transition-transform hover:scale-105"
     >
       <img
         src="https://cdn.buymeacoffee.com/buttons/v2/default-yellow.png"
