@@ -2,7 +2,6 @@ import { lazy, Suspense } from "react";
 import Navbar from "@/components/Navbar";
 import HeroSection from "@/components/HeroSection";
 import ScrollProgress from "@/components/ScrollProgress";
-import AliasistChat from "@/components/AliasistChat";
 import BuyMeACoffee from "@/components/BuyMeACoffee";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import { AdUnit, AD_SLOTS } from "@/components/AdUnit";
@@ -53,7 +52,6 @@ const Index = () => {
         </div>
         <ErrorBoundary><Suspense fallback={<SectionFallback />}><Footer /></Suspense></ErrorBoundary>
       </main>
-      <AliasistChat />
       <BuyMeACoffee />
     </div>
   );

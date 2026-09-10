@@ -85,7 +85,6 @@ export default function TechLanding() {
               { name: "DataSist", desc: "Data center research dashboard", link: "https://datasist-frontend.pages.dev" },
               { name: "PulseSist", desc: "Market signal dashboards", link: "https://pulse.aliasist.com" },
               { name: "SpaceSist", desc: "Live space portal", link: "https://space.aliasist.com" },
-              { name: "EcoSist", desc: "Environmental observatory", link: "/ecosist/" },
               { name: "Clearasist", desc: "Privacy metadata cleaner", link: "https://clearasist.pages.dev" },
             ].map((project, i) => (
               <motion.a

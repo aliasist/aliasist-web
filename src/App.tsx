@@ -6,9 +6,6 @@ import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
 import Index from "./pages/Index";
 import Entertainment from "./pages/Entertainment";
-import GithubProjectGuide from "./pages/GithubProjectGuide";
-import GithubPrReviewer from "./pages/GithubPrReviewer";
-import GithubToolkit from "./pages/GithubToolkit";
 import NotFound from "./pages/NotFound";
 import Sensor from "./pages/Sensor";
 import TechLanding from "./pages/TechLanding";
@@ -29,9 +26,6 @@ const App = () => (
           <Route path="/tech" element={<TechLanding />} />
           <Route path="/agsc" element={<Navigate to="/tech" replace />} />
           <Route path="/agsc/*" element={<Navigate to="/tech" replace />} />
-          <Route path="/tools/github" element={<GithubToolkit />} />
-          <Route path="/tools/github/project-guide" element={<GithubProjectGuide />} />
-          <Route path="/tools/github-pr-reviewer" element={<GithubPrReviewer />} />
           <Route path="/sensor" element={<Sensor />} />
           <Route path="/entertainment" element={<Entertainment />} />
           <Route path="/os" element={<CosmicOs />} />

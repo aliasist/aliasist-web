@@ -18,8 +18,7 @@ it. Files Abductor release binaries now live in the separate public repo
 
 | App | What it is | Deploy |
 |---|---|---|
-| root (`src/`) | aliasist.com homepage | **CI** — `.github/workflows/deploy-homepage.yml`, triggers on push to `master` touching `src/**`, `apps/ecosist/**`, `functions/**`, `public/**`, etc. |
-| `apps/ecosist` | 3D globe embed, synced into the homepage build via `scripts/sync-ecosist.mjs` | rides the homepage CI (see paths above) |
+| root (`src/`) | aliasist.com homepage | **CI** — `.github/workflows/deploy-homepage.yml`, triggers on push to `master` touching `src/**`, `functions/**`, `public/**`, etc. |
 | `apps/clearasist` | metadata cleaner | **CI** — `.github/workflows/deploy-clearasist.yml`, triggers on `apps/clearasist/**` |
 | `apps/datasist` | DataSist map/dashboard frontend (Cloudflare Pages, `datasist-frontend` project, custom domain `datasist.aliasist.com`) | **manual only** — `npm run deploy` inside `apps/datasist` (`wrangler pages deploy`). No CI hook. Pushing to `master` does NOT ship this app. |
 | `apps/datasist-api` | Worker backing DataSist's `/api/data-centers` etc. | **manual** — `npm run deploy` (`wrangler deploy`) inside `apps/datasist-api` |
@@ -57,14 +56,6 @@ until CI caught it. Lesson: when removing an export or a component, `grep -n`
 for every consumer before committing, and run `npm run build` (not just
 `tsc --noEmit`) before pushing — the two can disagree (rolldown/vite catches
 missing exports that a lenient tsconfig won't).
-
-## `apps/ecosist` needs its own `npm install`
-
-`apps/ecosist` has its own `package.json` (three.js, @react-three/fiber,
-@react-three/drei, @react-three/postprocessing) that is **not** hoisted by
-the root install. If `npm run build` at the repo root fails with
-`Cannot find module '@react-three/fiber'` etc., run
-`npm install --prefix apps/ecosist` first.
 
 ## DataSist map: marker count is the perf constraint, not styling
 

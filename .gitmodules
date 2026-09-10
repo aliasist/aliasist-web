@@ -4,9 +4,6 @@
 [submodule "apps/chatroom"]
 	path = apps/chatroom
 	url = https://github.com/aliasist/chatroom.git
-[submodule "apps/ecosist"]
-	path = apps/ecosist
-	url = https://github.com/aliasist/ecosist.git
 [submodule "apps/news-worker"]
 	path = apps/news-worker
 	url = https://github.com/aliasist/news-worker.git

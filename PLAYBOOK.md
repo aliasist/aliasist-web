@@ -48,8 +48,6 @@ indexes, or keeping agent docs current:
 For root homepage UI changes:
 
 - Prefer `npm run build`.
-- If build fails due to missing `apps/ecosist` dependencies, run
-  `npm install --prefix apps/ecosist` and retry.
 
 For Pages Functions changes:
 

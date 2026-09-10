@@ -9,8 +9,6 @@ export default function BuyMeACoffee() {
       href="https://www.buymeacoffee.com/aliasist"
       target="_blank"
       rel="noopener noreferrer"
-      // AliasistChat already floats bottom-right (fixed bottom-6 right-6,
-      // z-[210]) — bottom-left keeps this visible without stacking on it.
       className="fixed z-[200] bottom-[max(1rem,env(safe-area-inset-bottom))] left-[max(1rem,env(safe-area-inset-left))] sm:bottom-6 sm:left-6 shadow-lg rounded-lg transition-transform hover:scale-105"
     >
       <img

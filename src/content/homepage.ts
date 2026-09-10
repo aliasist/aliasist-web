@@ -15,13 +15,10 @@
  * Backend/API URLs (for developers): see `src/config/api.ts` (`siteEndpoints`).
  */
 
-import atomicityBanner from "@images/atomicity_banner_cinematic.webp";
 import aliasistTechBanner from "@images/aliasist_tech_waterfall_banner_cinematic.webp";
 import clearasistBanner from "@images/clearasist_banner_cinematic.webp";
 import dataBanner from "@images/datasist_banner_cinematic.webp";
-import ecosistBanner from "@images/ecosist_banner_tornado.webp";
 import filesAbductorBanner from "@images/files_abductor_banner_cinematic.webp";
-import githubCompanionBanner from "@images/github_companion_banner_cinematic.webp";
 import globalizeBanner from "@images/globalize_banner_cinematic.webp";
 import pulseBanner from "@images/pulsesist_banner_cinematic.webp";
 import spaceBanner from "@images/spacesist_banner_cinematic.webp";
@@ -65,27 +62,6 @@ export const suiteApps = [
     sub: "Private file metadata cleaner",
     href: "https://clearasist.pages.dev",
     icon: "CL",
-  },
-  {
-    label: "GitHub Companion",
-    sub: "Archived — demo only",
-    href: "/tools/github",
-    icon: "GH",
-    isDemo: true,
-  },
-  {
-    label: "Atomicity",
-    sub: "Archived — demo only",
-    href: "/atomicity/",
-    icon: "AT",
-    isDemo: true,
-  },
-  {
-    label: "EcoSist",
-    sub: "Archived — demo only",
-    href: "/ecosist/",
-    icon: "ES",
-    isDemo: true,
   },
 ] as const;
 
@@ -156,7 +132,7 @@ export const projects = [
       "A chatbot and image tool that can answer from documents and show the sources behind its answers.",
     tech: ["Document chat", "Image generation", "Source citations", "Model routing"],
     downloads: [],
-    status: "Live",
+    status: "Live" as "Live" | "Archived",
     meta: ["AI Chat", "Image Generation", "Cited Sources"] as const,
     tone: "violet",
     icon: "AT",
@@ -170,7 +146,7 @@ export const projects = [
       "An interactive globe for exploring data centers, subsea cables, air traffic, and seismic activity.",
     tech: ["3D globe", "Infrastructure map", "Map layers", "Geospatial views"],
     downloads: [],
-    status: "Live",
+    status: "Live" as "Live" | "Archived",
     meta: ["Data centers", "Global map", "Infrastructure layers"] as const,
     tone: "cyan",
     icon: "GL",
@@ -184,7 +160,7 @@ export const projects = [
       "A research dashboard for data center facilities, power use, water demand, risk, and investment.",
     tech: ["Facility research", "Power data", "Water data", "Risk maps", "Data tables"],
     downloads: [],
-    status: "Live",
+    status: "Live" as "Live" | "Archived",
     meta: ["Data centers", "Power + water", "Risk research"] as const,
     tone: "blue",
     icon: "DS",
@@ -198,7 +174,7 @@ export const projects = [
       "A market research dashboard with live charts, watchlists, and company research views.",
     tech: ["Market charts", "Watchlists", "Research panels", "Live dashboards"],
     downloads: [],
-    status: "Live",
+    status: "Live" as "Live" | "Archived",
     meta: ["Markets", "Portfolio tools", "Research views"] as const,
     tone: "amber",
     icon: "PS",
@@ -212,7 +188,7 @@ export const projects = [
       "A space dashboard that brings together NASA, SpaceX, ISS, asteroid, and exoplanet data.",
     tech: ["Launch data", "ISS tracking", "Asteroids", "Exoplanets", "Live space feeds"],
     downloads: [],
-    status: "Live",
+    status: "Live" as "Live" | "Archived",
     meta: ["NASA", "SpaceX", "Live orbital data"] as const,
     tone: "violet",
     icon: "SS",
@@ -226,7 +202,7 @@ export const projects = [
       "A browser-based tool for removing metadata from images, PDFs, and Office files.",
     tech: ["Metadata removal", "Image cleanup", "PDF cleanup", "Office files", "Browser-based"],
     downloads: [],
-    status: "Live",
+    status: "Live" as "Live" | "Archived",
     meta: ["Privacy tool", "Browser-based", "File cleanup"] as const,
     tone: "cyan",
     icon: "CL",
@@ -245,59 +221,13 @@ export const projects = [
       { label: "Snap", href: downloadLinks.snap },
       { label: "Windows", href: downloadLinks.windowsExe },
     ],
-    status: "Live",
+    status: "Live" as "Live" | "Archived",
     meta: ["Desktop builds", "yt-dlp", "Release assets"] as const,
     tone: "teal",
     icon: "FA",
     link: null as string | null,
     linkLabel: "DOWNLOADS →",
     banner: filesAbductorBanner,
-  },
-  {
-    name: "GitHub Companion",
-    description:
-      "A GitHub helper for repository summaries and pull request notes. Archived: the demo stays online, but active development has stopped.",
-    tech: ["Repository maps", "Pull request review", "Project guidance", "Review notes"],
-    downloads: [],
-    status: "Archived",
-    meta: ["Project guide", "PR review", "Public tool"] as const,
-    tone: "violet",
-    icon: "GH",
-    link: "/tools/github",
-    linkLabel: "VIEW DEMO →",
-    banner: githubCompanionBanner,
-  },
-  {
-    name: "Atomicity",
-    description:
-      "A simple stopwatch with no accounts and no saved data. Archived: the demo stays online, but active development has stopped.",
-    tech: ["Vanilla JS", "PWA", "No storage"],
-    downloads: [],
-    status: "Archived",
-    meta: ["Simple Stopwatch"] as const,
-    tone: "amber",
-    icon: "AT",
-    link: "/atomicity/",
-    linkLabel: "VIEW DEMO →",
-    banner: atomicityBanner,
-  },
-  {
-    name: "EcoSist",
-    description:
-      "An environmental dashboard for air quality, climate data, and map views. Archived: the demo stays online, but active development has stopped.",
-    tech: [
-      "Environmental APIs",
-      "Geospatial Data",
-      "Live Monitoring",
-    ],
-    downloads: [],
-    status: "Archived",
-    meta: ["Climate data", "Air quality", "Geospatial"] as const,
-    tone: "green",
-    icon: "ES",
-    link: "/ecosist/",
-    linkLabel: "VIEW DEMO →",
-    banner: ecosistBanner,
   },
 ] as const;
 
