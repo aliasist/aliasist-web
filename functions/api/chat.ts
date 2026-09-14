@@ -13,6 +13,8 @@ interface Env extends ClerkEnv {
   AI?: WorkersAi;
   /** Override the edge text model. */
   AI_MODEL?: string;
+  /** Per-IP rate limit counter for the public (no sign-in required) chat endpoint. */
+  CHAT_RATE_LIMIT?: KVNamespace;
   /** Backup chat API key. */
   GROQ_API_KEY?: string;
   /** Fallback: proxy to upstream LLM worker. Defaults to production llm-chat worker URL. */
@@ -222,13 +224,15 @@ const GROQ_MODEL = "llama-3.3-70b-versatile";
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 const DEFAULT_WORKERS_AI_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
-const BASE_SYSTEM = `You are the Aliasist project assistant embedded in aliasist.com.
+const BASE_SYSTEM = `You are Aliasist, the assistant built into aliasist.com — Blake's site for a growing set of free tools built to be clear, practical, and ready to use, not locked behind a sales pitch.
 
 About Aliasist:
-- Focus: data dashboards, privacy tools, file utilities, and small web apps
-- Projects: Waterfall (AI chat and image generation), DataSist (data center research), PulseSist (market dashboards), SpaceSist (space data), EcoSist (environmental dashboard), Clearasist (metadata cleaner), GitHub Companion (repository and pull request notes)
+- Focus: data dashboards, privacy tools, file utilities, and small web apps and games
+- Projects: Aliasist AI (document chat and image generation — this assistant's own home), Globalize (3D globe of data centers, subsea cables, air traffic, and seismic activity), SpaceSist (live NASA, SpaceX, ISS, and exoplanet dashboard), Aliasist Files Abductor (desktop YouTube and URL downloader), Tetra-Protocol (a story-driven cyberpunk Tetris game)
 - Contact: dev@aliasist.com | github.com/aliasist
 - Background: Aliasist is shaped by older web design habits and modern application work: layout, CSS, interfaces, APIs, storage, and deployment.
+
+Your voice: direct and a little dry. Explain things plainly, skip the sales language, and don't pad an answer just to sound impressive — you'd rather undersell a project and let it speak for itself.
 
 Your role: Help visitors understand Aliasist and its projects. Be concise and concrete. Keep responses under 3 paragraphs. Do not oversell. Do not invent project details. When someone has a project idea, suggest contacting Aliasist through the site.
 
@@ -371,11 +375,35 @@ async function responseErrorSummary(provider: string, res: Response): Promise<st
 export const onRequestOptions = async () =>
   new Response(null, { status: 204, headers: corsHeaders });
 
+const RATE_LIMIT_MAX_PER_WINDOW = 10;
+const RATE_LIMIT_WINDOW_SECONDS = 60;
+
+/**
+ * Fixed-window per-IP rate limit for anonymous chat requests, backed by KV.
+ * KV has no atomic increment, so under concurrent requests from the same IP
+ * within the same window this can undercount slightly — that's an accepted
+ * tradeoff for a lightweight abuse guard, not a precise limiter.
+ *
+ * Fails open (returns true) if the KV binding isn't configured, so local dev
+ * without the binding still works.
+ */
+async function checkRateLimit(env: Env, ip: string): Promise<boolean> {
+  if (!env.CHAT_RATE_LIMIT) return true;
+  const key = `chat-rl:${ip}`;
+  const current = await env.CHAT_RATE_LIMIT.get(key);
+  const count = current ? parseInt(current, 10) : 0;
+  if (count >= RATE_LIMIT_MAX_PER_WINDOW) return false;
+  await env.CHAT_RATE_LIMIT.put(key, String(count + 1), {
+    expirationTtl: RATE_LIMIT_WINDOW_SECONDS,
+  });
+  return true;
+}
+
 /**
  * RAG-augmented chat endpoint.
  *
  * Flow:
- *   1. Auth check
+ *   1. Auth check (optional — see below)
  *   2. Parse the last user message
  *   3. Detect topic → fetch RAG context from api.aliasist.tech (cached; 3.5s timeout)
  *   4. Build enriched system prompt (BASE_SYSTEM + RAG block)
@@ -385,7 +413,11 @@ export const onRequestOptions = async () =>
  * Response: { response: string, model: string } | { error: string }
  */
 export const onRequestPost = async ({ request, env }: PagesContext) => {
-  // --- Auth ---
+  // --- Auth (optional) ---
+  // Chat is open to the public. A signed-in request is still verified (so a
+  // forged/expired token is rejected), but signing in is no longer required
+  // to use the chat at all — anonymous requests are rate-limited instead,
+  // below, so the endpoint isn't a free unlimited proxy to Groq/Workers AI.
   const authorization = request.headers.get("Authorization");
   const hasSessionToken = Boolean(authorization?.startsWith("Bearer "));
   if (hasSessionToken) {
@@ -394,7 +426,14 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
       return json({ error: auth.error }, auth.status);
     }
   } else {
-    return json({ error: "Sign in to use chat." }, 401);
+    const ip = request.headers.get("CF-Connecting-IP") ?? "unknown";
+    const allowed = await checkRateLimit(env, ip);
+    if (!allowed) {
+      return json(
+        { error: "You're sending messages too quickly. Please wait a minute and try again." },
+        429,
+      );
+    }
   }
 
   const bodyText = await request.text();

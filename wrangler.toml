@@ -14,8 +14,9 @@
 #     CLEARASIST_METADATA_WORKER_URL  (optional; defaults to the production Worker URL)
 #
 # Other workers: see apps/llm-chat/.dev.vars.example, apps/datasist-api/.dev.vars.example, etc.
-# Homepage chat:
-#     CLERK_SECRET_KEY          (secret; required for signed-in visitor chat)
+# Homepage chat (open to the public — sign-in is optional, not required):
+#     CLERK_SECRET_KEY          (secret; only used to verify a session token if one is sent)
+#     CHAT_RATE_LIMIT KV        (binding above; per-IP rate limit for anonymous requests)
 # Entertainment page (/entertainment) — each is optional, missing key just disables that tab:
 #     TMDB_API_KEY  (secret; themoviedb.org → Settings → API — trending movies/TV)
 #     RAWG_API_KEY  (secret; rawg.io/apidocs — popular games)
@@ -43,3 +44,10 @@ binding = "AI"
 binding = "ANALYTICS"
 database_name = "aliasist-analytics"
 database_id = "76035036-4ee2-45ba-865d-ab2c18089cfc"
+
+# Per-IP rate limiting for the public (no sign-in required) homepage chat
+# endpoint (functions/api/chat.ts) — added when REQUIRE_CHAT_SIGN_IN was
+# dropped so the endpoint isn't a free unlimited proxy to Groq/Workers AI.
+[[kv_namespaces]]
+binding = "CHAT_RATE_LIMIT"
+id = "e2fbe5cdd2ba476c8b95b2eb401c1895"

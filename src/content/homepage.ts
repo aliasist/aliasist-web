@@ -127,6 +127,25 @@ export const projectsSection = {
 
 export const projects = [
   {
+    name: "Aliasist-Files-Abductor",
+    description:
+      "A desktop app for downloading files from YouTube and direct URLs.",
+    tech: ["Python", "GUI", "CLI", "File Automation", "yt-dlp"],
+    github: "https://github.com/aliasist/files-abductor/releases/tag/v2.7.0",
+    downloads: [
+      { label: "AppImage", href: downloadLinks.appImage },
+      { label: "Snap", href: downloadLinks.snap },
+      { label: "Windows", href: downloadLinks.windowsExe },
+    ],
+    status: "Live" as "Live" | "Archived",
+    meta: ["Desktop builds", "yt-dlp", "Release assets"] as const,
+    tone: "teal",
+    icon: "FA",
+    link: null as string | null,
+    linkLabel: "DOWNLOADS →",
+    banner: filesAbductorBanner,
+  },
+  {
     name: "Aliasist AI",
     description:
       "A chatbot and image tool that can answer from documents and show the sources behind its answers.",
@@ -209,25 +228,6 @@ export const projects = [
     link: "https://clearasist.pages.dev",
     linkLabel: "OPEN →",
     banner: clearasistBanner,
-  },
-  {
-    name: "Aliasist-Files-Abductor",
-    description:
-      "A desktop app for downloading files from YouTube and direct URLs.",
-    tech: ["Python", "GUI", "CLI", "File Automation", "yt-dlp"],
-    github: "https://github.com/aliasist/files-abductor/releases/tag/v2.7.0",
-    downloads: [
-      { label: "AppImage", href: downloadLinks.appImage },
-      { label: "Snap", href: downloadLinks.snap },
-      { label: "Windows", href: downloadLinks.windowsExe },
-    ],
-    status: "Live" as "Live" | "Archived",
-    meta: ["Desktop builds", "yt-dlp", "Release assets"] as const,
-    tone: "teal",
-    icon: "FA",
-    link: null as string | null,
-    linkLabel: "DOWNLOADS →",
-    banner: filesAbductorBanner,
   },
 ] as const;
 

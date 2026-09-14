@@ -155,12 +155,11 @@
 
     canvas {
       display: block;
-      /* Sizing (width/height) is set inline by resizeCanvas() in JS, per
-         viewport/orientation -- landscape keeps the original 960x600
-         dashboard scaled to fit; portrait fills the stage edge-to-edge with
-         its own compact layout. max-width/max-height stay as a safety net. */
+      width: 960px;
+      height: 600px;
       max-width: 100%;
       max-height: 100%;
+      aspect-ratio: 960 / 600;
       cursor: default;
     }
 
@@ -255,30 +254,14 @@
         border: none;
       }
       .titlebar {
-        /* Re-declared here (not just inherited from the base rule) so the
-           safe-area-inset-top accommodation isn't silently dropped on the
-           exact devices -- notched phones -- where it matters most. */
-        height: calc(38px + env(safe-area-inset-top, 0px));
-        min-height: calc(38px + env(safe-area-inset-top, 0px));
+        height: 38px;
+        min-height: 38px;
         padding: 0 10px;
-        padding-top: env(safe-area-inset-top, 0px);
-        padding-left: calc(10px + env(safe-area-inset-left, 0px));
-        padding-right: calc(10px + env(safe-area-inset-right, 0px));
       }
-      /* Narrow portrait titlebars don't have room for the subtitle label
-         and the FPS/engine badge alongside the brand name and 4 action
-         buttons -- drop them rather than let the row wrap and collide with
-         the buttons (matches the treatment already used for short-height
-         landscape below). */
-      .titlebar .brand span:last-child { display: none; }
-      .status-badge { display: none; }
       .touch-controls {
-        height: calc(84px + env(safe-area-inset-bottom, 0px));
-        min-height: calc(84px + env(safe-area-inset-bottom, 0px));
+        height: 84px;
+        min-height: 84px;
         padding: 0 8px;
-        padding-bottom: env(safe-area-inset-bottom, 0px);
-        padding-left: calc(8px + env(safe-area-inset-left, 0px));
-        padding-right: calc(8px + env(safe-area-inset-right, 0px));
         gap: 6px;
       }
       .touch-btn {
@@ -588,14 +571,13 @@
 
     const BOARD_WIDTH = 10;
     const BOARD_HEIGHT = 20;
-    // Board/grid placement -- fixed defaults for the landscape dashboard
-    // layout (unchanged from the original design). Portrait mode
-    // recomputes these three every resize in computePortraitGrid() below,
-    // since a phone's actual width/height varies by device; landscape
-    // resets them back to these literals each resize (see resizeCanvas()).
-    let CELL_SIZE = 27;
-    let GRID_X = 345;
-    let GRID_Y = 28;
+    const CELL_SIZE = 27;
+    const GRID_X = 345;
+    const GRID_Y = 28;
+    // Menu-screen colorblind-palette toggle hit box (canvas-drawn, not an
+    // HTML element) -- shared between render() and the touchstart/mousedown
+    // menu hit-testing so the drawn rect and the clickable rect can't drift.
+    const CB_TOGGLE_RECT = { x: 220, y: 468, w: 320, h: 34 };
 
     // =========================================================================
     // WASM ENGINE LOADING (tetra-rust-engine) -- inlined as base64, not
@@ -943,119 +925,6 @@
     const canvas = document.getElementById('game-canvas');
     const ctx = canvas.getContext('2d');
 
-    // =========================================================================
-    // RESPONSIVE CANVAS SIZING -- landscape (desktop/tablet/rotated phone)
-    // keeps the original 960x600 dashboard, scaled (not stretched) to fit;
-    // portrait (a phone held normally, which is most play sessions) gets an
-    // entirely separate compact layout that fills the actual device width
-    // instead of being letterboxed inside a landscape-shaped canvas. Every
-    // canvas.width/height combo below is a devicePixelRatio-scaled backing
-    // store with a ctx transform absorbing the DPR, so all drawing code
-    // (both layouts) works in plain CSS-pixel logical coordinates -- crisp
-    // on retina/high-DPI phones instead of the browser stretching a
-    // fixed-resolution bitmap.
-    let layoutMode = 'landscape'; // 'landscape' | 'portrait'
-    let CANVAS_LOGICAL_W = 960;
-    let CANVAS_LOGICAL_H = 600;
-    const LANDSCAPE_ASPECT = 960 / 600;
-    const PORTRAIT_ASPECT_THRESHOLD = 1.15; // box aspect below this -> portrait layout
-
-    function computePortraitGrid() {
-      // Board fills the width below a top HUD strip, cell size picked to
-      // fit both available width and height (whichever is tighter) so nothing
-      // gets clipped on unusually short or narrow phones.
-      const hudH = 108;
-      const marginX = 10;
-      const marginBottom = 10;
-      const availW = CANVAS_LOGICAL_W - marginX * 2;
-      const availH = CANVAS_LOGICAL_H - hudH - marginBottom;
-      const cell = Math.max(10, Math.floor(Math.min(availW / BOARD_WIDTH, availH / BOARD_HEIGHT)));
-      CELL_SIZE = cell;
-      GRID_X = Math.round((CANVAS_LOGICAL_W - BOARD_WIDTH * cell) / 2);
-      GRID_Y = hudH;
-    }
-
-    function resizeCanvas() {
-      const stage = canvas.parentElement;
-      const rect = stage.getBoundingClientRect();
-      const boxW = Math.max(1, Math.floor(rect.width));
-      const boxH = Math.max(1, Math.floor(rect.height));
-      const boxAspect = boxW / boxH;
-
-      if (boxAspect < PORTRAIT_ASPECT_THRESHOLD) {
-        layoutMode = 'portrait';
-        CANVAS_LOGICAL_W = boxW;
-        CANVAS_LOGICAL_H = boxH;
-        computePortraitGrid();
-      } else {
-        layoutMode = 'landscape';
-        // Scale the fixed 960x600 design to the largest size that fits the
-        // box without cropping -- same visual result the old CSS
-        // max-width/max-height/aspect-ratio rules produced, just computed
-        // in JS now so a DPR-scaled backing store can be sized to match.
-        if (boxAspect > LANDSCAPE_ASPECT) {
-          CANVAS_LOGICAL_H = boxH;
-          CANVAS_LOGICAL_W = Math.floor(boxH * LANDSCAPE_ASPECT);
-        } else {
-          CANVAS_LOGICAL_W = boxW;
-          CANVAS_LOGICAL_H = Math.floor(boxW / LANDSCAPE_ASPECT);
-        }
-        CELL_SIZE = 27;
-        GRID_X = 345;
-        GRID_Y = 28;
-      }
-
-      const dpr = Math.min(window.devicePixelRatio || 1, 3); // capped so old/low-end phones aren't pushed into a huge fill-rate
-      canvas.width = Math.round(CANVAS_LOGICAL_W * dpr);
-      canvas.height = Math.round(CANVAS_LOGICAL_H * dpr);
-      canvas.style.width = CANVAS_LOGICAL_W + 'px';
-      canvas.style.height = CANVAS_LOGICAL_H + 'px';
-      ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-    }
-
-    // Menu-screen mode-card list + colorblind-palette toggle hit boxes
-    // (canvas-drawn, not HTML elements) -- one function shared by render()
-    // and the touchstart/mousedown menu hit-testing so the drawn rects and
-    // the clickable rects can never drift apart, and so portrait gets its
-    // own single-column layout without duplicating the hit-test logic.
-    function getModeLayout() {
-      if (layoutMode === 'portrait') {
-        // Sized as a function of the actual canvas height, not fixed
-        // pixel offsets -- on a short viewport (small phone, or a browser
-        // window resized quite short) fixed offsets tuned for a tall phone
-        // would push the colorblind toggle and footer text past the bottom
-        // edge and into each other.
-        const margin = 14;
-        const cardW = CANVAS_LOGICAL_W - margin * 2;
-        const titleY = Math.round(CANVAS_LOGICAL_H * 0.07) + 24;
-        const subtitleY = titleY + 22;
-        const startY = subtitleY + 26;
-        const footerY = CANVAS_LOGICAL_H - 14;
-        const gap = 8;
-        const cbH = 32;
-        const bottomReserve = 22; // gap between cb toggle and footer text
-        const availableForCards = footerY - bottomReserve - cbH - gap - startY;
-        const cardH = Math.max(44, Math.min(70, (availableForCards - 3 * gap) / 4));
-        const rects = [0, 1, 2, 3].map((i) => ({ x: margin, y: startY + i * (cardH + gap), w: cardW, h: cardH }));
-        const cbY = rects[3].y + cardH + gap;
-        return {
-          rects,
-          cb: { x: margin, y: cbY, w: cardW, h: cbH },
-          titleY,
-          subtitleY,
-          footerY
-        };
-      }
-      const rects = [0, 1, 2, 3].map((i) => ({ x: 220, y: 168 + i * 74, w: 520, h: 62 }));
-      return {
-        rects,
-        cb: { x: 220, y: 468, w: 320, h: 34 },
-        titleY: 105,
-        subtitleY: 135,
-        footerY: 520
-      };
-    }
-
     function updateCursorState() {
       if (game.screen === 'game' && !game.gameOver && !game.paused) {
         canvas.style.cursor = 'none';
@@ -1129,9 +998,10 @@
       ctx.restore();
     }
 
-    function drawMini(type, cx, cy, sz = 15) {
+    function drawMini(type, cx, cy) {
       if (!type) return;
       const offsets = PIECE_SHAPES[type][0];
+      const sz = 15;
       const minX = Math.min(...offsets.map(o => o[0]));
       const maxX = Math.max(...offsets.map(o => o[0]));
       const minY = Math.min(...offsets.map(o => o[1]));
@@ -1151,29 +1021,23 @@
     }
 
     function render() {
-      ctx.clearRect(0, 0, CANVAS_LOGICAL_W, CANVAS_LOGICAL_H);
+      ctx.clearRect(0, 0, 960, 600);
 
       // ==========================================
       // A. MAIN MENU RENDER
       // ==========================================
       if (game.screen === 'menu') {
-        const isPortrait = layoutMode === 'portrait';
-        const layout = getModeLayout();
-
         ctx.fillStyle = '#000000';
-        ctx.fillRect(0, 0, CANVAS_LOGICAL_W, CANVAS_LOGICAL_H);
+        ctx.fillRect(0, 0, 960, 600);
 
         // Title Header
-        ctx.save();
-        if (isPortrait) ctx.textAlign = 'center';
-        ctx.font = isPortrait ? '900 32px "Inter", sans-serif' : '900 46px "Inter", sans-serif';
+        ctx.font = '900 46px "Inter", sans-serif';
         ctx.fillStyle = '#f1f5f9';
-        ctx.fillText('TETRA', isPortrait ? CANVAS_LOGICAL_W / 2 : 380, layout.titleY);
+        ctx.fillText('TETRA', 380, 105);
 
-        ctx.font = isPortrait ? '700 11px "JetBrains Mono", monospace' : '700 12px "JetBrains Mono", monospace';
+        ctx.font = '700 12px "JetBrains Mono", monospace';
         ctx.fillStyle = '#00f0ff';
-        ctx.fillText('⚡ ARCADE & MOBILE SUITE', isPortrait ? CANVAS_LOGICAL_W / 2 : 370, layout.subtitleY);
-        ctx.restore();
+        ctx.fillText('⚡ ARCADE & MOBILE SUITE', 370, 135);
 
         // 4 Core Popular Modes
         const modes = [
@@ -1184,7 +1048,7 @@
         ];
 
         modes.forEach((m, idx) => {
-          const r = layout.rects[idx];
+          const y = 168 + idx * 74;
           const isSelected = idx === game.menuIndex;
 
           ctx.save();
@@ -1199,58 +1063,44 @@
           }
 
           ctx.beginPath();
-          ctx.roundRect(r.x, r.y, r.w, r.h, 12);
+          ctx.roundRect(220, y, 520, 62, 12);
           ctx.fill();
           ctx.stroke();
 
           // Title & Icon
-          ctx.font = isPortrait ? '800 14px "Inter", sans-serif' : '800 15px "Inter", sans-serif';
+          ctx.font = '800 15px "Inter", sans-serif';
           ctx.fillStyle = isSelected ? '#ffffff' : '#e2e8f0';
-          ctx.fillText(`${m.icon} ${m.name}`, r.x + 16, r.y + (isPortrait ? 26 : 27));
+          ctx.fillText(`${m.icon} ${m.name}`, 248, y + 27);
 
-          // Description doesn't wrap on canvas -- narrow portrait cards
-          // don't have room for it without overflowing, so skip it there.
-          if (!isPortrait) {
-            ctx.font = '500 11px "Inter", sans-serif';
-            ctx.fillStyle = '#738a9c';
-            ctx.fillText(m.desc, r.x + 28, r.y + 48);
-          }
+          ctx.font = '500 11px "Inter", sans-serif';
+          ctx.fillStyle = '#738a9c';
+          ctx.fillText(m.desc, 248, y + 48);
 
           // Best Record
           ctx.font = '700 11px "JetBrains Mono", monospace';
           ctx.fillStyle = isSelected ? '#00f0ff' : '#00e676';
-          if (isPortrait) {
-            ctx.textAlign = 'right';
-            ctx.fillText(m.hs, r.x + r.w - 12, r.y + 27);
-            ctx.textAlign = 'left';
-          } else {
-            ctx.fillText(m.hs, 640, r.y + 36);
-          }
+          ctx.fillText(m.hs, 640, y + 36);
           ctx.restore();
         });
 
         // Colorblind Palette Toggle -- placed between the mode list and the
         // instructions footer, hit-tested the same way as the mode cards.
-        const cb = layout.cb;
         ctx.save();
         ctx.fillStyle = colorblindMode ? 'rgba(0, 240, 255, 0.14)' : '#080c14';
         ctx.strokeStyle = colorblindMode ? '#00f0ff' : 'rgba(255, 255, 255, 0.12)';
         ctx.beginPath();
-        ctx.roundRect(cb.x, cb.y, cb.w, cb.h, 8);
+        ctx.roundRect(CB_TOGGLE_RECT.x, CB_TOGGLE_RECT.y, CB_TOGGLE_RECT.w, CB_TOGGLE_RECT.h, 8);
         ctx.fill();
         ctx.stroke();
         ctx.font = '700 12px "Inter", sans-serif';
         ctx.fillStyle = colorblindMode ? '#00f0ff' : '#94a3b8';
-        ctx.fillText(`👁 Colorblind-Safe Palette: ${colorblindMode ? 'ON' : 'OFF'}`, cb.x + 14, cb.y + 22);
+        ctx.fillText(`👁 Colorblind-Safe Palette: ${colorblindMode ? 'ON' : 'OFF'}`, CB_TOGGLE_RECT.x + 14, CB_TOGGLE_RECT.y + 22);
         ctx.restore();
 
         // Instructions Footer
-        ctx.save();
-        if (isPortrait) ctx.textAlign = 'center';
-        ctx.font = isPortrait ? '500 11px "Inter", sans-serif' : '500 12px "Inter", sans-serif';
+        ctx.font = '500 12px "Inter", sans-serif';
         ctx.fillStyle = 'rgba(148, 163, 184, 0.75)';
-        ctx.fillText('Tap / Click Mode to Play • Optimized for Touch & Mobile Play', isPortrait ? CANVAS_LOGICAL_W / 2 : 270, layout.footerY);
-        ctx.restore();
+        ctx.fillText('Tap / Click Mode to Play • Optimized for Touch & Mobile Play', 270, 520);
         return;
       }
 
@@ -1266,7 +1116,6 @@
         ctx.translate((Math.random() - 0.5) * mag, (Math.random() - 0.5) * mag);
       }
 
-      const isPortrait = layoutMode === 'portrait';
       const gw = BOARD_WIDTH * CELL_SIZE;
       const gh = BOARD_HEIGHT * CELL_SIZE;
 
@@ -1333,132 +1182,74 @@
         });
       }
 
-      if (isPortrait) {
-        // Compact top HUD strip: HOLD (left) · SCORE/LINES/LEVEL (center) ·
-        // NEXT (right) -- no side dashboard columns (no room on a phone),
-        // and no MODE INFO tips panel (the board dominating the screen
-        // matters far more than a tips card on mobile).
-        const hudPad = 10;
-        const boxSize = 64;
-        const miniSz = 12; // smaller than the default 15 -- at 15, a 4-wide
-                            // I-piece (60px) barely fits a single 64px box
-                            // and badly overlaps its neighbor once 3 of
-                            // these sit side by side in the NEXT strip.
-
-        if (game.mode !== 'classic') {
-          drawCard(hudPad, hudPad, boxSize, boxSize, 'HOLD');
-          if (game.holdPiece) {
-            drawMini(game.holdPiece, hudPad + boxSize / 2, hudPad + boxSize / 2 + 8, miniSz);
-          }
+      // 4. Left Cards: Hold & Stats
+      if (game.mode !== 'classic') {
+        drawCard(130, 28, 175, 135, 'HOLD');
+        if (game.holdPiece) {
+          drawMini(game.holdPiece, 217, 105);
+        } else {
+          ctx.font = '500 11px "Inter", sans-serif';
+          ctx.fillStyle = '#475569';
+          ctx.fillText('Tap Hold / Key C', 165, 105);
         }
-
-        const nextCount = game.mode === 'classic' ? 1 : 3;
-        const nextPitch = miniSz * 4 + 10; // widest piece (I, 4 cells wide) plus a gap
-        const nextBoxW = 16 + nextCount * nextPitch;
-        const nextX = CANVAS_LOGICAL_W - hudPad - nextBoxW;
-        drawCard(nextX, hudPad, nextBoxW, boxSize, 'NEXT');
-        for (let i = 0; i < nextCount; i++) {
-          const nextType = game.bag[i];
-          if (nextType) drawMini(nextType, nextX + nextPitch / 2 + 16 + i * nextPitch, hudPad + boxSize / 2 + 8, miniSz);
-        }
-
-        let modeSpecificVal = `${game.highScores[game.mode] || 0}`;
-        let modeSpecificLabel = 'BEST';
-        if (game.mode === 'sprint') {
-          modeSpecificLabel = 'LEFT';
-          modeSpecificVal = `${Math.max(0, 40 - game.lines)}`;
-        }
-        const midStats = [
-          { label: 'SCORE', val: game.score.toLocaleString(), col: '#00f0ff' },
-          { label: 'LINES', val: game.lines, col: '#00e676' },
-          { label: 'LVL', val: game.level, col: '#f1f5f9' },
-          { label: modeSpecificLabel, val: modeSpecificVal, col: '#ffd166' }
-        ];
-        const midX = hudPad + boxSize + 8;
-        const midW = nextX - 8 - midX;
-        const colW = midW / midStats.length;
-        midStats.forEach((s, idx) => {
-          const cx = midX + colW * idx + colW / 2;
-          ctx.save();
-          ctx.textAlign = 'center';
-          ctx.font = '700 9px "JetBrains Mono", monospace';
-          ctx.fillStyle = '#738a9c';
-          ctx.fillText(s.label, cx, hudPad + 30);
-          ctx.font = '800 14px "JetBrains Mono", monospace';
-          ctx.fillStyle = s.col;
-          ctx.fillText(String(s.val), cx, hudPad + 50);
-          ctx.restore();
-        });
-      } else {
-        // 4. Left Cards: Hold & Stats
-        if (game.mode !== 'classic') {
-          drawCard(130, 28, 175, 135, 'HOLD');
-          if (game.holdPiece) {
-            drawMini(game.holdPiece, 217, 105);
-          } else {
-            ctx.font = '500 11px "Inter", sans-serif';
-            ctx.fillStyle = '#475569';
-            ctx.fillText('Tap Hold / Key C', 165, 105);
-          }
-        }
-
-        const statsY = game.mode === 'classic' ? 28 : 180;
-        const statsH = game.mode === 'classic' ? 320 : 275;
-        drawCard(130, statsY, 175, statsH, 'STATS');
-
-        let modeSpecificVal = `${game.highScores[game.mode] || 0}`;
-        let modeSpecificLabel = 'BEST SCORE';
-        if (game.mode === 'sprint') {
-          const remainingLines = Math.max(0, 40 - game.lines);
-          modeSpecificLabel = 'LINES LEFT';
-          modeSpecificVal = `${remainingLines}`;
-        }
-
-        const statsList = [
-          { label: 'SCORE', val: game.score.toLocaleString(), col: '#00f0ff' },
-          { label: modeSpecificLabel, val: modeSpecificVal, col: '#ffd166' },
-          { label: 'LINES', val: game.lines, col: '#00e676' },
-          { label: 'LEVEL', val: game.level, col: '#f1f5f9' }
-        ];
-        statsList.forEach((s, idx) => {
-          const sy = statsY + 45 + idx * 52;
-          ctx.font = '700 10px "JetBrains Mono", monospace';
-          ctx.fillStyle = '#738a9c';
-          ctx.fillText(s.label, 148, sy);
-          ctx.font = '800 18px "JetBrains Mono", monospace';
-          ctx.fillStyle = s.col;
-          ctx.fillText(String(s.val), 148, sy + 22);
-        });
-
-        // 5. Right Cards: Next Queue & Mode Guide
-        const nextCount = game.mode === 'classic' ? 1 : 3;
-        const nextH = game.mode === 'classic' ? 140 : 335;
-        drawCard(655, 28, 175, nextH, 'NEXT');
-        for (let i = 0; i < nextCount; i++) {
-          const nextType = game.bag[i];
-          if (nextType) {
-            drawMini(nextType, 742, 90 + i * 90);
-          }
-        }
-
-        const guideY = game.mode === 'classic' ? 185 : 380;
-        drawCard(655, guideY, 175, 185, 'MODE INFO');
-        ctx.font = '800 12px "Inter", sans-serif';
-        ctx.fillStyle = '#00f0ff';
-        ctx.fillText(game.mode.toUpperCase(), 672, guideY + 38);
-
-        const modeTips = {
-          classic: ['Classic 1989 Rules', 'Original NES gravity', '1-Piece Next queue', 'No hold / no kicks'],
-          marathon: ['150 Lines Challenge', 'SRS Wall Kicks', 'Hold queue enabled', 'Escalating speed'],
-          sprint: ['40-Line Speedrun', 'Sprint against clock', 'Hard drop for speed', 'Clean efficient clears'],
-          zen: ['Endless Free Play', 'Zero rush / no game over', 'Practice your stacks', 'Pure relaxed flow']
-        };
-        (modeTips[game.mode] || []).forEach((tip, idx) => {
-          ctx.font = '500 10px "Inter", sans-serif';
-          ctx.fillStyle = '#94a3b8';
-          ctx.fillText(tip, 672, guideY + 65 + idx * 22);
-        });
       }
+
+      const statsY = game.mode === 'classic' ? 28 : 180;
+      const statsH = game.mode === 'classic' ? 320 : 275;
+      drawCard(130, statsY, 175, statsH, 'STATS');
+
+      let modeSpecificVal = `${game.highScores[game.mode] || 0}`;
+      let modeSpecificLabel = 'BEST SCORE';
+      if (game.mode === 'sprint') {
+        const remainingLines = Math.max(0, 40 - game.lines);
+        modeSpecificLabel = 'LINES LEFT';
+        modeSpecificVal = `${remainingLines}`;
+      }
+
+      const statsList = [
+        { label: 'SCORE', val: game.score.toLocaleString(), col: '#00f0ff' },
+        { label: modeSpecificLabel, val: modeSpecificVal, col: '#ffd166' },
+        { label: 'LINES', val: game.lines, col: '#00e676' },
+        { label: 'LEVEL', val: game.level, col: '#f1f5f9' }
+      ];
+      statsList.forEach((s, idx) => {
+        const sy = statsY + 45 + idx * 52;
+        ctx.font = '700 10px "JetBrains Mono", monospace';
+        ctx.fillStyle = '#738a9c';
+        ctx.fillText(s.label, 148, sy);
+        ctx.font = '800 18px "JetBrains Mono", monospace';
+        ctx.fillStyle = s.col;
+        ctx.fillText(String(s.val), 148, sy + 22);
+      });
+
+      // 5. Right Cards: Next Queue & Mode Guide
+      const nextCount = game.mode === 'classic' ? 1 : 3;
+      const nextH = game.mode === 'classic' ? 140 : 335;
+      drawCard(655, 28, 175, nextH, 'NEXT');
+      for (let i = 0; i < nextCount; i++) {
+        const nextType = game.bag[i];
+        if (nextType) {
+          drawMini(nextType, 742, 90 + i * 90);
+        }
+      }
+
+      const guideY = game.mode === 'classic' ? 185 : 380;
+      drawCard(655, guideY, 175, 185, 'MODE INFO');
+      ctx.font = '800 12px "Inter", sans-serif';
+      ctx.fillStyle = '#00f0ff';
+      ctx.fillText(game.mode.toUpperCase(), 672, guideY + 38);
+
+      const modeTips = {
+        classic: ['Classic 1989 Rules', 'Original NES gravity', '1-Piece Next queue', 'No hold / no kicks'],
+        marathon: ['150 Lines Challenge', 'SRS Wall Kicks', 'Hold queue enabled', 'Escalating speed'],
+        sprint: ['40-Line Speedrun', 'Sprint against clock', 'Hard drop for speed', 'Clean efficient clears'],
+        zen: ['Endless Free Play', 'Zero rush / no game over', 'Practice your stacks', 'Pure relaxed flow']
+      };
+      (modeTips[game.mode] || []).forEach((tip, idx) => {
+        ctx.font = '500 10px "Inter", sans-serif';
+        ctx.fillStyle = '#94a3b8';
+        ctx.fillText(tip, 672, guideY + 65 + idx * 22);
+      });
 
       // 6. Particles & Floating Text
       game.particles.forEach(p => {
@@ -1478,22 +1269,17 @@
         ctx.restore();
       });
 
-      // 7. Pause Modal. Text is centered on the board's actual midpoint
-      // (GRID_X + gw/2) rather than fixed offsets so this works whether gw
-      // is the landscape default (270) or portrait's wider, device-fit
-      // board.
-      const boardCx = GRID_X + gw / 2;
+      // 7. Pause Modal
       if (game.paused && !game.gameOver) {
         ctx.save();
         ctx.fillStyle = 'rgba(0, 0, 0, 0.88)';
         ctx.fillRect(GRID_X, GRID_Y, gw, gh);
-        ctx.textAlign = 'center';
         ctx.font = '800 20px "Inter", sans-serif';
         ctx.fillStyle = '#00f0ff';
-        ctx.fillText('PAUSED', boardCx, GRID_Y + gh / 2);
+        ctx.fillText('PAUSED', GRID_X + 92, GRID_Y + gh / 2);
         ctx.font = '500 12px "Inter", sans-serif';
         ctx.fillStyle = '#94a3b8';
-        ctx.fillText('Tap to Resume', boardCx, GRID_Y + gh / 2 + 30);
+        ctx.fillText('Tap to Resume', GRID_X + 92, GRID_Y + gh / 2 + 30);
         ctx.restore();
       }
 
@@ -1502,28 +1288,27 @@
         ctx.save();
         ctx.fillStyle = 'rgba(0, 0, 0, 0.92)';
         ctx.fillRect(GRID_X, GRID_Y, gw, gh);
-        ctx.textAlign = 'center';
 
         const isWin = game.mode === 'sprint' && game.sprintDone;
         ctx.font = '900 22px "Inter", sans-serif';
         ctx.fillStyle = isWin ? '#00e676' : '#ff5370';
-        ctx.fillText(isWin ? 'SPRINT CLEAR!' : 'GAME OVER', boardCx, GRID_Y + 160);
+        ctx.fillText(isWin ? 'SPRINT CLEAR!' : 'GAME OVER', GRID_X + (isWin ? 55 : 68), GRID_Y + 160);
 
         ctx.font = '700 11px "JetBrains Mono", monospace';
         ctx.fillStyle = '#738a9c';
-        ctx.fillText(isWin ? 'FINAL TIME' : 'FINAL SCORE', boardCx, GRID_Y + 215);
+        ctx.fillText(isWin ? 'FINAL TIME' : 'FINAL SCORE', GRID_X + 85, GRID_Y + 215);
 
         ctx.font = '800 24px "JetBrains Mono", monospace';
         ctx.fillStyle = '#00f0ff';
         const displayScore = isWin ? `${(game.elapsedMs / 1000).toFixed(2)}s` : game.score.toLocaleString();
-        ctx.fillText(displayScore, boardCx, GRID_Y + 248);
+        ctx.fillText(displayScore, GRID_X + 85, GRID_Y + 248);
 
         ctx.font = '700 11px "JetBrains Mono", monospace';
         ctx.fillStyle = '#738a9c';
-        ctx.fillText('LINES CLEARED', boardCx, GRID_Y + 290);
+        ctx.fillText('LINES CLEARED', GRID_X + 85, GRID_Y + 290);
         ctx.font = '800 18px "JetBrains Mono", monospace';
         ctx.fillStyle = '#00e676';
-        ctx.fillText(String(game.lines), boardCx, GRID_Y + 316);
+        ctx.fillText(String(game.lines), GRID_X + 85, GRID_Y + 316);
 
         // Play Again Button
         ctx.fillStyle = '#00e676';
@@ -1533,7 +1318,7 @@
 
         ctx.font = '800 13px "Inter", sans-serif';
         ctx.fillStyle = '#000000';
-        ctx.fillText('PLAY AGAIN (R)', boardCx, GRID_Y + 396);
+        ctx.fillText('PLAY AGAIN (R)', GRID_X + 78, GRID_Y + 396);
         ctx.restore();
       }
       // Danger vignette -- full-canvas pulsing red border when the stack
@@ -1545,7 +1330,7 @@
         const pulse = 0.35 + 0.35 * Math.sin(performance.now() / 180);
         ctx.strokeStyle = `rgba(255, 30, 30, ${(0.25 + 0.55 * pulse) * game.dangerPulse})`;
         ctx.lineWidth = 6 + 4 * game.dangerPulse;
-        ctx.strokeRect(3, 3, CANVAS_LOGICAL_W - 6, CANVAS_LOGICAL_H - 6);
+        ctx.strokeRect(3, 3, 954, 594);
         ctx.restore();
       }
 
@@ -1557,11 +1342,8 @@
     // =========================================================================
     function getCanvasPos(e) {
       const rect = canvas.getBoundingClientRect();
-      // Scale against the logical (CSS-pixel) canvas size, not the raw
-      // devicePixelRatio-scaled backing store (canvas.width/height) --
-      // render() draws in logical coordinates, so hit-testing must match.
-      const scaleX = CANVAS_LOGICAL_W / rect.width;
-      const scaleY = CANVAS_LOGICAL_H / rect.height;
+      const scaleX = canvas.width / rect.width;
+      const scaleY = canvas.height / rect.height;
       return {
         x: (e.clientX - rect.left) * scaleX,
         y: (e.clientY - rect.top) * scaleY
@@ -1583,16 +1365,15 @@
 
       if (game.screen === 'menu') {
         const modes = ['classic', 'marathon', 'sprint', 'zen'];
-        const layout = getModeLayout();
         for (let idx = 0; idx < 4; idx++) {
-          const r = layout.rects[idx];
-          if (pos.x >= r.x && pos.x <= r.x + r.w && pos.y >= r.y && pos.y <= r.y + r.h) {
+          const y = 168 + idx * 74;
+          if (pos.x >= 220 && pos.x <= 740 && pos.y >= y && pos.y <= y + 62) {
             game.startMode(modes[idx]);
             return;
           }
         }
-        const cb = layout.cb;
-        if (pos.x >= cb.x && pos.x <= cb.x + cb.w && pos.y >= cb.y && pos.y <= cb.y + cb.h) {
+        if (pos.x >= CB_TOGGLE_RECT.x && pos.x <= CB_TOGGLE_RECT.x + CB_TOGGLE_RECT.w &&
+            pos.y >= CB_TOGGLE_RECT.y && pos.y <= CB_TOGGLE_RECT.y + CB_TOGGLE_RECT.h) {
           toggleColorblindMode();
           return;
         }
@@ -1652,16 +1433,15 @@
 
       if (game.screen === 'menu') {
         const modes = ['classic', 'marathon', 'sprint', 'zen'];
-        const layout = getModeLayout();
         for (let idx = 0; idx < 4; idx++) {
-          const r = layout.rects[idx];
-          if (pos.x >= r.x && pos.x <= r.x + r.w && pos.y >= r.y && pos.y <= r.y + r.h) {
+          const y = 168 + idx * 74;
+          if (pos.x >= 220 && pos.x <= 740 && pos.y >= y && pos.y <= y + 62) {
             game.startMode(modes[idx]);
             return;
           }
         }
-        const cb = layout.cb;
-        if (pos.x >= cb.x && pos.x <= cb.x + cb.w && pos.y >= cb.y && pos.y <= cb.y + cb.h) {
+        if (pos.x >= CB_TOGGLE_RECT.x && pos.x <= CB_TOGGLE_RECT.x + CB_TOGGLE_RECT.w &&
+            pos.y >= CB_TOGGLE_RECT.y && pos.y <= CB_TOGGLE_RECT.y + CB_TOGGLE_RECT.h) {
           toggleColorblindMode();
         }
         return;
@@ -1683,21 +1463,21 @@
 
     // Keyboard Directional Controls
     // DAS/ARR (Delayed Auto Shift / Auto Repeat Rate) for horizontal
-    // movement -- a real gap from a "feels professional" standpoint, not
-    // cosmetic: without it, holding a direction key relies on the browser's
-    // own OS-level key-repeat, which is inconsistent across browsers/OSes,
-    // has an unpredictable delay, and isn't something a player can rely on
-    // for precise placement.
-    //
-    // Down is hard drop (matches the touch swipe-down gesture below and the
-    // on-screen Drop button -- one "down = instantly drop" behavior across
-    // every input method, which matters far more on mobile than a
-    // competitive soft-drop-hold would). Guarded by `!e.repeat` exactly like
-    // Space, so holding the key doesn't repeat-fire native key-repeat into
-    // a hard-drop-lock loop every frame.
+    // movement, and a proper soft-drop-vs-hard-drop split -- both real gaps
+    // from a "feels professional" standpoint, not cosmetic:
+    //   - Without DAS/ARR, holding a direction key relies on the browser's
+    //     own OS-level key-repeat, which is inconsistent across
+    //     browsers/OSes, has an unpredictable delay, and isn't something a
+    //     player can rely on for precise placement.
+    //   - ArrowDown was previously wired to the SAME hard-drop action as
+    //     Space. Holding Down (an entirely natural reflex) would trigger
+    //     native key-repeat and hard-drop-lock every piece the instant it
+    //     spawned -- a real, not hypothetical, bug. Down is now soft drop
+    //     (holds down fall speed while held, normal lock-delay still
+    //     applies at the bottom); Space alone is hard drop.
     const DAS_MS = 133; // time held before auto-repeat kicks in (common competitive default)
     const ARR_MS = 25;  // time between repeated moves once auto-repeat is active
-    let leftHeld = false, rightHeld = false;
+    let leftHeld = false, rightHeld = false, downHeld = false;
     let dasDirection = 0;   // -1 left, 0 none, 1 right -- which direction DAS is currently tracking
     let dasStartTime = 0;
     let lastArrMoveTime = 0;
@@ -1720,6 +1500,14 @@
         lastArrMoveTime = timestamp;
         if (game.move([dir, 0])) feedback.sfx('move');
       }
+    }
+
+    function handleSoftDrop() {
+      if (!downHeld || game.screen !== 'game' || game.gameOver || game.paused) return;
+      // Fast but not instant (that's hard drop's job) -- one cell per
+      // rendered frame while held, same lock-delay behavior as normal
+      // gravity once the piece can't go any further.
+      game.move([0, 1]);
     }
 
     window.addEventListener('keydown', (e) => {
@@ -1780,6 +1568,8 @@
           break;
         case 'ArrowDown':
         case 'KeyS':
+          downHeld = true; // soft drop -- actual falling is driven by handleSoftDrop() in the game loop
+          break;
         case 'Space':
           if (!e.repeat) game.hardDrop();
           break;
@@ -1801,6 +1591,7 @@
       switch (e.code) {
         case 'ArrowLeft': case 'KeyA': leftHeld = false; break;
         case 'ArrowRight': case 'KeyD': rightHeld = false; break;
+        case 'ArrowDown': case 'KeyS': downHeld = false; break;
       }
     });
 
@@ -1886,15 +1677,12 @@
     // 60 FPS Game Loop
     function gameLoop(timestamp) {
       handleDasArr(timestamp);
+      handleSoftDrop();
       game.tick();
       render();
       requestAnimationFrame(gameLoop);
     }
 
-    window.addEventListener('resize', resizeCanvas);
-    window.addEventListener('orientationchange', resizeCanvas);
-
-    resizeCanvas();
     updateCursorState();
     requestAnimationFrame(gameLoop);
   })();
