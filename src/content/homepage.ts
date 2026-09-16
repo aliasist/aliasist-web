@@ -17,10 +17,8 @@
 
 import aliasistTechBanner from "@images/aliasist_tech_waterfall_banner_cinematic.webp";
 import clearasistBanner from "@images/clearasist_banner_cinematic.webp";
-import dataBanner from "@images/datasist_banner_cinematic.webp";
 import filesAbductorBanner from "@images/files_abductor_banner_cinematic.webp";
 import globalizeBanner from "@images/globalize_banner_cinematic.webp";
-import pulseBanner from "@images/pulsesist_banner_cinematic.webp";
 import spaceBanner from "@images/spacesist_banner_cinematic.webp";
 
 // ── Suite apps (live products) ───────────────────────────────────────────────
@@ -38,18 +36,6 @@ export const suiteApps = [
     sub: "Interactive global infrastructure map",
     href: "https://www.aliasist.world",
     icon: "GL",
-  },
-  {
-    label: "DataSist",
-    sub: "Data center research dashboard",
-    href: "https://datasist-frontend.pages.dev",
-    icon: "DS",
-  },
-  {
-    label: "PulseSist",
-    sub: "Market research dashboard",
-    href: "https://pulse.aliasist.com",
-    icon: "PS",
   },
   {
     label: "SpaceSist",
@@ -172,34 +158,6 @@ export const projects = [
     link: "https://www.aliasist.world",
     linkLabel: "OPEN →",
     banner: globalizeBanner,
-  },
-  {
-    name: "DataSist",
-    description:
-      "A research dashboard for data center facilities, power use, water demand, risk, and investment.",
-    tech: ["Facility research", "Power data", "Water data", "Risk maps", "Data tables"],
-    downloads: [],
-    status: "Live" as "Live" | "Archived",
-    meta: ["Data centers", "Power + water", "Risk research"] as const,
-    tone: "blue",
-    icon: "DS",
-    link: "https://datasist-frontend.pages.dev",
-    linkLabel: "OPEN →",
-    banner: dataBanner,
-  },
-  {
-    name: "PulseSist",
-    description:
-      "A market research dashboard with live charts, watchlists, and company research views.",
-    tech: ["Market charts", "Watchlists", "Research panels", "Live dashboards"],
-    downloads: [],
-    status: "Live" as "Live" | "Archived",
-    meta: ["Markets", "Portfolio tools", "Research views"] as const,
-    tone: "amber",
-    icon: "PS",
-    link: "https://pulse.aliasist.com",
-    linkLabel: "OPEN →",
-    banner: pulseBanner,
   },
   {
     name: "SpaceSist",

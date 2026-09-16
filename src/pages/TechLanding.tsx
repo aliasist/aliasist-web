@@ -82,8 +82,6 @@ export default function TechLanding() {
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
             {[
               { name: "Globalize", desc: "Live 3D globe with global data signals", link: "https://www.aliasist.world" },
-              { name: "DataSist", desc: "Data center research dashboard", link: "https://datasist-frontend.pages.dev" },
-              { name: "PulseSist", desc: "Market signal dashboards", link: "https://pulse.aliasist.com" },
               { name: "SpaceSist", desc: "Live space portal", link: "https://space.aliasist.com" },
               { name: "Clearasist", desc: "Privacy metadata cleaner", link: "https://clearasist.pages.dev" },
             ].map((project, i) => (
