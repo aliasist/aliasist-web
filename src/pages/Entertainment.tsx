@@ -702,11 +702,11 @@ const GameSpaceDefender = ({ onGameOver }: { onGameOver: (score: number) => void
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let ship = { x: canvas.width / 2, y: canvas.height - 35, size: 14, speed: 5.5 };
-    let bullets: Array<{ x: number; y: number; speed: number }> = [];
-    let asteroids: Array<{ x: number; y: number; size: number; speed: number; hp: number }> = [];
-    let particles: Array<{ x: number; y: number; vx: number; vy: number; life: number; color: string }> = [];
-    let keys: Record<string, boolean> = {};
+    const ship = { x: canvas.width / 2, y: canvas.height - 35, size: 14, speed: 5.5 };
+    const bullets: Array<{ x: number; y: number; speed: number }> = [];
+    const asteroids: Array<{ x: number; y: number; size: number; speed: number; hp: number }> = [];
+    const particles: Array<{ x: number; y: number; vx: number; vy: number; life: number; color: string }> = [];
+    const keys: Record<string, boolean> = {};
     let animId: number;
     let localScore = 0;
     let lastShot = 0;
@@ -854,7 +854,7 @@ const GameNeuralSnake = ({ onGameOver }: { onGameOver: (score: number) => void }
     const cols = Math.floor(canvas.width / gridSize);
     const rows = Math.floor(canvas.height / gridSize);
 
-    let snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
+    const snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
     let dir = { x: 1, y: 0 };
     let nextDir = { x: 1, y: 0 };
     let food = { x: 15, y: 10 };
@@ -958,11 +958,11 @@ const GameQuantumBreakout = ({ onGameOver }: { onGameOver: (score: number) => vo
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let paddle = { x: canvas.width / 2 - 40, w: 80, h: 10, speed: 7 };
-    let ball = { x: canvas.width / 2, y: canvas.height - 60, r: 5, vx: 3.5, vy: -3.5 };
-    let bricks: Array<{ x: number; y: number; w: number; h: number; color: string; alive: boolean }> = [];
+    const paddle = { x: canvas.width / 2 - 40, w: 80, h: 10, speed: 7 };
+    const ball = { x: canvas.width / 2, y: canvas.height - 60, r: 5, vx: 3.5, vy: -3.5 };
+    const bricks: Array<{ x: number; y: number; w: number; h: number; color: string; alive: boolean }> = [];
     let localScore = 0;
-    let keys: Record<string, boolean> = {};
+    const keys: Record<string, boolean> = {};
     let animId: number;
 
     const cols = 8;
@@ -1088,13 +1088,13 @@ const GameFirewallInvaders = ({ onGameOver }: { onGameOver: (score: number) => v
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let ship = { x: canvas.width / 2, y: canvas.height - 25, w: 24, speed: 5 };
-    let bullets: Array<{ x: number; y: number }> = [];
-    let invaders: Array<{ x: number; y: number; alive: boolean }> = [];
+    const ship = { x: canvas.width / 2, y: canvas.height - 25, w: 24, speed: 5 };
+    const bullets: Array<{ x: number; y: number }> = [];
+    const invaders: Array<{ x: number; y: number; alive: boolean }> = [];
     let invaderDir = 1;
     let lastStep = 0;
     let localScore = 0;
-    let keys: Record<string, boolean> = {};
+    const keys: Record<string, boolean> = {};
     let animId: number;
 
     for (let r = 0; r < 3; r++) {
@@ -1206,7 +1206,7 @@ const GameCyberPong = ({ onGameOver }: { onGameOver: (score: number) => void }) 
     let ball = { x: canvas.width / 2, y: canvas.height / 2, vx: 4, vy: 2.5, r: 5 };
     let pScore = 0;
     let aiScore = 0;
-    let keys: Record<string, boolean> = {};
+    const keys: Record<string, boolean> = {};
     let animId: number;
 
     const handleKeyDown = (e: KeyboardEvent) => { keys[e.key] = true; };
@@ -1314,7 +1314,7 @@ const GameNeonRunner = ({ onGameOver }: { onGameOver: (score: number) => void })
     if (!ctx) return;
 
     let playerX = 1; // 0: left, 1: center, 2: right
-    let obstacles: Array<{ lane: number; z: number }> = [];
+    const obstacles: Array<{ lane: number; z: number }> = [];
     let localScore = 0;
     let animId: number;
 
@@ -1403,8 +1403,8 @@ const GameDroneHopper = ({ onGameOver }: { onGameOver: (score: number) => void }
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let drone = { y: canvas.height / 2, vy: 0, gravity: 0.28, lift: -5.5 };
-    let pipes: Array<{ x: number; top: number; bottom: number; passed: boolean }> = [];
+    const drone = { y: canvas.height / 2, vy: 0, gravity: 0.28, lift: -5.5 };
+    const pipes: Array<{ x: number; top: number; bottom: number; passed: boolean }> = [];
     let localScore = 0;
     let animId: number;
 
@@ -1503,9 +1503,9 @@ const GameLunarDescent = ({ onGameOver }: { onGameOver: (score: number) => void 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let lander = { x: canvas.width / 2, y: 30, vx: 1.2, vy: 0, fuel: 100, landed: false };
+    const lander = { x: canvas.width / 2, y: 30, vx: 1.2, vy: 0, fuel: 100, landed: false };
     const pad = { x: canvas.width / 2 - 35, y: canvas.height - 20, w: 70, h: 8 };
-    let keys: Record<string, boolean> = {};
+    const keys: Record<string, boolean> = {};
     let animId: number;
 
     const handleKeyDown = (e: KeyboardEvent) => { keys[e.key] = true; };
@@ -1605,10 +1605,10 @@ const GameMissileDefense = ({ onGameOver }: { onGameOver: (score: number) => voi
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let missiles: Array<{ x: number; y: number; tx: number; ty: number; speed: number }> = [];
-    let explosions: Array<{ x: number; y: number; r: number; maxR: number; expanding: boolean }> = [];
-    let cities = [{ x: 80, alive: true }, { x: 250, alive: true }, { x: 420, alive: true }];
-    let crosshair = { x: canvas.width / 2, y: canvas.height / 2 };
+    const missiles: Array<{ x: number; y: number; tx: number; ty: number; speed: number }> = [];
+    const explosions: Array<{ x: number; y: number; r: number; maxR: number; expanding: boolean }> = [];
+    const cities = [{ x: 80, alive: true }, { x: 250, alive: true }, { x: 420, alive: true }];
+    const crosshair = { x: canvas.width / 2, y: canvas.height / 2 };
     let localScore = 0;
     let animId: number;
 
@@ -1733,11 +1733,11 @@ const GameLaserTank = ({ onGameOver }: { onGameOver: (score: number) => void }) 
     const ctx = canvas.getContext("2d");
     if (!ctx) return;
 
-    let tank = { x: 60, y: canvas.height / 2, angle: 0, speed: 3 };
-    let bullets: Array<{ x: number; y: number; vx: number; vy: number; bounces: number }> = [];
-    let enemy = { x: canvas.width - 60, y: canvas.height / 2, angle: Math.PI, alive: true };
+    const tank = { x: 60, y: canvas.height / 2, angle: 0, speed: 3 };
+    const bullets: Array<{ x: number; y: number; vx: number; vy: number; bounces: number }> = [];
+    const enemy = { x: canvas.width - 60, y: canvas.height / 2, angle: Math.PI, alive: true };
     let localScore = 0;
-    let keys: Record<string, boolean> = {};
+    const keys: Record<string, boolean> = {};
     let animId: number;
 
     const handleKeyDown = (e: KeyboardEvent) => {
@@ -1863,7 +1863,7 @@ const GameCyber2048 = ({ onGameOver }: { onGameOver: (score: number) => void }) 
     let changed = false;
 
     const slide = (row: number[]) => {
-      let filtered = row.filter(v => v !== 0);
+      const filtered = row.filter(v => v !== 0);
       for (let i = 0; i < filtered.length - 1; i++) {
         if (filtered[i] === filtered[i + 1]) {
           filtered[i] *= 2;
