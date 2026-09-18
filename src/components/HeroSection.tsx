@@ -2,7 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Mail } from "lucide-react";
 import { hero } from "@/content/homepage";
 import { HomeGoogleAuth } from "@/components/HomeGoogleAuth";
-import mascot from "@/assets/logo-clean.svg";
+import mascot from "@/assets/aliasist-focal.svg";
 
 const HeroSection = () => {
   return (
