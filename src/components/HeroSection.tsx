@@ -2,7 +2,6 @@ import { motion } from "framer-motion";
 import { ArrowRight, Mail } from "lucide-react";
 import { hero } from "@/content/homepage";
 import { HomeGoogleAuth } from "@/components/HomeGoogleAuth";
-import mascot from "@/assets/aliasist-focal.svg";
 
 const HeroSection = () => {
   return (
@@ -31,21 +30,6 @@ const HeroSection = () => {
       </div>
 
       <div className="relative z-10 mx-auto flex w-full max-w-site flex-col items-center px-4 pt-14 pb-14 text-center sm:px-8 sm:pt-16 lg:px-12 xl:px-16">
-        <motion.div
-          className="mb-5 h-28 w-28 sm:h-36 sm:w-36 md:h-44 md:w-44"
-          initial={{ opacity: 0, y: 12, scale: 0.96 }}
-          animate={{ opacity: 1, y: 0, scale: 1 }}
-          transition={{ duration: 0.7, delay: 0.38, ease: [0.16, 1, 0.3, 1] }}
-        >
-          <img
-            src={mascot}
-            alt={hero.mascotAlt}
-            title={hero.mascotTitle}
-            draggable={false}
-            className="h-full w-full select-none object-contain drop-shadow-logo-aura"
-          />
-        </motion.div>
-
         <motion.div
           className="mb-6 w-full max-w-full overflow-hidden flex flex-col items-center justify-center"
           initial={{ opacity: 0, y: 10, scale: 0.97 }}
