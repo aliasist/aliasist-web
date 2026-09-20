@@ -21,6 +21,7 @@ const liveSuiteApps = suiteApps.filter(
 const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
   const [open, setOpen] = useState(false);
   const ref = useRef<HTMLDivElement>(null);
+  const triggerRef = useRef<HTMLButtonElement>(null);
   const closeTimerRef = useRef<ReturnType<typeof setTimeout>>();
   const highlighted = open || isActive;
 
@@ -63,9 +64,22 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
       className="relative"
       onMouseEnter={openNow}
       onMouseLeave={closeSoon}
+      onBlur={event => {
+        if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
+      }}
+      onKeyDown={event => {
+        if (event.key === "Escape" && open) {
+          event.preventDefault();
+          setOpen(false);
+          triggerRef.current?.focus();
+        }
+      }}
     >
       <button
+        ref={triggerRef}
         type="button"
+        aria-expanded={open}
+        aria-controls="suite-navigation"
         onClick={() => setOpen(o => !o)}
         className={`group relative flex items-center gap-1.5 overflow-hidden rounded-full px-2.5 py-1.5 text-xs font-mono uppercase tracking-[0.16em] outline-none transition-all duration-300 ease-out focus-visible:ring-2 focus-visible:ring-electric/55 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
           highlighted
@@ -97,6 +111,7 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
       <AnimatePresence>
         {open && (
           <motion.div
+            id="suite-navigation"
             initial={{ opacity: 0, y: 8, scale: 0.97 }}
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.97 }}
@@ -216,6 +231,7 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen]     = useState(false);
   const [isDark, setIsDark]             = useState(true);
   const [activeSection, setActiveSection] = useState("");
+  const mobileTriggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
     const onScroll = () => setScrolled(window.scrollY > 20);
@@ -227,8 +243,22 @@ const Navbar = () => {
     if (!mobileOpen) return;
     const prevOverflow = document.body.style.overflow;
     document.body.style.overflow = "hidden";
+    const onKeyDown = (event: KeyboardEvent) => {
+      if (event.key !== "Escape" || event.defaultPrevented) return;
+      setMobileOpen(false);
+      mobileTriggerRef.current?.focus();
+    };
+    const desktop = window.matchMedia("(min-width: 768px)");
+    const closeOnDesktop = () => {
+      if (desktop.matches) setMobileOpen(false);
+    };
+    closeOnDesktop();
+    desktop.addEventListener("change", closeOnDesktop);
+    document.addEventListener("keydown", onKeyDown);
     return () => {
       document.body.style.overflow = prevOverflow;
+      desktop.removeEventListener("change", closeOnDesktop);
+      document.removeEventListener("keydown", onKeyDown);
     };
   }, [mobileOpen]);
 
@@ -371,9 +401,13 @@ const Navbar = () => {
 
         {/* ── MOBILE: Hamburger ── */}
         <button
+          ref={mobileTriggerRef}
+          type="button"
           onClick={() => setMobileOpen(!mobileOpen)}
           className="md:hidden text-foreground p-2 -mr-2 rounded-md outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
           aria-label="Toggle menu"
+          aria-expanded={mobileOpen}
+          aria-controls="mobile-navigation"
         >
           <div className="w-5 flex flex-col gap-[5px]">
             <span className={`block h-px bg-foreground transition-all duration-300 ${mobileOpen ? "rotate-45 translate-y-[6px]" : ""}`} />
@@ -390,6 +424,7 @@ const Navbar = () => {
             <motion.button
               type="button"
               aria-label="Close menu"
+              tabIndex={-1}
               className="fixed inset-0 z-10 block cursor-default bg-background/50 backdrop-blur-lg md:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -398,13 +433,14 @@ const Navbar = () => {
               onClick={() => setMobileOpen(false)}
             />
             <motion.div
+              id="mobile-navigation"
               initial={{ opacity: 0, height: 0 }}
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.25 }}
               className="relative z-20 md:hidden overflow-hidden border-b border-border bg-background/98 backdrop-blur-xl"
             >
-              <div className="space-y-1 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-5 sm:px-8 lg:px-12 xl:px-16">
+              <div className="max-h-[calc(100dvh-4.5rem-env(safe-area-inset-top,0px))] overflow-y-auto overscroll-contain space-y-1 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-5 sm:px-8 lg:px-12 xl:px-16">
 
               {/* Page links */}
               {pageNavLinks.map(link => (
