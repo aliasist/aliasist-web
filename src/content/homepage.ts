@@ -49,6 +49,12 @@ export const suiteApps = [
     href: "https://clearasist.pages.dev",
     icon: "CL",
   },
+  {
+    label: "PDFSist",
+    sub: "Sign and annotate PDFs in your browser",
+    href: "https://pdf.aliasist.com",
+    icon: "PDF",
+  },
 ] as const;
 
 export const suiteAppCount = suiteApps.length;
@@ -112,6 +118,20 @@ export const projectsSection = {
 } as const;
 
 export const projects = [
+  {
+    name: "PDFSist",
+    description:
+      "Add text, draw or type a signature, and download your signed PDF. Your documents stay in your browser.",
+    tech: ["PDF signing", "Text annotations", "Local processing", "Browser-based"],
+    downloads: [],
+    status: "Live" as "Live" | "Archived",
+    meta: ["Free to use", "No uploads", "PDF tools"] as const,
+    tone: "teal",
+    icon: "PDF",
+    link: "https://pdf.aliasist.com",
+    linkLabel: "OPEN PDFSIST →",
+    banner: "https://pdf.aliasist.com/pdfsist-twitter-card.png",
+  },
   {
     name: "Aliasist-Files-Abductor",
     description:

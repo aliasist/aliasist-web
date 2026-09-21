@@ -84,6 +84,7 @@ export default function TechLanding() {
               { name: "Globalize", desc: "Live 3D globe with global data signals", link: "https://www.aliasist.world" },
               { name: "SpaceSist", desc: "Live space portal", link: "https://space.aliasist.com" },
               { name: "Clearasist", desc: "Privacy metadata cleaner", link: "https://clearasist.pages.dev" },
+              { name: "PDFSist", desc: "Sign and annotate PDFs in your browser", link: "https://pdf.aliasist.com" },
             ].map((project, i) => (
               <motion.a
                 key={project.name}
