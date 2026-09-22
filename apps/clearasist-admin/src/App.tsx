@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import { useAuth } from '@clerk/react'
 
 const CURATION_TAGS = ['Good for training', 'Bad data', 'Review later', 'High quality']
 
@@ -20,8 +21,7 @@ interface FullReport extends Report {
   partials?: string | null
 }
 
-const WORKER_URL = import.meta.env.VITE_METADATA_WORKER_URL || ''
-const ADMIN_SECRET = import.meta.env.VITE_ADMIN_SECRET || ''
+const API_URL = `${(import.meta.env.VITE_ALIASIST_API_BASE || '').replace(/\/$/, '')}/api/clearasist-reports`
 
 function parseTags(value: string | null): string[] {
   if (!value) return []
@@ -35,24 +35,28 @@ function parseTags(value: string | null): string[] {
 }
 
 export default function Admin() {
+  const { getToken } = useAuth()
+  const adminFetch = async (url: string, options: RequestInit = {}) => {
+    const token = await getToken()
+    if (!token) throw new Error('Sign in to continue.')
+    const headers = new Headers(options.headers)
+    headers.set('Authorization', `Bearer ${token}`)
+    return fetch(url, { ...options, headers })
+  }
   const [reports, setReports] = useState<Report[]>([])
   const [selected, setSelected] = useState<FullReport | null>(null)
   const [loading, setLoading] = useState(false)
   const [search, setSearch] = useState('')
   const [fetchError, setFetchError] = useState<string | null>(null)
 
-  const envMissing = !WORKER_URL || !ADMIN_SECRET
 
   const fetchReports = async () => {
-    if (envMissing) return
     setLoading(true)
     setFetchError(null)
     try {
       const params = new URLSearchParams()
       if (search) params.set('search', search)
-      const res = await fetch(`${WORKER_URL}/admin/reports?${params}`, {
-        headers: { Authorization: `Bearer ${ADMIN_SECRET}` }
-      })
+      const res = await adminFetch(`${API_URL}?${params}`)
       if (!res.ok) {
         const text = await res.text().catch(() => '')
         throw new Error(`HTTP ${res.status}${text ? `: ${text}` : ''}`)
@@ -69,9 +73,7 @@ export default function Admin() {
 
   const loadReport = async (id: number) => {
     try {
-      const res = await fetch(`${WORKER_URL}/admin/reports/${id}`, {
-        headers: { Authorization: `Bearer ${ADMIN_SECRET}` }
-      })
+      const res = await adminFetch(`${API_URL}/${id}`)
       if (!res.ok) throw new Error(`Failed to fetch report: ${res.status}`)
       const data = await res.json()
       setSelected(data)
@@ -81,10 +83,9 @@ export default function Admin() {
   }
 
   const updateReport = async (id: number, patch: { tags?: string[]; notes?: string }) => {
-    const res = await fetch(`${WORKER_URL}/admin/reports/${id}`, {
+    const res = await adminFetch(`${API_URL}/${id}`, {
       method: 'PATCH',
       headers: {
-        Authorization: `Bearer ${ADMIN_SECRET}`,
         'Content-Type': 'application/json'
       },
       body: JSON.stringify(patch)
@@ -136,35 +137,6 @@ export default function Admin() {
     const t = setTimeout(fetchReports, 300)
     return () => clearTimeout(t)
   }, [search])
-
-  // Prominent missing-config banner (prevents the "completely empty screen" problem)
-  if (envMissing) {
-    return (
-      <div className="min-h-screen bg-background text-foreground flex items-center justify-center p-6">
-        <div className="max-w-[620px] w-full border border-border rounded-2xl bg-card p-8">
-          <div className="text-center mb-6">
-            <h1 className="text-3xl font-semibold tracking-tight mb-2">Clearasist Admin</h1>
-            <p className="text-muted-foreground">Configuration required to connect to the metadata worker.</p>
-          </div>
-
-          <div className="bg-[#0F1117] border border-border rounded-xl p-5 mb-6 font-mono text-sm">
-            <div className="text-electric mb-2 text-xs tracking-[0.16em] uppercase">Create apps/clearasist-admin/.env.local</div>
-            <pre className="text-xs text-muted-foreground leading-relaxed">VITE_METADATA_WORKER_URL=https://clearasist-metadata.your-domain.workers.dev
-VITE_ADMIN_SECRET=your-secret-here</pre>
-          </div>
-
-          <div className="text-sm text-muted-foreground space-y-2">
-            <div>1. Add the .env.local file with the Worker URL and admin secret.</div>
-            <div>2. Restart the dev server after saving.</div>
-          </div>
-
-          <div className="mt-6 pt-6 border-t border-border text-xs text-muted-foreground">
-            This is an internal tool. The UI requires valid credentials to fetch reports.
-          </div>
-        </div>
-      </div>
-    )
-  }
 
   return (
     <div className="min-h-screen bg-background text-foreground">

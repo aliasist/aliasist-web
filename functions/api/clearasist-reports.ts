@@ -1,5 +1,5 @@
 import type { AliasistAdminEnv, ClerkEnv } from "../_lib/clerk-auth";
-import { authenticateRequest, corsHeaders, json, requireAliasistAdmin } from "../_lib/clerk-auth";
+import { authenticateRequest, corsHeaders, json as authJson, requireAliasistAdmin } from "../_lib/clerk-auth";
 
 interface Env extends ClerkEnv, AliasistAdminEnv {
   CLEARASIST_ADMIN_SECRET?: string;
@@ -29,6 +29,18 @@ type ClearasistResponse = {
 };
 
 const DEFAULT_CLEARASIST_WORKER_URL = "https://clearasist-metadata.bchooper0730.workers.dev";
+function json(payload: Record<string, unknown>, status = 200) {
+  const response = authJson(payload, status);
+  response.headers.set("Cache-Control", "no-store");
+  return response;
+}
+
+function reportId(request: Request): number | null {
+  const match = new URL(request.url).pathname.match(/\/clearasist-reports\/([1-9]\d*)$/);
+  const id = match ? Number(match[1]) : NaN;
+  return Number.isSafeInteger(id) ? id : null;
+}
+
 const PAGE_SIZE = 200;
 const MAX_REPORTS = 1000;
 
@@ -64,6 +76,16 @@ export const onRequestGet = async ({ request, env }: PagesContext) => {
   );
 
   try {
+    const url = new URL(request.url);
+    if (url.pathname.replace(/\/$/, "") !== "/api/clearasist-reports") {
+      const id = reportId(request);
+      if (id === null) return json({ error: "Invalid report ID" }, 400);
+      const upstream = await fetch(`${base}/admin/reports/${id}`, {
+        headers: { Authorization: `Bearer ${adminSecret}` },
+      });
+      if (!upstream.ok) return json({ error: "Unable to load report." }, upstream.status === 404 ? 404 : 502);
+      return json(await upstream.json() as Record<string, unknown>);
+    }
     const reports: ClearasistReport[] = [];
     let total = 0;
 
@@ -73,6 +95,8 @@ export const onRequestGet = async ({ request, env }: PagesContext) => {
         offset: String(reports.length),
         sort: "timestamp_desc",
       });
+      const search = url.searchParams.get("search")?.trim();
+      if (search) params.set("search", search.slice(0, 255));
       const upstream = await fetch(`${base}/admin/reports?${params}`, {
         headers: { Authorization: `Bearer ${adminSecret}` },
       });
@@ -127,13 +151,8 @@ export const onRequestPatch = async ({ request, env }: PagesContext) => {
   );
 
   try {
-    const url = new URL(request.url);
-    const pathParts = url.pathname.split("/");
-    const id = pathParts[pathParts.length - 1];
-
-    if (!id || isNaN(Number(id))) {
-      return json({ error: "Invalid report ID" }, 400);
-    }
+    const id = reportId(request);
+    if (id === null) return json({ error: "Invalid report ID" }, 400);
 
     const body = await request.json().catch(() => ({}));
 

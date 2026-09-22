@@ -1,1 +1,1 @@
-export { onRequestOptions, onRequestPatch } from "../clearasist-reports";
+export { onRequestOptions, onRequestGet, onRequestPatch } from "../clearasist-reports";
