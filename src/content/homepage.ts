@@ -122,18 +122,6 @@ export const projectsSection = {
 
 export const projects = [
   {
-    name: "PDFSist",
-    description:
-      "Fill in text, draw or type your signature, and download the signed PDF. Your file never leaves your browser.",
-    tech: ["Sign PDFs", "Add text", "Free", "No uploads"],
-    downloads: [],
-    status: "Live" as "Live" | "Archived",
-    tone: "teal",
-    link: "https://pdf.aliasist.com",
-    linkLabel: "Open PDFSist",
-    banner: pdfsistBanner,
-  },
-  {
     name: "Files Abductor",
     description:
       "A desktop app for downloading files from YouTube and direct URLs.",
@@ -197,6 +185,18 @@ export const projects = [
     link: "https://clearasist.pages.dev",
     linkLabel: "Open ClearSist",
     banner: clearasistBanner,
+  },
+  {
+    name: "PDFSist",
+    description:
+      "Fill in text, draw or type your signature, and download the signed PDF. Your file never leaves your browser.",
+    tech: ["Sign PDFs", "Add text", "Free", "No uploads"],
+    downloads: [],
+    status: "Live" as "Live" | "Archived",
+    tone: "teal",
+    link: "https://pdf.aliasist.com",
+    linkLabel: "Open PDFSist",
+    banner: pdfsistBanner,
   },
 ] as const;
 
