@@ -1,8 +1,8 @@
 // Production hold gate. When MAINTENANCE_MODE is true, every request to the
 // live datasist.aliasist.com domain gets the landing page below instead of
-// the app. Flip to true and redeploy (`npm run deploy` in this app — no CI
-// hook, see aliasist-web/AGENTS.md) to take DataSist down for maintenance;
-// flip back to false and redeploy to restore it. Mirrors the same pattern
+// the app. Flip to true and redeploy (`npm run deploy` in this app, since
+// there's no CI hook) to take DataSist down for maintenance, then flip back
+// to false and redeploy to restore it. Mirrors the same pattern
 // in globalize's, aliasist-web's, and waterfall's functions/_middleware.ts.
 const MAINTENANCE_MODE = false;
 

@@ -23,4 +23,4 @@ if (window.navigator && navigator.modelContext && navigator.modelContext.provide
 }
 ```
 
-This is progressive enhancement — it will do nothing on browsers that don't implement the API.
+It's an extra. It does nothing on browsers that don't implement the API.

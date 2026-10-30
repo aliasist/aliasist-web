@@ -12,9 +12,6 @@
 .swiftpm/
 migrate_working_dir/
 
-# Agent CLI markers
-.codex
-.aider*
 
 # Node (cloudflare-backend)
 node_modules/

@@ -127,7 +127,7 @@ Notes: ${facility.notes || "None"}
           `.trim();
         }
       } else {
-        // Global question — provide aggregate context
+        // Global question, provide aggregate context
         const totalMW = centers.reduce((s, c) => s + (c.capacityMW || 0), 0);
         const countries = [...new Set(centers.map(c => c.country))];
         contextBlock = `

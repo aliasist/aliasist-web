@@ -5,9 +5,9 @@
  * functions/api/chat-messages.ts for the canonical pattern).
  *
  * Required env:
- *   CLERK_SECRET_KEY       — server-side Clerk key (secret)
- *   CLERK_PUBLISHABLE_KEY  — frontend-safe Clerk key (variable)
- *   ADMIN_USER_IDS         — comma-separated list of Clerk user ids
+ *   CLERK_SECRET_KEY      , server-side Clerk key (secret)
+ *   CLERK_PUBLISHABLE_KEY , frontend-safe Clerk key (variable)
+ *   ADMIN_USER_IDS        , comma-separated list of Clerk user ids
  *                            (e.g. "user_abc123,user_def456"). Empty or
  *                            unset means *no one* is an admin and every
  *                            mutation is rejected. Fail closed.

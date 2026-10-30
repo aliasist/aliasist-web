@@ -52,7 +52,7 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
   };
 
   // Short delay so moving the cursor from the button down into the dropdown
-  // panel doesn't close it — mouse briefly leaves both elements mid-transit.
+  // panel doesn't close it, mouse briefly leaves both elements mid-transit.
   const closeSoon = () => {
     clearTimeout(closeTimerRef.current);
     closeTimerRef.current = setTimeout(() => setOpen(false), 150);
@@ -81,7 +81,7 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
         aria-expanded={open}
         aria-controls="suite-navigation"
         onClick={() => setOpen(o => !o)}
-        className={`group relative flex items-center gap-1.5 overflow-hidden rounded-full px-2.5 py-1.5 text-xs font-mono uppercase tracking-[0.16em] outline-none transition-all duration-300 ease-out focus-visible:ring-2 focus-visible:ring-electric/55 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+        className={`group relative flex items-center gap-1.5 overflow-hidden rounded-full px-2.5 py-1.5 text-sm outline-none transition-all duration-300 ease-out focus-visible:ring-2 focus-visible:ring-electric/55 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
           highlighted
             ? "bg-electric/10 text-electric shadow-electric-xs"
             : "text-muted-foreground hover:bg-electric/[0.06] hover:text-foreground hover:shadow-electric-ring-inset"
@@ -120,10 +120,10 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
           >
             {/* Header */}
             <div className="px-4 py-3 border-b border-border/60 flex items-center justify-between">
-              <span className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/50">
+              <span className="text-xs text-muted-foreground/50">
                 Projects
               </span>
-              <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-electric/60">
+              <span className="text-xs text-electric/60">
                 {liveSuiteApps.length} Links
               </span>
             </div>
@@ -148,7 +148,7 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
                   <p className="font-mono text-xs font-semibold text-foreground transition-colors duration-300 group-hover:text-electric">
                     {app.label}
                   </p>
-                  <p className="font-mono text-[9px] uppercase tracking-[0.08em] text-muted-foreground/50 mt-0.5 truncate">
+                  <p className="text-xs text-muted-foreground/50 mt-0.5 truncate">
                     {app.sub}
                   </p>
                 </div>
@@ -163,10 +163,10 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
 };
 
 const signInButtonClass =
-  "border border-border/50 bg-background/40 px-3.5 py-2 text-xs font-mono uppercase tracking-[0.16em] text-muted-foreground backdrop-blur-sm transition-all duration-300 ease-out hover:border-violet/40 hover:bg-electric/[0.07] hover:text-electric hover:shadow-[0_0_22px_hsl(var(--violet)/0.18),inset_0_1px_0_hsl(0_0%_100%/0.04)] active:scale-[0.98] rounded-full";
+  "border border-border/50 bg-background/40 px-3.5 py-2 text-sm text-muted-foreground backdrop-blur-sm transition-all duration-300 ease-out hover:border-violet/40 hover:bg-electric/[0.07] hover:text-electric hover:shadow-[0_0_22px_hsl(var(--violet)/0.18),inset_0_1px_0_hsl(0_0%_100%/0.04)] active:scale-[0.98] rounded-full";
 
 const mobileSignInButtonClass =
-  "flex-1 rounded-md border border-electric/35 bg-electric/[0.04] py-2.5 text-center text-xs font-mono uppercase tracking-[0.16em] text-electric shadow-electric-mobile-signin transition-all duration-300 hover:border-electric/50 hover:bg-electric/10 hover:shadow-electric-mobile-signin-hover active:scale-[0.99]";
+  "flex-1 rounded-md border border-electric/35 bg-electric/[0.04] py-2.5 text-center text-sm text-electric shadow-electric-mobile-signin transition-all duration-300 hover:border-electric/50 hover:bg-electric/10 hover:shadow-electric-mobile-signin-hover active:scale-[0.99]";
 
 const utilityButtonClass =
   "tap-compact flex h-9 w-9 items-center justify-center rounded-full border border-transparent text-muted-foreground transition-all duration-300 ease-out hover:border-electric/25 hover:bg-electric/[0.08] hover:text-electric hover:shadow-electric-utility-hover active:scale-95";
@@ -262,7 +262,7 @@ const Navbar = () => {
     };
   }, [mobileOpen]);
 
-  // Scroll-spy — highlight the nav link whose section is in view
+  // Scroll-spy, highlight the nav link whose section is in view
   useEffect(() => {
     const sectionIds = pageNavLinks.map(l => l.href.replace("#", ""));
     const observers: IntersectionObserver[] = [];
@@ -308,7 +308,7 @@ const Navbar = () => {
     >
       <a
         href="#main-content"
-        className="fixed left-4 top-20 z-[100] -translate-x-[200%] focus:translate-x-0 transition-transform duration-200 px-4 py-2 bg-card border border-border/60 rounded-[var(--radius)] font-mono text-[10px] uppercase tracking-widest text-foreground shadow-lg outline-none ring-2 ring-ring ring-offset-2 ring-offset-background sm:left-6 sm:top-24"
+        className="fixed left-4 top-20 z-[100] -translate-x-[200%] focus:translate-x-0 transition-transform duration-200 px-4 py-2 bg-card border border-border/60 rounded-[var(--radius)] text-xs text-foreground shadow-lg outline-none ring-2 ring-ring ring-offset-2 ring-offset-background sm:left-6 sm:top-24"
       >
         Skip to content
       </a>
@@ -338,7 +338,7 @@ const Navbar = () => {
               <a
                 key={link.href}
                 href={link.href}
-                className={`group relative overflow-hidden rounded-full px-4 py-2 text-xs font-mono uppercase tracking-[0.16em] transition-all duration-300 ease-out outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                className={`group relative overflow-hidden rounded-full px-4 py-2 text-sm transition-all duration-300 ease-out outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                   isActive
                     ? "bg-electric/[0.12] text-electric shadow-electric-xs"
                     : "text-muted-foreground hover:bg-electric/[0.06] hover:text-foreground hover:tracking-[0.2em] hover:shadow-electric-ring-inset-soft"
@@ -391,7 +391,7 @@ const Navbar = () => {
           <div className="flex items-center gap-3 shrink-0 min-w-0">
             <a
               href="#contact"
-              className="rounded-full bg-electric px-5 py-2 text-xs font-mono uppercase tracking-[0.16em] text-background shadow-electric-sm transition-[background-color,box-shadow,transform] duration-300 ease-out hover:bg-electric/90 hover:shadow-electric-md active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="rounded-full bg-electric px-5 py-2 text-sm text-background shadow-electric-sm transition-[background-color,box-shadow,transform] duration-300 ease-out hover:bg-electric/90 hover:shadow-electric-md active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               Contact
             </a>
@@ -448,7 +448,7 @@ const Navbar = () => {
                   key={link.href}
                   href={link.href}
                   onClick={() => setMobileOpen(false)}
-                  className="-mx-1 flex h-12 items-center rounded-lg px-3 text-xs font-mono uppercase tracking-[0.15em] text-muted-foreground transition-all duration-300 ease-out hover:bg-electric/[0.06] hover:pl-4 hover:text-foreground hover:shadow-[inset_3px_0_0_hsl(165_90%_42%_/_0.65)] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="-mx-1 flex h-12 items-center rounded-lg px-3 text-sm text-muted-foreground transition-all duration-300 ease-out hover:bg-electric/[0.06] hover:pl-4 hover:text-foreground hover:shadow-[inset_3px_0_0_hsl(165_90%_42%_/_0.65)] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   {link.label}
                 </a>
@@ -458,7 +458,7 @@ const Navbar = () => {
               <div className="h-px bg-border/50 my-3" />
 
               {/* Project links */}
-              <p className="font-mono text-[9px] uppercase tracking-[0.2em] text-muted-foreground/40 py-1">
+              <p className="text-xs text-muted-foreground/40 py-1">
                 Projects
               </p>
               {liveSuiteApps.map(app => (
@@ -468,7 +468,7 @@ const Navbar = () => {
                   target={opensInNewTab(app) ? "_blank" : undefined}
                   rel={opensInNewTab(app) ? "noopener noreferrer" : undefined}
                   onClick={() => setMobileOpen(false)}
-                  className="group -mx-1 flex h-12 items-center gap-3 rounded-lg px-3 text-xs font-mono uppercase tracking-[0.15em] text-muted-foreground transition-all duration-300 hover:bg-electric/[0.06] hover:text-electric hover:shadow-[inset_3px_0_0_hsl(165_90%_42%_/_0.5)] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+                  className="group -mx-1 flex h-12 items-center gap-3 rounded-lg px-3 text-sm text-muted-foreground transition-all duration-300 hover:bg-electric/[0.06] hover:text-electric hover:shadow-[inset_3px_0_0_hsl(165_90%_42%_/_0.5)] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
                   <span className="flex size-7 shrink-0 items-center justify-center rounded-sm border border-border/60 bg-background/45 font-mono text-[10px] font-semibold text-electric transition-all duration-300 group-hover:border-violet/45 group-hover:shadow-[0_0_12px_hsl(var(--violet)/0.28)]">
                     {app.icon}
@@ -488,11 +488,11 @@ const Navbar = () => {
                 </button>
               </div>
 
-              {/* Contact then Sign In — Sign In on the right */}
+              {/* Contact then Sign In, Sign In on the right */}
               <div className="flex gap-3 pt-2">
                 <a href="#contact"
                   onClick={() => setMobileOpen(false)}
-                  className="flex-1 rounded-md bg-electric py-2.5 text-center text-xs font-mono uppercase tracking-[0.16em] text-background shadow-electric-sm transition-[background-color,box-shadow,transform] duration-300 hover:bg-electric/90 hover:shadow-electric-md active:scale-[0.99] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
+                  className="flex-1 rounded-md bg-electric py-2.5 text-center text-sm text-background shadow-electric-sm transition-[background-color,box-shadow,transform] duration-300 hover:bg-electric/90 hover:shadow-electric-md active:scale-[0.99] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background">
                   Contact
                 </a>
                 <MobileAuthControl />

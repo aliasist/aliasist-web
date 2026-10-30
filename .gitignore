@@ -46,5 +46,6 @@ coverage/
 # Local backups — large archives, not for version control
 backups/
 
-# Local AI tool config
-.claude/
+
+# Local suite verification receipts and logs
+.reports/

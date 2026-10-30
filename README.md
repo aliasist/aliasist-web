@@ -2,7 +2,7 @@
 
 ![Aliasist homepage](images/aliasist-homepage-screenshot.png)
 
-**Aliasist** is my homepage — the front door to everything else I've built. One stop to see the whole suite and get pointed at whatever you're after.
+**Aliasist** is my homepage, the front door to everything else I've built. One stop to see the whole suite and jump into whatever you're after.
 
 ## What it actually looks like
 
@@ -10,79 +10,92 @@
 
 ## The suite
 
-- **DataSist** — data and insight dashboards
-- **PulseSist** — market signal dashboards
-- **EcoSist** — environmental observatory tools (archived; the demo stays
-  online but is no longer being developed)
-- **SpaceSist** — orbital mission planning
-- **Clearasist** — privacy-first, fully local metadata stripping. Runs client-side only; the only thing it ever shows you is a removal count.
-- **Aliasist Tech · Waterfall** — a protected workspace for prompts, chat, and private sessions
+Everything listed on the homepage comes from `src/content/homepage.ts`:
+
+- **Aliasist AI**: chat, image generation, and answers pulled from real documents, at `www.aliasist.tech`.
+- **Globalize**: data centers, environmental data, and media on a 3D globe, at `www.aliasist.world`.
+- **SpaceSist**: a live space dashboard, at `space.aliasist.com`.
+- **ClearSist**: strips metadata out of your files right in the browser, at `clearasist.pages.dev` (the folder and project are still called `clearasist`).
+- **PDFSist**: fill in and sign PDFs right in the browser, at `pdf.aliasist.com`.
+- **Files Abductor**: my desktop downloader. Installers are on the public `files-abductor` releases page.
+- **spawnOS**: a browser version of my bare-metal OS, at `www.aliasist.com/os`. Every web app above opens in its own window.
+
+That's five web apps and one desktop app. I'm holding off on new projects until 2027 and putting my time into making these better. The DataSist, PulseSist, and EcoSist folders are older apps I'm keeping around, not part of what's on the homepage now.
+
+[docs/SUITE_STATUS.md](docs/SUITE_STATUS.md) lists where each app's code lives, how to check it, and how it ships.
 
 ## Related repositories
 
-- **[`files-abductor`](https://github.com/aliasist/files-abductor)** (public) —
-  hosts the Files Abductor desktop release binaries. The homepage download
-  buttons point here, which is what lets this repo stay private. Binaries do
-  not live in this repo.
-- **`verity-console`** (private) — the RAG curation dashboard for the Aliasist
-  knowledge corpora.
+- **[`files-abductor`](https://github.com/aliasist/files-abductor)** (public): the Files Abductor installers. The download buttons on the homepage point there, so no binaries live in this repo.
+- **`verity-console`** (private): my dashboard for curating the documents my AI chat tools answer from.
 
 ## Tech stack
 
 - React + Vite + TypeScript
 - Tailwind CSS + Radix UI
 - Cloudflare Pages + Functions (Wrangler)
-- Clerk authentication
+- Clerk sign-in
 
-## Repository structure
+## What's where
 
-- `src/` — homepage UI and routing
-- `public/` — static assets and brand imagery
-- `functions/` — Cloudflare Pages Functions
-- `apps/` — suite applications and experiments
-- `assets/` — marketing visuals
+- `src/`: homepage UI and routing
+- `public/`: static files and images (`public/os/` is spawnOS)
+- `functions/`: Cloudflare Pages Functions (the `/api/*` routes)
+- `apps/`: the other apps and experiments
+- `assets/`: images for promo stuff
 
-## Local development
+## Running it locally
 
 ### Quickstart
 
-- Install: `npm install`
-- Set local Pages/Clerk vars: `cp .dev.vars.example .dev.vars` then fill keys
+- Install: `npm ci`
+- Local keys: `cp .dev.vars.example .dev.vars`, then fill them in
 - Run: `npm run dev` (Vite on `http://localhost:8080`)
 - Health check: `npm run doctor`
 
-### Useful commands
+### Commands
 
-- `npm run dev` — homepage dev server (port 8080)
-- `npm run preview` — production-like: build + `wrangler pages dev dist`
-- `npm test` — unit tests
-- `npm run lint` — ESLint
+- `npm run dev`: homepage dev server (port 8080)
+- `npm run preview`: build, then serve it like production with `wrangler pages dev dist`
+- `npm test`: unit tests
+- `npm run lint`: ESLint, zero warnings allowed
+- `npm run check`: lint, tests, production build, and the JavaScript size budget
+- `npm run setup:clearasist`: install ClearSist's own dependencies
+- `npm run build:clearasist`: typecheck and build ClearSist
+- `npm run check:suite`: check every app locally and save a dated report
+- `npm run status:suite -- --live`: see each repo's state and what the live sites are serving, without deploying anything
 
-### Apps
+### ClearSist
 
-Suite apps live in `apps/*` and can be run from the repo root:
+ClearSist installs and builds on its own:
 
-- `npm run app:datasist`
-- `npm run app:pulsesist`
-- `npm run app:spacesist`
+```sh
+npm run setup:clearasist
+npm run build:clearasist
+npm --prefix apps/clearasist run dev
+```
+
+The older apps still have their scripts so I can maintain them. Check `docs/SUITE_STATUS.md` for where each live app's code actually lives, since some old folders have similar names but aren't the same code.
 
 ## Environment variables
 
-- `.dev.vars` — local Pages Functions + Clerk keys (copy from `.dev.vars.example`)
-- `.env.local` — local Vite vars (copy from `.env.example`)
-- Agent dashboard snapshot reads require `ALIASIST_ADMIN_USER_IDS` and the server-only `AGENT_PUSH_SECRET`.
+- `.dev.vars`: local Pages Functions and Clerk keys (copy from `.dev.vars.example`)
+- `.env.local`: local Vite variables (copy from `.env.example`)
+- The agent dashboard needs `ALIASIST_ADMIN_USER_IDS` and the server-only `AGENT_PUSH_SECRET`.
 
-## Deployment
+## Deploying
 
-Production deploys use Cloudflare Pages and Wrangler. Run `npm run build` then `npm run deploy`.
+Pushing to `master` runs `.github/workflows/deploy-homepage.yml`, which runs `npm run check` and then publishes to the Pages project `aliasistabductor`. Pull requests get checked but never deployed. `npm run deploy` runs the same checks before publishing by hand.
+
+ClearSist has its own workflow and lockfile. The other apps live in their own repos and ship on their own, so pushing here doesn't deploy them. After a deploy, open the live site and click through it. A passing build doesn't always mean the domain is serving the new version yet.
 
 ## Contributing
 
-See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, checks, and PR guidelines.
+See [CONTRIBUTING.md](CONTRIBUTING.md) for setup, checks, and pull requests.
 
 ## Security
 
-Please report vulnerabilities via GitHub Security Advisories. See [SECURITY.md](SECURITY.md).
+Found a security problem? Email me at dev@aliasist.com instead of opening an issue. See [SECURITY.md](SECURITY.md).
 
 ## License
 

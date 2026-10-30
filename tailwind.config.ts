@@ -76,7 +76,7 @@ export default {
         sm: "calc(var(--radius) - 4px)",
       },
       maxWidth: {
-        /** Main content + navbar — uses wide desktops without ultra-long measure */
+        /** Main content + navbar, uses wide desktops without ultra-long measure */
         site: "min(100%, 92rem)",
       },
       keyframes: {

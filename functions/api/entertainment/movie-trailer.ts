@@ -28,7 +28,7 @@ export const onRequestOptions = async () => new Response(null, { status: 204, he
  * GET /api/entertainment/movie-trailer?id=<tmdbId>&media=movie|tv
  * The trending list doesn't carry trailer data, and a fake
  * `youtube.com/embed?listType=search` URL (the previous approach) no longer
- * works — YouTube dropped third-party search-result embeds years ago. This
+ * works, YouTube dropped third-party search-result embeds years ago. This
  * fetches TMDB's real /videos endpoint and returns a genuine YouTube key.
  */
 export const onRequestGet = async ({ request, env }: PagesContext) => {

@@ -56,7 +56,7 @@ export const onRequestPost = async ({ request, env }: SpawnosContext) => {
   if (size > MAX_CONTENT_BYTES) return json({ error: "file too large (200KB max)" }, 413);
 
   const owner = await env.SPAWNOS_DB.prepare("SELECT 1 FROM profiles WHERE username = ?").bind(username).first();
-  if (!owner) return json({ error: "unknown user — log in first" }, 404);
+  if (!owner) return json({ error: "no profile with that name yet. log in first" }, 404);
 
   const counts = await env.SPAWNOS_DB.prepare(
     "SELECT COUNT(*) AS total, SUM(name = ?) AS existing FROM files WHERE username = ?",
@@ -64,7 +64,7 @@ export const onRequestPost = async ({ request, env }: SpawnosContext) => {
     .bind(name, username)
     .first<{ total: number; existing: number | null }>();
   if (!counts?.existing && (counts?.total ?? 0) >= MAX_FILES_PER_USER) {
-    return json({ error: `file limit reached (${MAX_FILES_PER_USER} files) — delete one first` }, 409);
+    return json({ error: `file limit reached (${MAX_FILES_PER_USER} files). delete one first` }, 409);
   }
 
   const now = Date.now();

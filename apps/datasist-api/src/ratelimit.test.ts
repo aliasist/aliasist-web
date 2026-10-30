@@ -24,7 +24,7 @@ describe("rateLimit", () => {
     const t0 = 2_000_000;
     for (let i = 0; i < 3; i++) rateLimit("ip-b", 3, 60_000, t0 + i);
     expect(rateLimit("ip-b", 3, 60_000, t0 + 100).allowed).toBe(false);
-    // advance beyond the window — old hits expire
+    // advance beyond the window, old hits expire
     expect(rateLimit("ip-b", 3, 60_000, t0 + 60_001).allowed).toBe(true);
   });
 

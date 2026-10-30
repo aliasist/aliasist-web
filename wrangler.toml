@@ -1,4 +1,4 @@
-# aliasist.com (Cloudflare Pages) — production Clerk for `functions/*` (e.g. chat-messages):
+# aliasist.com (Cloudflare Pages), production Clerk for `functions/*` (e.g. chat-messages):
 #   Dashboard → Workers & Pages → aliasistabductor → Settings → Environment variables
 #     CLERK_SECRET_KEY   (secret)
 #     CLERK_PUBLISHABLE_KEY  (optional; public key)
@@ -14,13 +14,13 @@
 #     CLEARASIST_METADATA_WORKER_URL  (optional; defaults to the production Worker URL)
 #
 # Other workers: see apps/llm-chat/.dev.vars.example, apps/datasist-api/.dev.vars.example, etc.
-# Homepage chat (open to the public — sign-in is optional, not required):
+# Homepage chat (open to the public, sign-in is optional, not required):
 #     CLERK_SECRET_KEY          (secret; only used to verify a session token if one is sent)
 #     CHAT_RATE_LIMIT KV        (binding above; per-IP rate limit for anonymous requests)
-# Entertainment page (/entertainment) — each is optional, missing key just disables that tab:
-#     TMDB_API_KEY  (secret; themoviedb.org → Settings → API — trending movies/TV)
-#     RAWG_API_KEY  (secret; rawg.io/apidocs — popular games)
-#     ODDS_API_KEY  (secret; the-odds-api.com — display-only sports odds, free tier is metered)
+# Entertainment page (/entertainment), each is optional, missing key just disables that tab:
+#     TMDB_API_KEY  (secret; themoviedb.org → Settings → API, trending movies/TV)
+#     RAWG_API_KEY  (secret; rawg.io/apidocs, popular games)
+#     ODDS_API_KEY  (secret; the-odds-api.com, display-only sports odds, free tier is metered)
 
 name = "aliasistabductor"
 pages_build_output_dir = "dist"
@@ -31,11 +31,11 @@ compatibility_flags = ["nodejs_compat"]
 GITHUB_APP_ID = "3909945"
 GITHUB_APP_CLIENT_ID = "Iv23liyNQyBoBOh6IROQ"
 # Current free Workers AI text model. The previous @cf/meta/llama-3.1-8b-instruct
-# was deprecated 2026-05-30 (error 5028) — keep this pointed at a live model
+# was deprecated 2026-05-30 (error 5028), keep this pointed at a live model
 # (list: `npx wrangler ai models`).
 AI_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
 
-# Cloudflare Workers AI — free-tier edge LLM, no external API key. Powers the
+# Cloudflare Workers AI, free-tier edge LLM, no external API key. Powers the
 # homepage chat (functions/api/chat.ts) without needing GROQ_API_KEY.
 [ai]
 binding = "AI"
@@ -53,7 +53,7 @@ database_name = "spawnos-db"
 database_id = "a296abd2-398c-4465-93d9-40e1875825e5"
 
 # Per-IP rate limiting for the public (no sign-in required) homepage chat
-# endpoint (functions/api/chat.ts) — added when REQUIRE_CHAT_SIGN_IN was
+# endpoint (functions/api/chat.ts), added when REQUIRE_CHAT_SIGN_IN was
 # dropped so the endpoint isn't a free unlimited proxy to Groq/Workers AI.
 [[kv_namespaces]]
 binding = "CHAT_RATE_LIMIT"

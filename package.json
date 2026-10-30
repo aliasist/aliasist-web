@@ -20,14 +20,20 @@
     "build:clearasist": "npm --prefix apps/clearasist run build",
     "build:clearasist-admin": "npm --prefix apps/clearasist-admin run build",
     "build:functions": "wrangler pages functions build functions --outdir dist/_worker.js --output-routes-path dist/_routes.json --compatibility-date 2025-04-01 --compatibility-flag nodejs_compat",
-    "lint": "eslint .",
+    "lint": "eslint . --max-warnings 0",
     "preview": "npm run build && wrangler pages dev dist --compatibility-date 2025-04-01 --compatibility-flag nodejs_compat",
     "tunnel:vite": "vite --host 127.0.0.1 --port 8080",
     "tunnel:quick": "cloudflared tunnel --url http://localhost:8080",
     "test": "vitest run",
     "test:watch": "vitest",
     "deploy": "npm run deploy:pages",
-    "deploy:pages": "npm run build && wrangler pages deploy dist --project-name=aliasistabductor --branch=master --commit-dirty=true"
+    "deploy:pages": "npm run check && wrangler pages deploy dist --project-name=aliasistabductor --branch=master --commit-dirty=true",
+    "check": "npm run lint && npm test && npm run build && npm run check:bundle",
+    "check:bundle": "node scripts/check-bundle.mjs",
+    "check:suite": "node scripts/check-suite.mjs --verify",
+    "status:suite": "node scripts/check-suite.mjs",
+    "setup:clearasist": "npm --prefix apps/clearasist ci",
+    "test:browser": "node scripts/browser-smoke.mjs"
   },
   "dependencies": {
     "@clerk/backend": "^3.4.3",

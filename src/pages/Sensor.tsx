@@ -106,7 +106,7 @@ const Sensor = () => {
       });
       const data = (await res.json().catch(() => ({}))) as { error?: string };
       if (!res.ok) throw new Error(data.error || `HTTP ${res.status}`);
-      setControlMessage("Queued — the device checks in roughly every 20s.");
+      setControlMessage("Sent. The sensor checks in about every 20 seconds, so give it a moment.");
     } catch (err) {
       setControlMessage(err instanceof Error ? err.message : "Failed to send command");
     } finally {

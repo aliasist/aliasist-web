@@ -12,9 +12,16 @@ on:
       - 'package.json'
       - 'package-lock.json'
       - 'vite.config.*'
+      - 'eslint.config.*'
+      - 'tsconfig*.json'
+      - 'scripts/check-bundle.mjs'
       - 'wrangler.toml'
       - '.github/workflows/deploy-homepage.yml'
   workflow_dispatch:
+
+concurrency:
+  group: homepage-production
+  cancel-in-progress: false
 
 jobs:
   deploy:
@@ -37,7 +44,7 @@ jobs:
         run: npm ci
 
       - name: Build homepage
-        run: npm run build
+        run: npm run check
 
       - name: Deploy to Cloudflare Pages
         env:

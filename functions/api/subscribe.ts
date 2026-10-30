@@ -57,7 +57,7 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
     return json(
       {
         ok: false,
-        error: "Upstream subscribe error.",
+        error: "Couldn't sign you up right now. Give it another try in a bit.",
         message: e instanceof Error ? e.message : String(e),
       },
       502,

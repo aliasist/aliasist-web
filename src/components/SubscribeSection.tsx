@@ -25,7 +25,7 @@ const SubscribeSection = () => {
       });
       const data = await readJsonBody<{ ok?: boolean; error?: string }>(res);
       if (!data) throw new Error("Invalid response from server");
-      if (!res.ok || !data.ok) throw new Error(data.error ?? `Request failed (${res.status})`);
+      if (!res.ok || !data.ok) throw new Error(data.error ?? "");
       setFormState("success");
       setEmail("");
     } catch (err) {
@@ -59,7 +59,7 @@ const SubscribeSection = () => {
           transition={{ duration: 0.6 }}
           className="mx-auto max-w-xl text-center"
         >
-          <div className="font-mono text-xs uppercase tracking-[0.14em] text-electric mb-4">
+          <div className="text-sm text-electric mb-4">
             {subscribeSection.introLabel}
           </div>
 
@@ -81,7 +81,7 @@ const SubscribeSection = () => {
                 className="border border-electric/30 bg-electric/8 px-6 py-8 rounded-sm shadow-electric-xs text-left sm:text-center"
               >
                 <div className="mb-3">
-                  <span className="font-mono text-xs uppercase tracking-[0.18em] text-electric">
+                  <span className="text-sm text-electric">
                     {subscribeSection.successTitle}
                   </span>
                 </div>
@@ -91,7 +91,7 @@ const SubscribeSection = () => {
                 <button
                   type="button"
                   onClick={() => setFormState("idle")}
-                  className="mt-5 rounded-sm font-mono text-[11px] uppercase tracking-[0.1em] text-background/35 outline-none transition-colors hover:text-electric focus-visible:text-electric focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                  className="mt-5 rounded-sm text-sm text-background/35 outline-none transition-colors hover:text-electric focus-visible:text-electric focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
                 >
                   {subscribeSection.sendAnother}
                 </button>
@@ -117,7 +117,7 @@ const SubscribeSection = () => {
                   <button
                     type="submit"
                     disabled={formState === "sending"}
-                    className="group relative inline-flex shrink-0 items-center justify-center gap-2 px-8 py-3.5 bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] rounded-sm outline-none overflow-hidden shadow-electric-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-electric-md active:scale-95 focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:shadow-electric-sm"
+                    className="group relative inline-flex shrink-0 items-center justify-center gap-2 px-8 py-3.5 bg-electric text-background text-sm rounded-sm outline-none overflow-hidden shadow-electric-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-electric-md active:scale-95 focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:shadow-electric-sm"
                   >
                     <span className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                     <span className="relative">
@@ -129,19 +129,19 @@ const SubscribeSection = () => {
                 {formState === "error" && (
                   <div className="flex items-center justify-between gap-4">
                     <p className="font-mono text-[11px] text-red-400/80">
-                      {subscribeSection.errorPrefix} {errorMsg || subscribeSection.errorFallback}
+                      {errorMsg || subscribeSection.errorFallback}
                     </p>
                     <button
                       type="button"
                       onClick={() => { setFormState("idle"); setErrorMsg(""); }}
-                      className="shrink-0 font-mono text-[11px] uppercase tracking-[0.1em] text-background/40 hover:text-electric transition-colors outline-none focus-visible:text-electric"
+                      className="shrink-0 text-sm text-background/40 hover:text-electric transition-colors outline-none focus-visible:text-electric"
                     >
-                      Try again ↩
+                      Try again
                     </button>
                   </div>
                 )}
 
-                <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-background/30 mt-1">
+                <p className="text-xs text-background/30 mt-1">
                   {subscribeSection.disclaimer}
                 </p>
               </motion.form>

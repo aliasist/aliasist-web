@@ -27,7 +27,7 @@ export const onRequestOptions = async () => new Response(null, { status: 204, he
  * On-demand game trailer lookup → Entertainment page game modal.
  * GET /api/entertainment/game-trailer?id=<rawgId>
  * RAWG hosts its own trailer clips as direct video files (mp4/webm) rather
- * than YouTube — this is a real <video> source, not an iframe embed. The
+ * than YouTube, this is a real <video> source, not an iframe embed. The
  * previous fake `youtube.com/embed?listType=search` fallback never worked
  * (YouTube dropped third-party search-result embeds years ago).
  */

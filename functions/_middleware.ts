@@ -2,7 +2,7 @@
 // live aliasist.com domain gets the landing page below instead of the app.
 // Flip to true and push to master to take the homepage down for maintenance;
 // flip back to false and push to restore it. Mirrors the same pattern in
-// globalize's functions/_middleware.ts — kept independent per project
+// globalize's functions/_middleware.ts, kept independent per project
 // (different domain, different copy) rather than shared, since each Pages
 // project deploys separately.
 const MAINTENANCE_MODE = false;

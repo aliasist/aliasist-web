@@ -148,7 +148,7 @@
 
   var currentUser = null;
   var persistEnabled = false;
-  var userFiles = []; // [{name, size, updatedAt}] — real, server-backed
+  var userFiles = []; // [{name, size, updatedAt}], saved on the server
 
   var USERNAME_RE = /^[a-zA-Z0-9_-]{2,20}$/;
   var LAST_USER_KEY = 'spawnos.lastUser';
@@ -238,15 +238,15 @@
   function submitLogin(raw){
     var username = String(raw || '').trim();
     if (!USERNAME_RE.test(username)){
-      bootLoginStatusEl.textContent = 'invalid name — letters/numbers/_/- , 2-20 chars';
+      bootLoginStatusEl.textContent = 'use 2-20 letters, numbers, _ or -';
       return;
     }
     bootLoginStatusEl.textContent = 'connecting to spawnos-db...';
     apiLogin(username).then(function(profile){
-      bootLoginStatusEl.textContent = profile.isNew ? 'new profile created — welcome' : 'welcome back';
+      bootLoginStatusEl.textContent = profile.isNew ? 'new profile made. welcome aboard' : 'welcome back';
       setTimeout(function(){ enterDesktop(profile, true); }, 350);
     }).catch(function(err){
-      bootLoginStatusEl.textContent = 'no database reachable — continuing in local-only mode';
+      bootLoginStatusEl.textContent = 'can\'t reach the database, so this session stays on this device';
       setTimeout(function(){
         enterDesktop({ username: username, settings: {}, files: [] }, false);
       }, 600);
@@ -542,7 +542,7 @@
   /* ================= fake filesystem (shared by files + terminal) ================= */
   var FILES = {
     'boot.log': BOOT_LINES.join('\n'),
-    'about.txt': 'SPAWNOS\n\nAn independent, bootable, bare-metal operating system and graphical\ndesktop environment engineered from scratch in Rust (#![no_std]) and Zig\nfor 64-bit UEFI architectures. Zero Linux kernel dependencies.\n\nThis build runs as a local static site, not inside a sandboxed viewer,\nso AliasBrowser below can actually embed pages and video.',
+    'about.txt': 'SPAWNOS\n\nAn independent, bootable, bare-metal operating system and graphical\ndesktop environment engineered from scratch in Rust (#![no_std]) and Zig\nfor 64-bit UEFI architectures. Zero Linux kernel dependencies.\n\nThis web version lives at aliasist.com/os. AliasBrowser and the apps in\nthe rail load real sites right inside their windows.',
     'architecture.txt': 'DESKTOP / LIBOS  -> AliasBrowser, CyberKonsole, CryptoLab\nHAL              -> alias-ui, alias-net, alias-hal\nUEFI FIRMWARE    -> GOP fb, PCI DMA, hw timers',
     'README.md': '# spawnOS\nReal project: github.com/aliasist/aliasist-os\nBoots directly from UEFI firmware into a double-buffered,\nhardware-composited desktop with direct PCI hardware I/O.'
   };
@@ -583,7 +583,7 @@
     fileListEl.innerHTML = '';
     var names = Object.keys(FILES);
     if (!names.length && !userFiles.length){
-      fileListEl.innerHTML = '<div class="file-empty">no files yet — create one above</div>';
+      fileListEl.innerHTML = '<div class="file-empty">no files yet. make one above</div>';
     }
     names.forEach(function(name){
       var row = document.createElement('div');
@@ -640,7 +640,7 @@
       return;
     }
     if (!persistEnabled){
-      alert('No database connection — sign in with a synced profile to create files.');
+      alert('Files need the database. Log in again once it\'s back to save files.');
       return;
     }
     apiSaveFile(name, '').then(function(){
@@ -745,7 +745,7 @@
       var wname = parts[1];
       var wcontent = parts.slice(2).join(' ');
       if (!wname){ printLine('usage: write <file> <text...>', 'err'); }
-      else if (!persistEnabled){ printLine('write: no database connection — files are read-only in local-only mode', 'err'); }
+      else if (!persistEnabled){ printLine('write: can\'t reach the database, so files can\'t be saved right now', 'err'); }
       else {
         apiSaveFile(wname, wcontent).then(function(){ printLine('wrote ' + wname, 'ok'); refreshFilesFromServer(); })
           .catch(function(e){ printLine('write: ' + e.message, 'err'); });
@@ -770,7 +770,7 @@
     } else if (cmd === 'open'){
       var known = ALL_APPS.map(function(a){ return a.id; });
       if (known.indexOf(arg) !== -1){ toggleWindow(arg); printLine('opening ' + arg + '...', 'ok'); }
-      else printLine('open: unknown app "' + arg + '" — try: ' + known.join(', '), 'err');
+      else printLine('open: no app called "' + arg + '". try: ' + known.join(', '), 'err');
     } else if (cmd === 'goto'){
       if (!arg){ printLine('usage: goto <url>', 'err'); }
       else {
@@ -787,7 +787,7 @@
     } else if (cmd === 'echo'){
       printLine(arg);
     } else {
-      printLine('command not found: ' + cmd + ' — try "help"', 'err');
+      printLine('command not found: ' + cmd + '. type "help" to see what works', 'err');
     }
   }
 
@@ -806,7 +806,7 @@
     }
   });
   function printWelcome(){
-    printLine('spawnOS [local build] — logged in as ' + (currentUser || 'guest') + (persistEnabled ? '' : ' (local only, no database)'));
+    printLine('spawnOS web build. logged in as ' + (currentUser || 'guest') + (persistEnabled ? '' : ' (local only, no database)'));
     printLine('type "help" to begin');
     printLine('');
   }
@@ -862,7 +862,7 @@
     }, 650);
   })();
 
-  /* ================= AliasBrowser — real embedding ================= */
+  /* ================= AliasBrowser: real embedding ================= */
   var urlInput = document.getElementById('urlInput');
   var browserBody = document.getElementById('browserBody');
   var browserView = document.getElementById('browserView');
@@ -908,14 +908,14 @@
     frameFallback.hidden = true;
     browserFrame.hidden = true; browserFrame.src = 'about:blank';
     browserVideo.hidden = true; browserVideo.pause(); browserVideo.removeAttribute('src'); browserVideo.load();
-    statusText.textContent = 'READY — ENTER A URL, OR CLICK A BOOKMARK.';
+    statusText.textContent = 'READY. ENTER A URL OR CLICK A BOOKMARK.';
     browserBody.innerHTML =
       '<p><strong>SPAWNOS CYBERNETIC WEB EXPLORER</strong></p>' +
-      '<p>This build runs locally, outside any sandboxed viewer, so it can actually embed pages and video below — not just open a new tab.</p>' +
+      '<p>Pages and videos load right here in the window below.</p>' +
       '<ul>' +
       '<li>⌂ goes to the home page, ' + HOME_URL.replace(/^https:\/\/|\/$/g,'') + '. Type <code>about:home</code> to see this page again.</li>' +
-      '<li>Bookmarks load in the frame below. Some sites (GitHub included) refuse to be framed — use the "open in a real tab" link if a page looks blank.</li>' +
-      '<li>Type an address like <code>www.google.com</code> — no https:// needed — or just type words to search.</li>' +
+      '<li>Bookmarks load in the frame below. Some sites, GitHub included, won\'t load inside another page. If one looks blank, use the "open in a real tab" link.</li>' +
+      '<li>Type an address like <code>www.google.com</code> (no https:// needed), or just type words to search.</li>' +
       '<li>YouTube links and direct .mp4/.webm files play inline.</li>' +
       '<li><code>about:network</code> / <code>about:system</code> show local status pages.</li>' +
       '</ul>';

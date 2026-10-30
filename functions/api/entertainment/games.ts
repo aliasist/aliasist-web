@@ -25,7 +25,7 @@ export const onRequestOptions = async () => new Response(null, { status: 204, he
 
 /**
  * Popular/trending games → homepage /entertainment page.
- * GET /api/entertainment/games — RAWG games ordered by recent activity.
+ * GET /api/entertainment/games, RAWG games ordered by recent activity.
  */
 export const onRequestGet = async ({ env }: PagesContext) => {
   const apiKey = env.RAWG_API_KEY?.trim();

@@ -29,7 +29,7 @@ function resolvePublishableKey(): string {
 
 const PUBLISHABLE_KEY = resolvePublishableKey();
 
-/** Same URLs as suite apps (`apps/datasist`, etc.) — sign-in UI lives on Pages at auth.aliasist.com */
+/** Same URLs as suite apps (`apps/datasist`, etc.), sign-in UI lives on Pages at auth.aliasist.com */
 const CENTRAL_SIGN_IN =
   import.meta.env.VITE_CLERK_PRIMARY_SIGN_IN_URL?.trim() ||
   "https://auth.aliasist.com/sign-in";

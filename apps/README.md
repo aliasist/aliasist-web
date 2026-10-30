@@ -24,9 +24,9 @@ This directory contains the user-facing applications and supporting backend proj
 
 ## Other / Experimental
 
-- `apps/musician_ideas` — Mobile app experiments (Flutter)
-- `apps/clearasist` — Privacy-focused metadata stripping tool (fully local, client-side only)
-- `apps/clearasist-admin` & `apps/master-admin` — Internal admin tooling
+- `apps/musician_ideas`: Mobile app experiments (Flutter)
+- `apps/clearasist`: Privacy-focused metadata stripping tool (fully local, client-side only)
+- `apps/clearasist-admin` & `apps/master-admin`: my internal admin tools
 
 ## Local Development
 

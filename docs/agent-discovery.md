@@ -6,7 +6,7 @@ Short: SVCB/HTTPS (DNS-AID) is ideal but requires DNS provider support. Cloudfla
 - Add HTTPS/SVCB records at DNS for `_index._agents`, `_a2a._agents`, `_mcp._agents` pointing to a discovery host.
 - Example parameters: alpn="h2,h3", port=443, path="/.well-known/ai-discovery", ma=86400
 
-## Fallback A — host a .well-known JSON endpoint (recommended)
+## Fallback A: host a .well-known JSON endpoint (recommended)
 1. Serve `https://aliasist.com/.well-known/ai-discovery` (JSON) with discovery metadata.
 2. Add HTTP Link headers on `/` pointing to `/ .well-known/ai-discovery` (already added in public/_headers).
 3. Agents fetch that URL directly.
@@ -21,7 +21,7 @@ Short: SVCB/HTTPS (DNS-AID) is ideal but requires DNS provider support. Cloudfla
   }
 }
 
-## Fallback B — DNS TXT pointer record
+## Fallback B: DNS TXT pointer record
 - Create a TXT at `_agents.aliasist.com` with a short pointer: `discovery=https://aliasist.com/.well-known/ai-discovery`
 - Simple and widely supported; agents must be written to check this convention.
 

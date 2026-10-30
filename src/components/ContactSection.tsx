@@ -78,7 +78,7 @@ const ContactSection = () => {
       });
       const data = await readJsonBody<{ ok?: boolean; error?: string }>(res);
       if (!data) throw new Error("Invalid response from server");
-      if (!res.ok || !data.ok) throw new Error(data.error ?? `Request failed (${res.status})`);
+      if (!res.ok || !data.ok) throw new Error(data.error ?? "");
       setFormState("success");
       setName(""); setEmail(""); setMessage("");
     } catch (err) {
@@ -114,9 +114,9 @@ const ContactSection = () => {
           transition={{ duration: 0.6 }}
         >
           <div className="grid md:grid-cols-2 gap-16 items-start">
-            {/* Left — contact form */}
+            {/* Left, contact form */}
             <div>
-              <div className="font-mono text-xs uppercase tracking-[0.14em] text-electric mb-6">
+              <div className="text-sm text-electric mb-6">
                 {contact.introLabel}
               </div>
 
@@ -141,7 +141,7 @@ const ContactSection = () => {
                     className="border border-electric/30 bg-electric/8 px-6 py-8 rounded-sm shadow-electric-xs"
                   >
                     <div className="mb-3">
-                      <span className="font-mono text-xs uppercase tracking-[0.18em] text-electric">{contact.successTitle}</span>
+                      <span className="text-sm text-electric">{contact.successTitle}</span>
                     </div>
                     <p className="font-mono text-sm text-background/60 leading-relaxed">
                       {contact.successBody}
@@ -149,7 +149,7 @@ const ContactSection = () => {
                     <button
                       type="button"
                       onClick={() => setFormState("idle")}
-                      className="mt-5 rounded-sm font-mono text-[11px] uppercase tracking-[0.1em] text-background/35 outline-none transition-colors hover:text-electric focus-visible:text-electric focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+                      className="mt-5 rounded-sm text-sm text-background/35 outline-none transition-colors hover:text-electric focus-visible:text-electric focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
                     >
                       {contact.sendAnother}
                     </button>
@@ -196,14 +196,14 @@ const ContactSection = () => {
                     {formState === "error" && (
                       <div className="flex items-center justify-between gap-4">
                         <p className="font-mono text-[11px] text-red-400/80">
-                          {contact.errorPrefix} {errorMsg || contact.errorFallback}
+                          {errorMsg || contact.errorFallback}
                         </p>
                         <button
                           type="button"
                           onClick={() => { setFormState("idle"); setErrorMsg(""); }}
-                          className="shrink-0 font-mono text-[11px] uppercase tracking-[0.1em] text-background/40 hover:text-electric transition-colors outline-none focus-visible:text-electric"
+                          className="shrink-0 text-sm text-background/40 hover:text-electric transition-colors outline-none focus-visible:text-electric"
                         >
-                          Try again ↩
+                          Try again
                         </button>
                       </div>
                     )}
@@ -211,7 +211,7 @@ const ContactSection = () => {
                     <button
                       type="submit"
                       disabled={formState === "sending"}
-                      className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-electric text-background font-mono text-xs uppercase tracking-[0.14em] rounded-sm outline-none overflow-hidden shadow-electric-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-electric-md active:scale-95 focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:shadow-electric-sm"
+                      className="group relative inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-electric text-background text-sm rounded-sm outline-none overflow-hidden shadow-electric-sm transition-all duration-300 hover:-translate-y-0.5 hover:shadow-electric-md active:scale-95 focus-visible:ring-2 focus-visible:ring-white/70 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground disabled:opacity-60 disabled:cursor-not-allowed disabled:hover:shadow-electric-sm"
                     >
                       <span className="absolute inset-0 bg-white/10 translate-y-full group-hover:translate-y-0 transition-transform duration-300" />
                       <span className="relative">
@@ -253,9 +253,9 @@ const ContactSection = () => {
               </div>
             </div>
 
-            {/* Right — The Aliasist Suite */}
+            {/* Right, The Aliasist Suite */}
             <div>
-              <p className="font-mono text-[11px] uppercase tracking-[0.2em] text-background/30 mb-5">
+              <p className="text-sm text-background/30 mb-5">
                 {contact.suiteColumnLabel}
               </p>
               <div className="flex flex-col gap-0.5">
@@ -289,13 +289,13 @@ const ContactSection = () => {
                           <p className="font-mono text-sm font-semibold text-background/80 group-hover:text-electric transition-colors">
                             {app.label}
                           </p>
-                          <p className="font-mono text-[10px] uppercase tracking-[0.1em] text-background/35 mt-0.5">
+                          <p className="text-xs text-background/35 mt-0.5">
                             {app.sub}
                           </p>
                         </div>
                       </div>
                       <div className="flex items-center gap-2">
-                        <span className="font-mono text-[9px] uppercase tracking-[0.1em] text-electric/60">
+                        <span className="text-xs text-electric/60">
                           {isDemo ? contact.demoBadge : contact.liveBadge}
                         </span>
                         <span className="opacity-20 group-hover:opacity-100 group-hover:text-electric text-background transition-all font-mono">↗</span>
@@ -309,9 +309,9 @@ const ContactSection = () => {
                 <Dialog open={!!demoApp} onOpenChange={(open) => !open && setDemoApp(null)}>
                   <DialogContent className="max-w-4xl w-[min(96vw,64rem)] h-[min(85vh,44rem)] flex flex-col gap-3 p-4 sm:p-5">
                     <DialogHeader className="shrink-0">
-                      <DialogTitle className="text-base">{demoApp.label} — Demo</DialogTitle>
+                      <DialogTitle className="text-base">{demoApp.label} demo</DialogTitle>
                       <DialogDescription>
-                        Archived project. Demo runs live below —{" "}
+                        This one's archived, but the demo still runs below. Or{" "}
                         <a
                           href={demoApp.href}
                           target="_blank"
@@ -338,7 +338,7 @@ const ContactSection = () => {
                 {contact.suiteStats.map((s) => (
                   <div key={s.l} className="bg-background/5 border border-background/10 p-4 text-center">
                     <div className="text-xl font-bold text-electric">{s.n}</div>
-                    <div className="font-mono text-[9px] uppercase tracking-[0.1em] text-background/30 mt-1">{s.l}</div>
+                    <div className="text-xs text-background/30 mt-1">{s.l}</div>
                   </div>
                 ))}
               </div>

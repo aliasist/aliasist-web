@@ -1,4 +1,4 @@
-# DataSist — Cloudflare Pages deploy config
+# DataSist, Cloudflare Pages deploy config
 # Part of the ALIASIST project bundle (aliasist.com)
 # Target: data.aliasist.com
 # Deploy via: npx wrangler pages deploy dist/public --project-name=datasist
@@ -28,7 +28,7 @@ BRAND = "Aliasist"
 # 5. Build settings (for GitHub CI):
 #    Build command:   npm run build
 #    Build output:    dist/public
-#    Root directory:  (leave blank — project root)
+#    Root directory:  (leave blank, project root)
 #
 # Note: The Express backend API runs on Cloudflare Workers (or Node.js server).
 # For a full-stack deploy with the Express backend, use a separate Worker:

@@ -4,7 +4,7 @@ import { useCallback, useEffect, useRef } from "react";
 
 const GSI_SCRIPT = "https://accounts.google.com/gsi/client";
 
-/** Singleton script load — avoids duplicate tags across remounts (e.g. React Strict Mode). */
+/** Singleton script load, avoids duplicate tags across remounts (e.g. React Strict Mode). */
 let gsiScriptPromise: Promise<void> | null = null;
 
 declare global {
@@ -167,7 +167,7 @@ export function HomeGoogleAuth() {
           <button
             type="button"
             onClick={openSiteSignIn}
-            className="w-full rounded-sm border border-border/60 px-8 py-3 font-mono text-xs uppercase tracking-[0.14em] text-foreground/80 shadow-none transition-all duration-300 hover:border-electric/60 hover:bg-electric/5 hover:text-electric hover:shadow-electric-outline hover:-translate-y-0.5 active:scale-95 sm:w-auto"
+            className="w-full rounded-sm border border-border/60 px-8 py-3 text-sm text-foreground/80 shadow-none transition-all duration-300 hover:border-electric/60 hover:bg-electric/5 hover:text-electric hover:shadow-electric-outline hover:-translate-y-0.5 active:scale-95 sm:w-auto"
           >
             Continue with Google
           </button>

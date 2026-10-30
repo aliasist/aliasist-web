@@ -36,7 +36,7 @@ const UpdateRow = ({ entry, index }: { entry: UpdateEntry; index: number }) => {
     <>
       <div className="flex items-center gap-3 mb-3">
         <span
-          className="font-mono text-[10px] uppercase tracking-[0.15em] px-2 py-0.5 border rounded-sm"
+          className="text-xs px-2 py-0.5 border rounded-sm"
           style={{ color, borderColor: `${color}40` }}
         >
           {KIND_LABELS[entry.kind as UpdateKind]}

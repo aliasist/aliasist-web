@@ -45,7 +45,7 @@ export default function MasterAdmin() {
         <div className="max-w-7xl mx-auto">
           <div className="mb-8">
             <h1 className="text-3xl font-semibold tracking-tight capitalize">{activeSection}</h1>
-            <p className="text-muted-foreground mt-1">Master control for the entire Aliasist ecosystem</p>
+            <p className="text-muted-foreground mt-1">Control for everything Aliasist</p>
           </div>
 
           {/* Sections - now a clean launcher with feature ideas */}

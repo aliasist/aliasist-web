@@ -57,7 +57,7 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
     return json(
       {
         ok: false,
-        error: "Upstream contact error.",
+        error: "Couldn't send that right now. Email me at dev@aliasist.com instead.",
         message: e instanceof Error ? e.message : String(e),
       },
       502,

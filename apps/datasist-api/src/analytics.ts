@@ -47,7 +47,7 @@ export async function logChat(
       ).bind(msgId2, sessionId, app, aiResponse, model ?? null, ts + 1),
     ]);
   } catch {
-    // silent — never break the response
+    // silent, never break the response
   }
 }
 
@@ -89,7 +89,7 @@ export async function logNewsArticles(
         ts
       )
     );
-    // D1 batch max 100 — chunk if needed
+    // D1 batch max 100, chunk if needed
     for (let i = 0; i < stmts.length; i += 100) {
       await db.batch(stmts.slice(i, i + 100));
     }

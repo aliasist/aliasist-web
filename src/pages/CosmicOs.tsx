@@ -4,19 +4,16 @@ import {
   Cpu, 
   Terminal, 
   Layers, 
-  ShieldCheck, 
   Play, 
   Square, 
   Zap, 
   HardDrive, 
   ArrowRight, 
   Search, 
-  CheckCircle2, 
   AlertCircle, 
   Microchip, 
   Database, 
   BookOpen, 
-  Flame,
   Sparkles,
   Bot,
   Send,
@@ -25,11 +22,8 @@ import {
   Gauge,
   Trophy,
   Wifi,
-  Radio,
   Share2,
-  Lock,
   Download,
-  UserCheck,
   Users,
   Fingerprint
 } from "lucide-react";
@@ -433,7 +427,7 @@ class CosmicAudioSynth {
 
   private init() {
     if (!this.ctx) {
-      const AudioCtx = window.AudioContext || (window as any).webkitAudioContext;
+      const AudioCtx = window.AudioContext || (window as Window & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
       if (AudioCtx) this.ctx = new AudioCtx();
     }
   }
@@ -712,8 +706,8 @@ const CosmicOs = () => {
         if (audioEnabled) synth.playQuantumChime();
         showNotification(`⚡ [ZIG CELL] Checksum: ${data.checksum_verified} | Memory: ${data.memory_rss}`);
         return;
-      } catch (e: any) {
-        showNotification(`Zig Cell Error: ${e.message}`);
+      } catch (e: unknown) {
+        showNotification(`Zig Cell Error: ${e instanceof Error ? e.message : "Request failed"}`);
       }
     }
 
@@ -724,8 +718,8 @@ const CosmicOs = () => {
         if (audioEnabled) synth.playQuantumChime();
         showNotification(`🔥 [MOJO CELL] ${data.throughput_ops_sec} Ops/Sec | Cosine Dist: ${data.cosine_similarity.toFixed(4)}`);
         return;
-      } catch (e: any) {
-        showNotification(`Mojo Cell Error: ${e.message}`);
+      } catch (e: unknown) {
+        showNotification(`Mojo Cell Error: ${e instanceof Error ? e.message : "Request failed"}`);
       }
     }
 
@@ -739,8 +733,8 @@ const CosmicOs = () => {
       } else {
         showNotification(`❌ Failed to spawn: ${data.message}`);
       }
-    } catch (e: any) {
-      showNotification(`Daemon connection error: ${e.message}`);
+    } catch (e: unknown) {
+      showNotification(`Daemon connection error: ${e instanceof Error ? e.message : "Request failed"}`);
     }
   };
 
@@ -752,8 +746,8 @@ const CosmicOs = () => {
         showNotification(`🛑 Terminated ${app.name}`);
         setApps(prev => prev.map(a => a.id === app.id ? { ...a, is_running: false, pid: null } : a));
       }
-    } catch (e: any) {
-      showNotification(`Daemon error: ${e.message}`);
+    } catch (e: unknown) {
+      showNotification(`Daemon error: ${e instanceof Error ? e.message : "Request failed"}`);
     }
   };
 

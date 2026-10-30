@@ -26,7 +26,7 @@ const AboutSection = () => {
       aria-labelledby="about-heading"
       className="relative overflow-hidden px-4 py-28 sm:px-8 lg:px-12 xl:px-16"
     >
-      {/* Starts transparent, not a fixed tint — Hero's own gradients all fade
+      {/* Starts transparent, not a fixed tint, Hero's own gradients all fade
           to transparent at its lower edge, so matching that here keeps the
           seam between the two sections continuous instead of stepping. */}
       <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background/10 pointer-events-none" />
@@ -44,7 +44,7 @@ const AboutSection = () => {
         </motion.div>
 
         <div className="grid items-start gap-16 md:grid-cols-2 xl:gap-24">
-          {/* Left — bio */}
+          {/* Left, bio */}
           <motion.div
             initial={{ opacity: 0, x: -24 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -58,7 +58,7 @@ const AboutSection = () => {
             <div className="readable-copy space-y-8 text-foreground/75">
               {about.bioBlocks.map((block, i) => (
                 <div key={`bio-${block.kicker}-${i}`} className="space-y-2">
-                  <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-electric/85">
+                  <p className="text-xs text-electric/85">
                     {block.kicker}
                   </p>
                   <p>{block.body}</p>
@@ -69,7 +69,7 @@ const AboutSection = () => {
                 <div className="space-y-8 pt-10 mt-2 border-t border-border/40">
                   {filledAuthorSlots.map((block, i) => (
                     <div key={`author-${block.kicker}-${i}`} className="space-y-2">
-                      <p className="font-mono text-[10px] uppercase tracking-[0.2em] text-electric/85">
+                      <p className="text-xs text-electric/85">
                         {block.kicker}
                       </p>
                       <p>{block.body}</p>
@@ -83,14 +83,14 @@ const AboutSection = () => {
             <motion.div
               whileHover={{ x: 6 }}
               transition={{ type: "spring", stiffness: 300, damping: 20 }}
-              className="mt-8 inline-flex items-center gap-2 bg-foreground text-electric font-mono text-xs px-4 py-2.5 tracking-[0.12em] uppercase cursor-default"
+              className="mt-8 inline-flex items-center gap-2 bg-foreground text-electric text-sm px-4 py-2.5 cursor-default"
             >
               {about.pathBadge}
             </motion.div>
 
             {/* Skills */}
             <div className="mt-10">
-              <p className="font-mono text-[11px] uppercase tracking-[0.22em] text-muted-foreground/60 mb-5">
+              <p className="text-sm text-muted-foreground/60 mb-5">
                 {about.skillsLabel}
               </p>
               <motion.div
@@ -113,7 +113,7 @@ const AboutSection = () => {
             </div>
           </motion.div>
 
-          {/* Right — stats */}
+          {/* Right, stats */}
           <motion.div
             initial={{ opacity: 0, x: 24 }}
             whileInView={{ opacity: 1, x: 0 }}
@@ -141,7 +141,7 @@ const AboutSection = () => {
                     <span className="text-electric">{s.num}</span>
                   )}
                 </div>
-                <div className="relative font-mono text-xs uppercase tracking-[0.14em] text-muted-foreground group-hover:text-foreground/70 transition-colors duration-300">
+                <div className="relative text-sm text-muted-foreground group-hover:text-foreground/70 transition-colors duration-300">
                   {s.label}
                 </div>
               </motion.div>

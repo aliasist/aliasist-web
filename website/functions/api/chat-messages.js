@@ -57,7 +57,7 @@ export async function onRequest(context) {
           // If you have a server-side session token or a verification method, implement it here.
           // Leaving as no-op to avoid accidental secret leakage.
         } catch (e) {
-          // verification failed — fall back to unauthenticated
+          // verification failed, fall back to unauthenticated
         }
       }
 

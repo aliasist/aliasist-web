@@ -13,14 +13,14 @@ GEMINI_API_KEY=your_gemini_api_key_here
 GROQ_API_KEY=your_groq_api_key_here
 ANTHROPIC_API_KEY=your_anthropic_api_key_here
 
-# EIA electricity pricing — https://www.eia.gov/opendata/
+# EIA electricity pricing, https://www.eia.gov/opendata/
 EIA_API_KEY=your_eia_api_key_here
 
-# Electricity Maps (optional — carbon intensity / grid carbon data)
+# Electricity Maps (optional, carbon intensity / grid carbon data)
 # ELECTRICITY_MAPS_API_KEY=your_electricity_maps_key_here
 
-# Neon PostgreSQL — D1 → Neon sync (optional)
+# Neon PostgreSQL, D1 → Neon sync (optional)
 # NEON_DATABASE_URL=postgresql://user:pass@host/db
 
-# RAG worker — bearer token must match RAG_SECRET set on the datasist-rag worker
+# RAG worker, bearer token must match RAG_SECRET set on the datasist-rag worker
 RAG_API_KEY=your_rag_shared_secret_here

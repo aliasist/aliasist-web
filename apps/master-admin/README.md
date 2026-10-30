@@ -1,50 +1,45 @@
 # Master Admin
 
-**Master Admin** is the central command and control surface for the entire Aliasist ecosystem.
+**Master Admin** is my control panel for all of Aliasist: every app, agent, worker, deploy, and bit of data in one place. Only my account can get in.
 
-It is the single place where the owner has full visibility and control over every product, agent, worker, deployment, and piece of data in the Aliasist world.
+## What it's for
 
-## Vision & Goals
+- **Seeing everything**: a live view of every app (ClearSist, DataSist, PulseSist, EcoSist, SpaceSist, and the rest).
+- **Running the agents**: hooks into `aliasist-agent` snapshots, orchestration, and leader runs. From the console, the swarm can restart workers, kick off deploys, put an app into maintenance, and so on.
+- **ClearSist reviews**: look through metadata reports, tag them, add notes, and manage training data.
+- **Day-to-day ops**: deploys, workers, logs, who's online right now, and actions that span apps.
+- **Locked down**: only the master account can sign in.
 
-- **Full ecosystem visibility**: Live view of all products (Clearasist, DataSist, PulseSist, EcoSist, SpaceSist, etc.)
-- **Agent & automation control**: Deep integration with `aliasist-agent` snapshots, orchestration, and leader runs. Swarm in the console can directly restart workers, trigger deploys, put products in maintenance, etc.
-- **Clearasist curation**: Full metadata review, tagging, notes, training data management, and partial inspection
-- **Operational control**: Deployments, workers, logs, real-time presence, and cross-app actions
-- **Strict access**: Hard-gated to the master account only (`aliasist@proton.me`)
+## Where it's at
 
-## Current Status
+This is my main internal control panel right now.
 
-This is the primary internal control center.
+- Its own UI with a sidebar and sections
+- Clerk sign-in gate
+- Ready to wire up to the agents, ClearSist reports, workers, and deploys
 
-- Strong dedicated UI with sidebar navigation and sectioned layout
-- Clerk-based hard auth gate
-- Foundation ready for deep integrations (agents, clearasist reports, workers, deployments)
+The full-control version I'm building next is the **Agent Abductor Console** (`/abductor-console` on the main site). It has the same look as my Files Abductor desktop app.
 
-The modern, high-signal "full control" experience is currently being developed as the **Agent Abductor Console** (`/abductor-console` in the main site), which shares the same aesthetic language as the Aliasist Files Abductor desktop tool.
-
-## Local Development
+## Running it locally
 
 ```bash
-cd /home/blake/aliasistabductor
-npm run app:master-admin
+cd apps/master-admin
+npm install
+npm run dev
 ```
 
-## Tech Stack
+## Tech stack
 
 - React + Vite + TypeScript + Tailwind
-- Clerk (hard auth + role gating)
-- Designed to consume data from Cloudflare Workers, D1, Durable Objects, and the `aliasist-agent` CLI
+- Clerk (sign-in and role checks)
+- Built to read from Cloudflare Workers, D1, Durable Objects, and the `aliasist-agent` CLI
 
-## Related Admin Surfaces
+## The other admin tools
 
-- **Agent Abductor Console** (`/abductor-console`) — The polished, Files Abductor-styled full command center (recommended primary control surface)
-- **Main Agent Dashboard** (`/agent`) — Embedded admin features including live agent fleet and Clearasist curation
-- **Clearasist Admin** (`apps/clearasist-admin`) — Dedicated, high-signal metadata review tool
+- **Agent Abductor Console** (`/abductor-console`): the Files Abductor-style command center, and the one I mean to use most
+- **Agent Dashboard** (`/agent`): admin features built into the main site, including the live agent fleet and ClearSist reviews
+- **ClearSist Admin** (`apps/clearasist-admin`): a focused tool just for reviewing ClearSist metadata reports
 
-## Philosophy
+## Deploying
 
-This surface exists so the owner has **complete, unambiguous control** over every part of the Aliasist world — products, agents, data, and infrastructure — without friction or blind spots.
-
-## Deployment
-
-See the main deployment documentation in the root of the monorepo. This app is intended for internal/trusted-admin use only.
+Check the deploy notes at the root of the repo. This one is for me only, not the public.

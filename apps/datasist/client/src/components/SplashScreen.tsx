@@ -94,7 +94,7 @@ export default function SplashScreen({ onDone }: { onDone: () => void }) {
         animation: "pulse 3s ease-in-out infinite",
       }} />
 
-      {/* Globe/data icon — circuit globe */}
+      {/* Globe/data icon, circuit globe */}
       <div style={{
         position: "relative",
         zIndex: 1,
@@ -114,11 +114,11 @@ export default function SplashScreen({ onDone }: { onDone: () => void }) {
           <circle cx="60" cy="60" r="50" fill="none" stroke="hsl(165, 90%, 42%)" strokeWidth="1" strokeOpacity="0.6" />
           <circle cx="60" cy="60" r="50" fill="none" stroke="hsl(165, 90%, 42%)" strokeWidth="0.5" strokeOpacity="0.2" strokeDasharray="4 4" />
 
-          {/* Globe lines — latitude */}
+          {/* Globe lines, latitude */}
           <ellipse cx="60" cy="60" rx="50" ry="20" fill="none" stroke="hsl(165, 90%, 42%)" strokeWidth="0.6" strokeOpacity="0.4" />
           <ellipse cx="60" cy="60" rx="50" ry="38" fill="none" stroke="hsl(165, 90%, 42%)" strokeWidth="0.4" strokeOpacity="0.25" />
 
-          {/* Globe lines — longitude */}
+          {/* Globe lines, longitude */}
           <line x1="60" y1="10" x2="60" y2="110" stroke="hsl(165, 90%, 42%)" strokeWidth="0.5" strokeOpacity="0.3" />
           <line x1="10" y1="60" x2="110" y2="60" stroke="hsl(165, 90%, 42%)" strokeWidth="0.5" strokeOpacity="0.3" />
 

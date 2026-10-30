@@ -22,9 +22,9 @@ npm run dev
 
 ## API
 
-- `GET /api/updates?cursor=&limit=` — public. Returns `{ items, nextCursor }`, newest first.
-- `POST /api/updates` — admin. Body: `{ kind: "update"|"event", date, title, body, href? }`.
-- `PUT /api/updates/:id` — admin. Partial update of the same fields.
-- `DELETE /api/updates/:id` — admin.
+- `GET /api/updates?cursor=&limit=`: public. Returns `{ items, nextCursor }`, newest first.
+- `POST /api/updates`: admin. Body: `{ kind: "update"|"event", date, title, body, href? }`.
+- `PUT /api/updates/:id`: admin. Partial update of the same fields.
+- `DELETE /api/updates/:id`: admin.
 
 Admin endpoints require `Authorization: Bearer <UPDATES_ADMIN_TOKEN>`.

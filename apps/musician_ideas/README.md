@@ -59,4 +59,4 @@ Update `pubspec.yaml` version before store releases. Add screenshots, privacy po
 
 See `android/app/build.gradle.kts` for signing config (use Play App Signing).
 
-This project is now polished, themed in soft purple, sharing-enabled, and ready for Android deployment!
+It's themed in soft purple, sharing works, and it's ready to put on Android.

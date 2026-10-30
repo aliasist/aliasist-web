@@ -33,7 +33,7 @@ async function mergeAuthHeaders(
   base: HeadersInit | undefined,
 ): Promise<HeadersInit> {
   const headers = new Headers(base);
-  // Attach the token whenever one is available, regardless of method — some
+  // Attach the token whenever one is available, regardless of method, some
   // GET routes (e.g. /api/facility-leads) are admin-gated too, and an
   // Authorization header on an anonymous request to a public GET is a no-op.
   if (datasistClerkGetToken) {

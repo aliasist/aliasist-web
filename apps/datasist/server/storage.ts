@@ -66,7 +66,7 @@ export const storage: IStorage = {
     if (count > 0) return;
 
     const seed: InsertDataCenter[] = [
-      // ───────────── USA — AWS ─────────────
+      // ───────────── USA, AWS ─────────────
       {
         name: "AWS US-East-1 (Northern Virginia)",
         company: "Amazon Web Services", companyType: "hyperscale",
@@ -122,7 +122,7 @@ export const storage: IStorage = {
         communityResistance: 0, gridRisk: "low", renewablePercent: 97,
         notes: "FedRAMP-authorized. Processes classified government AI workloads.",
       },
-      // ───────────── USA — Microsoft ─────────────
+      // ───────────── USA, Microsoft ─────────────
       {
         name: "Microsoft Azure East US (Boydton)",
         company: "Microsoft", companyType: "hyperscale",
@@ -167,7 +167,7 @@ export const storage: IStorage = {
         communityResistance: 0, gridRisk: "high", renewablePercent: 60,
         notes: "On the ERCOT grid — high risk from Texas grid instability events.",
       },
-      // ───────────── USA — Google ─────────────
+      // ───────────── USA, Google ─────────────
       {
         name: "Google Cloud Iowa",
         company: "Google", companyType: "hyperscale",
@@ -212,7 +212,7 @@ export const storage: IStorage = {
         communityResistance: 0, gridRisk: "low", renewablePercent: 96,
         notes: "One of Google's greenest US facilities. Oklahoma wind energy powers majority of operations.",
       },
-      // ───────────── USA — Meta ─────────────
+      // ───────────── USA, Meta ─────────────
       {
         name: "Meta AI Campus (Forest City, NC)",
         company: "Meta", companyType: "hyperscale",
@@ -257,7 +257,7 @@ export const storage: IStorage = {
         communityResistance: 0, gridRisk: "low", renewablePercent: 100,
         notes: "Powered by TVA renewable energy contracts. Community relations rated positive.",
       },
-      // ───────────── USA — xAI ─────────────
+      // ───────────── USA, xAI ─────────────
       {
         name: "xAI Colossus Memphis",
         company: "xAI", companyType: "neocloud",
@@ -269,7 +269,7 @@ export const storage: IStorage = {
         communityResistance: 1, gridRisk: "low", renewablePercent: 0,
         notes: "Powered 100% by methane gas turbines. Zero grid connection. Major controversy over pollution.",
       },
-      // ───────────── USA — OpenAI / Stargate ─────────────
+      // ───────────── USA, OpenAI / Stargate ─────────────
       {
         name: "Stargate AI Campus (Texas)",
         company: "OpenAI / Microsoft / SoftBank", companyType: "hyperscale",
@@ -281,7 +281,7 @@ export const storage: IStorage = {
         communityResistance: 1, gridRisk: "high", renewablePercent: 55,
         notes: "Flagship of the $500B Stargate initiative. GPT-5+ training operations.",
       },
-      // ───────────── USA — Hut 8 / Anthropic ─────────────
+      // ───────────── USA, Hut 8 / Anthropic ─────────────
       {
         name: "Hut 8 River Bend Campus (Louisiana)",
         company: "Hut 8 / Anthropic", companyType: "neocloud",
@@ -293,7 +293,7 @@ export const storage: IStorage = {
         communityResistance: 0, gridRisk: "medium", renewablePercent: 50,
         notes: "Will host Anthropic's Claude models.",
       },
-      // ───────────── USA — Equinix ─────────────
+      // ───────────── USA, Equinix ─────────────
       {
         name: "Equinix DC Campus (Ashburn)",
         company: "Equinix", companyType: "colocation",
@@ -316,7 +316,7 @@ export const storage: IStorage = {
         communityResistance: 0, gridRisk: "medium", renewablePercent: 65,
         notes: "Critical infrastructure for Wall Street AI and financial services.",
       },
-      // ───────────── USA — Oklahoma ─────────────
+      // ───────────── USA, Oklahoma ─────────────
       {
         name: "DataBank Oklahoma City",
         company: "DataBank", companyType: "colocation",
@@ -339,7 +339,7 @@ export const storage: IStorage = {
         communityResistance: 0, gridRisk: "low", renewablePercent: 75,
         notes: "Part of Oklahoma's emerging status as a secondary data center market due to low power costs.",
       },
-      // ───────────── USA — CoreWeave ─────────────
+      // ───────────── USA, CoreWeave ─────────────
       {
         name: "CoreWeave GPU Cluster (New Jersey)",
         company: "CoreWeave", companyType: "neocloud",
@@ -351,7 +351,7 @@ export const storage: IStorage = {
         communityResistance: 0, gridRisk: "medium", renewablePercent: 55,
         notes: "One of the highest GPU density facilities in the US. Primary partner for AI startups.",
       },
-      // ───────────── INTERNATIONAL — Europe ─────────────
+      // ───────────── INTERNATIONAL, Europe ─────────────
       {
         name: "Google Data Center (Fredericia, Denmark)",
         company: "Google", companyType: "hyperscale",
@@ -418,7 +418,7 @@ export const storage: IStorage = {
         communityResistance: 0, gridRisk: "low", renewablePercent: 85,
         notes: "Houses DeepMind research compute. Connected to UK AI Safety Institute.",
       },
-      // ───────────── INTERNATIONAL — Asia-Pacific ─────────────
+      // ───────────── INTERNATIONAL, Asia-Pacific ─────────────
       {
         name: "Microsoft Azure Japan East (Tokyo)",
         company: "Microsoft", companyType: "hyperscale",
@@ -474,7 +474,7 @@ export const storage: IStorage = {
         communityResistance: 0, gridRisk: "low", renewablePercent: 70,
         notes: "Australian government cloud mandates driving rapid growth. Water-positive commitment by 2030.",
       },
-      // ───────────── INTERNATIONAL — Middle East ─────────────
+      // ───────────── INTERNATIONAL, Middle East ─────────────
       {
         name: "Microsoft Azure UAE North (Dubai)",
         company: "Microsoft", companyType: "hyperscale",

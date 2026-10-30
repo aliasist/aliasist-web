@@ -1,10 +1,10 @@
-import React, { useState } from 'react'
+import React, { useRef, useState } from 'react'
 import { Upload, Download, Loader2 } from 'lucide-react'
 import { processImage } from './lib/image-processor'
 
 // Dynamic imports for heavy libraries (PDF + Office) to reduce initial bundle size
-let processPdf: any
-let processOffice: any
+let processPdf: typeof import('./lib/pdf-processor').processPdf | undefined
+let processOffice: typeof import('./lib/office-processor').processOffice | undefined
 
 interface CleanedFile {
   id: string
@@ -20,6 +20,8 @@ function App() {
   const [dragCounter, setDragCounter] = useState(0) // better drag detection
   const [errors, setErrors] = useState<string[]>([])
 
+  const processingRef = useRef(false)
+
   const isActuallyDragging = dragCounter > 0
 
   // Keyboard support: Escape clears results
@@ -34,6 +36,8 @@ function App() {
   }, [cleanedFiles.length])
 
   const processFiles = async (fileList: FileList | File[]) => {
+    if (processingRef.current || fileList.length === 0) return
+    processingRef.current = true
     setIsProcessing(true)
     setErrors([]) // clear previous errors on new batch
     const newCleaned: CleanedFile[] = []
@@ -41,11 +45,11 @@ function App() {
 
     for (const file of Array.from(fileList)) {
       try {
-        let result: any
+        let result: { cleanedBlob: Blob; removedCount?: number; verifiedClean?: boolean; previewUrl?: string }
 
         if (file.type.startsWith('image/')) {
           result = await processImage(file)
-        } else if (file.type === 'application/pdf') {
+        } else if (file.type === 'application/pdf' || file.name.toLowerCase().endsWith('.pdf')) {
           if (!processPdf) {
             const mod = await import('./lib/pdf-processor')
             processPdf = mod.processPdf
@@ -67,6 +71,7 @@ function App() {
         }
 
         if (result && result.cleanedBlob) {
+          if (result.previewUrl) URL.revokeObjectURL(result.previewUrl)
           newCleaned.push({
             id: crypto.randomUUID(),
             originalName: file.name,
@@ -90,26 +95,27 @@ function App() {
     if (newErrors.length > 0) {
       setErrors(newErrors)
     }
+    processingRef.current = false
     setIsProcessing(false)
   }
 
-  const handleDrop = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDrop = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault()
     setDragCounter(0)
     processFiles(e.dataTransfer.files)
   }
 
-  const handleDragOver = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragOver = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault()
     setDragCounter(prev => prev + 1)
   }
 
-  const handleDragEnter = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragEnter = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault()
     setDragCounter(prev => prev + 1)
   }
 
-  const handleDragLeave = (e: React.DragEvent<HTMLDivElement>) => {
+  const handleDragLeave = (e: React.DragEvent<HTMLElement>) => {
     e.preventDefault()
     setDragCounter(prev => Math.max(0, prev - 1))
   }
@@ -126,7 +132,7 @@ function App() {
     const ext = file.originalName.includes('.')
       ? file.originalName.substring(file.originalName.lastIndexOf('.'))
       : ''
-    a.download = file.originalName.replace(ext, `-clean${ext}`)
+    a.download = `${ext ? file.originalName.slice(0, -ext.length) : file.originalName}-clean${ext}`
     document.body.appendChild(a)
     a.click()
     document.body.removeChild(a)
@@ -138,18 +144,19 @@ function App() {
       <div className="w-full max-w-md px-6">
         {/* Minimal Header */}
         <div className="text-center mb-10">
-          <h1 className="text-4xl font-semibold tracking-tight">Clearasist</h1>
-          <p className="text-muted-foreground mt-1 text-sm">A meta-data cleaner by Aliasist</p>
+          <h1 className="text-4xl font-semibold tracking-tight">ClearSist</h1>
+          <p className="text-muted-foreground mt-1 text-sm">Private file metadata cleanup by Aliasist</p>
         </div>
 
         {/* The Upload Box */}
-        <div
+        <label
+          htmlFor="file-input"
+          aria-busy={isProcessing}
           onDrop={handleDrop}
           onDragOver={handleDragOver}
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
-          onClick={() => document.getElementById('file-input')?.click()}
-          className={`border-2 border-dashed rounded-2xl p-14 text-center cursor-pointer transition-all duration-200 ${
+          className={`block focus-within:ring-2 focus-within:ring-electric border-2 border-dashed rounded-2xl p-14 text-center cursor-pointer transition-all duration-200 ${
             isActuallyDragging
               ? 'border-electric bg-electric/10 scale-[1.01] shadow-lg shadow-electric/10'
               : 'border-border hover:border-electric/40'
@@ -160,7 +167,9 @@ function App() {
             type="file"
             multiple
             accept="image/*,.pdf,.docx,.pptx,.xlsx"
-            className="hidden"
+            className="sr-only"
+            aria-label="Choose files to clean"
+            disabled={isProcessing}
             onChange={handleFileSelect}
           />
           <div className="mx-auto w-14 h-14 rounded-full bg-secondary flex items-center justify-center mb-5">
@@ -178,17 +187,17 @@ function App() {
                 : 'Drop files here'}
           </p>
           <p className="text-muted-foreground">
-            {isProcessing ? 'This only takes a second' : 'or click to select'}
+            {isProcessing ? 'Processing locally in your browser' : 'or choose files'}
           </p>
 
 
-        </div>
+        </label>
 
         {/* Cleaned Files - Clean & Nice */}
         {cleanedFiles.length > 0 && (
           <div className="mt-8 space-y-3 animate-in fade-in slide-in-from-bottom-2 duration-300">
             <div className="flex items-center justify-between px-1">
-              <div className="text-xs font-mono uppercase tracking-[0.16em] text-muted-foreground">
+              <div role="status" className="text-xs font-mono uppercase tracking-[0.16em] text-muted-foreground">
                 {cleanedFiles.length} file{cleanedFiles.length > 1 ? 's' : ''} cleaned
               </div>
               <button
@@ -200,10 +209,12 @@ function App() {
             </div>
 
             {cleanedFiles.map((file, index) => (
-              <div
+              <button
+                type="button"
+                aria-label={`Download cleaned ${file.originalName}`}
                 key={file.id}
                 onClick={() => downloadFile(file)}
-                className="group bg-card border border-border rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all hover:border-electric/40 hover:shadow-md active:scale-[0.985] opacity-0 animate-[fadeIn_0.2s_ease_forwards]"
+                className="group w-full text-left focus-visible:ring-2 focus-visible:ring-electric bg-card border border-border rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all hover:border-electric/40 hover:shadow-md active:scale-[0.985] opacity-0 animate-[fadeIn_0.2s_ease_forwards]"
                 style={{ animationDelay: `${index * 60}ms` }}
               >
                 <div>
@@ -219,14 +230,14 @@ function App() {
                 <div className="flex items-center gap-2 text-electric group-hover:text-white transition-colors">
                   <Download size={18} />
                 </div>
-              </div>
+              </button>
             ))}
           </div>
         )}
 
         {/* Errors / Skipped feedback */}
         {errors.length > 0 && (
-          <div className="mt-6 space-y-2">
+          <div className="mt-6 space-y-2" role="alert">
             <div className="flex items-center justify-between px-1">
               <div className="text-xs font-mono uppercase tracking-[0.16em] text-amber-400">
                 {errors.length} issue{errors.length > 1 ? 's' : ''}

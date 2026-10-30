@@ -167,7 +167,7 @@
     font-family: var(--font-body);
   }
 
-  /* CartoDB Dark Matter tiles are natively dark — no filter needed */
+  /* CartoDB Dark Matter tiles are natively dark, no filter needed */
   .leaflet-tile {
     opacity: 1 !important;
   }
@@ -235,7 +235,7 @@
 }
 
 /*
- * Map marker ping ring — transform/opacity only (compositor-only, no paint),
+ * Map marker ping ring, transform/opacity only (compositor-only, no paint),
  * unlike the old box-shadow pulse which forced a paint on every marker on
  * every frame and, with no per-marker delay, all fired in lockstep. Each
  * marker gets a negative animation-delay (see getMarkerHtml) to desync phase.

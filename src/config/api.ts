@@ -51,7 +51,7 @@ export const siteEndpoints = {
    */
   chatWorkerApi: `${llmBase}/api/chat`,
   /**
-   * Pages Function — signed-in chat (`functions/api/chat-messages.ts`).
+   * Pages Function, signed-in chat (`functions/api/chat-messages.ts`).
    * POST requires `Authorization: Bearer <session JWT>` once you switch the widget to this API.
    */
   chatMessagesApi: "/api/chat-messages",
@@ -65,15 +65,15 @@ export const siteEndpoints = {
   githubRepoGuideApi: "/api/github-repo-guide",
   /** GitHub App repository installation status → Pages Function. */
   githubInstallStatusApi: "/api/github/install-status",
-  /** Entertainment page — trending movies/TV → Pages Function proxy (TMDB). */
+  /** Entertainment page, trending movies/TV → Pages Function proxy (TMDB). */
   entertainmentMoviesApi: "/api/entertainment/movies",
-  /** Entertainment page — on-demand movie/TV trailer lookup → Pages Function proxy (TMDB /videos). */
+  /** Entertainment page, on-demand movie/TV trailer lookup → Pages Function proxy (TMDB /videos). */
   entertainmentMovieTrailerApi: "/api/entertainment/movie-trailer",
-  /** Entertainment page — popular games → Pages Function proxy (RAWG). */
+  /** Entertainment page, popular games → Pages Function proxy (RAWG). */
   entertainmentGamesApi: "/api/entertainment/games",
-  /** Entertainment page — on-demand game trailer lookup → Pages Function proxy (RAWG /movies, native video files). */
+  /** Entertainment page, on-demand game trailer lookup → Pages Function proxy (RAWG /movies, native video files). */
   entertainmentGameTrailerApi: "/api/entertainment/game-trailer",
-  /** Entertainment page — display-only sports odds → Pages Function proxy (The Odds API). */
+  /** Entertainment page, display-only sports odds → Pages Function proxy (The Odds API). */
   entertainmentOddsApi: "/api/entertainment/odds",
 } as const;
 

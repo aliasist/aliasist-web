@@ -46,7 +46,7 @@ type SistId = (typeof SIST_IDS)[number];
  * Shape returned by POST /rag/ask. Canonical contract (shared with globalize's
  * rag-gateway, which calls the same hub endpoint): see
  * aliasist-platform/docs/RAG_ASK_CONTRACT.md. Only `sist` and `answer` are
- * guaranteed present — the hub omits `model`/`source`/`latencyMs`/`chunks`
+ * guaranteed present, the hub omits `model`/`source`/`latencyMs`/`chunks`
  * whenever its own LLM providers aren't configured, so those must stay optional.
  */
 interface RagAskResult {
@@ -59,7 +59,7 @@ interface RagAskResult {
   /**
    * Raw live-data snapshot (eco: active alerts/quakes/events/storms/Kp).
    * Present whenever `live: { includeDataSnapshot: true }` was requested,
-   * independent of whether the RAG worker's own LLM providers were up —
+   * independent of whether the RAG worker's own LLM providers were up , 
    * this is what lets us answer "what's happening right now" even when
    * that worker fell back to local-retrieval and `answer` is generic.
    */
@@ -88,7 +88,7 @@ export function detectSist(text: string): SistId | null {
  * In local-rag mode we drop the wrapper prose and ground purely on the chunks,
  * so the existing free retrieval backend is usable instead of discarded.
  *
- * `data.liveContext` (eco only) is independent of both modes — it's the raw
+ * `data.liveContext` (eco only) is independent of both modes, it's the raw
  * live snapshot (active alerts/quakes/storms/Kp), always included when
  * present, since it's what actually answers "what's happening right now"
  * regardless of whether the RAG worker's own LLM providers were reachable.
@@ -146,7 +146,7 @@ const RAG_CACHE_TTL_SECONDS = 3600;
 
 /**
  * `eco` questions are grounded against live conditions (active alerts,
- * earthquakes, storms, Kp), not just the static reference corpus — those
+ * earthquakes, storms, Kp), not just the static reference corpus, those
  * change minute to minute, so a 1-hour cache would answer "what's happening
  * right now" with stale data. Match the eco route's own edge-cache cadence.
  */
@@ -154,7 +154,7 @@ const RAG_CACHE_TTL_SECONDS_LIVE = 60;
 
 /**
  * Fetch grounded RAG context for a question from the aliasist workers-api.
- * Blocking by design — the LLM system prompt depends on the result — but cached
+ * Blocking by design, the LLM system prompt depends on the result, but cached
  * through edge caching so repeated questions skip the upstream round-trip.
  * Returns a formatted context block, or null if RAG is unavailable/irrelevant.
  */
@@ -199,7 +199,7 @@ export async function fetchRagContext(
     context = null;
   }
 
-  // Cache only successful lookups — never poison results during a transient
+  // Cache only successful lookups, never poison results during a transient
   // upstream outage by caching a miss.
   if (cache && context) {
     await cache
@@ -381,7 +381,7 @@ const RATE_LIMIT_WINDOW_SECONDS = 60;
 /**
  * Fixed-window per-IP rate limit for anonymous chat requests, backed by KV.
  * KV has no atomic increment, so under concurrent requests from the same IP
- * within the same window this can undercount slightly — that's an accepted
+ * within the same window this can undercount slightly, that's an accepted
  * tradeoff for a lightweight abuse guard, not a precise limiter.
  *
  * Local development can omit the KV binding. Production must provide
@@ -403,7 +403,7 @@ async function checkRateLimit(env: Env, ip: string): Promise<boolean> {
  * RAG-augmented chat endpoint.
  *
  * Flow:
- *   1. Auth check (optional — see below)
+ *   1. Auth check (optional, see below)
  *   2. Parse the last user message
  *   3. Detect topic → fetch RAG context from api.aliasist.tech (cached; 3.5s timeout)
  *   4. Build enriched system prompt (BASE_SYSTEM + RAG block)
@@ -416,7 +416,7 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
   // --- Auth (optional) ---
   // Chat is open to the public. A signed-in request is still verified (so a
   // forged/expired token is rejected), but signing in is no longer required
-  // to use the chat at all — anonymous requests are rate-limited instead,
+  // to use the chat at all, anonymous requests are rate-limited instead,
   // below, so the endpoint isn't a free unlimited proxy to Groq/Workers AI.
   const authorization = request.headers.get("Authorization");
   const hasSessionToken = Boolean(authorization?.startsWith("Bearer "));
@@ -444,7 +444,7 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
   // --- Parse messages & detect topic ---
   const messages = parseMessages(bodyText);
   if (!messages) {
-    return json({ error: "Malformed request body — expected JSON { messages: [...] }." }, 400);
+    return json({ error: "That request wasn't valid. Send JSON like { messages: [...] }." }, 400);
   }
   const lastUserMsg = [...messages].reverse().find((m) => m.role === "user")?.content ?? "";
 

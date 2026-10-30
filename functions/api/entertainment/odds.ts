@@ -23,7 +23,7 @@ function json(body: unknown, status: number) {
 
 /**
  * Display-only sports odds (no wagering) → homepage /entertainment page.
- * GET /api/entertainment/odds?sport=upcoming — The Odds API, h2h market, US region.
+ * GET /api/entertainment/odds?sport=upcoming, The Odds API, h2h market, US region.
  * The Odds API free tier is metered per request, so this is cached hard (10 min)
  * to avoid burning the quota on repeat page loads.
  */

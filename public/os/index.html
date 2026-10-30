@@ -69,13 +69,13 @@
         <button id="goBtn">GO</button>
       </div>
       <div class="bm-row" id="bmRow"></div>
-      <div class="status-bar"><span id="statusText">READY — ENTER A URL, OR CLICK A BOOKMARK.</span><span>VIRTIO · 10.0.2.15</span></div>
+      <div class="status-bar"><span id="statusText">READY. ENTER A URL OR CLICK A BOOKMARK.</span><span>VIRTIO · 10.0.2.15</span></div>
       <div class="browser-view" id="browserView" data-mode="text">
         <div class="content" id="browserBody"></div>
         <iframe id="browserFrame" title="AliasBrowser content" referrerpolicy="no-referrer-when-downgrade" hidden></iframe>
         <video id="browserVideo" controls hidden></video>
         <div class="frame-fallback" id="frameFallback" hidden>
-          <span>Sites can refuse to be framed — if it's blank, use this:</span>
+          <span>Blank page? Some sites won't load in here. Try this:</span>
           <a id="frameFallbackLink" href="#" target="_blank" rel="noopener noreferrer">open in a real tab →</a>
         </div>
       </div>
@@ -90,7 +90,7 @@
     </div>
     <div class="content crypto">
       <div class="set-label">INPUT</div>
-      <textarea id="cryptoInput" placeholder="type here — digests update live">spawnos</textarea>
+      <textarea id="cryptoInput" placeholder="type here and the hashes update as you go">spawnos</textarea>
       <div class="out-row">
         <div class="out-label">SHA-256 (FIPS 180-4)</div>
         <div class="out-val" id="sha256Out">—</div>
@@ -109,7 +109,7 @@
       <button class="tb-btn close" data-action="close" aria-label="Close NetInspect">×</button>
     </div>
     <div class="content netinspect" style="padding:0;">
-      <div class="net-note">simulated bare-metal packet trace — no real traffic from your device is captured</div>
+      <div class="net-note">simulated packet trace. none of your real traffic is captured</div>
       <div class="net-log" id="netLog"></div>
     </div>
   </div>
@@ -129,7 +129,7 @@
       <div class="arch-box">DESKTOP / LIBOS  → AliasBrowser, CyberKonsole, CryptoLab
 HAL              → alias-ui, alias-net, alias-hal
 UEFI FIRMWARE    → GOP fb · PCI DMA · hw timers</div>
-      <p style="font-size:10px; color:var(--dim);">This page is a browser-based homage to the real thing — a from-scratch Rust (<code>#![no_std]</code>) + Zig x86_64 UEFI desktop with zero Linux kernel dependencies. Running locally now, not inside a sandboxed viewer, so AliasBrowser can actually embed pages.</p>
+      <p style="font-size:10px; color:var(--dim);">This is a browser version of the real thing, a from-scratch Rust (<code>#![no_std]</code>) + Zig x86_64 UEFI desktop with no Linux kernel underneath.</p>
       <div class="link-line">real project → <a href="https://github.com/aliasist/aliasist-os" target="_blank" rel="noopener noreferrer">github.com/aliasist/aliasist-os</a></div>
     </div>
   </div>

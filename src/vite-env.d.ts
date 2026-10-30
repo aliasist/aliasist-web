@@ -22,7 +22,7 @@ interface ImportMetaEnv {
   readonly VITE_SENTRY_TRACES_SAMPLE_RATE?: string;
   readonly VITE_SENTRY_REPLAY_ERROR_SAMPLE_RATE?: string;
   readonly VITE_SENTRY_REPLAY_SESSION_SAMPLE_RATE?: string;
-  /** Datadog RUM — enable in dev with `true` */
+  /** Datadog RUM, enable in dev with `true` */
   readonly VITE_DATADOG_ENABLE_DEV?: string;
   readonly VITE_DATADOG_APPLICATION_ID?: string;
   readonly VITE_DATADOG_CLIENT_TOKEN?: string;

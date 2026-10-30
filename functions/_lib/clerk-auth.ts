@@ -98,7 +98,7 @@ export async function authenticateRequest(request: Request, env: ClerkEnv) {
     publishableKey,
   });
 
-  // Build a fresh headers-only Request instead of cloning `request` — the
+  // Build a fresh headers-only Request instead of cloning `request`, the
   // caller may have already consumed the original body (e.g. via
   // `request.text()`), and `new Request(request, ...)` throws in that case
   // ("Cannot reconstruct a Request with a used body"). Auth only needs

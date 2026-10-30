@@ -47,9 +47,9 @@ Current deployment method: **GitHub Actions for the public site**.
 
 ## Key Files
 
-- `apps/clearasist/README.md` — Main overview for the public tool
-- `docs/clearasist-deployment.md` — How to deploy and update
-- `.github/workflows/deploy-clearasist.yml` — Public site deployment workflow
+- `apps/clearasist/README.md`: Main overview for the public tool
+- `docs/clearasist-deployment.md`: How to deploy and update
+- `.github/workflows/deploy-clearasist.yml`: Public site deployment workflow
 
 ## Current Status (as of last session)
 
@@ -58,7 +58,7 @@ Current deployment method: **GitHub Actions for the public site**.
 
 ## Next Steps / Future Work
 
-- **Master Admin** (`apps/master-admin`) – Centralized control panel for the entire ecosystem (real-time users, deployments, logs, all apps).
+- **Master Admin** (`apps/master-admin`): one control panel for all of Aliasist (who's online, deploys, logs, every app).
 - Add more file type support
 
 ---

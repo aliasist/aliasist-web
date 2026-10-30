@@ -89,7 +89,7 @@ export function ClerkSignInModalRoot({ children }: { children: ReactNode }) {
             <div className="p-4 pt-12">
               <ClerkLoading>
                 <div className="flex min-h-[320px] items-center justify-center">
-                  <span className="font-mono text-[10px] uppercase tracking-[0.2em] text-muted-foreground">
+                  <span className="text-xs text-muted-foreground">
                     Loading sign in
                   </span>
                 </div>

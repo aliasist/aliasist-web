@@ -11,7 +11,7 @@
  * Re-run when Epoch adds facilities:  node scripts/geocode-epoch.mjs
  *
  * Uses OSM Nominatim (free) at <=1 req/sec per its usage policy.
- * Source: Epoch AI, "AI Data Centers", epoch.ai — CC-BY 4.0.
+ * Source: Epoch AI, "AI Data Centers", epoch.ai, CC-BY 4.0.
  */
 import { writeFileSync, readFileSync, mkdirSync, existsSync } from "node:fs";
 import { dirname, resolve } from "node:path";

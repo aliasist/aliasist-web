@@ -6,7 +6,7 @@
  *   • Project banners + assets live under `./images` (imported via `@images/...`).
  *
  * Project links:
- *   • Navbar: open "Projects" in the top bar — same URLs as `suiteApps` below.
+ *   • Navbar: open "Projects" in the top bar, same URLs as `suiteApps` below.
  *     Entries with `isDemo: true` are archived/retired apps; the Navbar
  *     menu hides them, Contact opens them in a demo modal instead of navigating.
  *   • Contact: scroll to Contact → right column "Projects".
@@ -24,7 +24,7 @@ import pdfsistBanner from "@images/pdfsist_banner.webp";
 
 // ── Suite apps (live products) ───────────────────────────────────────────────
 
-/** Used by Navbar "Projects" menu and Contact section project list — keep in sync. */
+/** Used by Navbar "Projects" menu and Contact section project list, keep in sync. */
 export const suiteApps = [
   {
     label: "Aliasist AI",

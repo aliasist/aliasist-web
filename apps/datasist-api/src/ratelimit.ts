@@ -3,7 +3,7 @@
  * (`/api/ai/chat`, `/api/ai/rag-chat`), which call paid LLM providers.
  *
  * The rate limiter is an in-memory sliding window. On Workers this is
- * per-isolate (best-effort) — it meaningfully throttles a single abuser hitting
+ * per-isolate (best-effort), it meaningfully throttles a single abuser hitting
  * one colo, but is not a globally-consistent quota. Upgrade path when needed:
  * a Durable Object or the Workers Rate Limiting binding. Kept dependency-free
  * and pure so it is unit-testable.
@@ -52,7 +52,7 @@ export function clientKey(request: Request): string {
 /**
  * Origin policy for the AI endpoints. Blocks only when a browser sends an
  * `Origin` header that does not match the configured allow-list. Requests with
- * no `Origin` (native mobile app, server-to-server) are allowed — they cannot
+ * no `Origin` (native mobile app, server-to-server) are allowed, they cannot
  * be origin-checked and are covered by the rate limit instead.
  */
 export function isOriginAllowed(

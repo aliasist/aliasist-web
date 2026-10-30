@@ -22,7 +22,7 @@ export interface Env {
   NEON_DATABASE_URL: string;
   RAG_API_URL: string;
   RAG_API_KEY: string;
-  // Clerk — same instance used by aliasist.com
+  // Clerk, same instance used by aliasist.com
   CLERK_SECRET_KEY?: string;
   CLERK_PUBLISHABLE_KEY?: string;
   // Comma-separated Clerk user ids that are allowed to mutate facilities.
@@ -272,7 +272,7 @@ async function getNwsInsights(lat: number, lon: number) {
 
 // ── Facility Lead Discovery ──────────────────────────────────────────────────
 // Automated feeds that surface *candidate* new-facility signals into the
-// facility_leads staging table. Nothing here writes to data_centers directly —
+// facility_leads staging table. Nothing here writes to data_centers directly , 
 // leads are reviewed and promoted manually via the admin UI/API.
 
 const HYPERSCALER_WATCHLIST = [
@@ -309,7 +309,7 @@ interface FacilityLead {
 }
 
 async function fetchSecEdgarLeads(): Promise<FacilityLead[]> {
-  // SEC full text search — 8-K filings from the last 7 days mentioning "data center".
+  // SEC full text search, 8-K filings from the last 7 days mentioning "data center".
   // SEC's fair-access policy requires a descriptive User-Agent with contact info.
   const now = new Date();
   const start = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000);
@@ -358,7 +358,7 @@ async function fetchSecEdgarLeads(): Promise<FacilityLead[]> {
   return leads;
 }
 
-// Minimal RSS <item> extractor — avoids pulling in an XML dependency for
+// Minimal RSS <item> extractor, avoids pulling in an XML dependency for
 // well-formed feeds. Tolerant of missing fields; skips malformed items.
 function parseRssItems(xml: string): Array<{ title: string; link: string; description: string; pubDate: string }> {
   const items: Array<{ title: string; link: string; description: string; pubDate: string }> = [];
@@ -380,7 +380,7 @@ function parseRssItems(xml: string): Array<{ title: string; link: string; descri
   return items;
 }
 
-// Trade-press RSS feeds meant for public syndication — distinct from
+// Trade-press RSS feeds meant for public syndication, distinct from
 // Google News RSS, whose own terms restrict it to personal feed-reader use.
 const NEWS_RSS_FEEDS = [
   "https://www.datacenterdynamics.com/en/rss/",
@@ -499,11 +499,11 @@ async function handleUpdateFacilityLead(
 // data_centers.renewable_percent / grid_risk start as a one-time heuristic
 // guess from the source's energy_type string (see inferRenewablePercent /
 // inferGridRisk below). This sweep upgrades them to live, per-location
-// signals where available — Electricity Maps' real grid mix for renewable %,
+// signals where available, Electricity Maps' real grid mix for renewable %,
 // and NWS active severe weather alerts (a literal outage-risk signal, not a
 // carbon proxy) for grid_risk, falling back to Electricity Maps' carbon
 // intensity level outside the US where NWS has no coverage. A facility is
-// only updated when a live value was actually obtained — a failed fetch
+// only updated when a live value was actually obtained, a failed fetch
 // never clobbers existing data with a null.
 function gridRiskFromCarbonLevel(level: string | null): string | null {
   if (!level) return null;
@@ -557,7 +557,7 @@ async function refreshFacilityEnrichment(env: Env): Promise<{ ok: boolean; updat
       ).bind(hasRenewable ? renewablePercent : null, gridRisk, facility.id).run();
       updated++;
 
-      // Electricity Maps free tier is request-rate limited — stay well under it.
+      // Electricity Maps free tier is request-rate limited, stay well under it.
       await new Promise((r) => setTimeout(r, 300));
     } catch (err) {
       console.warn(`Enrichment sweep failed for facility ${facility.id}:`, err);
@@ -650,11 +650,11 @@ function cors(_request: Request, _env: Env) {
 // flip back to false and redeploy to restore it. A Worker has no
 // preview/production split the way Pages does, so unlike the
 // functions/_middleware.ts gates on aliasist-web/waterfall/datasist, this
-// always applies once deployed — there's no separate domain check.
+// always applies once deployed, there's no separate domain check.
 const MAINTENANCE_MODE = false;
 
 export default {
-  // Cron triggers — hourly D1 → Neon sync, daily facility lead discovery,
+  // Cron triggers, hourly D1 → Neon sync, daily facility lead discovery,
   // daily live enrichment sweep (renewable %, grid risk)
   async scheduled(event: ScheduledEvent, env: Env, ctx: ExecutionContext): Promise<void> {
     if (event.cron === "0 6 * * *") {
@@ -688,7 +688,7 @@ export default {
       // Seed on first request if DB is empty
       await seedIfEmpty(env.DB);
 
-      // Routes — support both /api/data-centers (frontend) and /api/facilities
+      // Routes, support both /api/data-centers (frontend) and /api/facilities
       const p = url.pathname;
       const isCollection = p === "/api/data-centers" || p === "/api/facilities";
       const isItem = p.startsWith("/api/data-centers/") || p.startsWith("/api/facilities/");
@@ -705,21 +705,21 @@ export default {
         if (!auth.ok) return auth.response;
         return handleGetFacilityLeads(env.DB, url, corsHeaders);
       }
-      // PATCH /api/facility-leads/:id — update a lead's review status (admin only)
+      // PATCH /api/facility-leads/:id, update a lead's review status (admin only)
       const facilityLeadMatch = p.match(/^\/api\/facility-leads\/([^/]+)$/);
       if (facilityLeadMatch && request.method === "PATCH") {
         const auth = await requireAdmin(request, env, corsHeaders);
         if (!auth.ok) return auth.response;
         return handleUpdateFacilityLead(env.DB, decodeURIComponent(facilityLeadMatch[1]), request, corsHeaders);
       }
-      // POST /api/facility-leads/discover — manually trigger a discovery sweep (admin only)
+      // POST /api/facility-leads/discover, manually trigger a discovery sweep (admin only)
       if (p === "/api/facility-leads/discover" && request.method === "POST") {
         const auth = await requireAdmin(request, env, corsHeaders);
         if (!auth.ok) return auth.response;
         const result = await discoverFacilityLeads(env);
         return json(result, 200, corsHeaders);
       }
-      // POST /api/enrichment/refresh — manually trigger the live enrichment sweep (admin only)
+      // POST /api/enrichment/refresh, manually trigger the live enrichment sweep (admin only)
       if (p === "/api/enrichment/refresh" && request.method === "POST") {
         const auth = await requireAdmin(request, env, corsHeaders);
         if (!auth.ok) return auth.response;
@@ -762,7 +762,7 @@ export default {
         }, 200, corsHeaders);
       }
 
-      // POST /api/neon/sync — manually trigger D1 → Neon sync (admin only)
+      // POST /api/neon/sync, manually trigger D1 → Neon sync (admin only)
       if (p === "/api/neon/sync" && request.method === "POST") {
         const auth = await requireAdmin(request, env, corsHeaders);
         if (!auth.ok) return auth.response;
@@ -771,7 +771,7 @@ export default {
         return json(result, 200, corsHeaders);
       }
 
-      // Force re-sync from Index API (admin only — this wipes a chunk of the table)
+      // Force re-sync from Index API (admin only, this wipes a chunk of the table)
       if (p === "/api/sync" && request.method === "POST") {
         const auth = await requireAdmin(request, env, corsHeaders);
         if (!auth.ok) return auth.response;
@@ -1102,7 +1102,7 @@ async function handleObservationStatus(db: D1Database, headers: Record<string, s
   }, 200, headers);
 }
 
-// — Claude call for DataSist (uses Anthropic Messages API)
+//, Claude call for DataSist (uses Anthropic Messages API)
 async function callClaudeData(
   apiKey: string,
   systemPrompt: string,
@@ -1236,7 +1236,7 @@ async function handleChat(request: Request, headers: Record<string, string>, env
     history?: Array<{ role: string; content: string }>;
   };
 
-  // Build system prompt — inject facility context if provided
+  // Build system prompt, inject facility context if provided
   const facilityContext = body.facilityId
     ? `\n\n[User is asking about facility ID ${body.facilityId}. Focus your answer on that specific facility when relevant.]`
     : "";
@@ -1420,7 +1420,7 @@ async function handleRagChat(request: Request, headers: Record<string, string>, 
 }
 
 // ── Live Data Sync from AI Data Center Index ──────────────────────────────────
-// Source: https://aidatacenterindex.com — CC BY 4.0
+// Source: https://aidatacenterindex.com, CC BY 4.0
 
 const INDEX_CONTINENTS = [
   "north-america",
@@ -1507,12 +1507,12 @@ function normalizeItem(item: IndexItem) {
   const yearOpened = (item.status === "operational" && item.start_year) ? item.start_year : null;
   const yearPlanned = (item.status !== "operational" && item.start_year) ? item.start_year : null;
 
-  // Capacity in MW — use directly if available
+  // Capacity in MW, use directly if available
   const capacityMW = item.megawatts ?? null;
   // Estimate annual GWh: capacity * 8760h * 0.8 PUE / 1000
   const annualGWh = capacityMW ? Math.round(capacityMW * 8760 * 0.8 / 1000) : null;
 
-  // AI focus and energy type become the notes field (new columns aren't in DB yet — store in notes)
+  // AI focus and energy type become the notes field (new columns aren't in DB yet, store in notes)
   const notes = [
     item.ai_focus && item.ai_focus !== "Unknown" ? `AI Focus: ${item.ai_focus}` : null,
     item.energy_type && item.energy_type !== "Unknown" ? `Energy: ${item.energy_type}` : null,
@@ -1520,7 +1520,7 @@ function normalizeItem(item: IndexItem) {
   ].filter(Boolean).join(" | ");
 
   return {
-    // Use slug as external_id concept — store in name to keep unique
+    // Use slug as external_id concept, store in name to keep unique
     name: item.title,
     company: allCompanies.slice(0, 120),
     company_type: companyType,
@@ -1633,7 +1633,7 @@ async function syncFromIndexAPI(db: D1Database): Promise<number> {
 
 // ── D1 → Neon PostgreSQL Sync ──────────────────────────────────────────────────
 // Syncs all D1 facility rows to Neon (PostgreSQL) for Carto geospatial analytics
-// Uses @neondatabase/serverless — HTTP transport, works in Cloudflare Workers
+// Uses @neondatabase/serverless, HTTP transport, works in Cloudflare Workers
 
 async function syncD1ToNeon(env: Env): Promise<{ ok: boolean; synced: number; error?: string }> {
   if (!env.NEON_DATABASE_URL) return { ok: false, synced: 0, error: "NEON_DATABASE_URL not set" };
@@ -1641,7 +1641,7 @@ async function syncD1ToNeon(env: Env): Promise<{ ok: boolean; synced: number; er
   try {
     const sql = neon(env.NEON_DATABASE_URL);
 
-    // 1 — Create table (one statement per call — Neon HTTP API requirement)
+    // 1, Create table (one statement per call, Neon HTTP API requirement)
     await sql`CREATE TABLE IF NOT EXISTS data_centers (external_id TEXT PRIMARY KEY, name TEXT NOT NULL, company TEXT, company_type TEXT, lat DOUBLE PRECISION, lng DOUBLE PRECISION, city TEXT, state TEXT, country TEXT, capacity_mw DOUBLE PRECISION, estimated_annual_gwh DOUBLE PRECISION, water_usage_million_gallons DOUBLE PRECISION, status TEXT, year_opened INTEGER, year_planned INTEGER, investment_billions DOUBLE PRECISION, acreage DOUBLE PRECISION, primary_models TEXT, community_impact TEXT, community_resistance INTEGER DEFAULT 0, grid_risk TEXT, renewable_percent DOUBLE PRECISION, notes TEXT, source TEXT, external_ref TEXT, synced_at TIMESTAMPTZ DEFAULT NOW())`;
     // Additive migration for tables created before source/external_ref existed.
     await sql`ALTER TABLE data_centers ADD COLUMN IF NOT EXISTS source TEXT`;
@@ -1651,13 +1651,13 @@ async function syncD1ToNeon(env: Env): Promise<{ ok: boolean; synced: number; er
     await sql`CREATE INDEX IF NOT EXISTS idx_dc_latlng  ON data_centers (lat, lng)`;
     await sql`CREATE INDEX IF NOT EXISTS idx_dc_source  ON data_centers (source)`;
 
-    // 2 — Fetch all facilities from D1
+    // 2, Fetch all facilities from D1
     const { results } = await env.DB.prepare("SELECT * FROM data_centers ORDER BY id ASC").all();
     if (!results.length) return { ok: true, synced: 0 };
 
     const rows = results as Record<string, unknown>[];
 
-    // 3 — Batch upsert in chunks of 50 using transaction()
+    // 3, Batch upsert in chunks of 50 using transaction()
     //     transaction() sends all statements in a single HTTP round-trip
     const CHUNK = 50;
     let synced = 0;
@@ -1709,7 +1709,7 @@ async function syncD1ToNeon(env: Env): Promise<{ ok: boolean; synced: number; er
   }
 }
 
-// Called on each request — seeds once if empty, re-syncs if stale (>24h)
+// Called on each request, seeds once if empty, re-syncs if stale (>24h)
 let lastSyncAt = 0;
 const SYNC_INTERVAL_MS = 24 * 60 * 60 * 1000; // 24 hours
 
@@ -1719,12 +1719,12 @@ async function seedIfEmpty(db: D1Database) {
   const now = Date.now();
 
   if (count === 0) {
-    // First boot — sync now
+    // First boot, sync now
     await syncFromIndexAPI(db);
     lastSyncAt = now;
   } else if (now - lastSyncAt > SYNC_INTERVAL_MS && count < 100) {
     // Re-sync if stale and still running old small dataset
-    syncFromIndexAPI(db); // fire-and-forget — don't await on hot path
+    syncFromIndexAPI(db); // fire-and-forget, don't await on hot path
     lastSyncAt = now;
   }
 }

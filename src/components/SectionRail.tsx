@@ -53,7 +53,7 @@ const SectionRail = () => {
                   : "size-1.5 border-border bg-muted-foreground/30 group-hover:size-2 group-hover:border-electric/60 group-hover:bg-electric/70 group-hover:shadow-electric-xs"
               }`}
             />
-            <span className="pointer-events-none absolute right-7 whitespace-nowrap rounded-sm border border-electric/25 bg-background/90 px-2 py-1 font-mono text-[10px] uppercase tracking-[0.12em] text-muted-foreground opacity-0 shadow-electric-xs backdrop-blur transition-opacity duration-200 group-hover:opacity-100">
+            <span className="pointer-events-none absolute right-7 whitespace-nowrap rounded-sm border border-electric/25 bg-background/90 px-2 py-1 text-xs text-muted-foreground opacity-0 shadow-electric-xs backdrop-blur transition-opacity duration-200 group-hover:opacity-100">
               {section.label}
             </span>
           </a>

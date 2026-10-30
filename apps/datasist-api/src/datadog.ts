@@ -1,6 +1,6 @@
 /**
  * Datadog metrics helper for Aliasist Pulse Worker
- * Uses the Datadog HTTP API (metrics v2) — no native SDK needed in CF Workers
+ * Uses the Datadog HTTP API (metrics v2), no native SDK needed in CF Workers
  * Site: us5.datadoghq.com
  */
 
@@ -38,7 +38,7 @@ export function sendMetrics(apiKey: string | undefined, metrics: DDMetric[]): vo
     },
     body: JSON.stringify({ series }),
   }).catch(() => {
-    // Silently swallow — never let DD errors affect the main response
+    // Silently swallow, never let DD errors affect the main response
   })
 }
 
@@ -129,7 +129,7 @@ export async function withDatadog(
 }
 
 /**
- * Track AI provider usage — call after each AI response
+ * Track AI provider usage, call after each AI response
  */
 export function trackAIUsage(
   apiKey: string | undefined,

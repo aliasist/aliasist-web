@@ -2,15 +2,6 @@ import { Link } from "react-router-dom";
 import { 
   ArrowLeft, 
   Layers, 
-  Cpu, 
-  Terminal, 
-  ShieldCheck, 
-  Zap, 
-  Sparkles, 
-  BookOpen, 
-  Share2, 
-  CheckCircle2, 
-  Radio
 } from "lucide-react";
 import Starfield from "@/components/Starfield";
 import { Card } from "@/components/ui/card";
@@ -38,11 +29,11 @@ const BlogCosmicOs = () => {
         {/* Article Header */}
         <header className="space-y-4 border-b border-border/60 pb-8">
           <h1 className="bg-gradient-to-r from-electric via-emerald-300 to-cyan-400 bg-clip-text text-3xl sm:text-5xl font-black tracking-tight text-transparent leading-tight drop-shadow-[0_0_35px_rgba(10,204,151,0.25)]">
-            Architecting AliasOS: From Redox Microkernels to a Pure-Rust App Orchestrator & The Tractor Beam Protocol
+            Building AliasOS: What I Learned from Redox, a Rust App Launcher, and the Tractor Beam Protocol
           </h1>
 
           <p className="text-muted-foreground text-base sm:text-lg font-sans leading-relaxed">
-            How we built a next-generation Rust & Elm desktop ecosystem, zero-allocation stream telemetry, and a unified multi-runtime application orchestrator.
+            How I'm building a set of Rust and Elm desktop apps, live download stats with zero heap allocations, and one launcher that runs them all.
           </p>
 
           <div className="flex flex-wrap items-center gap-4 text-xs font-mono text-muted-foreground pt-2">
@@ -68,29 +59,29 @@ const BlogCosmicOs = () => {
           {/* Section 1 */}
           <section className="space-y-4">
             <h2 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
-              <span className="text-electric">1.</span> The Vision: Why Build an OS Runtime?
+              <span className="text-electric">1.</span> Why Build an OS Runtime?
             </h2>
             <p>
-              Modern operating systems have grown bloated, resource-heavy, and opaque. When building high-performance developer tools, media extraction engines, AI research studios, and interactive simulation workbenches, standard monolithic desktop frameworks quickly reveal their weaknesses:
+              Desktop apps have gotten heavy. I build a lot of different tools (developer tools, media downloaders, AI research tools, little simulations), and the usual desktop frameworks kept getting in the way:
             </p>
             <ul className="list-disc list-inside space-y-2 pl-2 text-muted-foreground">
-              <li><strong className="text-foreground">Memory bloat:</strong> Standard desktop runtimes frequently consume 200MB+ of RAM per idle window.</li>
-              <li><strong className="text-foreground">Partial failure corruption:</strong> Interrupted file streams or power losses leave broken, dirty fragments scattered across storage.</li>
-              <li><strong className="text-foreground">Fragile state:</strong> JavaScript/TypeScript apps still suffer from unhandled runtime exceptions.</li>
-              <li><strong className="text-foreground">Siloed applications:</strong> Tools operate in isolation with no unified IPC bridge or standardized sandbox runtime.</li>
+              <li><strong className="text-foreground">Memory bloat:</strong> A typical desktop app can eat 200 MB+ of RAM just sitting there idle.</li>
+              <li><strong className="text-foreground">Half-finished files:</strong> If a download gets cut off or the power goes out, you're left with broken pieces all over your drive.</li>
+              <li><strong className="text-foreground">Surprise crashes:</strong> JavaScript and TypeScript apps can still blow up on an error nobody caught.</li>
+              <li><strong className="text-foreground">Apps on islands:</strong> Every tool runs on its own, with no shared way to talk to each other and no standard sandbox.</li>
             </ul>
             <p>
-              We set out to change this by designing <strong>AliasOS</strong>—a unified, memory-safe, microkernel-inspired application ecosystem built on <strong>Rust 2021, Pure Functional Elm, and Tauri v2</strong>.
+              So I started building <strong>AliasOS</strong>: memory-safe desktop apps that work together, borrowing ideas from microkernels, built on <strong>Rust 2021, Elm, and Tauri v2</strong>.
             </p>
           </section>
 
           {/* Section 2 */}
           <section className="space-y-4">
             <h2 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
-              <span className="text-cyan-400">2.</span> Studying Redox OS: What Microkernels Taught Us
+              <span className="text-cyan-400">2.</span> Studying Redox OS: What Microkernels Taught Me
             </h2>
             <p>
-              Before building our own proprietary engine, we analyzed <strong>Redox OS</strong>—a Unix-like microkernel operating system written entirely from scratch in Rust.
+              Before building my own engine, I dug into <strong>Redox OS</strong>, a Unix-like microkernel operating system written from scratch in Rust.
             </p>
             <div className="grid sm:grid-cols-3 gap-3 font-mono text-xs pt-2">
               <Card className="p-4 bg-card/60 border-border/60 space-y-1.5">
@@ -111,10 +102,10 @@ const BlogCosmicOs = () => {
           {/* Section 3 */}
           <section className="space-y-4">
             <h2 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
-              <span className="text-emerald-400">3.</span> The Tractor Beam Protocol (TBP): Our Proprietary Engine
+              <span className="text-emerald-400">3.</span> The Tractor Beam Protocol (TBP): My Own Engine
             </h2>
             <p>
-              Instead of relying on generic wrappers, we engineered the <strong>Tractor Beam Protocol (TBP)</strong>—a resilient, sub-atomic media extraction and transmutation pipeline.
+              Instead of wrapping someone else's tool, I wrote the <strong>Tractor Beam Protocol (TBP)</strong>, my own pipeline for pulling down media and converting it, built to hold up when things go wrong.
             </p>
             
             <div className="p-4 rounded-lg bg-card/80 border border-electric/30 space-y-3 font-mono text-xs">
@@ -131,10 +122,10 @@ const BlogCosmicOs = () => {
           {/* Section 4 */}
           <section className="space-y-4">
             <h2 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
-              <span className="text-purple-400">4.</span> Why Rust + Elm + Tauri is the Ultimate Stack
+              <span className="text-purple-400">4.</span> Why Rust + Elm + Tauri
             </h2>
             <p>
-              We benchmarked our three desktop application editions side-by-side:
+              Here's how my three desktop editions stacked up side by side:
             </p>
             <div className="overflow-x-auto">
               <table className="w-full text-left font-mono text-xs border border-border/70 rounded-lg overflow-hidden">
@@ -181,23 +172,23 @@ const BlogCosmicOs = () => {
           {/* Section 5 */}
           <section className="space-y-4">
             <h2 className="text-xl font-bold text-foreground flex items-center gap-2">
-              <span className="text-amber-400">5.</span> Building the AliasOS Process Orchestrator & Axum IPC Daemon
+              <span className="text-amber-400">5.</span> The AliasOS Launcher: A Rust Orchestrator on Axum
             </h2>
             <p>
-              To unify our suite of tools without creating a heavyweight monolith, we built a standalone Rust process orchestrator (<code className="text-electric">orchestrator.rs</code>) powered by <strong>Axum</strong> listening on local port <code className="text-electric">7777</code>.
+              To tie all my tools together without one giant app, I wrote a standalone Rust process orchestrator (<code className="text-electric">orchestrator.rs</code>) on <strong>Axum</strong>, listening on local port <code className="text-electric">7777</code>.
             </p>
             <p>
-              The orchestrator reads standardized JSON manifests from <code className="text-muted-foreground">~/apps/registry/*.json</code> and provides high-speed HTTP IPC endpoints (<code className="text-muted-foreground">/api/apps</code>, <code className="text-muted-foreground">/api/apps/:id/launch</code>, <code className="text-muted-foreground">/api/hardware</code>) allowing our web dashboard at <code className="text-electric">/os</code> to launch and terminate native binaries in isolated sandboxes with 1-click.
+              It reads JSON manifests from <code className="text-muted-foreground">~/apps/registry/*.json</code> and exposes a few local HTTP endpoints (<code className="text-muted-foreground">/api/apps</code>, <code className="text-muted-foreground">/api/apps/:id/launch</code>, <code className="text-muted-foreground">/api/hardware</code>) so the dashboard at <code className="text-electric">/os</code> can launch and stop native apps, each in its own sandbox, with one click.
             </p>
           </section>
 
           {/* Conclusion */}
           <section className="space-y-4 pt-4 border-t border-border/60">
             <h2 className="text-xl font-bold text-foreground">
-              Conclusion: The Future of Desktop Runtimes
+              Where It's At
             </h2>
             <p>
-              AliasOS demonstrates that with <strong>Rust, Elm, Zig, Mojo, and Microkernel design principles</strong>, software can run 10× faster, use 80% less memory, and provide rock-solid reliability.
+              AliasOS showed me how much lighter desktop apps can be with <strong>Rust, Elm, and a few ideas borrowed from microkernels</strong>. The Tauri and Elm builds above run in about 35 MB of RAM, compared to around 180 MB for the Electron one.
             </p>
           </section>
 

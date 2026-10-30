@@ -1,4 +1,4 @@
-# Aliasist — Files Abductor
+# Files Abductor
 
 ![Files Abductor banner](/assets/files-abductor/files_abductor_banner_cinematic.png)
 
@@ -8,7 +8,7 @@ Quick preview: these screenshots show the Files‑Abductor desktop UI and the pl
 
 Click images to view full-size.
 
-[![Running — screenshot 1](/assets/files-abductor/abduction-1.jpg)](/assets/files-abductor/abduction-1.jpg)  [![Running — screenshot 2](/assets/files-abductor/abduction-2.jpg)](/assets/files-abductor/abduction-2.jpg)  [![Running — screenshot 3](/assets/files-abductor/abduction-3.jpg)](/assets/files-abductor/abduction-3.jpg)
+[![Running, screenshot 1](/assets/files-abductor/abduction-1.jpg)](/assets/files-abductor/abduction-1.jpg)  [![Running, screenshot 2](/assets/files-abductor/abduction-2.jpg)](/assets/files-abductor/abduction-2.jpg)  [![Running, screenshot 3](/assets/files-abductor/abduction-3.jpg)](/assets/files-abductor/abduction-3.jpg)
 
 Additional art/variants:
 
@@ -24,7 +24,7 @@ Aliasist Files‑Abductor is a cross‑platform desktop tool for downloading fil
 
 Releases: https://github.com/aliasist/aliasistabductor/releases
 
-Select the asset matching your platform (AppImage, Snap, or Windows installer). The screenshots above show the UI and expected behavior — review them before downloading.
+Select the asset matching your platform (AppImage, Snap, or Windows installer). The screenshots above show what it looks like and how it works, so take a look before you download.
 
 ## Quick start (Linux AppImage)
 

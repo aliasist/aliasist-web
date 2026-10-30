@@ -33,7 +33,7 @@ export const onRequestOptions = async () =>
 /**
  * Lookup-only safety check for a URL: searches urlscan.io's history of
  * *already-scanned* pages (instant) rather than submitting a new scan
- * (10-20s, and burns urlscan's submission quota) — good enough to flag a
+ * (10-20s, and burns urlscan's submission quota), good enough to flag a
  * link as previously-seen-malicious before it's shown anywhere on the site.
  * Submitting brand-new/unscanned URLs for a fresh scan is a separate,
  * heavier flow, not built here.

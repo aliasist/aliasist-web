@@ -10,7 +10,7 @@ const HeroSection = () => {
       className="relative flex min-h-[100dvh] min-h-screen items-center justify-center overflow-hidden"
     >
       {/* The 85%/75% ellipse below is still at ~0.5 alpha at this section's
-          own bottom edge — its own gradient stops never reach transparent
+          own bottom edge, its own gradient stops never reach transparent
           before the box ends. Masking the whole glow stack forces it to
           zero right at the boundary so About's section starts from a true
           blank instead of a visible step down in tint. */}

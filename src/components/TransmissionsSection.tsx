@@ -45,24 +45,24 @@ function timeAgo(iso: string): string {
 const FALLBACK_POSTS = [
   {
     id: "f1", tag: "aisec", color: "#FF5555", category: "Security",
-    title: "Pen testing, software security, and building harder-to-break tools.",
+    title: "Pen testing, software security, and building tools that are harder to break.",
     source: "Aliasist", url: "#", published: new Date().toISOString(),
   },
   {
     id: "f2", tag: "tech", color: "#00C97B", category: "Tech",
-    title: "Building Aliasist-Files-Abductor: a practical tool for direct file workflows.",
+    title: "Building Files Abductor, my desktop app for downloading files.",
     source: "Aliasist", url: "#", published: new Date().toISOString(),
   },
   {
     id: "f3", tag: "tech", color: "#00C97B", category: "Tech",
-    title: "From early web design to modern software: how the tooling changed.",
+    title: "From early web design to modern software: how the tools have changed.",
     source: "Aliasist", url: "#", published: new Date().toISOString(),
   },
 ];
 
 const FILTERS = ["All", "Tech", "Finance", "Defense", "Security"];
 
-// Category-based thumbnail gradients — always render, no external dependency
+// Category-based thumbnail gradients, always render, no external dependency
 const CARD_GRADIENTS: Record<string, string> = {
   tech:    "linear-gradient(135deg, hsl(165 90% 8%) 0%, hsl(165 60% 14%) 50%, hsl(165 90% 8%) 100%)",
   finance: "linear-gradient(135deg, hsl(195 90% 8%) 0%, hsl(195 60% 14%) 50%, hsl(195 90% 8%) 100%)",
@@ -85,7 +85,7 @@ const CardThumbnail = ({ article }: { article: Article }) => {
 
   return (
     <div className="relative w-full h-14 sm:h-16 overflow-hidden" style={{ background: bg }}>
-      {/* Purely decorative (no per-article image) — kept short so the card's
+      {/* Purely decorative (no per-article image), kept short so the card's
           real content, the title, dominates the space instead of the art. */}
       {/* Subtle animated grid pattern */}
       <svg className="absolute inset-0 w-full h-full opacity-[0.08]" aria-hidden="true">
@@ -104,7 +104,7 @@ const CardThumbnail = ({ article }: { article: Article }) => {
       {/* Faint source label watermark */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <span
-          className="font-mono text-[9px] uppercase tracking-[0.35em] opacity-10 select-none"
+          className="text-xs opacity-10 select-none"
           style={{ color: article.color }}
         >
           {article.source}
@@ -115,7 +115,7 @@ const CardThumbnail = ({ article }: { article: Article }) => {
       {/* Category tag */}
       <div className="absolute bottom-3 left-3">
         <span
-          className="font-mono text-[10px] uppercase tracking-[0.15em] px-2 py-0.5 border rounded-sm backdrop-blur-sm bg-background/40"
+          className="text-xs px-2 py-0.5 border rounded-sm backdrop-blur-sm bg-background/40"
           style={{ color: article.color, borderColor: `${article.color}40` }}
         >
           {article.tag === "aisec" ? "Security" : article.tag}
@@ -142,7 +142,7 @@ const BlogCard = ({ article, index }: { article: Article; index: number }) => {
       transition={{ duration: 0.4, delay: index * 0.04 }}
       className="tap-target group bg-background border border-border outline-none transition-[transform,border-color,box-shadow] duration-300 hover:border-electric/30 hover:shadow-electric-sm focus-visible:z-10 focus-visible:border-electric/45 focus-visible:shadow-electric-sm focus-visible:ring-2 focus-visible:ring-electric/40 focus-visible:ring-offset-2 focus-visible:ring-offset-background relative overflow-hidden hover:-translate-y-0.5 flex flex-col"
     >
-      {/* Category thumbnail — always renders */}
+      {/* Category thumbnail, always renders */}
       <CardThumbnail article={article} />
 
       {/* Card body */}
@@ -269,7 +269,7 @@ const TransmissionsSection = () => {
             <motion.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="font-mono text-[10px] uppercase tracking-[0.15em] text-electric"
+              className="text-xs text-electric"
             >
               Live · Auto-refresh 10m
             </motion.div>
@@ -288,7 +288,7 @@ const TransmissionsSection = () => {
             <button
               key={f}
               onClick={() => { setActiveFilter(f); }}
-              className={`font-mono text-[11px] uppercase tracking-[0.12em] px-3 py-1.5 border rounded-sm outline-none transition-[colors,border-color,box-shadow] duration-200 focus-visible:ring-2 focus-visible:ring-electric/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+              className={`text-sm px-3 py-1.5 border rounded-sm outline-none transition-[colors,border-color,box-shadow] duration-200 focus-visible:ring-2 focus-visible:ring-electric/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                 activeFilter === f
                   ? "border-electric text-electric bg-electric/10 shadow-electric-xs"
                   : "border-border text-muted-foreground hover:border-electric/40 hover:text-foreground"
@@ -341,7 +341,7 @@ const TransmissionsSection = () => {
 
         {/* Empty state */}
         {!loading && displayed.length === 0 && (
-          <div className="text-center py-16 font-mono text-xs text-muted-foreground/40 uppercase tracking-[0.15em]">
+          <div className="text-center py-16 text-sm text-muted-foreground/40">
             No posts found.
           </div>
         )}

@@ -37,8 +37,8 @@ const Index = () => {
           <div className="mx-auto w-full max-w-site px-4 sm:px-8 lg:px-12 xl:px-16 py-2">
             <AdUnit slot={AD_SLOTS.banner} format="auto" />
           </div>
-          <ErrorBoundary><Suspense fallback={<SectionFallback />}><UpdatesSection /></Suspense></ErrorBoundary>
           <ErrorBoundary><Suspense fallback={<SectionFallback />}><ProjectsSection /></Suspense></ErrorBoundary>
+          <ErrorBoundary><Suspense fallback={<SectionFallback />}><UpdatesSection /></Suspense></ErrorBoundary>
           <ErrorBoundary><Suspense fallback={<SectionFallback />}><TransmissionsSection /></Suspense></ErrorBoundary>
           <div className="mx-auto w-full max-w-site px-4 sm:px-8 lg:px-12 xl:px-16 py-2">
             <AdUnit slot={AD_SLOTS.banner} format="auto" />

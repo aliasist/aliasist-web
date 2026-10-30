@@ -18,8 +18,8 @@ We use **GitHub Actions + Wrangler** for deployments. This gives us better contr
 
 1. Add the following secrets to your GitHub repository (Settings → Secrets and variables → Actions):
 
-   - `CLOUDFLARE_API_TOKEN` — A Cloudflare API token with **Pages:Edit** permission.
-   - `CLOUDFLARE_ACCOUNT_ID` — Your Cloudflare Account ID.
+   - `CLOUDFLARE_API_TOKEN`: A Cloudflare API token with **Pages:Edit** permission.
+   - `CLOUDFLARE_ACCOUNT_ID`: Your Cloudflare Account ID.
 
 2. (Optional but recommended) Connect the Pages projects to Git in the Cloudflare dashboard so you can see deployment history easily:
 
@@ -31,7 +31,7 @@ We use **GitHub Actions + Wrangler** for deployments. This gives us better contr
 
 We have one Clearasist GitHub Actions workflow:
 
-- `.github/workflows/deploy-clearasist.yml` — Deploys the public site when anything in `apps/clearasist/` changes.
+- `.github/workflows/deploy-clearasist.yml`: Deploys the public site when anything in `apps/clearasist/` changes.
 
 You no longer need to run manual `wrangler pages deploy` commands for the public project.
 

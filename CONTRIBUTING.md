@@ -1,27 +1,26 @@
 # Contributing
 
-Thanks for your interest in improving Aliasist. Please keep changes focused,
-well-scoped, and aligned with the brand and product direction.
+Thanks for wanting to help with Aliasist! Keep changes focused and in line with where the site is headed.
 
-## Workflow
+## How to pitch in
 
-1. Open an issue to discuss significant changes.
-2. Keep PRs small and descriptive.
-3. Include screenshots for UI updates.
+1. Open an issue first for anything big, so we can talk it over.
+2. Keep pull requests small, and say what they do.
+3. Add screenshots for anything that changes how the site looks.
 
 ## Local setup
 
-- `npm install`
-- `cp .dev.vars.example .dev.vars` and fill keys
+- `npm ci`
+- `cp .dev.vars.example .dev.vars`, then fill in the keys
 - `npm run dev`
 
 ## Checks
 
-- `npm run lint`
-- `npm test`
-- `npm run build`
+- `npm run check`: lint with zero warnings, tests, production build, and the JavaScript size budget
+- ClearSist: `npm run setup:clearasist && npm run build:clearasist`
+- `npm run check:suite`: optional, checks every app locally. See `docs/SUITE_STATUS.md`
 
-## Code quality
+## Code
 
-- Prefer readable, well-structured UI code.
-- Avoid committing secrets, local assets, or build outputs.
+- Keep UI code easy to read.
+- Don't commit secrets, local files, or build output.

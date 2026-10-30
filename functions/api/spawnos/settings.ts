@@ -27,6 +27,6 @@ export const onRequestPost = async ({ request, env }: SpawnosContext) => {
     .bind(settingsJson, Date.now(), username)
     .run();
 
-  if (result.meta.changes === 0) return json({ error: "unknown user — log in first" }, 404);
+  if (result.meta.changes === 0) return json({ error: "no profile with that name yet. log in first" }, 404);
   return json({ ok: true });
 };

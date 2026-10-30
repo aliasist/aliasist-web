@@ -32,7 +32,7 @@ export class ErrorBoundary extends React.Component<Props, State> {
             <div className="max-w-md text-center">
               <h1 className="text-2xl font-semibold mb-4">Something went wrong</h1>
               <p className="text-muted-foreground mb-6">
-                Clearasist ran into an unexpected error. Please refresh the page and try again.
+                Something broke on my end. Refreshing the page usually fixes it.
               </p>
               <button
                 onClick={() => window.location.reload()}

@@ -168,7 +168,7 @@ export async function processImage(file: File): Promise<ProcessedImage> {
 
   const formatInfo = detectFormat(file);
 
-  // Post-clean verification — re-scan the output to confirm it's clean
+  // Post-clean verification, re-scan the output to confirm it's clean
   let verifiedClean = false;
   try {
     const verifyTags = await ExifReader.load(cleanedBuffer, { expanded: true });

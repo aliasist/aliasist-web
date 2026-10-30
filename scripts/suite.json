@@ -1,0 +1,10 @@
+[
+  { "id": "homepage", "name": "Aliasist", "path": "aliasist-web", "url": "https://www.aliasist.com", "dist": "dist", "checks": [["npm", "run", "check"]] },
+  { "id": "ai", "name": "Aliasist AI", "path": "waterfall", "url": "https://www.aliasist.tech", "dist": "dist", "checks": [["npm", "run", "check"]] },
+  { "id": "globalize", "name": "Globalize", "path": "projects/aliasist-repos/globalize", "url": "https://www.aliasist.world", "dist": "dist", "checks": [["npm", "run", "check"]] },
+  { "id": "pdf", "name": "PDFSist", "path": "pdfsist", "url": "https://pdf.aliasist.com", "dist": "dist", "checks": [["npm", "run", "build"]] },
+  { "id": "clear", "name": "ClearSist", "path": "aliasist-web/apps/clearasist", "url": "https://clearasist.pages.dev", "dist": "dist", "checks": [["npm", "run", "build"]] },
+  { "id": "space", "name": "SpaceSist", "path": "projects/aliasist-repos/space-asist", "url": "https://space.aliasist.com", "checks": [["npm", "test", "--", "--runInBand"], ["npm", "run", "test:worker"]] },
+  { "id": "platform", "name": "Shared platform", "path": "aliasist-platform-qdrant", "url": "https://api.aliasist.tech/health", "checks": [["pnpm", "typecheck"], ["pnpm", "test"]] },
+  { "id": "verity", "name": "Verity Console", "path": "verity-console", "checks": [["npm", "--prefix", "frontend", "run", "build"], ["node", "--check", "backend/server.js"]] }
+]

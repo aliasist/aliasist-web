@@ -1,6 +1,6 @@
 // Appends a new `updates` entry to src/content/homepage.ts from a GitHub
 // release's repository_dispatch payload (repo, tag, name, body, url).
-// Invoked by .github/workflows/announce-release.yml — not run manually.
+// Invoked by .github/workflows/announce-release.yml, not run manually.
 import { readFileSync, writeFileSync } from "node:fs";
 
 const CONTENT_PATH = new URL("../src/content/homepage.ts", import.meta.url);

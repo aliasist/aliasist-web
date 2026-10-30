@@ -4,7 +4,7 @@ import { authenticateRequest, corsHeaders, json, requireAliasistAdmin } from "..
 /**
  * Proxies device-control commands to the llm-chat Worker's /api/command
  * route. Exists so the browser never needs the Worker's DEVICE_API_KEY
- * (which authorizes hardware — relays, etc.) — that secret stays server-side
+ * (which authorizes hardware, relays, etc.), that secret stays server-side
  * here, and only a signed-in, allowlisted admin can reach this route at all.
  */
 interface Env extends ClerkEnv, AliasistAdminEnv {

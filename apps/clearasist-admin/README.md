@@ -1,70 +1,70 @@
-# Clearasist Admin
+# ClearSist Admin
 
-Dedicated, high-signal administrative tool for reviewing and curating metadata removal reports from the public Clearasist tool.
+My tool for reviewing the metadata reports from ClearSist, the public metadata cleaner.
 
-This is the primary surface for inspecting what metadata was stripped from user files, tagging reports for quality/training value, adding notes, and managing the historical record of cleaning activity.
+It's where I look at what metadata got stripped from people's files, tag reports, add notes, and keep a history of cleanups.
 
-## Purpose
+## What it's for
 
-- Review stripped metadata at scale
-- Curate high-quality examples for future analysis or training
-- Maintain full visibility into Clearasist usage and effectiveness
-- Support the "only removal counts matter" data philosophy — we track what was removed, not the original user content
+- Review stripped metadata in bulk
+- Pick out good examples to study or train on later
+- See how ClearSist is getting used and how well it's working
+- Stick to one rule: track what was removed, never the original file
 
-## Key Features
+## Features
 
-- Searchable list of reports (newest first)
-- Detailed view per report:
-  - Filename, type, sizes, and exact count of removed metadata fields
-  - Lightweight partial previews (thumbnail or text excerpt)
-  - Full before/after metadata diff
-  - Tagging system (High quality removal, Low quality removal, Review later, Needs attention, etc.)
-  - Freeform notes
-- Keyboard navigation support
-- Clean, focused Lazygit-inspired list + detail layout
+- Searchable list of reports, newest first
+- A detail view for each report:
+  - File name, type, sizes, and exactly how many metadata fields were removed
+  - Small previews (a thumbnail or a bit of text)
+  - The full before and after metadata
+  - Tags (High quality removal, Low quality removal, Review later, Needs attention, and so on)
+  - Free-form notes
+- Keyboard navigation
+- A simple list-and-detail layout, inspired by Lazygit
 
-## Local Development
+## Running it locally
 
 ```bash
 cd apps/clearasist-admin
 npm install
-cp .env.example .env.local   # Fill in the real worker URL + admin secret
+cp .env.example .env.local   # fill in the real worker URL and admin secret
 npm run dev
 ```
 
-The app will show a prominent configuration banner until the required environment variables are present.
+You'll see a setup banner until those variables are filled in.
 
-## Environment Variables
+## Environment variables
 
-- `VITE_METADATA_WORKER_URL` — URL of the Clearasist metadata worker (e.g. `https://clearasist-metadata.your-domain.workers.dev`)
-- `VITE_ADMIN_SECRET` — The admin bearer token configured on the worker
+- `VITE_METADATA_WORKER_URL`: the ClearSist metadata worker's URL (for example `https://clearasist-metadata.your-domain.workers.dev`)
+- `VITE_ADMIN_SECRET`: the admin token set on the worker
 
-## Relationship to Other Admin Surfaces
+## How it fits with the other admin tools
 
-- This is the **specialized, high-fidelity** tool for Clearasist metadata work.
-- The broader **Master Admin** and **Agent Abductor Console** (`/abductor-console`) provide higher-level visibility and can link into or summarize Clearasist activity.
-- The main **Agent Dashboard** (`/agent`) also embeds Clearasist curation capabilities for convenience.
+- This is the detailed tool, just for ClearSist metadata.
+- **Master Admin** and the **Agent Abductor Console** (`/abductor-console`) give the big picture and can link into or summarize ClearSist activity.
+- The **Agent Dashboard** (`/agent`) on the main site has ClearSist reviews built in too.
 
-## Data Philosophy
+## What gets kept
 
-Clearasist (the public tool) performs all stripping locally in the user's browser. No user files are ever sent to Aliasist during normal use.
+ClearSist strips metadata right in your browser. Your files are never sent to Aliasist when you use it normally.
 
-The only data retained for administrative review is:
-- Filename (for identification)
-- File type
-- Original vs cleaned size
-- Exact count of metadata fields removed
-- Optional lightweight partials (thumbnails or text excerpts) for quick quality assessment
-- Curator tags and notes added by the admin
+The only things kept for review are:
+- The file name (to tell reports apart)
+- The file type
+- The size before and after cleaning
+- Exactly how many metadata fields were removed
+- Optional small previews (thumbnails or bits of text) for quick quality checks
+- Tags and notes I add
 
-We do **not** retain full original user content.
+The full original file is never kept.
 
-## Deployment
+## Deploying
 
-This is an internal tool. Deploy via the normal monorepo Cloudflare Pages flow when changes are made.
+This one is internal. It deploys through the normal Cloudflare Pages setup for this repo when it changes.
 
-## Related Code
+## Related code
 
-- Public Clearasist tool: `apps/clearasist/`
+- Public ClearSist app: `apps/clearasist/`
 - Metadata worker (admin endpoints): `apps/clearasist/worker/`
-- Broader admin experiences: `apps/master-admin/` and the main site's `/abductor-console` + `/agent` routes
+- The bigger admin tools: `apps/master-admin/`, plus `/abductor-console` and `/agent` on the main site

@@ -5,7 +5,7 @@ The root Aliasist homepage is a Vite SPA deployed to Cloudflare Pages.
 ## Cloudflare Target
 
 - Cloudflare product: Pages
-- Pages project name: `aliasistabductor` (**not** the repo name — the GitHub
+- Pages project name: `aliasistabductor` (**not** the repo name. The GitHub
   repo was renamed to `aliasist-web` on 2026-07-30, but renaming the Pages
   project would change the `.pages.dev` URL and disturb the custom domain,
   so it deliberately keeps the old name)
@@ -74,7 +74,7 @@ basename dist/assets/homepage-*.js
 ```
 
 When they match, fetch the live chunk and grep it for the strings you changed
-(and for the strings you removed — confirm the old ones are at zero). Only
+(and for the strings you removed, which should be gone). Only
 then is the change actually live.
 
 ## Direct Upload In Cloudflare Dashboard

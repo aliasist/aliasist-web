@@ -25,7 +25,7 @@ export const onRequestOptions = async () => new Response(null, { status: 204, he
 
 /**
  * Trending movies/TV → homepage /entertainment page.
- * GET /api/entertainment/movies?media=movie|tv|all (default: all) — TMDB trending/{media}/week.
+ * GET /api/entertainment/movies?media=movie|tv|all (default: all), TMDB trending/{media}/week.
  */
 export const onRequestGet = async ({ request, env }: PagesContext) => {
   const apiKey = env.TMDB_API_KEY?.trim();

@@ -20,19 +20,19 @@ const Footer = () => {
             href={footer.githubHref}
             target="_blank"
             rel="noopener noreferrer"
-            className="font-mono text-[10px] uppercase tracking-[0.15em] text-background/30 hover:text-electric transition-colors duration-200 hover:drop-shadow-[0_0_10px_hsl(165_90%_42%_/_0.45)] rounded-sm outline-none focus-visible:text-electric focus-visible:ring-2 focus-visible:ring-white/55 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+            className="text-xs text-background/30 hover:text-electric transition-colors duration-200 hover:drop-shadow-[0_0_10px_hsl(165_90%_42%_/_0.45)] rounded-sm outline-none focus-visible:text-electric focus-visible:ring-2 focus-visible:ring-white/55 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
           >
             {footer.githubLabel}
           </a>
           <a
             href={footer.emailHref}
-            className="font-mono text-[10px] uppercase tracking-[0.15em] text-background/30 hover:text-electric transition-colors duration-200 hover:drop-shadow-[0_0_10px_hsl(165_90%_42%_/_0.45)] rounded-sm outline-none focus-visible:text-electric focus-visible:ring-2 focus-visible:ring-white/55 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
+            className="text-xs text-background/30 hover:text-electric transition-colors duration-200 hover:drop-shadow-[0_0_10px_hsl(165_90%_42%_/_0.45)] rounded-sm outline-none focus-visible:text-electric focus-visible:ring-2 focus-visible:ring-white/55 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground"
           >
             {footer.emailLabel}
           </a>
         </div>
 
-        <p className="font-mono text-[10px] text-electric/50 tracking-[0.12em] uppercase text-center order-3 sm:order-none sm:text-right">
+        <p className="text-xs text-electric/50 text-center order-3 sm:order-none sm:text-right">
           {footer.versionLine}
         </p>
       </div>

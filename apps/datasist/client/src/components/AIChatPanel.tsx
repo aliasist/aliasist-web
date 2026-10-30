@@ -102,7 +102,7 @@ export default function AIChatPanel({ facility, onClose }: Props) {
     } catch (err) {
       setMessages((prev) => [
         ...prev,
-        { role: "assistant", content: "Connection error — could not reach DataSist AI. Please try again." },
+        { role: "assistant", content: "Couldn't reach DataSist AI. Give it another try in a bit." },
       ]);
     } finally {
       setLoading(false);

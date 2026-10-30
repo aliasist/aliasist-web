@@ -1,12 +1,7 @@
-# Security Policy
+# Security
 
-If you discover a security vulnerability, please report it privately by email
-to **dev@aliasist.com**. Do not open a public issue for security matters.
+Found a security problem? Email me privately at **dev@aliasist.com**. Please don't open a public issue for it.
 
-This repository is private, so GitHub Security Advisories are not reachable by
-outside reporters — email is the route in. For issues in the publicly
-released desktop app, you may also use the issue tracker on
-[`files-abductor`](https://github.com/aliasist/files-abductor), but please
-email anything exploitable rather than filing it publicly.
+For problems in the Files Abductor desktop app, you can also use the issue tracker on [`files-abductor`](https://github.com/aliasist/files-abductor), but anything someone could actually exploit should still come by email.
 
-We aim to acknowledge reports within 3 business days.
+I'll get back to you within 3 business days.

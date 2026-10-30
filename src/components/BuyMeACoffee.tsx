@@ -1,6 +1,6 @@
 // The official JS widget (button.prod.min.js) calls document.write()
 // internally, which browsers block when a script is injected dynamically
-// after page load ("Failed to execute 'write' on 'Document'") — confirmed
+// after page load ("Failed to execute 'write' on 'Document'"), confirmed
 // via headless-browser console capture, the button silently never rendered.
 // Using the static image-button link instead avoids that entirely.
 //

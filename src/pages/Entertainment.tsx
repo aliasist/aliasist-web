@@ -3,8 +3,6 @@ import { useState, useRef, useEffect } from "react";
 import { Link } from "react-router-dom";
 import { 
   Film, 
-  Tv, 
-  Gamepad2, 
   Trophy, 
   Radio, 
   CloudSun, 
@@ -16,22 +14,14 @@ import {
   Star, 
   Calendar, 
   Search, 
-  Maximize2,
-  Sparkles,
   HelpCircle,
   CheckCircle2,
   XCircle,
-  Flame,
   Clapperboard,
-  Compass,
   Wind,
   Droplets,
   Sun,
   Joystick,
-  RotateCcw,
-  CloudRain,
-  Coffee,
-  Waves
 } from "lucide-react";
 import BackgroundRotator from "@/components/BackgroundRotator";
 import Starfield from "@/components/Starfield";
@@ -225,7 +215,7 @@ const MoviesTab = () => {
         if (res.ok && body && !body.error && body.results?.length) {
           return body.results;
         }
-      } catch (e) {
+      } catch {
         // Fallback gracefully
       }
       return CURATED_MOVIES;
@@ -242,7 +232,7 @@ const MoviesTab = () => {
   });
 
   // The trending list has no trailer data, and real (non-curated) items have
-  // no trailerEmbed — fetch a real one on demand when the modal opens rather
+  // no trailerEmbed, fetch a real one on demand when the modal opens rather
   // than falling back to a fake YouTube search-embed URL, which no longer works.
   const trailerQuery = useQuery({
     queryKey: ["entertainment-movie-trailer", selectedMovie?.id, selectedMovie?.mediaType],
@@ -456,13 +446,6 @@ const RadioTab = () => {
   const [isMuted, setIsMuted] = useState(false);
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
-  // Ambient sound layers (synthesized Web Audio noise)
-  const [ambientRain, setAmbientRain] = useState(false);
-  const [ambientCosmic, setAmbientCosmic] = useState(false);
-  const audioCtxRef = useRef<AudioContext | null>(null);
-  const rainGainRef = useRef<GainNode | null>(null);
-  const cosmicGainRef = useRef<GainNode | null>(null);
-
   useEffect(() => {
     if (audioRef.current) {
       audioRef.current.volume = isMuted ? 0 : volume;
@@ -624,7 +607,7 @@ class RetroSynth {
       gain.connect(this.ctx.destination);
       osc.start();
       osc.stop(this.ctx.currentTime + 0.1);
-    } catch (e) {}
+    } catch {}
   }
 
   playScore() {
@@ -645,7 +628,7 @@ class RetroSynth {
         osc.start(now + i * 0.04);
         osc.stop(now + i * 0.04 + 0.1);
       });
-    } catch (e) {}
+    } catch {}
   }
 
   playBounce() {
@@ -664,7 +647,7 @@ class RetroSynth {
       gain.connect(this.ctx.destination);
       osc.start();
       osc.stop(this.ctx.currentTime + 0.05);
-    } catch (e) {}
+    } catch {}
   }
 
   playExplosion() {
@@ -683,7 +666,7 @@ class RetroSynth {
       gain.connect(this.ctx.destination);
       osc.start();
       osc.stop(this.ctx.currentTime + 0.2);
-    } catch (e) {}
+    } catch {}
   }
 }
 
@@ -694,7 +677,7 @@ const synth = new RetroSynth();
 // GAME 1: Space Defender (Enhanced with Starfield & Boss Waves)
 const GameSpaceDefender = ({ onGameOver }: { onGameOver: (score: number) => void }) => {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
-  const [score, setScore] = useState(0);
+  const [, setScore] = useState(0);
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -1820,6 +1803,9 @@ const GameLaserTank = ({ onGameOver }: { onGameOver: (score: number) => void }) 
         ctx.fillRect(enemy.x - 4, enemy.y - 4, 8, 8);
       }
 
+      ctx.fillStyle = "#0acc97";
+      ctx.font = "14px monospace";
+      ctx.fillText(`SCORE: ${localScore}`, 12, 22);
       animId = requestAnimationFrame(loop);
     };
 
@@ -1835,7 +1821,7 @@ const GameLaserTank = ({ onGameOver }: { onGameOver: (score: number) => void }) 
 };
 
 // GAME 12: Cyber 2048 (Neural Tile Merging)
-const GameCyber2048 = ({ onGameOver }: { onGameOver: (score: number) => void }) => {
+const GameCyber2048 = () => {
   const [board, setBoard] = useState<number[][]>([
     [0, 2, 0, 0],
     [0, 0, 4, 0],
@@ -1969,7 +1955,7 @@ const ARCADE_GAMES = [
   { id: "runner", title: "Neon Grid Runner", icon: "⚡", genre: "Cyber Highway", diff: "Fast", desc: "Dodge firewall spikes on an infinite 3D grid." },
   { id: "hopper", title: "Drone Hopper", icon: "🐦", genre: "Flap Precision", diff: "Hard", desc: "Navigate pulsating laser conduits." },
   { id: "lunar", title: "Lunar Descent", icon: "🛸", genre: "Physics Lander", diff: "Hard", desc: "Control thrusters and touch down safely." },
-  { id: "tetra", title: "Tetra", icon: "🧩", genre: "Guideline Tetris", diff: "SRS", desc: "Full guideline Tetris — Classic, Marathon, Sprint & Zen modes.", external: "/tetra/index.html" },
+  { id: "tetra", title: "Tetra", icon: "🧩", genre: "Guideline Tetris", diff: "SRS", desc: "Real Tetris rules. Classic, Marathon, Sprint, and Zen modes.", external: "/tetra/index.html" },
   { id: "missile", title: "Missile Command", icon: "🎯", genre: "Point Defense", diff: "Fast", desc: "Intercept cluster warheads with flak." },
   { id: "tank", title: "Laser Tank Duel", icon: "⚔️", genre: "Arena Combat", diff: "Medium", desc: "Ricochet laser projectiles in tactical arena." },
   { id: "2048", title: "Cyber 2048", icon: "🔢", genre: "Neural Puzzle", diff: "Logic", desc: "Merge numeric tiles up to the Singularity." },
@@ -2083,7 +2069,7 @@ const ArcadeTab = () => {
               {selectedGameId === "lunar" && <GameLunarDescent onGameOver={handleGameOver} />}
               {selectedGameId === "missile" && <GameMissileDefense onGameOver={handleGameOver} />}
               {selectedGameId === "tank" && <GameLaserTank onGameOver={handleGameOver} />}
-              {selectedGameId === "2048" && <GameCyber2048 onGameOver={handleGameOver} />}
+              {selectedGameId === "2048" && <GameCyber2048 />}
             </>
           ) : (
             <div className="absolute inset-0 bg-black/85 flex flex-col items-center justify-center gap-3 p-6 text-center z-20">
@@ -2093,7 +2079,7 @@ const ArcadeTab = () => {
               </h4>
               {activeGame.external ? (
                 <p className="font-mono text-xs text-muted-foreground max-w-sm">
-                  Full guideline SRS engine · Classic 1989, Marathon, Sprint & Zen modes · touch &amp; keyboard controls · opens in a dedicated full-screen page.
+                  Real Tetris rules with SRS rotation. Classic 1989, Marathon, Sprint, and Zen modes. Play with touch or keyboard. Opens in its own full-screen page.
                 </p>
               ) : lastScore !== null ? (
                 <div className="space-y-1">
@@ -2577,7 +2563,7 @@ const WeatherTab = () => {
   );
 };
 
-// ── 8. Live Odds Tab (Display-only sports odds — no wagering on this site) ────
+// ── 8. Live Odds Tab (Display-only sports odds, no wagering on this site) ────
 
 const OddsTab = () => {
   const { data } = useQuery({
@@ -2589,7 +2575,7 @@ const OddsTab = () => {
         if (res.ok && body && !body.error && body.results?.length) {
           return body.results;
         }
-      } catch (e) {
+      } catch {
         // Fallback gracefully
       }
       return CURATED_ODDS;
@@ -2657,7 +2643,7 @@ const Entertainment = () => (
         {/* Ambient premium glow, matching the site's hero treatment */}
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_60%_at_50%_30%,_hsl(165_90%_42%_/_0.08)_0%,_transparent_65%)]" />
 
-        {/* Animated gradient orb centerpiece — a soft, breathing blur behind
+        {/* Animated gradient orb centerpiece, a soft, breathing blur behind
             the title. Two overlapping colors (electric + violet) drifting at
             slightly different rhythms so it never feels static. */}
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 flex justify-center" aria-hidden="true">
@@ -2678,7 +2664,7 @@ const Entertainment = () => (
             Entertainment
           </h1>
           <p className="mx-auto mt-5 max-w-2xl font-sans text-base leading-relaxed tracking-wide text-muted-foreground">
-            Interactive media & gaming workbench: stream live radio stations, play the space defender mini-arcade, watch movie & anime trailers, and solve trivia challenges.
+            Take a break. Watch movie and anime trailers, play some retro arcade games, put on lo-fi radio, test yourself with trivia, or check the odds and the weather.
           </p>
         </div>
       </section>
