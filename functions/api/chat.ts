@@ -384,8 +384,8 @@ const RATE_LIMIT_WINDOW_SECONDS = 60;
  * within the same window this can undercount slightly — that's an accepted
  * tradeoff for a lightweight abuse guard, not a precise limiter.
  *
- * Fails open (returns true) if the KV binding isn't configured, so local dev
- * without the binding still works.
+ * Local development can omit the KV binding. Production must provide
+ * CHAT_RATE_LIMIT (see wrangler.toml); KV is an approximate abuse guard.
  */
 async function checkRateLimit(env: Env, ip: string): Promise<boolean> {
   if (!env.CHAT_RATE_LIMIT) return true;
@@ -448,7 +448,7 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
   }
   const lastUserMsg = [...messages].reverse().find((m) => m.role === "user")?.content ?? "";
 
-  // --- RAG fetch (blocking, cached; 3.5s upstream timeout) ---
+  // --- RAG fetch (blocking, cached; 12s upstream timeout) ---
   const ragContext = await fetchRagContext(env, lastUserMsg);
   const system = buildSystem(ragContext);
   const providerErrors: string[] = [];

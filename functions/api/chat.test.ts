@@ -1,3 +1,4 @@
+import * as auth from "../_lib/clerk-auth";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { detectSist, fetchRagContext, formatRagContext, onRequestPost, parseMessages } from "./chat";
 
@@ -209,65 +210,76 @@ describe("formatRagContext", () => {
 });
 
 describe("onRequestPost", () => {
-  it("rejects unsigned chat", async () => {
+  it("reports an unavailable upstream without making sign-in mandatory", async () => {
+    vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("upstream unavailable"));
+    const res = await onRequestPost({ request: chatRequest(), env: {} });
+    expect(res.status).toBe(502);
+  });
+
+  it("serves anonymous chat with the edge model", async () => {
+    const run = vi.fn(async () => ({ response: "edge answer" }));
+    const res = await onRequestPost({ request: chatRequest(), env: { AI: { run } } });
+    expect(res.status).toBe(200);
+    await expect(res.json()).resolves.toMatchObject({ response: "edge answer" });
+    expect(run).toHaveBeenCalledOnce();
+  });
+
+  it("falls back to the upstream when the edge model fails", async () => {
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
+      new Response(JSON.stringify({ response: "fallback ok" }), { status: 200 }),
+    );
     const res = await onRequestPost({
       request: chatRequest(),
-      env: {},
-    });
-
-    expect(res.status).toBe(401);
-    await expect(res.json()).resolves.toMatchObject({
-      error: expect.stringContaining("Sign in"),
-    });
-  });
-
-  it("rejects unsigned chat even when the edge model is configured", async () => {
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
-      new Response(JSON.stringify({ response: "fallback ok" }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      }),
-    );
-
-    const res = await onRequestPost({
-      request: chatRequest("tell me about Aliasist"),
       env: {
         LLM_CHAT_BASE_URL: "https://upstream.example",
-        AI: {
-          run: vi.fn(async () => {
-            throw new Error("model unavailable");
-          }),
-        },
+        AI: { run: vi.fn(async () => { throw new Error("model unavailable"); }) },
       },
     });
+    expect(res.status).toBe(200);
+    await expect(res.json()).resolves.toMatchObject({ response: "fallback ok" });
+    expect(fetchSpy).toHaveBeenCalledOnce();
+  });
 
-    expect(res.status).toBe(401);
-    await expect(res.json()).resolves.toMatchObject({
-      error: expect.stringContaining("Sign in"),
+  it("counts anonymous requests before calling the provider", async () => {
+    const get = vi.fn(async () => "2");
+    const put = vi.fn(async () => {});
+    const request = chatRequest();
+    request.headers.set("CF-Connecting-IP", "192.0.2.1");
+    const res = await onRequestPost({
+      request,
+      env: {
+        CHAT_RATE_LIMIT: { get, put } as unknown as KVNamespace,
+        AI: { run: vi.fn(async () => ({ response: "ok" })) },
+      },
     });
+    expect(res.status).toBe(200);
+    expect(get).toHaveBeenCalledWith("chat-rl:192.0.2.1");
+    expect(put).toHaveBeenCalledWith("chat-rl:192.0.2.1", "3", { expirationTtl: 60 });
+  });
+
+  it("returns 429 without invoking providers when the anonymous limit is reached", async () => {
+    const run = vi.fn();
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+    const res = await onRequestPost({
+      request: chatRequest(),
+      env: {
+        CHAT_RATE_LIMIT: { get: vi.fn(async () => "1000"), put: vi.fn() } as unknown as KVNamespace,
+        AI: { run },
+      },
+    });
+    expect(res.status).toBe(429);
+    expect(run).not.toHaveBeenCalled();
     expect(fetchSpy).not.toHaveBeenCalled();
   });
 
-  it("rejects unsigned chat even when an upstream worker is configured", async () => {
-    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(
-      new Response(JSON.stringify({ response: "upstream public ok" }), {
-        status: 200,
-        headers: { "Content-Type": "application/json" },
-      }),
-    );
-
-    const res = await onRequestPost({
-      request: chatRequest("hello"),
-      env: {
-        LLM_CHAT_BASE_URL: "https://upstream.example/",
-      },
-    });
-
+  it("rejects an invalid session rather than treating it as anonymous", async () => {
+    vi.spyOn(auth, "authenticateRequest").mockResolvedValue({ ok: false, error: "Unauthorized.", status: 401 });
+    const request = chatRequest();
+    request.headers.set("Authorization", "Bearer invalid-token");
+    const run = vi.fn();
+    const res = await onRequestPost({ request, env: { AI: { run } } });
     expect(res.status).toBe(401);
-    await expect(res.json()).resolves.toMatchObject({
-      error: expect.stringContaining("Sign in"),
-    });
-    expect(fetchSpy).not.toHaveBeenCalled();
+    expect(run).not.toHaveBeenCalled();
   });
 });
 
