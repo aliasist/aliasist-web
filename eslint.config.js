@@ -21,6 +21,8 @@ export default tseslint.config(
       "archive/**",
       ".codex/**",
       "functions/**",
+      // spawnOS: standalone static app (plain browser JS), not part of the React build
+      "public/os/**",
       "tailwind.config.ts",
       "vite.config.ts",
     ],

@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>spawnOS</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="canonical" href="https://www.aliasist.com/os/">
+<link rel="icon" type="image/svg+xml" href="/favicon.svg">
+<meta name="description" content="spawnOS web desktop: a real interactive terminal, live SHA-256/Base64 crypto, an embedded browser that can actually load sites and video, and shortcuts into the real Aliasist project suite.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div class="boot" id="boot" role="status" aria-label="Booting spawnOS">
+  <div class="boot-log" id="bootLog"></div>
+  <div class="boot-center" id="bootCenter">
+    <div class="boot-logo" id="bootLogo"><div class="A">S</div><div class="name">SPAWNOS</div></div>
+    <div class="boot-login" id="bootLogin" hidden>
+      <div class="boot-login-line"><span class="p">spawnOS login:</span> <input id="loginInput" type="text" autocomplete="off" spellcheck="false" maxlength="20" aria-label="Username"></div>
+      <div class="boot-login-status" id="bootLoginStatus"></div>
+    </div>
+  </div>
+  <div class="boot-skip">click / press any key to skip</div>
+</div>
+
+<div class="desktop" id="desktop" data-palette="cyan" hidden>
+  <div class="wallpaper" aria-hidden="true">
+    <div class="wp-sky"></div>
+    <div class="wp-stars"></div>
+    <div class="wp-sun"></div>
+    <div class="wp-grid"></div>
+    <div class="wp-scan"></div>
+  </div>
+  <div class="topbar">
+    <div class="ws-tabs" id="wsTabs"></div>
+    <div class="build-tag">WEB BUILD</div>
+  </div>
+
+  <div class="rail" id="rail"></div>
+
+  <div class="window" id="win-cli" data-win="cli" hidden>
+    <div class="titlebar" data-drag>
+      <div class="tb-dot"></div>
+      <div class="tb-title">CYBERKONSOLE — <span id="cliUserLabel">GUEST</span>@NEURAL-NODE: ~</div>
+      <button class="tb-btn close" data-action="close" aria-label="Close CyberKonsole">×</button>
+    </div>
+    <div class="content term">
+      <div class="term-out" id="termOut"></div>
+      <div class="term-in">
+        <span class="p">❯</span>
+        <input id="termInput" type="text" autocomplete="off" spellcheck="false" aria-label="Terminal input">
+      </div>
+    </div>
+  </div>
+
+  <div class="window" id="win-web" data-win="web" hidden>
+    <div class="titlebar" data-drag>
+      <div class="tb-dot"></div>
+      <div class="tb-title">ALIASBROWSER — CYBERNETIC WEB EXPLORER</div>
+      <button class="tb-btn close" data-action="close" aria-label="Close AliasBrowser">×</button>
+    </div>
+    <div class="content browser" style="padding:0;">
+      <div class="addr-row">
+        <button id="homeBtn" title="Home" aria-label="Home">⌂</button>
+        <input id="urlInput" type="text" value="about:home" aria-label="Address">
+        <button id="goBtn">GO</button>
+      </div>
+      <div class="bm-row" id="bmRow"></div>
+      <div class="status-bar"><span id="statusText">READY — ENTER A URL, OR CLICK A BOOKMARK.</span><span>VIRTIO · 10.0.2.15</span></div>
+      <div class="browser-view" id="browserView" data-mode="text">
+        <div class="content" id="browserBody"></div>
+        <iframe id="browserFrame" title="AliasBrowser content" referrerpolicy="no-referrer-when-downgrade" hidden></iframe>
+        <video id="browserVideo" controls hidden></video>
+        <div class="frame-fallback" id="frameFallback" hidden>
+          <span>Sites can refuse to be framed — if it's blank, use this:</span>
+          <a id="frameFallbackLink" href="#" target="_blank" rel="noopener noreferrer">open in a real tab →</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="window" id="win-crypto" data-win="crypto" hidden>
+    <div class="titlebar" data-drag>
+      <div class="tb-dot"></div>
+      <div class="tb-title">CRYPTOLAB — SHA-256 / BASE64</div>
+      <button class="tb-btn close" data-action="close" aria-label="Close CryptoLab">×</button>
+    </div>
+    <div class="content crypto">
+      <div class="set-label">INPUT</div>
+      <textarea id="cryptoInput" placeholder="type here — digests update live">spawnos</textarea>
+      <div class="out-row">
+        <div class="out-label">SHA-256 (FIPS 180-4)</div>
+        <div class="out-val" id="sha256Out">—</div>
+      </div>
+      <div class="out-row">
+        <div class="out-label">BASE64</div>
+        <div class="out-val" id="base64Out">—</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="window" id="win-net" data-win="net" hidden>
+    <div class="titlebar" data-drag>
+      <div class="tb-dot"></div>
+      <div class="tb-title">NETINSPECT — PACKET STREAM</div>
+      <button class="tb-btn close" data-action="close" aria-label="Close NetInspect">×</button>
+    </div>
+    <div class="content netinspect" style="padding:0;">
+      <div class="net-note">simulated bare-metal packet trace — no real traffic from your device is captured</div>
+      <div class="net-log" id="netLog"></div>
+    </div>
+  </div>
+
+  <div class="window" id="win-sys" data-win="sys" hidden>
+    <div class="titlebar" data-drag>
+      <div class="tb-dot"></div>
+      <div class="tb-title">SYSAUDIT — SYSTEM SELF-TEST</div>
+      <button class="tb-btn close" data-action="close" aria-label="Close SysAudit">×</button>
+    </div>
+    <div class="content sysaudit">
+      <div class="check-row"><span>HAL — 8042 PS/2 controller</span><span class="ok">OK</span></div>
+      <div class="check-row"><span>VirtIO-Net PCI DMA</span><span class="ok">OK</span></div>
+      <div class="check-row"><span>Plasma compositor (Zig SIMD)</span><span class="ok">OK</span></div>
+      <div class="check-row"><span>AliasFS volume</span><span class="ok">MOUNTED</span></div>
+      <div class="check-row"><span>CryptoLab (FIPS 180-4)</span><span class="ok">OK</span></div>
+      <div class="arch-box">DESKTOP / LIBOS  → AliasBrowser, CyberKonsole, CryptoLab
+HAL              → alias-ui, alias-net, alias-hal
+UEFI FIRMWARE    → GOP fb · PCI DMA · hw timers</div>
+      <p style="font-size:10px; color:var(--dim);">This page is a browser-based homage to the real thing — a from-scratch Rust (<code>#![no_std]</code>) + Zig x86_64 UEFI desktop with zero Linux kernel dependencies. Running locally now, not inside a sandboxed viewer, so AliasBrowser can actually embed pages.</p>
+      <div class="link-line">real project → <a href="https://github.com/aliasist/aliasist-os" target="_blank" rel="noopener noreferrer">github.com/aliasist/aliasist-os</a></div>
+    </div>
+  </div>
+
+  <div class="window" id="win-files" data-win="files" hidden>
+    <div class="titlebar" data-drag>
+      <div class="tb-dot"></div>
+      <div class="tb-title">DOLPHIN FILES — /HOME/<span id="filesUserLabel">GUEST</span></div>
+      <button class="tb-btn close" data-action="close" aria-label="Close Files">×</button>
+    </div>
+    <div class="content files">
+      <div class="new-file-row">
+        <input id="newFileName" type="text" placeholder="new-file.txt" maxlength="64" aria-label="New file name">
+        <button id="newFileBtn">+ CREATE</button>
+      </div>
+      <div id="fileList"></div>
+      <div class="file-editor" id="fileEditor" hidden>
+        <div class="file-editor-head"><span id="fileEditorName">—</span><span id="fileEditorStatus"></span></div>
+        <textarea id="fileEditorBody" spellcheck="false"></textarea>
+        <div class="file-editor-actions">
+          <button id="fileSaveBtn">SAVE</button>
+          <button id="fileDeleteBtn" class="danger">DELETE</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="window" id="win-settings" data-win="settings" hidden>
+    <div class="titlebar" data-drag>
+      <div class="tb-dot"></div>
+      <div class="tb-title">SETTINGS — S:SET</div>
+      <button class="tb-btn close" data-action="close" aria-label="Close Settings">×</button>
+    </div>
+    <div class="content settings">
+      <div class="set-row">
+        <span class="set-label">ACCOUNT</span>
+        <span class="set-value" id="accountLabel">guest</span>
+      </div>
+      <div class="set-row">
+        <span class="set-label">PHOSPHOR</span>
+        <div class="seg" id="paletteSeg">
+          <button data-v="cyan" aria-pressed="true">CYAN</button>
+          <button data-v="matrix" aria-pressed="false">MATRIX</button>
+          <button data-v="amber" aria-pressed="false">AMBER</button>
+        </div>
+      </div>
+      <div class="set-row">
+        <span class="set-label">DISPLAY MODE</span>
+        <div class="seg" id="invertSeg">
+          <button data-v="normal" aria-pressed="true">NORMAL</button>
+          <button data-v="invert" aria-pressed="false">INVERT</button>
+        </div>
+      </div>
+      <div class="set-row">
+        <span class="set-label">MOTION</span>
+        <div class="seg" id="motionSeg">
+          <button data-v="full" aria-pressed="true">FULL</button>
+          <button data-v="reduced" aria-pressed="false">REDUCED</button>
+        </div>
+      </div>
+      <div class="set-row">
+        <span class="set-label">POLL RATE</span>
+        <div class="seg" id="pollSeg">
+          <button data-v="1000" aria-pressed="true">1000HZ</button>
+          <button data-v="60" aria-pressed="false">60HZ</button>
+        </div>
+      </div>
+      <button class="reboot-btn" id="rebootBtn">REBOOT SYSTEM</button>
+      <button class="reboot-btn" id="logoutBtn">LOG OUT</button>
+      <div class="settings-footer">SPAWNOS — WEB BUILD<br>real bare-metal project → <a href="https://github.com/aliasist/aliasist-os" target="_blank" rel="noopener noreferrer">github.com/aliasist/aliasist-os</a></div>
+    </div>
+  </div>
+
+  <div class="taskbar">
+    <div class="task-left" id="taskLeft">
+      <button class="k-btn" id="kBtn">K</button>
+    </div>
+    <div class="task-right">
+      <span id="syncStatus" class="agent-on">● DB: —</span>
+      <span id="taskUserLabel">guest</span>
+      <span id="fpsOut">— FPS</span>
+      <span id="pollOut">1000HZ POLL</span>
+      <span class="clock" id="clock">00:00:00</span>
+    </div>
+  </div>
+</div>
+
+<script src="app.js"></script>
+</body>
+</html>

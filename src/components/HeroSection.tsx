@@ -1,5 +1,5 @@
 import { motion } from "framer-motion";
-import { ArrowRight, Mail } from "lucide-react";
+import { ArrowRight, Mail, Terminal } from "lucide-react";
 import { hero } from "@/content/homepage";
 import { HomeGoogleAuth } from "@/components/HomeGoogleAuth";
 
@@ -51,7 +51,7 @@ const HeroSection = () => {
         </motion.div>
 
         <motion.p
-          className="mb-4 font-mono text-[11px] uppercase tracking-[0.24em] text-electric/65"
+          className="mb-4 text-sm text-electric/65"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ delay: 0.6, duration: 0.7 }}
@@ -76,7 +76,7 @@ const HeroSection = () => {
         >
           <a
             href={hero.ctaContactHref}
-            className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-sm bg-electric px-7 py-3.5 font-mono text-xs uppercase tracking-[0.14em] text-background shadow-electric-sm outline-none transition-all duration-300 hover:-translate-y-0.5 hover:shadow-cta-duo focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+            className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-sm bg-electric px-7 py-3.5 text-sm text-background shadow-electric-sm outline-none transition-all duration-300 hover:-translate-y-0.5 hover:shadow-cta-duo focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
           >
             <span className="absolute inset-0 translate-y-full bg-white/10 transition-transform duration-300 group-hover:translate-y-0" />
             <span className="relative">{hero.ctaContact}</span>
@@ -84,10 +84,17 @@ const HeroSection = () => {
           </a>
           <a
             href={hero.ctaSecondaryHref}
-            className="inline-flex items-center justify-center gap-2 rounded-sm border border-violet/22 bg-background/38 px-7 py-3.5 font-mono text-xs uppercase tracking-[0.14em] text-foreground/82 outline-none backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-electric/45 hover:bg-[linear-gradient(135deg,hsl(var(--electric)_/_0.06),hsl(var(--violet)_/_0.08))] hover:text-electric hover:shadow-[0_0_26px_hsl(var(--electric)_/_0.12),0_0_32px_hsl(var(--violet)_/_0.1),inset_0_1px_0_hsl(var(--violet)_/_0.18)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+            className="inline-flex items-center justify-center gap-2 rounded-sm border border-violet/22 bg-background/38 px-7 py-3.5 text-sm text-foreground/82 outline-none backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-electric/45 hover:bg-[linear-gradient(135deg,hsl(var(--electric)_/_0.06),hsl(var(--violet)_/_0.08))] hover:text-electric hover:shadow-[0_0_26px_hsl(var(--electric)_/_0.12),0_0_32px_hsl(var(--violet)_/_0.1),inset_0_1px_0_hsl(var(--violet)_/_0.18)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
           >
             <Mail className="size-3.5" aria-hidden />
             {hero.ctaSecondary}
+          </a>
+          <a
+            href={hero.ctaOsHref}
+            className="inline-flex items-center justify-center gap-2 rounded-sm border border-electric/30 bg-background/38 px-7 py-3.5 font-mono text-sm text-electric outline-none backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-electric/60 hover:shadow-[0_0_26px_hsl(var(--electric)_/_0.18)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+          >
+            <Terminal className="size-3.5" aria-hidden />
+            {hero.ctaOs}
           </a>
         </motion.div>
 

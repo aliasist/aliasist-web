@@ -39,7 +39,8 @@ function devSpaFallbackPlugin() {
           pathname.startsWith("/@") ||
           pathname.startsWith("/src/") ||
           pathname.startsWith("/node_modules/") ||
-          pathname.startsWith("/atomicity/");
+          pathname.startsWith("/atomicity/") ||
+          pathname.startsWith("/os/");
 
         if (pathname === "/" || isAssetRequest) {
           next();
@@ -110,6 +111,7 @@ export default defineConfig(async ({ mode }) => {
   }
 
   return {
+    build: { manifest: true },
     appType: "spa",
     server: {
       host: "127.0.0.1",
@@ -136,7 +138,7 @@ export default defineConfig(async ({ mode }) => {
       },
     },
     test: {
-      passWithNoTests: true,
+      passWithNoTests: false,
       include: [
         "src/**/*.{test,spec}.{ts,tsx}",
         "functions/**/*.{test,spec}.{ts,tsx}",

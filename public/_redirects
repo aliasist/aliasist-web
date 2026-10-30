@@ -4,4 +4,6 @@
 /agsc/*       /tech          301
 /nexus        /ecosist/      301
 /nexus/       /ecosist/      301
+/os           /os/           301
+/apps         /os/           301
 /*    /index.html   200

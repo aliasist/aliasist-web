@@ -20,6 +20,7 @@ import clearasistBanner from "@images/clearasist_banner_cinematic.webp";
 import filesAbductorBanner from "@images/files_abductor_banner_cinematic.webp";
 import globalizeBanner from "@images/globalize_banner_cinematic.webp";
 import spaceBanner from "@images/spacesist_banner_cinematic.webp";
+import pdfsistBanner from "@images/pdfsist_banner.webp";
 
 // ── Suite apps (live products) ───────────────────────────────────────────────
 
@@ -68,11 +69,13 @@ export const hero = {
   wordmark: "ALIASIST",
   tagline: "Tools, dashboards, and experiments for the web - Aliasist Arsenal",
   subcopy:
-    "Aliasist is a growing set of software related tools for research, data, privacy, and the web. Each project is built to be clear, practical, and ready to use.",
+    "A growing set of free tools I'm building for research, data, privacy, and the web. Simple to use, built to actually work. Pick one and jump in.",
   ctaContact: "Projects",
   ctaContactHref: "#projects",
-  ctaSecondary: "Contact",
+  ctaSecondary: "Let's talk",
   ctaSecondaryHref: "#contact",
+  ctaOs: "Boot spawnOS",
+  ctaOsHref: "/os/",
 } as const;
 
 // ── Navbar ───────────────────────────────────────────────────────────────────
@@ -81,7 +84,7 @@ export const pageNavLinks = [
   { label: "About", href: "#about" },
   { label: "Projects", href: "#projects" },
   { label: "Updates", href: "#updates" },
-  { label: "NEWS", href: "#transmissions" },
+  { label: "News", href: "#transmissions" },
 ] as const;
 
 
@@ -113,30 +116,28 @@ const downloadLinks = {
 
 export const projectsSection = {
   dividerLabel: "Shipped Projects",
-  headline: "Projects that are available now.",
-  subcopy: "A small collection of tools built to make complex information easier to explore.",
+  headline: "What's live right now.",
+  subcopy: "Each one started as something I wanted to understand better. Now they're out there for you to use too.",
 } as const;
 
 export const projects = [
   {
     name: "PDFSist",
     description:
-      "Add text, draw or type a signature, and download your signed PDF. Your documents stay in your browser.",
-    tech: ["PDF signing", "Text annotations", "Local processing", "Browser-based"],
+      "Fill in text, draw or type your signature, and download the signed PDF. Your file never leaves your browser.",
+    tech: ["Sign PDFs", "Add text", "Free", "No uploads"],
     downloads: [],
     status: "Live" as "Live" | "Archived",
-    meta: ["Free to use", "No uploads", "PDF tools"] as const,
     tone: "teal",
-    icon: "PDF",
     link: "https://pdf.aliasist.com",
-    linkLabel: "OPEN PDFSIST →",
-    banner: "https://pdf.aliasist.com/pdfsist-twitter-card.png",
+    linkLabel: "Open PDFSist",
+    banner: pdfsistBanner,
   },
   {
-    name: "Aliasist-Files-Abductor",
+    name: "Files Abductor",
     description:
       "A desktop app for downloading files from YouTube and direct URLs.",
-    tech: ["Python", "GUI", "CLI", "File Automation", "yt-dlp"],
+    tech: ["Python", "yt-dlp", "Linux and Windows"],
     github: "https://github.com/aliasist/files-abductor/releases/tag/v2.7.0",
     downloads: [
       { label: "AppImage", href: downloadLinks.appImage },
@@ -144,75 +145,67 @@ export const projects = [
       { label: "Windows", href: downloadLinks.windowsExe },
     ],
     status: "Live" as "Live" | "Archived",
-    meta: ["Desktop builds", "yt-dlp", "Release assets"] as const,
     tone: "teal",
-    icon: "FA",
     link: null as string | null,
-    linkLabel: "DOWNLOADS →",
+    linkLabel: "Get the app",
     banner: filesAbductorBanner,
   },
   {
     name: "Aliasist AI",
     description:
-      "A chatbot and image tool that can answer from documents and show the sources behind its answers.",
-    tech: ["Document chat", "Image generation", "Source citations", "Model routing"],
+      "Chat and make images with AI that answers from real documents and shows you exactly where it got the answer.",
+    tech: ["Chat", "Image generation", "Cited sources"],
     downloads: [],
     status: "Live" as "Live" | "Archived",
-    meta: ["AI Chat", "Image Generation", "Cited Sources"] as const,
     tone: "violet",
-    icon: "AT",
     link: "https://www.aliasist.tech",
-    linkLabel: "OPEN →",
+    linkLabel: "Open Aliasist AI",
     banner: aliasistTechBanner,
   },
   {
     name: "Globalize",
     description:
-      "An interactive globe for exploring data centers, subsea cables, air traffic, and seismic activity.",
-    tech: ["3D globe", "Infrastructure map", "Map layers", "Geospatial views"],
+      "Spin a 3D globe and see data centers, undersea cables, air traffic, and earthquakes all in one place.",
+    tech: ["3D globe", "Data centers", "Air traffic", "Earthquakes"],
     downloads: [],
     status: "Live" as "Live" | "Archived",
-    meta: ["Data centers", "Global map", "Infrastructure layers"] as const,
     tone: "cyan",
-    icon: "GL",
     link: "https://www.aliasist.world",
-    linkLabel: "OPEN →",
+    linkLabel: "Open Globalize",
     banner: globalizeBanner,
   },
   {
     name: "SpaceSist",
     description:
-      "A space dashboard that brings together NASA, SpaceX, ISS, asteroid, and exoplanet data.",
-    tech: ["Launch data", "ISS tracking", "Asteroids", "Exoplanets", "Live space feeds"],
+      "NASA, SpaceX, the ISS, asteroids, and exoplanets, all on one live space dashboard.",
+    tech: ["Launches", "ISS tracking", "Asteroids", "Exoplanets"],
     downloads: [],
     status: "Live" as "Live" | "Archived",
-    meta: ["NASA", "SpaceX", "Live orbital data"] as const,
     tone: "violet",
-    icon: "SS",
     link: "https://space.aliasist.com",
-    linkLabel: "OPEN →",
+    linkLabel: "Open SpaceSist",
     banner: spaceBanner,
   },
   {
     name: "ClearSist",
     description:
-      "A browser-based tool for removing metadata from images, PDFs, and Office files.",
-    tech: ["Metadata removal", "Image cleanup", "PDF cleanup", "Office files", "Browser-based"],
+      "Strip the hidden metadata out of your photos, PDFs, and Office files before you share them. It all runs in your browser.",
+    tech: ["Photos", "PDFs", "Office files"],
     downloads: [],
     status: "Live" as "Live" | "Archived",
-    meta: ["Privacy tool", "Browser-based", "File cleanup"] as const,
     tone: "cyan",
-    icon: "CL",
     link: "https://clearasist.pages.dev",
-    linkLabel: "OPEN →",
+    linkLabel: "Open ClearSist",
     banner: clearasistBanner,
   },
 ] as const;
 
+export const projectCount = projects.length;
+
 export const COMING_SOON_PROJECTS = [
   {
-    codename: "Future projects are on hold. ",
-    description: "FREEZE",
+    codename: "Future projects are on hold.",
+    description: "FREEZE. No new apps until 2027. I'm putting everything into making the ones above faster, sturdier, and easier to use.",
     eta: "2027",
   },
 ] as const;
@@ -255,7 +248,7 @@ export const about = {
     },
     {
       kicker: "What it is",
-      body: "Aliasist is where that intention becomes practice. Each app explores a real need, a new idea, or a better way to make complex technology useful and approachable. The collection will keep growing as those ideas become tools people can actually use.",
+      body: "Aliasist is where that intention becomes practice. Each app explores a real need or a better way to make complex technology useful and approachable. Right now I'm not adding new apps. I'm making the ones here solid.",
     },
     {
       kicker: "Why it exists",
@@ -268,8 +261,8 @@ export const about = {
   authorSlots: [] as unknown as readonly { kicker: string; body: string }[],
 
   stats: [
-    { num: `${suiteAppCount}`,  label: "Projects listed", sym: "" as const },
-    { num: "7",  label: "APIs connected", sym: "+" as const },
+    { num: `${projectCount}`, label: "Projects listed", sym: "" as const },
+    { num: `${suiteAppCount}`, label: "Web apps", sym: "" as const },
   ],
 } as const;
 
@@ -279,28 +272,27 @@ export const contact = {
   dividerLabel: "Contact",
   introLabel: "Contact",
   headline: "Want to talk?",
-  introStrong: "Questions, ideas, and project feedback are welcome.",
-  introRest: "Share what you're working on, what you noticed, or where a project could be clearer.",
-  successTitle: "Message received",
+  introStrong: "Got an idea, a question, or found something broken?",
+  introRest: "Send it my way. I read everything, and honest feedback is how these tools get better.",
+  successTitle: "Got it!",
   successBody:
-    "Thanks for reaching out. I'll get back to you when I can.",
-  sendAnother: "Send another ↩",
+    "Thanks for reaching out. I'll get back to you as soon as I can.",
+  sendAnother: "Send another",
   placeholders: {
     name: "Name",
     email: "Email",
-    message: "What would you like to talk about?",
+    message: "What's on your mind?",
   },
-  submitIdle: "Send message ↗",
+  submitIdle: "Send it",
   submitSending: "Sending...",
-  errorPrefix: "Error:",
-  errorFallback: "message failed — try dev@aliasist.com",
+  errorFallback: "That didn't go through. Email me at dev@aliasist.com instead.",
   suiteColumnLabel: "Projects",
   liveBadge: "Live",
   demoBadge: "Demo",
   suiteStats: [
-    { n: `${suiteAppCount}`, l: "Projects" },
-    { n: "7+", l: "APIs" },
-    { n: "340+", l: "Data Centers" },
+    { n: `${projectCount}`, l: "Projects" },
+    { n: `${suiteAppCount}`, l: "Web apps" },
+    { n: `${projectCount - suiteAppCount}`, l: "Desktop app" },
   ],
   directLinks: [
     { label: "GitHub", href: "https://github.com/aliasist", iconKey: "github" as const },
@@ -313,17 +305,16 @@ export const contact = {
 export const subscribeSection = {
   dividerLabel: "Updates",
   introLabel: "Subscribe",
-  headline: "Get updates from Aliasist.",
-  introStrong: "Occasional updates only.",
-  introRest: "New tools, releases, and project notes, sent only when there is something worth sharing.",
+  headline: "Stay in the loop.",
+  introStrong: "No spam, I promise.",
+  introRest: "I'll only email when something new is live or worth telling you about.",
   placeholder: "your@email.com",
-  submitIdle: "Subscribe ↗",
+  submitIdle: "Subscribe",
   submitSending: "Sending...",
-  successTitle: "Subscribed",
-  successBody: "You're on the list.",
-  sendAnother: "Subscribe another ↩",
-  errorPrefix: "Error:",
-  errorFallback: "Something went wrong — please try again.",
+  successTitle: "You're in!",
+  successBody: "Welcome aboard. Talk soon.",
+  sendAnother: "Add another email",
+  errorFallback: "Hmm, that didn't work. Give it another try.",
   disclaimer: "Unsubscribe anytime.",
 } as const;
 
@@ -332,7 +323,7 @@ export const subscribeSection = {
 export const updatesSection = {
   dividerLabel: "Log",
   headline: "Updates & events",
-  subcopy: "Project news, releases, and upcoming events.",
+  subcopy: "What's new, what shipped, and what's coming up.",
 } as const;
 
 export const updates = [
@@ -341,7 +332,7 @@ export const updates = [
     kind: "update" as const,
     date: "2026-07-30",
     title: "Document curation dashboard is live",
-    body: "Documents can now be added to the right knowledge area, then used by Aliasist chat tools with source citations.",
+    body: "You can now drop documents into the right topic, and Aliasist AI will answer from them and cite its sources.",
     href: "#",
   },
   {
@@ -349,7 +340,7 @@ export const updates = [
     kind: "update" as const, // "update" | "event"
     date: "2026-07-30",
     title: "Homepage gets an updates & events log",
-    body: "Project news and upcoming events now live here, separate from the news feed below.",
+    body: "One spot for what I'm shipping and what's coming up, separate from the news feed below.",
     href: "#",
   },
   // Add new entries above this line, newest first.
@@ -360,10 +351,10 @@ export type UpdateEntry = (typeof updates)[number];
 // ── Transmissions (blog) section headers ─────────────────────────────────────
 
 export const transmissions = {
-  dividerLabel: "Blog",
-  headline: "Industry Links",
-  scanning: "Latest links are loading.",
-  offline: "Could not load the latest posts. Showing saved posts.",
+  dividerLabel: "News",
+  headline: "News from around tech",
+  scanning: "Pulling in the latest...",
+  offline: "Couldn't reach the feed right now, so here are some saved posts.",
   liveFeedPrefix: "Updated ",
   liveFeedRecent: "recently",
 } as const;
