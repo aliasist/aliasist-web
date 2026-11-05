@@ -174,7 +174,7 @@ const BlogCard = ({ article, index }: { article: Article; index: number }) => {
             className="font-mono text-[11px] opacity-0 group-hover:opacity-100 transition-opacity duration-200"
             style={{ color: article.color }}
           >
-            Read ↗
+            Open ↗
           </span>
         </div>
       </div>
@@ -271,7 +271,7 @@ const TransmissionsSection = () => {
               animate={{ opacity: 1 }}
               className="text-xs text-electric"
             >
-              Live · Auto-refresh 10m
+              Live · Updates every 10 minutes
             </motion.div>
           )}
         </div>
@@ -342,7 +342,7 @@ const TransmissionsSection = () => {
         {/* Empty state */}
         {!loading && displayed.length === 0 && (
           <div className="text-center py-16 text-sm text-muted-foreground/40">
-            No posts found.
+            No news found.
           </div>
         )}
       </div>

@@ -66,7 +66,9 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
         </h3>
         {/* Only call out what isn't live; "Live" on every card is noise. */}
         {project.status !== "Live" && (
-          <span className="text-sm text-muted-foreground">{project.status}</span>
+          <span className="rounded-full border border-border/70 bg-background/50 px-2 py-0.5 font-mono text-xs uppercase tracking-wider text-muted-foreground/90 backdrop-blur-sm">
+            {project.status}
+          </span>
         )}
       </div>
       <p className="readable-copy relative z-10 mb-8 text-muted-foreground">
@@ -76,7 +78,10 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
       <div className="relative z-10 flex items-center justify-between flex-wrap gap-4">
         <div className="flex gap-2 flex-wrap">
           {project.tech.map((t) => (
-            <span key={t} className="rounded-sm border border-border/70 px-2.5 py-1 text-sm text-muted-foreground">
+            <span
+              key={t}
+              className="rounded-sm border border-border/60 bg-muted/20 px-2.5 py-1 text-xs font-mono text-muted-foreground transition-colors duration-200 hover:border-electric/40 hover:text-foreground hover:bg-electric/[0.04]"
+            >
               {t}
             </span>
           ))}
@@ -135,7 +140,7 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
             <DialogHeader className="shrink-0">
               <DialogTitle className="text-base">{project.name} demo</DialogTitle>
               <DialogDescription>
-                This one's archived, but the demo still runs below. Or{" "}
+                This project is archived, but the demo still works below. You can also{" "}
                 <a
                   href={project.link ?? "#"}
                   target="_blank"
@@ -162,7 +167,7 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
           <DialogContent className="max-w-md">
             <DialogHeader>
               <DialogTitle className="text-base">{project.name} downloads</DialogTitle>
-              <DialogDescription>Grab the one for your system.</DialogDescription>
+              <DialogDescription>Choose the file for your system.</DialogDescription>
             </DialogHeader>
             <div className="flex flex-col gap-2">
               {project.downloads.map((d) => (
@@ -233,7 +238,7 @@ const ProjectsSection = () => {
               >
                 <div>
                   <p className="mb-3 text-sm text-violet/80">
-                    Current focus
+                    Focus right now
                   </p>
                   <p className="mb-2 font-bold text-foreground/70">
                     {item.codename}
@@ -244,7 +249,7 @@ const ProjectsSection = () => {
                 </div>
                 <div className="mt-6">
                   <span className="text-sm text-muted-foreground/70">
-                    New projects: on hold until {item.eta}
+                    New projects are on hold until {item.eta}
                   </span>
                 </div>
               </motion.div>

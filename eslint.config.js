@@ -21,6 +21,7 @@ export default tseslint.config(
       "recovery/**",
       "archive/**",
       ".codex/**",
+      ".agents/**",
       "functions/**",
       // spawnOS: standalone static app (plain browser JS), not part of the React build
       "public/os/**",

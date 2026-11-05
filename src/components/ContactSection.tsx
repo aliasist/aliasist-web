@@ -311,7 +311,7 @@ const ContactSection = () => {
                     <DialogHeader className="shrink-0">
                       <DialogTitle className="text-base">{demoApp.label} demo</DialogTitle>
                       <DialogDescription>
-                        This one's archived, but the demo still runs below. Or{" "}
+                        This project is archived, but the demo still works below. You can also{" "}
                         <a
                           href={demoApp.href}
                           target="_blank"

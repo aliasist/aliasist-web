@@ -20,7 +20,7 @@ import clearasistBanner from "@images/clearasist_banner_cinematic.webp";
 import filesAbductorBanner from "@images/files_abductor_banner_cinematic.webp";
 import globalizeBanner from "@images/globalize_banner_cinematic.webp";
 import spaceBanner from "@images/spacesist_banner_cinematic.webp";
-import pdfsistBanner from "@images/pdfsist_banner_cinematic.jpeg";
+import pdfsistBanner from "@images/pdfsist_banner_cinematic.webp";
 
 // ── Suite apps (live products) ───────────────────────────────────────────────
 
@@ -67,9 +67,9 @@ export const hero = {
   mascotAlt: "Aliasist",
   mascotTitle: "Aliasist",
   wordmark: "ALIASIST",
-  tagline: "Tools, dashboards, and experiments for the web - Aliasist Arsenal",
+  tagline: "Tools, dashboards, and experiments for the web",
   subcopy:
-    "A growing set of free tools I'm building for research, data, privacy, and the web. Simple to use, built to actually work. Pick one and jump in.",
+    "A group of free tools I'm building for research, data, privacy, and the web. They are simple to use and made to be useful. Pick one and take a look.",
   ctaContact: "Projects",
   ctaContactHref: "#projects",
   ctaSecondary: "Let's talk",
@@ -115,16 +115,16 @@ const downloadLinks = {
 };
 
 export const projectsSection = {
-  dividerLabel: "Shipped Projects",
-  headline: "What's live right now.",
-  subcopy: "Each one started as something I wanted to understand better. Now they're out there for you to use too.",
+  dividerLabel: "Projects",
+  headline: "What's live right now",
+  subcopy: "These started as things I wanted to understand better. Now you can use them too.",
 } as const;
 
 export const projects = [
   {
     name: "Files Abductor",
     description:
-      "A desktop app for downloading files from YouTube and direct URLs.",
+      "A desktop app for downloading files from YouTube and other links.",
     tech: ["Python", "yt-dlp", "Linux and Windows"],
     github: "https://github.com/aliasist/files-abductor/releases/tag/v2.7.0",
     downloads: [
@@ -141,7 +141,7 @@ export const projects = [
   {
     name: "Aliasist AI",
     description:
-      "Chat and make images with AI that answers from real documents and shows you exactly where it got the answer.",
+      "Chat and make images with a tool that answers from real documents and shows where the answer came from.",
     tech: ["Chat", "Image generation", "Cited sources"],
     downloads: [],
     status: "Live" as "Live" | "Archived",
@@ -153,7 +153,7 @@ export const projects = [
   {
     name: "Globalize",
     description:
-      "Spin a 3D globe and see data centers, undersea cables, air traffic, and earthquakes all in one place.",
+      "Use a 3D globe to see data centers, undersea cables, air traffic, and earthquakes in one place.",
     tech: ["3D globe", "Data centers", "Air traffic", "Earthquakes"],
     downloads: [],
     status: "Live" as "Live" | "Archived",
@@ -165,7 +165,7 @@ export const projects = [
   {
     name: "SpaceSist",
     description:
-      "NASA, SpaceX, the ISS, asteroids, and exoplanets, all on one live space dashboard.",
+      "See NASA, SpaceX, the ISS, asteroids, and exoplanets on one live space dashboard.",
     tech: ["Launches", "ISS tracking", "Asteroids", "Exoplanets"],
     downloads: [],
     status: "Live" as "Live" | "Archived",
@@ -177,7 +177,7 @@ export const projects = [
   {
     name: "ClearSist",
     description:
-      "Strip the hidden metadata out of your photos, PDFs, and Office files before you share them. It all runs in your browser.",
+      "Remove hidden metadata from photos, PDFs, and Office files before sharing them. It runs in your browser.",
     tech: ["Photos", "PDFs", "Office files"],
     downloads: [],
     status: "Live" as "Live" | "Archived",
@@ -189,7 +189,7 @@ export const projects = [
   {
     name: "PDFSist",
     description:
-      "Fill in text, draw or type your signature, and download the signed PDF. Your file never leaves your browser.",
+      "Add text, draw or type your signature, and download the signed PDF. Your file stays in your browser.",
     tech: ["Sign PDFs", "Add text", "Free", "No uploads"],
     downloads: [],
     status: "Live" as "Live" | "Archived",
@@ -204,8 +204,8 @@ export const projectCount = projects.length;
 
 export const COMING_SOON_PROJECTS = [
   {
-    codename: "Future projects are on hold.",
-    description: "FREEZE. No new apps until 2027. I'm putting everything into making the ones above faster, sturdier, and easier to use.",
+    codename: "New projects are on hold.",
+    description: "No new apps until 2027. I'm focusing on making the ones above faster, stronger, and easier to use.",
     eta: "2027",
   },
 ] as const;
@@ -221,9 +221,9 @@ export type ProjectCard = (typeof projects)[number];
 //
 export const about = {
   dividerLabel: "About",
-  headline: "Meet Aliasist.",
-  pathBadge: "Studying computer science · Designed with systems in mind.",
-  skillsLabel: "What I work with",
+  headline: "A little about me",
+  pathBadge: "Studying computer science · Building with systems in mind.",
+  skillsLabel: "Tools I use",
   skills: [
     "TypeScript",
     "JavaScript",
@@ -243,16 +243,16 @@ export const about = {
    */
   bioBlocks: [
     {
-      kicker: "Who's behind it",
-      body: "I'm working toward a degree in computer science because I want to understand how state-of-the-art technology is built. My hope is to apply that knowledge to projects that help people, improve lives, and make a meaningful difference for good.",
+      kicker: "Who I am",
+      body: "I'm studying computer science because I want to understand how technology is built. I want to use what I learn to make projects that help people and improve lives.",
     },
     {
-      kicker: "What it is",
-      body: "Aliasist is where that intention becomes practice. Each app explores a real need or a better way to make complex technology useful and approachable. Right now I'm not adding new apps. I'm making the ones here solid.",
+      kicker: "What Aliasist is",
+      body: "Aliasist is where I practice by building. Each app looks at a real need or a simpler way to use complex technology. Right now I'm not adding new apps. I'm making the ones here solid.",
     },
     {
-      kicker: "Why it exists",
-      body: "It exists to learn by building and to give promising ideas room to become something valuable. The larger goal is simple: create technology with care, share it with people, and keep working toward projects that can make a positive difference at a meaningful scale.",
+      kicker: "Why I build it",
+      body: "I build to learn and to give good ideas a chance to become useful. The goal is simple: make technology with care, share it, and keep working on things that can help people.",
     },
   ] as const,
 
@@ -271,9 +271,9 @@ export const about = {
 export const contact = {
   dividerLabel: "Contact",
   introLabel: "Contact",
-  headline: "Want to talk?",
-  introStrong: "Got an idea, a question, or found something broken?",
-  introRest: "Send it my way. I read everything, and honest feedback is how these tools get better.",
+  headline: "Want to get in touch?",
+  introStrong: "Have an idea, a question, or found something broken?",
+  introRest: "Send it my way. I read everything, and feedback helps me make these tools better.",
   successTitle: "Got it!",
   successBody:
     "Thanks for reaching out. I'll get back to you as soon as I can.",
@@ -305,9 +305,9 @@ export const contact = {
 export const subscribeSection = {
   dividerLabel: "Updates",
   introLabel: "Subscribe",
-  headline: "Stay in the loop.",
-  introStrong: "No spam, I promise.",
-  introRest: "I'll only email when something new is live or worth telling you about.",
+  headline: "Keep up with updates",
+  introStrong: "No spam.",
+  introRest: "I'll only email when something new is live or worth sharing.",
   placeholder: "your@email.com",
   submitIdle: "Subscribe",
   submitSending: "Sending...",
@@ -322,8 +322,8 @@ export const subscribeSection = {
 
 export const updatesSection = {
   dividerLabel: "Log",
-  headline: "Updates & events",
-  subcopy: "What's new, what shipped, and what's coming up.",
+  headline: "Updates and events",
+  subcopy: "What's new, what shipped, and what's next.",
 } as const;
 
 export const updates = [
@@ -331,16 +331,16 @@ export const updates = [
     id: "u2",
     kind: "update" as const,
     date: "2026-07-30",
-    title: "Document curation dashboard is live",
-    body: "You can now drop documents into the right topic, and Aliasist AI will answer from them and cite its sources.",
+    title: "Document dashboard is live",
+    body: "You can now add documents to a topic, and Aliasist AI will answer from them and show its sources.",
     href: "#",
   },
   {
     id: "u1",
     kind: "update" as const, // "update" | "event"
     date: "2026-07-30",
-    title: "Homepage gets an updates & events log",
-    body: "One spot for what I'm shipping and what's coming up, separate from the news feed below.",
+    title: "Added an updates and events log",
+    body: "There is now one place for what I'm building and what's coming up, separate from the news feed.",
     href: "#",
   },
   // Add new entries above this line, newest first.
@@ -352,9 +352,9 @@ export type UpdateEntry = (typeof updates)[number];
 
 export const transmissions = {
   dividerLabel: "News",
-  headline: "News from around tech",
+  headline: "Tech news",
   scanning: "Pulling in the latest...",
-  offline: "Couldn't reach the feed right now, so here are some saved posts.",
+  offline: "The news feed is unavailable right now, so here are some saved posts.",
   liveFeedPrefix: "Updated ",
   liveFeedRecent: "recently",
 } as const;

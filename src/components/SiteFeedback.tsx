@@ -7,12 +7,15 @@ type SiteFeedbackValue = {
   toggleClickSounds: () => void;
 };
 
-const SiteFeedbackContext = createContext<SiteFeedbackValue | null>(null);
+const defaultFeedbackValue: SiteFeedbackValue = {
+  clickSoundsOn: false,
+  toggleClickSounds: () => {},
+};
+
+const SiteFeedbackContext = createContext<SiteFeedbackValue>(defaultFeedbackValue);
 
 export function useSiteFeedback() {
-  const context = useContext(SiteFeedbackContext);
-  if (!context) throw new Error("useSiteFeedback must be used inside SiteFeedbackProvider");
-  return context;
+  return useContext(SiteFeedbackContext);
 }
 
 export function SiteFeedbackProvider({ children }: { children: ReactNode }) {
