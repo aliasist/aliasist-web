@@ -20,7 +20,7 @@ import clearasistBanner from "@images/clearasist_banner_cinematic.webp";
 import filesAbductorBanner from "@images/files_abductor_banner_cinematic.webp";
 import globalizeBanner from "@images/globalize_banner_cinematic.webp";
 import spaceBanner from "@images/spacesist_banner_cinematic.webp";
-import pdfsistBanner from "@images/pdfsist_banner.webp";
+import pdfsistBanner from "@images/pdfsist_banner_cinematic.svg";
 
 // ── Suite apps (live products) ───────────────────────────────────────────────
 
