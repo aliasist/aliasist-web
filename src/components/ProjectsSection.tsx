@@ -88,9 +88,9 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
           <motion.button
             type="button"
             onClick={() => setDownloadsOpen(true)}
-            className="tap-target inline-flex items-center gap-2 rounded-sm bg-electric px-5 py-2.5 text-sm font-semibold text-background outline-none transition-colors hover:bg-electric/85 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+            className="project-card-action group/action tap-target inline-flex items-center gap-2 rounded-sm bg-electric px-5 py-2.5 text-sm font-semibold text-background outline-none transition-colors hover:bg-electric/85 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
           >
-            <Download className="size-3.5" aria-hidden />
+            <Download className="project-action-icon size-3.5 transition-transform duration-200 group-hover/action:-translate-y-0.5 group-focus-visible/action:-translate-y-0.5 motion-reduce:transform-none" aria-hidden />
             <span>{project.linkLabel}</span>
           </motion.button>
       )}
@@ -98,10 +98,10 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
           <motion.button
             type="button"
             onClick={() => setDemoOpen(true)}
-            className="tap-target inline-flex items-center gap-2 rounded-sm bg-electric px-5 py-2.5 text-sm font-semibold text-background outline-none transition-colors hover:bg-electric/85 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+            className="project-card-action group/action tap-target inline-flex items-center gap-2 rounded-sm bg-electric px-5 py-2.5 text-sm font-semibold text-background outline-none transition-colors hover:bg-electric/85 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
           >
             <span>{project.linkLabel}</span>
-            <ExternalLink className="size-3.5" aria-hidden />
+            <ExternalLink className="project-action-icon size-3.5 transition-transform duration-200 group-hover/action:translate-x-0.5 group-focus-visible/action:translate-x-0.5 motion-reduce:transform-none" aria-hidden />
           </motion.button>
       )}
       {project.link && !showsDemoModal && (
@@ -109,10 +109,10 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
             href={project.link}
             target={isExternalHref(project.link) ? "_blank" : undefined}
             rel={isExternalHref(project.link) ? "noopener noreferrer" : undefined}
-            className="tap-target inline-flex items-center gap-2 rounded-sm bg-electric px-5 py-2.5 text-sm font-semibold text-background outline-none transition-colors hover:bg-electric/85 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+            className="project-card-action group/action tap-target inline-flex items-center gap-2 rounded-sm bg-electric px-5 py-2.5 text-sm font-semibold text-background outline-none transition-colors hover:bg-electric/85 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
           >
             <span>{project.linkLabel}</span>
-            <ExternalLink className="size-3.5" aria-hidden />
+            <ExternalLink className="project-action-icon size-3.5 transition-transform duration-200 group-hover/action:translate-x-0.5 group-focus-visible/action:translate-x-0.5 motion-reduce:transform-none" aria-hidden />
           </motion.a>
       )}
           {"github" in project && project.github && (
@@ -120,9 +120,9 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="tap-target inline-flex items-center gap-2 rounded-sm border border-border/70 bg-background/25 px-4 py-2.5 text-sm font-semibold text-muted-foreground outline-none transition-colors hover:border-violet/35 hover:text-electric focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+              className="project-card-action group/action tap-target inline-flex items-center gap-2 rounded-sm border border-border/70 bg-background/25 px-4 py-2.5 text-sm font-semibold text-muted-foreground outline-none transition-colors hover:border-violet/35 hover:text-electric focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
             >
-              <Github className="size-3.5" aria-hidden />
+              <Github className="project-action-icon size-3.5 transition-transform duration-200 group-hover/action:rotate-6 group-focus-visible/action:rotate-6 motion-reduce:transform-none" aria-hidden />
               GitHub
             </motion.a>
           )}

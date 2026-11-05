@@ -910,6 +910,26 @@ a {
 .project-card-shell {
   transform-origin: center;
   backface-visibility: hidden;
+  transition:
+    transform 220ms cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 260ms ease,
+    border-color 260ms ease;
+}
+
+.project-card-shell img {
+  transition: transform 700ms cubic-bezier(0.2, 0.7, 0.2, 1);
+}
+
+.project-card-shell:hover,
+.project-card-shell:focus-within {
+  transform: translateY(-2px);
+  box-shadow:
+    0 10px 28px hsl(var(--electric) / 0.075),
+    0 0 20px hsl(var(--violet) / 0.035);
+}
+
+.project-card-shell:hover img {
+  transform: scale(1.025);
 }
 
 .subtle-link-motion {
@@ -1071,6 +1091,7 @@ html {
   }
 
   .project-card-shell,
+  .project-card-shell img,
   .subtle-link-motion,
   .subtle-link-motion svg {
     transition-duration: 1ms !important;
