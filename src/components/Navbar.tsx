@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth, UserButton } from "@clerk/react";
+import { Volume2, VolumeX } from "lucide-react";
 import newLogo from "@/assets/apple-touch-icon.png";
 import { pageNavLinks, suiteApps } from "@/content/homepage";
 import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
+import { useSiteFeedback } from "@/components/SiteFeedback";
 
 const isExternalHref = (href: string) => /^https?:\/\//.test(href);
 const opensInNewTab = (app: (typeof liveSuiteApps)[number]) =>
@@ -231,6 +233,7 @@ const Navbar = () => {
   const [mobileOpen, setMobileOpen]     = useState(false);
   const [isDark, setIsDark]             = useState(true);
   const [activeSection, setActiveSection] = useState("");
+  const { clickSoundsOn, toggleClickSounds } = useSiteFeedback();
   const mobileTriggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -387,6 +390,17 @@ const Navbar = () => {
                 </svg>
               )}
             </button>
+            <button
+              type="button"
+              onClick={toggleClickSounds}
+              title={clickSoundsOn ? "Turn click sounds off" : "Turn click sounds on"}
+              className={utilityButtonClass}
+              aria-label={clickSoundsOn ? "Turn click sounds off" : "Turn click sounds on"}
+              aria-pressed={clickSoundsOn}
+              data-sound-toggle
+            >
+              {clickSoundsOn ? <Volume2 size={14} aria-hidden="true" /> : <VolumeX size={14} aria-hidden="true" />}
+            </button>
           </div>
           <div className="flex items-center gap-3 shrink-0 min-w-0">
             <a
@@ -485,6 +499,15 @@ const Navbar = () => {
               <div className="flex items-center gap-4 py-2">
                 <button type="button" onClick={toggleTheme} className="rounded-md px-2 py-1 text-xs font-mono text-muted-foreground transition-all duration-300 hover:bg-electric/[0.06] hover:text-electric">
                   {isDark ? "Light Mode" : "Dark Mode"}
+                </button>
+                <button
+                  type="button"
+                  onClick={toggleClickSounds}
+                  className="rounded-md px-2 py-1 text-xs font-mono text-muted-foreground transition-all duration-300 hover:bg-electric/[0.06] hover:text-electric"
+                  aria-pressed={clickSoundsOn}
+                  data-sound-toggle
+                >
+                  Click sounds: {clickSoundsOn ? "On" : "Off"}
                 </button>
               </div>
 

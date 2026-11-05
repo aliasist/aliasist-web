@@ -5,6 +5,7 @@ import { ClickToComponent } from "click-to-react-component";
 import { Toaster as Sonner } from "@/components/ui/sonner";
 import { Toaster } from "@/components/ui/toaster";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { SiteFeedbackProvider } from "@/components/SiteFeedback";
 import Index from "./pages/Index";
 import ErrorBoundary from "./components/ErrorBoundary";
 import NotFound from "./pages/NotFound";
@@ -27,28 +28,30 @@ const App = () => (
   <QueryClientProvider client={queryClient}>
     <TooltipProvider>
       {import.meta.env.DEV && <ClickToComponent />}
-      <Toaster />
-      <Sonner />
-      <BrowserRouter>
-        <ErrorBoundary>
-          <Suspense fallback={<main className="flex min-h-screen items-center justify-center" role="status">Loading page…</main>}>
-            <Routes>
-              <Route path="/" element={<Index />} />
-              <Route path="/tech" element={<TechLanding />} />
-              <Route path="/agsc" element={<Navigate to="/tech" replace />} />
-              <Route path="/agsc/*" element={<Navigate to="/tech" replace />} />
-              <Route path="/sensor" element={<Sensor />} />
-              <Route path="/entertainment" element={<Entertainment />} />
-              <Route path="/os" element={<SpawnOs />} />
-              <Route path="/apps" element={<SpawnOs />} />
-              <Route path="/blog" element={<BlogCosmicOs />} />
-              <Route path="/blog/cosmic-os" element={<BlogCosmicOs />} />
-              {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </Suspense>
-        </ErrorBoundary>
-      </BrowserRouter>
+      <SiteFeedbackProvider>
+        <Toaster />
+        <Sonner />
+        <BrowserRouter>
+          <ErrorBoundary>
+            <Suspense fallback={<main className="flex min-h-screen items-center justify-center" role="status">Loading page…</main>}>
+              <Routes>
+                <Route path="/" element={<Index />} />
+                <Route path="/tech" element={<TechLanding />} />
+                <Route path="/agsc" element={<Navigate to="/tech" replace />} />
+                <Route path="/agsc/*" element={<Navigate to="/tech" replace />} />
+                <Route path="/sensor" element={<Sensor />} />
+                <Route path="/entertainment" element={<Entertainment />} />
+                <Route path="/os" element={<SpawnOs />} />
+                <Route path="/apps" element={<SpawnOs />} />
+                <Route path="/blog" element={<BlogCosmicOs />} />
+                <Route path="/blog/cosmic-os" element={<BlogCosmicOs />} />
+                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                <Route path="*" element={<NotFound />} />
+              </Routes>
+            </Suspense>
+          </ErrorBoundary>
+        </BrowserRouter>
+      </SiteFeedbackProvider>
     </TooltipProvider>
   </QueryClientProvider>
 );
