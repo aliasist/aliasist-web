@@ -1,85 +1,49 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1586" height="992" viewBox="0 0 1586 992" fill="none">
   <defs>
-    <linearGradient id="room" x1="120" y1="54" x2="1460" y2="990" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#07111f"/>
-      <stop offset=".52" stop-color="#0a1b2d"/>
-      <stop offset="1" stop-color="#102c43"/>
-    </linearGradient>
-    <radialGradient id="pool" cx="0" cy="0" r="1" gradientTransform="matrix(820 0 0 410 1100 590)" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#1d7190" stop-opacity=".34"/>
-      <stop offset="1" stop-color="#1d7190" stop-opacity="0"/>
-    </radialGradient>
-    <linearGradient id="sheet" x1="705" y1="159" x2="1280" y2="824" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#fffefa"/>
-      <stop offset="1" stop-color="#dce7ed"/>
-    </linearGradient>
-    <linearGradient id="sheetEdge" x1="768" y1="236" x2="1279" y2="817" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#fff" stop-opacity=".96"/>
-      <stop offset="1" stop-color="#cad8e0" stop-opacity=".94"/>
-    </linearGradient>
-    <linearGradient id="pen" x1="1190" y1="557" x2="1480" y2="712" gradientUnits="userSpaceOnUse">
-      <stop stop-color="#b9cbd5"/>
-      <stop offset=".2" stop-color="#334b5b"/>
-      <stop offset=".52" stop-color="#101d29"/>
-      <stop offset=".83" stop-color="#506a79"/>
-      <stop offset="1" stop-color="#d1e0e6"/>
-    </linearGradient>
-    <filter id="shadow" x="590" y="96" width="900" height="890" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
-      <feGaussianBlur stdDeviation="26"/>
-    </filter>
-    <filter id="penShadow" x="1118" y="493" width="436" height="318" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
-      <feGaussianBlur stdDeviation="13"/>
-    </filter>
-    <filter id="soft" x="0" y="0" width="1586" height="992" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse">
-      <feGaussianBlur stdDeviation="35"/>
-    </filter>
-    <pattern id="grain" width="9" height="9" patternUnits="userSpaceOnUse">
-      <circle cx="1" cy="2" r=".55" fill="#738b99" fill-opacity=".12"/>
-      <circle cx="7" cy="6" r=".45" fill="#c2d4dd" fill-opacity=".09"/>
-    </pattern>
+    <linearGradient id="bg" x1="101" y1="0" x2="1467" y2="992" gradientUnits="userSpaceOnUse"><stop stop-color="#050B18"/><stop offset=".52" stop-color="#071C31"/><stop offset="1" stop-color="#0B3550"/></linearGradient>
+    <radialGradient id="aura" cx="0" cy="0" r="1" gradientTransform="matrix(600 0 0 376 1042 564)" gradientUnits="userSpaceOnUse"><stop stop-color="#2FA4EF" stop-opacity=".4"/><stop offset="1" stop-color="#2FA4EF" stop-opacity="0"/></radialGradient>
+    <linearGradient id="page" x1="723" y1="160" x2="1248" y2="820" gradientUnits="userSpaceOnUse"><stop stop-color="#FFF"/><stop offset=".58" stop-color="#EFF7FC"/><stop offset="1" stop-color="#D8E8F2"/></linearGradient>
+    <linearGradient id="glass" x1="812" y1="206" x2="1216" y2="760" gradientUnits="userSpaceOnUse"><stop stop-color="#FFF" stop-opacity=".92"/><stop offset="1" stop-color="#C5E7F7" stop-opacity=".7"/></linearGradient>
+    <linearGradient id="pen" x1="1186" y1="550" x2="1510" y2="704" gradientUnits="userSpaceOnUse"><stop stop-color="#DBF4FF"/><stop offset=".15" stop-color="#3D7FAD"/><stop offset=".4" stop-color="#102A43"/><stop offset=".82" stop-color="#8FD8FF"/><stop offset="1" stop-color="#D9F5FF"/></linearGradient>
+    <linearGradient id="ink" x1="815" y1="635" x2="1160" y2="661" gradientUnits="userSpaceOnUse"><stop stop-color="#1A63D4"/><stop offset="1" stop-color="#47B6F4"/></linearGradient>
+    <filter id="blur" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="34"/></filter>
+    <filter id="shadow" x="590" y="94" width="900" height="900" color-interpolation-filters="sRGB" filterUnits="userSpaceOnUse"><feGaussianBlur stdDeviation="22"/></filter>
+    <filter id="glow" x="-80%" y="-80%" width="260%" height="260%"><feGaussianBlur stdDeviation="13" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <pattern id="grain" width="12" height="12" patternUnits="userSpaceOnUse"><circle cx="2" cy="3" r=".6" fill="#B7E7FF" fill-opacity=".18"/><circle cx="9" cy="8" r=".5" fill="#FFF" fill-opacity=".12"/></pattern>
   </defs>
-  <path fill="url(#room)" d="M0 0h1586v992H0z"/>
-  <path fill="url(#pool)" d="M0 0h1586v992H0z"/>
-  <ellipse cx="1087" cy="778" fill="#64cee8" fill-opacity=".12" filter="url(#soft)" rx="410" ry="84"/>
-  <path d="M0 793c298-41 595-47 905-7 251 32 463 28 681-10v216H0V793Z" fill="#071321" fill-opacity=".55"/>
-  <path d="M0 794c302-34 585-37 876-2 280 33 503 28 710-7" stroke="#527186" stroke-opacity=".22" stroke-width="2"/>
-  <g opacity=".65">
-    <path d="M0 182h456" stroke="#193247" stroke-width="2"/>
-    <path d="M0 195h316" stroke="#12283a"/>
-    <path d="M92 0v992" stroke="#102536" stroke-opacity=".4"/>
+  <path fill="url(#bg)" d="M0 0h1586v992H0z"/><path fill="url(#aura)" d="M0 0h1586v992H0z"/>
+  <ellipse cx="1040" cy="790" rx="444" ry="86" fill="#24AAFF" fill-opacity=".22" filter="url(#blur)"/>
+  <path d="M0 797c290-38 581-40 843-8 276 34 504 28 743-10v213H0V797Z" fill="#040B16" fill-opacity=".63"/>
+  <path d="M0 798c300-36 584-40 867-5 255 32 497 30 719-7" stroke="#48BDF6" stroke-opacity=".28" stroke-width="2"/>
+  <path d="M0 180h422M0 196h298M138 0v992M482 887h748" stroke="#55B8EF" stroke-opacity=".15"/>
+  <g opacity=".45" stroke="#55B8EF" stroke-width="2"><path d="M504 272h82v-82M1290 250h64v64M544 705h-64v-64M1335 730h-58v-58"/></g>
+  <g transform="rotate(3 981 496)">
+    <rect x="684" y="182" width="548" height="630" rx="14" fill="#000" fill-opacity=".76" filter="url(#shadow)"/>
+    <path d="M746 158h438a14 14 0 0 1 14 14v594a14 14 0 0 1-14 14H746a14 14 0 0 1-14-14V172a14 14 0 0 1 14-14Z" fill="#8AC9EA" fill-opacity=".26" stroke="#A8E4FF" stroke-opacity=".35" stroke-width="2"/>
+    <path d="M711 142h438a14 14 0 0 1 14 14v594a14 14 0 0 1-14 14H711a14 14 0 0 1-14-14V156a14 14 0 0 1 14-14Z" fill="url(#page)"/>
+    <path d="M735 177h390v548H735z" fill="url(#glass)" stroke="#C2DAE7"/>
+    <path d="M735 177h390v548H735z" fill="url(#grain)"/>
+    <path d="M1072 177h53v61h-39a14 14 0 0 1-14-14v-47Z" fill="#E1EEF5"/>
+    <path d="M765 215h113" stroke="#1E4A6C" stroke-width="5" stroke-linecap="round"/>
+    <path d="M765 243h208M765 261h311M765 279h268" stroke="#9DB2C0" stroke-width="3" stroke-linecap="round"/>
+    <path d="M765 317h328" stroke="#CEDCE4" stroke-width="2"/>
+    <path d="M765 342h292M765 360h319M765 378h254" stroke="#B4C5CF" stroke-width="3" stroke-linecap="round"/>
+    <rect x="765" y="411" width="330" height="118" rx="7" fill="#DCEBF2" fill-opacity=".72"/>
+    <path d="M786 440h159M786 460h268M786 480h231" stroke="#A6BAC6" stroke-width="3" stroke-linecap="round"/>
+    <path d="M765 559h326" stroke="#C7D6DF" stroke-width="2"/>
+    <path d="M765 583h299M765 601h321" stroke="#B4C5CF" stroke-width="3" stroke-linecap="round"/>
+    <path d="M788 662c22 0 16-39 31-39 17 0-2 39 17 39 17 0 21-47 39-47 14 0 3 44 18 44 13 0 18-21 33-21 13 0 20 13 34 13 15 0 23-18 37-18 12 0 20 11 35 11h31" stroke="url(#ink)" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+    <path d="M781 680h292" stroke="#42677E" stroke-width="3" stroke-linecap="round"/>
+    <path d="M766 696h94" stroke="#AFBEC7" stroke-width="3" stroke-linecap="round"/>
+    <rect x="1021" y="577" width="80" height="27" rx="13.5" fill="#176FC6"/><circle cx="1038" cy="590.5" r="4" fill="#FFF"/><path d="M1050 591h37" stroke="#FFF" stroke-width="3" stroke-linecap="round"/>
   </g>
-  <!-- A small stack of signed paperwork, with a real paper silhouette and quiet detail. -->
-  <g transform="rotate(4 1008 500)">
-    <rect x="664" y="191" width="594" height="648" rx="10" fill="#020912" fill-opacity=".68" filter="url(#shadow)"/>
-    <path d="M746 190h480a10 10 0 0 1 10 10v600a10 10 0 0 1-10 10H746a10 10 0 0 1-10-10V200a10 10 0 0 1 10-10Z" fill="#aabcc6" fill-opacity=".62"/>
-    <path d="M708 166h480a10 10 0 0 1 10 10v600a10 10 0 0 1-10 10H708a10 10 0 0 1-10-10V176a10 10 0 0 1 10-10Z" fill="url(#sheet)"/>
-    <path d="M727 187h442v552H727z" fill="url(#sheetEdge)" stroke="#d5e0e5"/>
-    <path d="M727 187h442v552H727z" fill="url(#grain)"/>
-    <path d="M1098 187h71v72a8 8 0 0 1-8 8h-55a8 8 0 0 1-8-8v-72Z" fill="#eef3f4"/>
-    <path d="M754 225h124" stroke="#314b60" stroke-opacity=".75" stroke-width="5" stroke-linecap="round"/>
-    <path d="M754 251h247M754 266h366M754 281h330" stroke="#a8b7c0" stroke-opacity=".65" stroke-width="3" stroke-linecap="round"/>
-    <path d="M754 325h362" stroke="#d2dce0" stroke-width="2"/>
-    <path d="M754 347h330M754 363h368M754 379h298" stroke="#bdcbd2" stroke-opacity=".7" stroke-width="3" stroke-linecap="round"/>
-    <rect x="754" y="416" width="362" height="96" rx="3" fill="#e8eef0" fill-opacity=".72"/>
-    <path d="M774 442h174M774 459h314M774 476h265" stroke="#b8c6ce" stroke-width="3" stroke-linecap="round"/>
-    <path d="M754 553h362" stroke="#9aaeba" stroke-width="2"/>
-    <path d="M754 579h270M754 595h352M754 611h224" stroke="#bdcbd2" stroke-opacity=".7" stroke-width="3" stroke-linecap="round"/>
-    <path d="M754 680c59 0 93-1 145-1h215" stroke="#6d8797" stroke-width="2"/>
-    <!-- Hand drawn signature stroke, intentionally understated. -->
-    <path d="M792 657c11-27 21-45 27-42 7 3-5 37-1 41 4 4 24-31 30-29 7 3-5 24-1 27 5 4 20-24 28-22 7 2-8 24-2 27 7 4 20-12 32-15 10-2 24 1 36 0 28-3 54-14 73-25 8-5 15-11 17-15 3-6-2-8-7-5-9 5-24 22-30 35-5 11-3 18 4 19 12 2 27-14 38-25 8-9 15-17 19-17 6 1-1 17-1 25 0 8 5 12 13 10 16-3 37-18 55-22 16-4 31-1 44-1" stroke="#2450bd" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
-    <path d="M1040 646c30 3 54 2 82 0" stroke="#2450bd" stroke-width="2" stroke-linecap="round"/>
-    <path d="M754 709h111" stroke="#9aabb4" stroke-opacity=".65" stroke-width="2"/>
+  <g transform="rotate(-29 1321 623)">
+    <rect x="1153" y="606" width="363" height="52" rx="26" fill="#000" fill-opacity=".7" filter="url(#blur)"/>
+    <rect x="1154" y="586" width="354" height="46" rx="23" fill="url(#pen)" stroke="#C8EFFF" stroke-opacity=".7" stroke-width="2"/>
+    <path d="M1175 597h289" stroke="#E7F9FF" stroke-opacity=".8" stroke-width="3" stroke-linecap="round"/>
+    <path d="M1462 586v46" stroke="#071626" stroke-width="4"/>
+    <path d="M1508 598l66 11-66 11v-22Z" fill="#D7F2FF"/><path d="m1574 609-34 2 34-4v2Z" fill="#10283A"/>
   </g>
-  <!-- A single restrained metal pen, grounded by a soft desk shadow. -->
-  <g transform="rotate(-31 1331 642)">
-    <rect x="1152" y="599" width="350" height="62" rx="30" fill="#020812" fill-opacity=".7" filter="url(#penShadow)"/>
-    <path d="M1167 618c0-7 6-13 13-13h286c13 0 23 10 23 23s-10 23-23 23h-286c-7 0-13-6-13-13v-20Z" fill="url(#pen)" stroke="#8da2ad" stroke-opacity=".65" stroke-width="2"/>
-    <path d="M1178 617h275" stroke="#d1e0e6" stroke-opacity=".58" stroke-width="3" stroke-linecap="round"/>
-    <path d="M1450 605v45" stroke="#0b1722" stroke-width="4"/>
-    <path d="M1478 628h22" stroke="#bccbd2" stroke-width="3"/>
-    <path d="M1493 628c15 0 30 4 43 13l-43 10v-23Z" fill="#b8c6cb"/>
-    <path d="M1536 641l20 1-20 4v-5Z" fill="#172735"/>
-  </g>
-  <path d="M507 887h729" stroke="#28a7d2" stroke-opacity=".12" stroke-width="2"/>
-  <path d="M0 0h1586v992H0z" fill="url(#grain)" opacity=".55"/>
+  <g fill="#A5E5FF"><circle cx="615" cy="367" r="2"/><circle cx="1297" cy="420" r="2"/><circle cx="596" cy="567" r="1.5"/><circle cx="1338" cy="338" r="1.5"/></g>
+  <path d="M0 0h1586v992H0z" fill="url(#grain)" opacity=".32"/>
 </svg>
