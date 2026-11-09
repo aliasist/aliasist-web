@@ -367,7 +367,7 @@ const DEFAULT_APPS: RegisteredApp[] = [
     version: "2.5.0",
     category: "AI",
     runtime: "React + Qdrant Cloud",
-    runtimeBadgeColor: "bg-purple-500/15 border-purple-500/40 text-purple-300",
+    runtimeBadgeColor: "bg-electric/15 border-electric/40 text-electric",
     icon: "✨",
     description: "Qdrant-grounded local LLM fine-tuning lab with 6 custom personality archetypes.",
     ramEstimate: "~120 MB",
@@ -959,7 +959,7 @@ const CosmicOs = () => {
               </div>
               <div className="p-3 bg-black/60 rounded-md border border-border/60">
                 <span className="text-muted-foreground text-[9px] uppercase">Staging Vault:</span>
-                <p className="font-bold text-purple-300 truncate">{tractorResult.staging_vault}</p>
+                <p className="font-bold text-electric truncate">{tractorResult.staging_vault}</p>
               </div>
               <div className="p-3 bg-black/60 rounded-md border border-border/60">
                 <span className="text-muted-foreground text-[9px] uppercase">Zig Comptime Checksum:</span>
@@ -1019,7 +1019,7 @@ const CosmicOs = () => {
         {/* 📡 P2P Mothership Mesh Node Network */}
         <section className="space-y-3">
           <div className="flex items-center justify-between text-xs font-mono text-muted-foreground px-1">
-            <span className="flex items-center gap-1.5 text-purple-400 font-bold">
+            <span className="flex items-center gap-1.5 text-electric font-bold">
               <Wifi className="size-3.5" /> P2P MOTHERSHIP MESH NETWORK (LOCAL PEER DISCOVERY)
             </span>
             <span>NODES ONLINE: <strong className="text-foreground">{meshNodes.length} ACTIVE</strong></span>
@@ -1038,13 +1038,13 @@ const CosmicOs = () => {
                   <div className="text-[10px] text-muted-foreground">
                     IP: <strong className="text-foreground">{node.ip_address}</strong> · {node.role}
                   </div>
-                  <div className="text-[10px] text-purple-300">{node.status}</div>
+                  <div className="text-[10px] text-electric">{node.status}</div>
                 </div>
 
                 <button
                   type="button"
                   onClick={() => handleBeamToMesh(node)}
-                  className="w-full py-1 rounded bg-purple-500/20 border border-purple-500/40 text-purple-300 hover:bg-purple-500/30 text-[10px] font-bold uppercase transition-all flex items-center justify-center gap-1 active:scale-95 cursor-pointer"
+                  className="w-full py-1 rounded bg-electric/20 border border-electric/40 text-electric hover:bg-electric/30 text-[10px] font-bold uppercase transition-all flex items-center justify-center gap-1 active:scale-95 cursor-pointer"
                 >
                   <Share2 className="size-3" /> Beam Payload (1.2 GB/s)
                 </button>
@@ -1092,13 +1092,13 @@ const CosmicOs = () => {
             {/* Storage Direct I/O Card */}
             <Card className="border-border/60 bg-card/60 p-4 space-y-2">
               <div className="flex items-center justify-between text-muted-foreground">
-                <span className="text-[10px] uppercase font-bold text-purple-400">Zero-Copy Storage Bus</span>
-                <HardDrive className="size-4 text-purple-400" />
+                <span className="text-[10px] uppercase font-bold text-electric">Zero-Copy Storage Bus</span>
+                <HardDrive className="size-4 text-electric" />
               </div>
               <p className="font-bold text-foreground text-sm truncate">{hardware.storage.primary_type}</p>
               <div className="text-[11px] text-muted-foreground space-y-0.5">
                 <div>Driver: <strong className="text-foreground">{hardware.storage.io_driver}</strong></div>
-                <div className="text-purple-300 truncate">{hardware.storage.write_mode}</div>
+                <div className="text-electric truncate">{hardware.storage.write_mode}</div>
               </div>
             </Card>
 

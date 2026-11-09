@@ -83,7 +83,7 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
         aria-expanded={open}
         aria-controls="suite-navigation"
         onClick={() => setOpen(o => !o)}
-        className={`group relative flex items-center gap-1.5 overflow-hidden rounded-full px-2.5 py-1.5 text-sm outline-none transition-all duration-300 ease-out focus-visible:ring-2 focus-visible:ring-electric/55 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+        className={`group relative flex items-center gap-1.5 overflow-hidden rounded-sm px-2.5 py-1.5 text-sm outline-none transition-all duration-300 ease-out focus-visible:ring-2 focus-visible:ring-electric/55 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
           highlighted
             ? "bg-electric/10 text-electric shadow-electric-xs"
             : "text-muted-foreground hover:bg-electric/[0.06] hover:text-foreground hover:shadow-electric-ring-inset"
@@ -165,13 +165,13 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
 };
 
 const signInButtonClass =
-  "border border-border/50 bg-background/40 px-3.5 py-2 text-sm text-muted-foreground backdrop-blur-sm transition-all duration-300 ease-out hover:border-violet/40 hover:bg-electric/[0.07] hover:text-electric hover:shadow-[0_0_22px_hsl(var(--violet)/0.18),inset_0_1px_0_hsl(0_0%_100%/0.04)] active:scale-[0.98] rounded-full";
+  "border border-border/50 bg-background/40 px-3.5 py-2 text-sm text-muted-foreground backdrop-blur-sm transition-all duration-300 ease-out hover:border-violet/40 hover:bg-electric/[0.07] hover:text-electric hover:shadow-[0_0_22px_hsl(var(--violet)/0.18),inset_0_1px_0_hsl(0_0%_100%/0.04)] active:scale-[0.98] rounded-sm";
 
 const mobileSignInButtonClass =
   "flex-1 rounded-md border border-electric/35 bg-electric/[0.04] py-2.5 text-center text-sm text-electric shadow-electric-mobile-signin transition-all duration-300 hover:border-electric/50 hover:bg-electric/10 hover:shadow-electric-mobile-signin-hover active:scale-[0.99]";
 
 const utilityButtonClass =
-  "tap-compact flex h-9 w-9 items-center justify-center rounded-full border border-transparent text-muted-foreground transition-all duration-300 ease-out hover:border-electric/25 hover:bg-electric/[0.08] hover:text-electric hover:shadow-electric-utility-hover active:scale-95";
+  "tap-compact flex h-9 w-9 items-center justify-center rounded-sm border border-transparent text-muted-foreground transition-all duration-300 ease-out hover:border-electric/25 hover:bg-electric/[0.08] hover:text-electric hover:shadow-electric-utility-hover active:scale-95";
 
 const navUserButtonAppearance = {
   elements: {
@@ -328,20 +328,20 @@ const Navbar = () => {
             alt=""
             className="h-12 w-12 object-contain drop-shadow-logo-aura transition-all duration-300 sm:h-14 sm:w-14"
             style={{ background: "transparent" }}
-            whileHover={{ scale: 1.08, rotate: -3, filter: "drop-shadow(0 0 16px hsl(165 90% 42% / 0.8)) drop-shadow(0 0 22px hsl(278 82% 67% / 0.45))" }}
+            whileHover={{ scale: 1.08, rotate: -3, filter: "drop-shadow(0 0 18px hsl(165 90% 42% / 0.8))" }}
             transition={{ type: "spring", stiffness: 400, damping: 20 }}
           />
         </a>
 
         {/* ── CENTER: Page links ── */}
-        <div className="hidden md:flex flex-1 items-center justify-center gap-2 rounded-full border border-border/35 bg-background/50 px-2.5 py-1.5 shadow-electric-violet-well backdrop-blur-md">
+        <div className="hidden md:flex flex-1 items-center justify-center gap-2 rounded-sm border border-border/35 bg-background/50 px-2.5 py-1.5 shadow-electric-violet-well backdrop-blur-md">
           {pageNavLinks.map(link => {
             const isActive = activeSection === link.href.replace("#", "");
             return (
               <a
                 key={link.href}
                 href={link.href}
-                className={`group relative overflow-hidden rounded-full px-4 py-2 text-sm transition-all duration-300 ease-out outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+                className={`group relative overflow-hidden rounded-sm px-4 py-2 text-sm transition-all duration-300 ease-out outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                   isActive
                     ? "bg-electric/[0.12] text-electric shadow-electric-xs"
                     : "text-muted-foreground hover:bg-electric/[0.06] hover:text-foreground hover:tracking-[0.2em] hover:shadow-electric-ring-inset-soft"
@@ -370,7 +370,7 @@ const Navbar = () => {
 
         {/* ── RIGHT: Controls ── */}
         <div className="hidden md:flex items-center gap-3 flex-shrink-0">
-          <div className="flex items-center gap-1 rounded-full border border-border/35 bg-background/50 p-1 shadow-electric-nav-well-inset backdrop-blur-md">
+          <div className="flex items-center gap-1 rounded-sm border border-border/35 bg-background/50 p-1 shadow-electric-nav-well-inset backdrop-blur-md">
             <button
               onClick={toggleTheme}
               title={isDark ? "Light mode" : "Dark mode"}
@@ -405,7 +405,7 @@ const Navbar = () => {
           <div className="flex items-center gap-3 shrink-0 min-w-0">
             <a
               href="#contact"
-              className="rounded-full bg-electric px-5 py-2 text-sm text-background shadow-electric-sm transition-[background-color,box-shadow,transform] duration-300 ease-out hover:bg-electric/90 hover:shadow-electric-md active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
+              className="rounded-sm bg-electric px-5 py-2 text-sm text-background shadow-electric-sm transition-[background-color,box-shadow,transform] duration-300 ease-out hover:bg-electric/90 hover:shadow-electric-md active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
             >
               Contact
             </a>

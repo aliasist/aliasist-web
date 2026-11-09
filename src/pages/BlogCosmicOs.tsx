@@ -93,7 +93,7 @@ const BlogCosmicOs = () => {
                 <p className="text-[11px] text-muted-foreground">RedoxFS guarantees that data blocks are staged and verified before pointers are swapped.</p>
               </Card>
               <Card className="p-4 bg-card/60 border-border/60 space-y-1.5">
-                <span className="text-purple-400 font-bold">Capability Sandboxing</span>
+                <span className="text-electric font-bold">Capability Sandboxing</span>
                 <p className="text-[11px] text-muted-foreground">Applications are isolated by strict security schemes with zero ambient authority.</p>
               </Card>
             </div>
@@ -122,7 +122,7 @@ const BlogCosmicOs = () => {
           {/* Section 4 */}
           <section className="space-y-4">
             <h2 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">
-              <span className="text-purple-400">4.</span> Why Rust + Elm + Tauri
+              <span className="text-electric">4.</span> Why Rust + Elm + Tauri
             </h2>
             <p>
               Here's how my three desktop editions stacked up side by side:

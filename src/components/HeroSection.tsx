@@ -9,24 +9,10 @@ const HeroSection = () => {
       id="top"
       className="relative flex min-h-[100dvh] min-h-screen items-center justify-center overflow-hidden"
     >
-      {/* The 85%/75% ellipse below is still at ~0.5 alpha at this section's
-          own bottom edge, its own gradient stops never reach transparent
-          before the box ends. Masking the whole glow stack forces it to
-          zero right at the boundary so About's section starts from a true
-          blank instead of a visible step down in tint. */}
       <div
-        className="absolute inset-0 pointer-events-none [mask-image:linear-gradient(to_bottom,black_0%,black_78%,transparent_100%)] [-webkit-mask-image:linear-gradient(to_bottom,black_0%,black_78%,transparent_100%)]"
+        aria-hidden="true"
+        className="pointer-events-none absolute inset-0 opacity-[0.18] [background-image:linear-gradient(hsl(var(--electric)_/_0.16)_1px,transparent_1px),linear-gradient(90deg,hsl(var(--electric)_/_0.16)_1px,transparent_1px)] [background-size:56px_56px] [mask-image:linear-gradient(to_bottom,black,transparent_88%)]"
       >
-        <div
-          className="absolute inset-0 z-[0] bg-[radial-gradient(ellipse_85%_75%_at_50%_42%,_transparent_0%,_hsl(var(--background)_/_0.55)_75%,_transparent_100%)]"
-          aria-hidden
-        />
-
-        {/* Layered radial glows */}
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_70%_50%_at_50%_35%,_hsl(165_90%_42%_/_0.06)_0%,_transparent_65%)] pointer-events-none" />
-        <div className="absolute inset-0 hero-violet-glow-a pointer-events-none" />
-        <div className="absolute inset-0 hero-violet-glow-b pointer-events-none" />
-        <div className="absolute inset-0 bg-[radial-gradient(ellipse_40%_40%_at_50%_80%,_hsl(165_90%_42%_/_0.04)_0%,_transparent_70%)] pointer-events-none" />
       </div>
 
       <div className="relative z-10 mx-auto flex w-full max-w-site flex-col items-center px-4 pt-14 pb-14 text-center sm:px-8 sm:pt-16 lg:px-12 xl:px-16">
@@ -39,7 +25,7 @@ const HeroSection = () => {
           <h1 className="sr-only">{hero.wordmark}</h1>
           <pre
             aria-hidden="true"
-            className="font-mono select-none text-center font-black whitespace-pre leading-[1.12] sm:leading-[1.15] tracking-[-0.01em] bg-gradient-to-r from-electric via-emerald-300 to-electric bg-clip-text text-transparent drop-shadow-[0_0_30px_rgba(10,204,151,0.45)] text-[7.5px] min-[390px]:text-[9px] min-[480px]:text-[11.5px] sm:text-[14.5px] md:text-[18px] lg:text-[21px] xl:text-[23px] hover:drop-shadow-[0_0_40px_rgba(10,204,151,0.7)] transition-all duration-500"
+            className="font-mono select-none text-center font-black whitespace-pre leading-[1.12] sm:leading-[1.15] tracking-[-0.01em] text-electric text-[7.5px] min-[390px]:text-[9px] min-[480px]:text-[11.5px] sm:text-[14.5px] md:text-[18px] lg:text-[21px] xl:text-[23px]"
           >
 {` █████╗ ██╗     ██╗ █████╗ ███████╗██╗███████╗████████╗
 ██╔══██╗██║     ██║██╔══██╗██╔════╝██║██╔════╝╚══██╔══╝
@@ -60,7 +46,7 @@ const HeroSection = () => {
         </motion.p>
 
         <motion.p
-          className="readable-copy mx-auto mb-8 rounded-sm border border-violet/15 bg-background/76 px-4 py-4 text-foreground/86 shadow-[0_0_22px_hsl(var(--electric)_/_0.1),0_0_32px_hsl(var(--violet)_/_0.08),0_2px_14px_hsl(0_0%_0%_/_0.14)] backdrop-blur-md sm:px-8 sm:py-5 sm:text-lg"
+          className="readable-copy mx-auto mb-8 border-y border-electric/25 bg-background/90 px-4 py-4 text-foreground/86 sm:px-8 sm:py-5 sm:text-lg"
           initial={{ opacity: 0, y: 8 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ delay: 0.7, duration: 0.6 }}
@@ -84,14 +70,14 @@ const HeroSection = () => {
           </a>
           <a
             href={hero.ctaSecondaryHref}
-            className="inline-flex items-center justify-center gap-2 rounded-sm border border-violet/22 bg-background/38 px-7 py-3.5 text-sm text-foreground/82 outline-none backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-electric/45 hover:bg-[linear-gradient(135deg,hsl(var(--electric)_/_0.06),hsl(var(--violet)_/_0.08))] hover:text-electric hover:shadow-[0_0_26px_hsl(var(--electric)_/_0.12),0_0_32px_hsl(var(--violet)_/_0.1),inset_0_1px_0_hsl(var(--violet)_/_0.18)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+            className="inline-flex items-center justify-center gap-2 rounded-sm border border-border bg-background px-7 py-3.5 text-sm text-foreground/82 outline-none transition-colors duration-200 hover:border-electric/60 hover:text-electric focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
           >
             <Mail className="size-3.5" aria-hidden />
             {hero.ctaSecondary}
           </a>
           <a
             href={hero.ctaOsHref}
-            className="inline-flex items-center justify-center gap-2 rounded-sm border border-electric/30 bg-background/38 px-7 py-3.5 font-mono text-sm text-electric outline-none backdrop-blur-md transition-all duration-300 hover:-translate-y-0.5 hover:border-electric/60 hover:shadow-[0_0_26px_hsl(var(--electric)_/_0.18)] focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+            className="inline-flex items-center justify-center gap-2 rounded-sm border border-electric/40 bg-background px-7 py-3.5 font-mono text-sm text-electric outline-none transition-colors duration-200 hover:border-electric hover:bg-electric/5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
           >
             <Terminal className="size-3.5" aria-hidden />
             {hero.ctaOs}

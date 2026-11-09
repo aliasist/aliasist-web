@@ -1931,7 +1931,7 @@ const GameCyber2048 = () => {
                 val === 8 ? "bg-cyan-500/25 text-cyan-300 border border-cyan-500/50" :
                 val === 16 ? "bg-blue-500/30 text-blue-300 border border-blue-500/50" :
                 val === 32 ? "bg-indigo-500/35 text-indigo-300 border border-indigo-500/50" :
-                val === 64 ? "bg-purple-500/40 text-purple-300 border border-purple-500/50" :
+                val === 64 ? "bg-rose-500/40 text-rose-300 border border-rose-500/50" :
                 "bg-amber-500/50 text-amber-200 border border-amber-500/70 shadow-lg"
               }`}
             >
@@ -2043,7 +2043,7 @@ const ArcadeTab = () => {
               type="button"
               onClick={() => setCrtMode(!crtMode)}
               className={`px-2 py-1 rounded border text-[10px] font-mono cursor-pointer ${
-                crtMode ? "bg-purple-500/20 text-purple-300 border-purple-500/40" : "bg-background border-border/60 text-muted-foreground"
+                crtMode ? "bg-electric/20 text-electric border-electric/40" : "bg-background border-border/60 text-muted-foreground"
               }`}
             >
               CRT SCANLINES
@@ -2158,7 +2158,7 @@ const AnimeTab = () => {
           <Card
             key={anime.mal_id}
             onClick={() => setSelectedAnime(anime)}
-            className="group relative cursor-pointer overflow-hidden border-border/60 bg-card/70 transition-all duration-300 hover:-translate-y-1 hover:border-purple-500/50 hover:shadow-lg hover:shadow-purple-500/10"
+            className="group relative cursor-pointer overflow-hidden border-border/60 bg-card/70 transition-all duration-300 hover:-translate-y-1 hover:border-amber-400/50 hover:shadow-lg hover:shadow-amber-500/10"
           >
             <div className="relative aspect-[2/3] w-full overflow-hidden bg-muted">
               {anime.images?.webp?.large_image_url ? (
@@ -2174,21 +2174,21 @@ const AnimeTab = () => {
                 </div>
               )}
               <div className="absolute inset-0 flex items-center justify-center bg-black/60 opacity-0 backdrop-blur-[2px] transition-opacity duration-300 group-hover:opacity-100">
-                <span className="inline-flex items-center gap-1.5 rounded-sm border border-purple-500/40 bg-purple-500/20 px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-purple-400 shadow-sm">
+                <span className="inline-flex items-center gap-1.5 rounded-sm border border-amber-500/40 bg-amber-500/20 px-3 py-1.5 font-mono text-xs uppercase tracking-wider text-amber-300 shadow-sm">
                   <Play className="size-3.5 fill-current" /> Play Trailer
                 </span>
               </div>
             </div>
             <CardContent className="p-3">
-              <p className="line-clamp-1 text-sm font-semibold text-foreground group-hover:text-purple-400 transition-colors">
+              <p className="line-clamp-1 text-sm font-semibold text-foreground group-hover:text-amber-300 transition-colors">
                 {anime.title_english || anime.title}
               </p>
               <div className="mt-1 flex items-center justify-between font-mono text-[10px] uppercase tracking-[0.1em]">
-                <span className="text-purple-400">
+                <span className="text-amber-300">
                   {anime.episodes ? `${anime.episodes} Eps` : "Series"}
                 </span>
                 <span className="flex items-center gap-1 text-muted-foreground">
-                  <Star className="size-3 fill-purple-400 text-purple-400" />
+                  <Star className="size-3 fill-amber-300 text-amber-300" />
                   {anime.score?.toFixed(1) ?? "—"}
                 </span>
               </div>
@@ -2199,7 +2199,7 @@ const AnimeTab = () => {
 
       <Dialog open={!!selectedAnime} onOpenChange={() => setSelectedAnime(null)}>
         {selectedAnime && (
-          <DialogContent className="max-w-2xl border-purple-500/30 bg-card p-0 overflow-hidden shadow-2xl">
+          <DialogContent className="max-w-2xl border-amber-500/30 bg-card p-0 overflow-hidden shadow-2xl">
             {selectedAnime.trailer?.embed_url ? (
               <div className="aspect-video w-full bg-black">
                 <iframe
@@ -2225,8 +2225,8 @@ const AnimeTab = () => {
 
             <div className="p-6 space-y-4">
               <div className="flex items-center justify-between">
-                <span className="font-mono text-xs font-bold text-purple-400 flex items-center gap-1">
-                  <Star className="size-3.5 fill-purple-400 text-purple-400" />
+                <span className="font-mono text-xs font-bold text-amber-300 flex items-center gap-1">
+                  <Star className="size-3.5 fill-amber-300 text-amber-300" />
                   {selectedAnime.score?.toFixed(2) ?? "—"} / 10
                 </span>
               </div>
@@ -2246,7 +2246,7 @@ const AnimeTab = () => {
                   href={`https://myanimelist.net/anime/${selectedAnime.mal_id}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 rounded-sm bg-purple-600 px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-white transition-all hover:bg-purple-500 active:scale-95"
+                  className="inline-flex items-center gap-2 rounded-sm bg-amber-500 px-3.5 py-2 font-mono text-xs uppercase tracking-wider text-slate-950 transition-all hover:bg-amber-400 active:scale-95"
                 >
                   <ExternalLink className="size-3.5" /> View on MyAnimeList
                 </a>
@@ -2644,13 +2644,13 @@ const Entertainment = () => (
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_60%_at_50%_30%,_hsl(165_90%_42%_/_0.08)_0%,_transparent_65%)]" />
 
         {/* Animated gradient orb centerpiece, a soft, breathing blur behind
-            the title. Two overlapping colors (electric + violet) drifting at
+            the title. Two overlapping green and cyan colors drifting at
             slightly different rhythms so it never feels static. */}
         <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 flex justify-center" aria-hidden="true">
           <div className="relative h-[280px] w-[280px] sm:h-[380px] sm:w-[380px]">
             <div className="absolute inset-0 animate-pulse rounded-full bg-electric/25 blur-3xl [animation-duration:4s]" />
             <div
-              className="absolute inset-0 animate-pulse rounded-full bg-violet/25 blur-3xl [animation-duration:5s]"
+              className="absolute inset-0 animate-pulse rounded-full bg-cyan-400/20 blur-3xl [animation-duration:5s]"
               style={{ animationDelay: "1s" }}
             />
           </div>
