@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Aliasist AI green logo">
+  <defs>
+    <clipPath id="badge">
+      <circle cx="512" cy="512" r="512"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#badge)">
+    <circle cx="512" cy="512" r="512" fill="#14b85f"/>
+    <path  d="m 272.79969,794 147.2,-560 h 184 l 147.2,560 h -108.8 l -30.4,-123.2 h -200 l -30.4,123.2 z m 164,-220.8 h 150.4 l -68,-272.8 h -14.4 z" fill="#ffffff"/>
+  </g>
+</svg>

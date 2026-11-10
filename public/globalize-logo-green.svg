@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Globalize green logo">
+  <defs>
+    <clipPath id="badge">
+      <circle cx="512" cy="512" r="512"/>
+    </clipPath>
+  </defs>
+  <g clip-path="url(#badge)">
+    <circle cx="512" cy="512" r="512" fill="#14b85f"/>
+    <path transform="translate(-78 28)" d="M566 300c60 0 111 16 148 44l14-32h108l-8 356c-3 128-84 212-260 212-84 0-155-22-206-53l45-92c44 27 100 46 155 46 92 0 141-42 143-124l1-30c-33 33-79 53-136 53-133 0-224-89-224-213v-2c0-124 91-165 220-165Zm14 100c-70 0-114 34-114 96v2c0 62 44 96 114 96s114-34 114-96v-2c0-62-44-96-114-96Z" fill="#ffffff"/>
+  </g>
+</svg>

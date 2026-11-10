@@ -77,9 +77,6 @@ export const hero = {
   ctaOs: "Boot spawnOS",
   ctaOsHref: "/os/",
 } as const;
-+
-303
-3
 
 // ── Navbar ───────────────────────────────────────────────────────────────────
 

@@ -80,7 +80,7 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     categoryBadge: "3D Globe",
     icon: globalizeLogo,
     monogram: "G",
-    iconBg: "#2a6ebf",
+    iconBg: "#b8621b",
     countLabel: "2 links",
     statusBadge: "Live World Map",
     description:
@@ -110,7 +110,7 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     categoryBadge: "Space",
     icon: spacesistLogo,
     monogram: "S",
-    iconBg: "#4f46e5",
+    iconBg: "#14b85f",
     countLabel: "2 links",
     statusBadge: "Live Tracking",
     description:
@@ -140,7 +140,7 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     categoryBadge: "Privacy",
     icon: clearsistLogo,
     monogram: "C",
-    iconBg: "#0284c7",
+    iconBg: "#b8621b",
     countLabel: "2 links",
     statusBadge: "100% Private",
     description:
@@ -170,7 +170,7 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     categoryBadge: "PDF Tool",
     icon: pdfsistLogo,
     monogram: "P",
-    iconBg: "#e24d3e",
+    iconBg: "#b8621b",
     countLabel: "2 links",
     statusBadge: "No Sign-Up",
     description:

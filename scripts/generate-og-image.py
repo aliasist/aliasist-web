@@ -33,7 +33,7 @@ def render_og_svg(theme: str) -> str:
             "line": "#deddd7",
             "panel": "#ffffff",
             "panel_head": "#f8f7f4",
-            "accent": "#e24d3e",
+            "accent": "#b8621b",
             "green": "#14b85f",
         },
         "dark": {
@@ -44,17 +44,17 @@ def render_og_svg(theme: str) -> str:
             "line": "#2a2d34",
             "panel": "#17191e",
             "panel_head": "#1d2026",
-            "accent": "#ef6b5d",
+            "accent": "#b8621b",
             "green": "#25c773",
         },
     }[theme]
 
     services = [
         {"name": "Aliasist AI", "category": "AI", "initials": "A", "color": "#14b85f", "logo": ALIASIST_B64},
-        {"name": "Globalize", "category": "LIVE DATA", "initials": "G", "color": "#2a6ebf", "logo": GLOBALIZE_B64},
-        {"name": "SpaceSist", "category": "SPACE", "initials": "S", "color": "#4f46e5", "logo": SPACESIST_B64},
-        {"name": "ClearSist", "category": "PRIVACY", "initials": "C", "color": "#0284c7", "logo": CLEARSIST_B64},
-        {"name": "PDFSist", "category": "PDF TOOLS", "initials": "P", "color": "#e24d3e", "logo": PDFSIST_B64},
+        {"name": "Globalize", "category": "LIVE DATA", "initials": "G", "color": "#b8621b", "logo": GLOBALIZE_B64},
+        {"name": "SpaceSist", "category": "SPACE", "initials": "S", "color": "#14b85f", "logo": SPACESIST_B64},
+        {"name": "ClearSist", "category": "PRIVACY", "initials": "C", "color": "#b8621b", "logo": CLEARSIST_B64},
+        {"name": "PDFSist", "category": "PDF TOOLS", "initials": "P", "color": "#b8621b", "logo": PDFSIST_B64},
     ]
 
     rows = []

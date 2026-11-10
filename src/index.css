@@ -1137,17 +1137,18 @@ html {
   border-radius: 2px;
   border: none;
   background: transparent;
-  color: #e24d3e;
+  color: #b8621b;
   cursor: pointer;
-  transition: opacity 0.15s, background-color 0.15s;
+  transition: opacity 0.15s, background-color 0.15s, color 0.15s;
 }
 
 .daunt-tab:hover {
+  color: #14b85f;
   text-decoration: underline;
 }
 
 .daunt-tab.active {
-  background-color: #e24d3e;
+  background-color: #b8621b;
   color: #ffffff;
   text-decoration: none;
 }
@@ -1197,12 +1198,13 @@ html {
 .service-item-daunt .service-name {
   font-size: 1.05rem;
   font-weight: 600;
-  color: #e24d3e;
-  transition: opacity 0.15s;
+  color: #b8621b;
+  transition: opacity 0.15s, color 0.15s;
 }
 
 .service-item-daunt:hover .service-name {
-  opacity: 0.9;
+  color: #14b85f;
+  opacity: 1;
 }
 
 .service-item-daunt .count {
