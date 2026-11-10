@@ -2,7 +2,11 @@ import { useState, useMemo, type FormEvent } from "react";
 import Navbar from "@/components/Navbar";
 import BuyMeACoffee from "@/components/BuyMeACoffee";
 import ErrorBoundary from "@/components/ErrorBoundary";
-import aliasistLogo from "@/assets/apple-touch-icon.png";
+import aliasistLogo from "@/assets/aliasist-logo.png";
+import globalizeLogo from "@/assets/globalize-logo.png";
+import spacesistLogo from "@/assets/spacesist-logo.png";
+import clearsistLogo from "@/assets/clearsist-logo.png";
+import pdfsistLogo from "@/assets/pdfsist-logo.png";
 import { siteEndpoints } from "@/config/api";
 import {
   Globe,
@@ -33,6 +37,7 @@ interface DirectoryService {
   name: string;
   categories: ("apps" | "tools" | "experiments")[];
   categoryBadge: string;
+  icon?: string;
   monogram: string;
   iconBg: string;
   countLabel: string;
@@ -49,8 +54,9 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "Aliasist AI",
     categories: ["apps", "tools"],
     categoryBadge: "Smart Search",
-    monogram: "AI",
-    iconBg: "#18181b",
+    icon: aliasistLogo,
+    monogram: "A",
+    iconBg: "#14b85f",
     countLabel: "1 links",
     statusBadge: "Reads Your Files",
     description:
@@ -72,8 +78,9 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "Globalize",
     categories: ["apps", "experiments"],
     categoryBadge: "3D Globe",
-    monogram: "GL",
-    iconBg: "#0d9488",
+    icon: globalizeLogo,
+    monogram: "G",
+    iconBg: "#2a6ebf",
     countLabel: "2 links",
     statusBadge: "Live World Map",
     description:
@@ -101,7 +108,8 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "SpaceSist",
     categories: ["apps", "experiments"],
     categoryBadge: "Space",
-    monogram: "SS",
+    icon: spacesistLogo,
+    monogram: "S",
     iconBg: "#4f46e5",
     countLabel: "2 links",
     statusBadge: "Live Tracking",
@@ -130,7 +138,8 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "ClearSist",
     categories: ["apps", "tools"],
     categoryBadge: "Privacy",
-    monogram: "CS",
+    icon: clearsistLogo,
+    monogram: "C",
     iconBg: "#0284c7",
     countLabel: "2 links",
     statusBadge: "100% Private",
@@ -159,7 +168,8 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "PDFSist",
     categories: ["apps", "tools"],
     categoryBadge: "PDF Tool",
-    monogram: "PDF",
+    icon: pdfsistLogo,
+    monogram: "P",
     iconBg: "#e24d3e",
     countLabel: "2 links",
     statusBadge: "No Sign-Up",
@@ -415,10 +425,20 @@ const Index = () => {
                     <div className="flex items-center gap-3.5">
                       <div
                         className="circle-icon"
-                        style={{ backgroundColor: service.iconBg }}
+                        style={{ backgroundColor: service.icon ? "transparent" : service.iconBg }}
                         title={service.categoryBadge}
                       >
-                        {service.monogram}
+                        {service.icon ? (
+                          <img
+                            src={service.icon}
+                            alt=""
+                            width={44}
+                            height={44}
+                            className="w-full h-full object-cover rounded-full"
+                          />
+                        ) : (
+                          service.monogram
+                        )}
                       </div>
 
                       <div className="text-hold">
