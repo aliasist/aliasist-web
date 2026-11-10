@@ -77,6 +77,9 @@ export const hero = {
   ctaOs: "Boot spawnOS",
   ctaOsHref: "/os/",
 } as const;
++
+303
+3
 
 // ── Navbar ───────────────────────────────────────────────────────────────────
 
@@ -98,7 +101,7 @@ export const footer = {
   emailLabel: "Email",
   githubHref: "https://github.com/aliasist",
   linkedinHref: "",
-  emailHref: "mailto:dev@aliasist.com",
+  emailHref: "mailto:dev@aliasist.tech",
   buyMeACoffeeHref: "https://www.buymeacoffee.com/aliasist",
 } as const;
 
