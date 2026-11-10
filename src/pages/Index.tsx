@@ -186,7 +186,7 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
         type: "web",
       },
       {
-        label: "github.com/aliasist/aliasist-project (pdfsist)",
+        label: "github.com/aliasist/pdfsist",
         url: "https://github.com/aliasist",
         actionText: "Source Code",
         type: "github",
