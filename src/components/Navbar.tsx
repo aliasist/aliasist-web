@@ -294,8 +294,8 @@ const Navbar = () => {
               alt="Aliasist Logo"
               className="h-8 w-8 object-contain rounded"
             />
-            <span className="text-xl font-bold tracking-tight lowercase text-white font-sans">
-              aliasist
+            <span className="text-xl font-bold tracking-tight text-white font-sans">
+              Aliasist
             </span>
           </a>
 

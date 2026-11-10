@@ -1264,7 +1264,6 @@ html {
   font-weight: 700;
   letter-spacing: -0.02em;
   color: hsl(var(--foreground));
-  text-transform: lowercase;
 }
 
 .subdreadQuick ul {

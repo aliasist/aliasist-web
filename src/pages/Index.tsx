@@ -694,7 +694,7 @@ const Index = () => {
           <div className="centerWrap px-0">
             <a href="/" className="dreadLogo flex items-center gap-2.5 text-white no-underline">
               <img src={aliasistLogo} alt="Aliasist" className="w-8 h-8 object-contain rounded" />
-              <div className="text font-bold text-xl lowercase tracking-tight">aliasist</div>
+              <div className="text font-bold text-xl tracking-tight">Aliasist</div>
             </a>
           </div>
 
