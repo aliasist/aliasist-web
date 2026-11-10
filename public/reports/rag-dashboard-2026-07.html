@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-<title>Aliasist RAG Curation Dashboard — Progress Report</title>
-<meta name="description" content="Progress report: the Aliasist RAG ingestion dashboard is live — per-corpus curation, full document lifecycle, and an end-to-end verified pipeline." />
+<title>Aliasist RAG Curation Dashboard: Progress Report</title>
+<meta name="description" content="Progress report: the Aliasist RAG ingestion dashboard is live: per-corpus curation, full document lifecycle, and an end-to-end verified pipeline." />
 <style>
   :root {
     --bg: hsl(220, 18%, 7%);
@@ -95,19 +95,19 @@
   <div class="kicker">Aliasist · Project Update</div>
   <h1>The RAG Curation Dashboard is live</h1>
   <p class="sub">
-    We built a full ingestion dashboard for the Aliasist RAG system — upload any document,
+    We built a full ingestion dashboard for the Aliasist RAG system: upload any document,
     convert it to clean markdown, route it into the right knowledge corpus, and have every
     Aliasist chatbot able to cite it moments later. The complete document lifecycle,
     including deletion, is now verified end-to-end.
   </p>
-  <p class="date">July 30, 2026 · Blake — Data Science / Platform</p>
+  <p class="date">July 30, 2026 · Blake: Data Science / Platform</p>
 
   <div class="divider"><span>Background</span></div>
   <h2>One RAG engine, six brains</h2>
   <p>
     The Aliasist platform runs a single retrieval-augmented generation (RAG) hub behind
     <span class="muted">api.aliasist.tech</span>. Instead of one undifferentiated pile of
-    documents, knowledge is organized into six <strong>corpora</strong> — focused document
+    documents, knowledge is organized into six <strong>corpora</strong>: focused document
     collections the system searches before answering:
   </p>
   <p style="margin-top: 1rem;">
@@ -116,27 +116,27 @@
   <p>
     Incoming questions are triaged to the right corpus automatically, retrieval runs in
     keyword or semantic (embedding) mode, and answers are generated through a provider
-    waterfall that fails over gracefully. Every Aliasist chatbot — the homepage assistant,
-    the Waterfall prompt surface — draws from this same engine with its own voice.
+    waterfall that fails over gracefully. Every Aliasist chatbot: the homepage assistant,
+    the Waterfall prompt surface: draws from this same engine with its own voice.
   </p>
 
   <div class="divider"><span>What we shipped</span></div>
   <div class="grid">
     <div class="card">
       <h3>📥 Bulk file-to-markdown ingestion</h3>
-      <p>Drag-and-drop uploads for PDF, DOCX, HTML, CSV, JSON, plain text, and common source files — converted to clean markdown before indexing.</p>
+      <p>Drag-and-drop uploads for PDF, DOCX, HTML, CSV, JSON, plain text, and common source files: converted to clean markdown before indexing.</p>
     </div>
     <div class="card">
       <h3>🎯 Per-document corpus targeting</h3>
-      <p>Every upload is routed into a chosen corpus via a dropdown — space docs to Space, market research to Pulse — with validation at every layer.</p>
+      <p>Every upload is routed into a chosen corpus via a dropdown: space docs to Space, market research to Pulse: with validation at every layer.</p>
     </div>
     <div class="card">
       <h3>🧠 Durable vector memory</h3>
-      <p>Documents are chunked, embedded, and stored in both a relational record store and a vector index — searchable semantically, no redeploy required.</p>
+      <p>Documents are chunked, embedded, and stored in both a relational record store and a vector index: searchable semantically, no redeploy required.</p>
     </div>
     <div class="card">
       <h3>🗑️ True deletion</h3>
-      <p>A new delete-by-source API removes a document's records and vectors from the live system — the full lifecycle, not just append-only ingest.</p>
+      <p>A new delete-by-source API removes a document's records and vectors from the live system: the full lifecycle, not just append-only ingest.</p>
     </div>
   </div>
 
@@ -153,7 +153,7 @@
   </div>
   <p>
     The full loop was exercised against a live local stack: a test document was uploaded
-    with the Space corpus selected, converted, chunked, and ingested — then retrieved and
+    with the Space corpus selected, converted, chunked, and ingested: then retrieved and
     cited by the RAG engine under its stored identity. Deleting it through the dashboard
     removed the underlying records, and fresh queries immediately stopped citing it.
     Chunk-level citations mean every answer can point back to the exact document that
@@ -165,14 +165,14 @@
     Until now, expanding what Aliasist's assistants know meant editing curated corpus files
     and redeploying the platform. With the dashboard, curation is a live workflow:
     drop in research, briefs, or reference material, pick the corpus, and it's citable
-    within moments — across every Aliasist surface at once. This is the foundation for a
+    within moments: across every Aliasist surface at once. This is the foundation for a
     continuously curated, custom knowledge base.
   </p>
 
   <div class="divider"><span>Next</span></div>
   <ul>
     <li>Deploy the deletion API to production alongside the existing ingest endpoints</li>
-    <li>Corpus-level browsing — see everything currently ingested per corpus at a glance</li>
+    <li>Corpus-level browsing: see everything currently ingested per corpus at a glance</li>
     <li>Scheduled/automated ingestion from recurring sources</li>
   </ul>
 

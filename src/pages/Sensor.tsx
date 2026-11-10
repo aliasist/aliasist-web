@@ -130,7 +130,7 @@ const Sensor = () => {
         )}
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 mb-10">
-          <Card className="border-violet/10 bg-background/50">
+          <Card className="border-border/60 bg-background/50">
             <CardHeader>
               <CardTitle className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
                 Temperature
@@ -138,26 +138,26 @@ const Sensor = () => {
             </CardHeader>
             <CardContent>
               <div className="text-5xl font-bold text-electric">
-                {latest ? `${toF(latest.temp_c)}°F` : "—"}
+                {latest ? `${toF(latest.temp_c)}°F` : "--"}
               </div>
             </CardContent>
           </Card>
 
-          <Card className="border-violet/10 bg-background/50">
+          <Card className="border-border/60 bg-background/50">
             <CardHeader>
               <CardTitle className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
                 Humidity
               </CardTitle>
             </CardHeader>
             <CardContent>
-              <div className="text-5xl font-bold text-violet">
-                {latest ? `${latest.humidity.toFixed(0)}%` : "—"}
+              <div className="text-5xl font-bold text-sky-400">
+                {latest ? `${latest.humidity.toFixed(0)}%` : "--"}
               </div>
             </CardContent>
           </Card>
         </div>
 
-        <Card className="border-violet/10 bg-background/50 mb-10">
+        <Card className="border-border/60 bg-background/50 mb-10">
           <CardContent className="pt-6">
             <div className="h-64">
               <ResponsiveContainer width="100%" height="100%">
@@ -189,7 +189,7 @@ const Sensor = () => {
                     type="monotone"
                     dataKey="humidity"
                     name="Humidity %"
-                    stroke="hsl(var(--violet))"
+                    stroke="hsl(199 89% 48%)"
                     strokeWidth={2}
                     dot={false}
                   />
@@ -199,7 +199,7 @@ const Sensor = () => {
           </CardContent>
         </Card>
 
-        <Card className="border-violet/10 bg-background/50">
+        <Card className="border-border/60 bg-background/50">
           <CardHeader>
             <CardTitle className="font-mono text-xs uppercase tracking-widest text-muted-foreground">
               Device Control

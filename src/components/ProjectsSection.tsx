@@ -24,7 +24,6 @@ const toneStyles = {
   cyan: { border: "hover:border-cyan-300/35" },
   green: { border: "hover:border-emerald-300/35" },
   teal: { border: "hover:border-electric/40" },
-  violet: { border: "hover:border-violet/35" },
 } as const;
 
 // Per-card component
@@ -66,7 +65,7 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
         </h3>
         {/* Only call out what isn't live; "Live" on every card is noise. */}
         {project.status !== "Live" && (
-          <span className="rounded-full border border-border/70 bg-background/50 px-2 py-0.5 font-mono text-xs uppercase tracking-wider text-muted-foreground/90 backdrop-blur-sm">
+          <span className="rounded-sm border border-border/70 bg-background/50 px-2 py-0.5 font-mono text-xs uppercase tracking-wider text-muted-foreground/90 backdrop-blur-sm">
             {project.status}
           </span>
         )}
@@ -125,7 +124,7 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
               href={project.github}
               target="_blank"
               rel="noopener noreferrer"
-              className="project-card-action group/action tap-target inline-flex items-center gap-2 rounded-sm border border-border/70 bg-background/25 px-4 py-2.5 text-sm font-semibold text-muted-foreground outline-none transition-colors hover:border-violet/35 hover:text-electric focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
+              className="project-card-action group/action tap-target inline-flex items-center gap-2 rounded-sm border border-border/70 bg-background/25 px-4 py-2.5 text-sm font-semibold text-muted-foreground outline-none transition-colors hover:border-electric/40 hover:text-electric focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-card"
             >
               <Github className="project-action-icon size-3.5 transition-transform duration-200 group-hover/action:rotate-6 group-focus-visible/action:rotate-6 motion-reduce:transform-none" aria-hidden />
               GitHub
@@ -234,10 +233,10 @@ const ProjectsSection = () => {
             {COMING_SOON_PROJECTS.map((item) => (
               <motion.div
                 key={item.codename}
-                className="group relative flex min-h-[180px] flex-col items-start justify-between overflow-hidden border border-dashed border-violet/20 bg-card p-10 outline-none"
+                className="group relative flex min-h-[180px] flex-col items-start justify-between overflow-hidden border border-dashed border-border/70 bg-card p-10 outline-none"
               >
                 <div>
-                  <p className="mb-3 text-sm text-violet/80">
+                  <p className="mb-3 text-sm text-electric/85">
                     Focus right now
                   </p>
                   <p className="mb-2 font-bold text-foreground/70">

@@ -1,11 +1,9 @@
 import React, { useState, useEffect, useRef } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useAuth, UserButton } from "@clerk/react";
-import { Volume2, VolumeX } from "lucide-react";
-import newLogo from "@/assets/apple-touch-icon.png";
+import aliasistLogo from "@/assets/apple-touch-icon.png";
 import { pageNavLinks, suiteApps } from "@/content/homepage";
 import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
-import { useSiteFeedback } from "@/components/SiteFeedback";
 
 const isExternalHref = (href: string) => /^https?:\/\//.test(href);
 const opensInNewTab = (app: (typeof liveSuiteApps)[number]) =>
@@ -99,11 +97,7 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
           <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
         </motion.svg>
         <span
-          className={`pointer-events-none absolute inset-x-2 top-1/2 h-full -translate-y-1/2 rounded-full bg-gradient-to-r from-transparent via-electric/10 to-transparent opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100 ${highlighted ? "opacity-60" : ""}`}
-          aria-hidden
-        />
-        <span
-          className={`absolute bottom-1 left-1/2 h-[2px] -translate-x-1/2 rounded-full bg-accent-line-duo shadow-accent-line-duo transition-all duration-300 ease-out ${
+          className={`absolute bottom-1 left-1/2 h-[2px] -translate-x-1/2 rounded-sm bg-electric shadow-[0_0_8px_hsl(var(--electric)/0.5)] transition-all duration-300 ease-out ${
             highlighted ? "w-[calc(100%-1.25rem)] opacity-100" : "w-0 opacity-0 group-hover:w-[calc(100%-1.25rem)] group-hover:opacity-100"
           }`}
           aria-hidden
@@ -118,7 +112,7 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 8, scale: 0.97 }}
             transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute top-full right-0 z-50 mt-3 w-64 overflow-hidden rounded-lg border border-border/80 bg-card/95 shadow-electric-panel backdrop-blur-xl"
+            className="absolute top-full right-0 z-50 mt-3 w-64 overflow-hidden rounded-sm border border-border bg-card shadow-lg"
           >
             {/* Header */}
             <div className="px-4 py-3 border-b border-border/60 flex items-center justify-between">
@@ -142,8 +136,8 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
                 transition={{ duration: 0.15, delay: i * 0.04 }}
                 className="group relative flex items-center gap-3 border-b border-border/30 px-4 py-3 transition-colors duration-300 last:border-0 hover:bg-[linear-gradient(90deg,hsl(165_90%_42%_/_0.06)_0%,transparent_100%)] outline-none focus-visible:z-10 focus-visible:bg-[linear-gradient(90deg,hsl(165_90%_42%_/_0.12)_0%,transparent_100%)] focus-visible:ring-2 focus-visible:ring-electric/60 focus-visible:ring-inset"
               >
-                <span className="absolute left-0 top-1/2 h-0 w-[3px] -translate-y-1/2 rounded-full bg-electric opacity-0 shadow-electric-accent-line transition-all duration-300 group-hover:h-[60%] group-hover:opacity-100" aria-hidden />
-                <span className="flex size-7 shrink-0 items-center justify-center rounded-sm border border-border/60 bg-background/45 font-mono text-[10px] font-semibold text-electric transition-all duration-300 group-hover:border-violet/45 group-hover:shadow-[0_0_12px_hsl(var(--violet)/0.28)]">
+                <span className="absolute left-0 top-1/2 h-0 w-[3px] -translate-y-1/2 rounded-sm bg-electric opacity-0 shadow-electric-accent-line transition-all duration-300 group-hover:h-[60%] group-hover:opacity-100" aria-hidden />
+                <span className="flex size-7 shrink-0 items-center justify-center rounded-sm border border-border/60 bg-background/45 font-mono text-[10px] font-semibold text-electric transition-all duration-300 group-hover:border-electric/50 group-hover:shadow-[0_0_12px_hsl(var(--electric)/0.28)]">
                   {app.icon}
                 </span>
                 <div className="flex-1 min-w-0">
@@ -164,14 +158,8 @@ const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
   );
 };
 
-const signInButtonClass =
-  "border border-border/50 bg-background/40 px-3.5 py-2 text-sm text-muted-foreground backdrop-blur-sm transition-all duration-300 ease-out hover:border-violet/40 hover:bg-electric/[0.07] hover:text-electric hover:shadow-[0_0_22px_hsl(var(--violet)/0.18),inset_0_1px_0_hsl(0_0%_100%/0.04)] active:scale-[0.98] rounded-sm";
-
 const mobileSignInButtonClass =
   "flex-1 rounded-md border border-electric/35 bg-electric/[0.04] py-2.5 text-center text-sm text-electric shadow-electric-mobile-signin transition-all duration-300 hover:border-electric/50 hover:bg-electric/10 hover:shadow-electric-mobile-signin-hover active:scale-[0.99]";
-
-const utilityButtonClass =
-  "tap-compact flex h-9 w-9 items-center justify-center rounded-sm border border-transparent text-muted-foreground transition-all duration-300 ease-out hover:border-electric/25 hover:bg-electric/[0.08] hover:text-electric hover:shadow-electric-utility-hover active:scale-95";
 
 const navUserButtonAppearance = {
   elements: {
@@ -194,9 +182,9 @@ const DesktopAuthControl = () => {
       aria-busy={!isLoaded}
       aria-label="Sign in"
       onClick={() => openSiteSignIn()}
-      className={`${signInButtonClass} shrink-0 cursor-pointer text-foreground/90 ${!isLoaded ? "opacity-70" : ""}`}
+      className={`text-sm text-[#8e929b] hover:text-white transition-colors font-sans lowercase cursor-pointer bg-transparent border-0 p-0 outline-none focus-visible:ring-2 focus-visible:ring-primary ${!isLoaded ? "opacity-70" : ""}`}
     >
-      Sign In
+      Login
     </button>
   );
 };
@@ -221,7 +209,7 @@ const MobileAuthControl = () => {
       onClick={() => openSiteSignIn()}
       className={`${mobileSignInButtonClass} cursor-pointer${!isLoaded ? " opacity-70" : ""}`}
     >
-      Sign In
+      Login
     </button>
   );
 };
@@ -229,18 +217,9 @@ const MobileAuthControl = () => {
 // ── Main Navbar ───────────────────────────────────────────────────────────────
 
 const Navbar = () => {
-  const [scrolled, setScrolled]         = useState(false);
-  const [mobileOpen, setMobileOpen]     = useState(false);
-  const [isDark, setIsDark]             = useState(true);
+  const [mobileOpen, setMobileOpen]       = useState(false);
   const [activeSection, setActiveSection] = useState("");
-  const { clickSoundsOn, toggleClickSounds } = useSiteFeedback();
   const mobileTriggerRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    const onScroll = () => setScrolled(window.scrollY > 20);
-    window.addEventListener("scroll", onScroll, { passive: true });
-    return () => window.removeEventListener("scroll", onScroll);
-  }, []);
 
   useEffect(() => {
     if (!mobileOpen) return;
@@ -285,29 +264,15 @@ const Navbar = () => {
   useEffect(() => {
     const stored = localStorage.getItem("aliasist-theme");
     const dark = stored ? stored === "dark" : true;
-    setIsDark(dark);
     document.documentElement.classList.toggle("light", !dark);
   }, []);
-
-  const toggleTheme = () => {
-    setIsDark(prev => {
-      const next = !prev;
-      document.documentElement.classList.toggle("light", !next);
-      localStorage.setItem("aliasist-theme", next ? "dark" : "light");
-      return next;
-    });
-  };
 
   return (
     <motion.nav
       initial={{ y: -80, opacity: 0 }}
       animate={{ y: 0, opacity: 1 }}
       transition={{ duration: 0.5, ease: "easeOut" }}
-      className={`site-nav fixed top-0 left-0 right-0 z-[200] pt-[env(safe-area-inset-top,0px)] transition-all duration-300 ${
-        scrolled
-          ? "bg-background/82 backdrop-blur-2xl border-b border-border/50 shadow-electric-bar"
-          : "bg-background/[0.03] backdrop-blur-[2px]"
-      }`}
+      className="site-nav sticky top-0 left-0 right-0 z-[200] pt-[env(safe-area-inset-top,0px)] bg-[#15171c] border-b border-black text-[#8e929b] shadow-sm"
     >
       <a
         href="#main-content"
@@ -315,102 +280,44 @@ const Navbar = () => {
       >
         Skip to content
       </a>
-      <div className="relative z-30 mx-auto flex h-[4.5rem] w-full max-w-site items-center justify-between gap-5 px-4 sm:gap-8 sm:px-8 lg:px-12 xl:px-16">
+      <div className="relative z-30 mx-auto flex h-14 w-full max-w-site items-center justify-between gap-5 px-4 sm:gap-8 sm:px-8 lg:px-12 xl:px-16">
 
-        {/* ── LEFT: Logo ── */}
-        <a
-          href="/"
-          className="group flex flex-shrink-0 items-center gap-3 rounded-xl border-0 bg-transparent py-1 pr-2 text-left transition-all duration-300 hover:bg-electric/[0.04] cursor-pointer outline-none appearance-none ring-offset-background focus-visible:ring-2 focus-visible:ring-ring"
-          aria-label="Back to Aliasist homepage"
-        >
-          <motion.img
-            src={newLogo}
-            alt=""
-            className="h-12 w-12 object-contain drop-shadow-logo-aura transition-all duration-300 sm:h-14 sm:w-14"
-            style={{ background: "transparent" }}
-            whileHover={{ scale: 1.08, rotate: -3, filter: "drop-shadow(0 0 18px hsl(165 90% 42% / 0.8))" }}
-            transition={{ type: "spring", stiffness: 400, damping: 20 }}
-          />
-        </a>
+        {/* ── LEFT: Aliasist Logo & Daunt quick nav ── */}
+        <div className="flex items-center gap-2">
+          <a
+            href="/"
+            className="flex items-center gap-2.5 text-white no-underline outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            aria-label="Back to Aliasist homepage"
+          >
+            <img
+              src={aliasistLogo}
+              alt="Aliasist Logo"
+              className="h-8 w-8 object-contain rounded"
+            />
+            <span className="text-xl font-bold tracking-tight lowercase text-white font-sans">
+              aliasist
+            </span>
+          </a>
 
-        {/* ── CENTER: Page links ── */}
-        <div className="hidden md:flex flex-1 items-center justify-center gap-2 rounded-sm border border-border/35 bg-background/50 px-2.5 py-1.5 shadow-electric-violet-well backdrop-blur-md">
-          {pageNavLinks.map(link => {
-            const isActive = activeSection === link.href.replace("#", "");
-            return (
-              <a
-                key={link.href}
-                href={link.href}
-                className={`group relative overflow-hidden rounded-sm px-4 py-2 text-sm transition-all duration-300 ease-out outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
-                  isActive
-                    ? "bg-electric/[0.12] text-electric shadow-electric-xs"
-                    : "text-muted-foreground hover:bg-electric/[0.06] hover:text-foreground hover:tracking-[0.2em] hover:shadow-electric-ring-inset-soft"
-                }`}
-              >
-                <span className="relative z-10">{link.label}</span>
-                <span
-                  className={`pointer-events-none absolute inset-x-2 top-1/2 h-full -translate-y-1/2 rounded-full bg-gradient-to-r from-transparent via-electric/10 to-transparent opacity-0 blur-md transition-opacity duration-300 group-hover:opacity-100 ${isActive ? "opacity-60" : ""}`}
-                  aria-hidden
-                />
-                <span
-                  className={`absolute bottom-1 left-1/2 h-[2px] -translate-x-1/2 rounded-full bg-accent-line-duo shadow-accent-line-duo transition-all duration-300 ease-out ${
-                    isActive ? "w-[calc(100%-1.25rem)] opacity-100" : "w-0 opacity-0 group-hover:w-[calc(100%-1.25rem)] group-hover:opacity-100"
-                  }`}
-                />
-              </a>
-            );
-          })}
+          <div className="hidden sm:block h-5 w-px bg-zinc-700/80 mx-2" />
 
-          {/* Subtle separator */}
-          <span className="mx-1.5 h-4 w-px bg-border/60" />
-
-          {/* Projects dropdown */}
-          <SuiteDropdown isActive={activeSection === "projects"} />
+          <nav className="hidden sm:flex items-center gap-5 text-sm text-[#8e929b] font-sans lowercase">
+            <a href="#directory" className="hover:text-white transition-colors">
+              directory
+            </a>
+            <a href="#about" className="hover:text-white transition-colors">
+              about
+            </a>
+            <a href="#contact" className="hover:text-white transition-colors">
+              contact
+            </a>
+          </nav>
         </div>
 
-        {/* ── RIGHT: Controls ── */}
-        <div className="hidden md:flex items-center gap-3 flex-shrink-0">
-          <div className="flex items-center gap-1 rounded-sm border border-border/35 bg-background/50 p-1 shadow-electric-nav-well-inset backdrop-blur-md">
-            <button
-              onClick={toggleTheme}
-              title={isDark ? "Light mode" : "Dark mode"}
-              className={utilityButtonClass}
-              aria-label="Toggle theme"
-            >
-              {isDark ? (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/>
-                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/>
-                  <line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/>
-                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/>
-                </svg>
-              ) : (
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round">
-                  <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/>
-                </svg>
-              )}
-            </button>
-            <button
-              type="button"
-              onClick={toggleClickSounds}
-              title={clickSoundsOn ? "Turn click sounds off" : "Turn click sounds on"}
-              className={utilityButtonClass}
-              aria-label={clickSoundsOn ? "Turn click sounds off" : "Turn click sounds on"}
-              aria-pressed={clickSoundsOn}
-              data-sound-toggle
-            >
-              {clickSoundsOn ? <Volume2 size={14} aria-hidden="true" /> : <VolumeX size={14} aria-hidden="true" />}
-            </button>
-          </div>
-          <div className="flex items-center gap-3 shrink-0 min-w-0">
-            <a
-              href="#contact"
-              className="rounded-sm bg-electric px-5 py-2 text-sm text-background shadow-electric-sm transition-[background-color,box-shadow,transform] duration-300 ease-out hover:bg-electric/90 hover:shadow-electric-md active:scale-[0.98] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
-            >
-              Contact
-            </a>
-            <DesktopAuthControl />
-          </div>
+        {/* ── RIGHT: Menu & Login ── */}
+        <div className="hidden md:flex items-center gap-5 flex-shrink-0">
+          <SuiteDropdown isActive={activeSection === "projects"} />
+          <DesktopAuthControl />
         </div>
 
         {/* ── MOBILE: Hamburger ── */}
@@ -439,7 +346,7 @@ const Navbar = () => {
               type="button"
               aria-label="Close menu"
               tabIndex={-1}
-              className="fixed inset-0 z-10 block cursor-default bg-background/50 backdrop-blur-lg md:hidden"
+              className="fixed inset-0 z-10 block cursor-default bg-background/80 md:hidden"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
@@ -452,7 +359,7 @@ const Navbar = () => {
               animate={{ opacity: 1, height: "auto" }}
               exit={{ opacity: 0, height: 0 }}
               transition={{ duration: 0.25 }}
-              className="relative z-20 md:hidden overflow-hidden border-b border-border bg-background/98 backdrop-blur-xl"
+              className="relative z-20 md:hidden overflow-hidden border-b border-border bg-background"
             >
               <div className="max-h-[calc(100dvh-4.5rem-env(safe-area-inset-top,0px))] overflow-y-auto overscroll-contain space-y-1 px-4 pb-[max(1.5rem,env(safe-area-inset-bottom))] pt-5 sm:px-8 lg:px-12 xl:px-16">
 
@@ -484,7 +391,7 @@ const Navbar = () => {
                   onClick={() => setMobileOpen(false)}
                   className="group -mx-1 flex h-12 items-center gap-3 rounded-lg px-3 text-sm text-muted-foreground transition-all duration-300 hover:bg-electric/[0.06] hover:text-electric hover:shadow-[inset_3px_0_0_hsl(165_90%_42%_/_0.5)] outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background"
                 >
-                  <span className="flex size-7 shrink-0 items-center justify-center rounded-sm border border-border/60 bg-background/45 font-mono text-[10px] font-semibold text-electric transition-all duration-300 group-hover:border-violet/45 group-hover:shadow-[0_0_12px_hsl(var(--violet)/0.28)]">
+                  <span className="flex size-7 shrink-0 items-center justify-center rounded-sm border border-border/60 bg-background/45 font-mono text-[10px] font-semibold text-electric transition-all duration-300 group-hover:border-electric/50 group-hover:shadow-[0_0_12px_hsl(var(--electric)/0.28)]">
                     {app.icon}
                   </span>
                   <span>{app.label}</span>
@@ -492,24 +399,7 @@ const Navbar = () => {
                 </a>
               ))}
 
-              {/* Divider */}
-              <div className="h-px bg-border/50 my-3" />
 
-              {/* Controls row */}
-              <div className="flex items-center gap-4 py-2">
-                <button type="button" onClick={toggleTheme} className="rounded-md px-2 py-1 text-xs font-mono text-muted-foreground transition-all duration-300 hover:bg-electric/[0.06] hover:text-electric">
-                  {isDark ? "Light Mode" : "Dark Mode"}
-                </button>
-                <button
-                  type="button"
-                  onClick={toggleClickSounds}
-                  className="rounded-md px-2 py-1 text-xs font-mono text-muted-foreground transition-all duration-300 hover:bg-electric/[0.06] hover:text-electric"
-                  aria-pressed={clickSoundsOn}
-                  data-sound-toggle
-                >
-                  Click sounds: {clickSoundsOn ? "On" : "Off"}
-                </button>
-              </div>
 
               {/* Contact then Sign In, Sign In on the right */}
               <div className="flex gap-3 pt-2">

@@ -21,14 +21,14 @@ const BlogCosmicOs = () => {
             <ArrowLeft className="size-3.5" /> Back to AliasOS
           </Link>
 
-          <span className="px-3 py-1 rounded-full border border-electric/40 bg-electric/10 text-electric font-mono text-xs uppercase tracking-wider">
+          <span className="px-3 py-1 rounded-sm border border-electric/40 bg-electric/10 text-electric font-mono text-xs uppercase tracking-wider">
             Engineering Blog
           </span>
         </div>
 
         {/* Article Header */}
         <header className="space-y-4 border-b border-border/60 pb-8">
-          <h1 className="bg-gradient-to-r from-electric via-emerald-300 to-cyan-400 bg-clip-text text-3xl sm:text-5xl font-black tracking-tight text-transparent leading-tight drop-shadow-[0_0_35px_rgba(10,204,151,0.25)]">
+          <h1 className="text-3xl sm:text-5xl font-black tracking-tight text-foreground leading-tight">
             Building AliasOS: What I Learned from Redox, a Rust App Launcher, and the Tractor Beam Protocol
           </h1>
 
@@ -47,7 +47,7 @@ const BlogCosmicOs = () => {
           {/* Tags */}
           <div className="flex flex-wrap gap-2 pt-2">
             {["#RustLang", "#OperatingSystems", "#RedoxOS", "#Tauri", "#Elm", "#Microkernel", "#WebAudio"].map(tag => (
-              <span key={tag} className="px-2.5 py-0.5 rounded-full bg-card border border-border/70 text-[10px] font-mono text-foreground/80">
+              <span key={tag} className="px-2.5 py-0.5 rounded-sm bg-card border border-border/70 text-[10px] font-mono text-foreground/80">
                 {tag}
               </span>
             ))}

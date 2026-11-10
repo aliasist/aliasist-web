@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" shape-rendering="crispEdges">
+  <rect width="640" height="360" fill="#bdbdbd"/><rect x="10" y="10" width="620" height="340" fill="#fff" stroke="#111" stroke-width="3"/>
+  <rect x="13" y="13" width="614" height="34" fill="#000080"/><text x="25" y="36" fill="#fff" font-family="Courier New,monospace" font-size="20">ALIASIST AI - CHAT WINDOW</text>
+  <rect x="30" y="64" width="580" height="220" fill="#eee" stroke="#555" stroke-width="3"/>
+  <rect x="96" y="83" width="404" height="38" fill="#fff" stroke="#222" stroke-width="2"/><text x="111" y="108" fill="#111" font-family="Arial,sans-serif" font-size="18">Hi! What are you working on?</text>
+  <rect x="135" y="145" width="430" height="38" fill="#dcecff" stroke="#000080" stroke-width="2"/><text x="150" y="170" fill="#111" font-family="Arial,sans-serif" font-size="18">Can you help me find an answer?</text>
+  <rect x="96" y="207" width="420" height="38" fill="#fff" stroke="#222" stroke-width="2"/><text x="111" y="232" fill="#111" font-family="Arial,sans-serif" font-size="18">Sure. Here are the sources I found.</text>
+  <rect x="30" y="303" width="580" height="26" fill="#c0c0c0" stroke="#777" stroke-width="2"/><text x="42" y="322" fill="#111" font-family="Courier New,monospace" font-size="15">READY  |  ASK A QUESTION</text>
+</svg>

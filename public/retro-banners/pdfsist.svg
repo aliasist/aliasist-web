@@ -1,0 +1,9 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" shape-rendering="crispEdges">
+  <rect width="640" height="360" fill="#bdbdbd"/><rect x="10" y="10" width="620" height="340" fill="#fff" stroke="#111" stroke-width="3"/>
+  <rect x="13" y="13" width="614" height="34" fill="#000080"/><text x="25" y="36" fill="#fff" font-family="Courier New,monospace" font-size="20">PDFSIST - DOCUMENT DESK</text>
+  <rect x="30" y="62" width="580" height="236" fill="#d8e7f5" stroke="#111" stroke-width="3"/>
+  <rect x="195" y="77" width="245" height="205" fill="#fff" stroke="#333" stroke-width="4"/><path d="M226 109h178M226 134h178M226 159h115" stroke="#777" stroke-width="6"/>
+  <path d="M231 225q18-47 32-4t35-7q19-27 26 8t31-14q21-29 43 9" fill="none" stroke="#000080" stroke-width="5"/>
+  <path d="M470 102h78v54h-78z" fill="#ffcc00" stroke="#111" stroke-width="4"/><text x="480" y="137" fill="#111" font-family="Courier New,monospace" font-size="19">SIGN</text>
+  <rect x="30" y="309" width="580" height="22" fill="#c0c0c0" stroke="#777" stroke-width="2"/><text x="42" y="326" fill="#111" font-family="Courier New,monospace" font-size="15">SIGN OR MARK UP A PDF</text>
+</svg>

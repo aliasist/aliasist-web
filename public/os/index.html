@@ -44,7 +44,7 @@
   <div class="window" id="win-cli" data-win="cli" hidden>
     <div class="titlebar" data-drag>
       <div class="tb-dot"></div>
-      <div class="tb-title">CYBERKONSOLE — <span id="cliUserLabel">GUEST</span>@NEURAL-NODE: ~</div>
+      <div class="tb-title">CYBERKONSOLE: <span id="cliUserLabel">GUEST</span>@NEURAL-NODE: ~</div>
       <button class="tb-btn close" data-action="close" aria-label="Close CyberKonsole">×</button>
     </div>
     <div class="content term">
@@ -59,7 +59,7 @@
   <div class="window" id="win-web" data-win="web" hidden>
     <div class="titlebar" data-drag>
       <div class="tb-dot"></div>
-      <div class="tb-title">ALIASBROWSER — CYBERNETIC WEB EXPLORER</div>
+      <div class="tb-title">ALIASBROWSER: CYBERNETIC WEB EXPLORER</div>
       <button class="tb-btn close" data-action="close" aria-label="Close AliasBrowser">×</button>
     </div>
     <div class="content browser" style="padding:0;">
@@ -85,7 +85,7 @@
   <div class="window" id="win-crypto" data-win="crypto" hidden>
     <div class="titlebar" data-drag>
       <div class="tb-dot"></div>
-      <div class="tb-title">CRYPTOLAB — SHA-256 / BASE64</div>
+      <div class="tb-title">CRYPTOLAB: SHA-256 / BASE64</div>
       <button class="tb-btn close" data-action="close" aria-label="Close CryptoLab">×</button>
     </div>
     <div class="content crypto">
@@ -93,11 +93,11 @@
       <textarea id="cryptoInput" placeholder="type here and the hashes update as you go">spawnos</textarea>
       <div class="out-row">
         <div class="out-label">SHA-256 (FIPS 180-4)</div>
-        <div class="out-val" id="sha256Out">—</div>
+        <div class="out-val" id="sha256Out">--</div>
       </div>
       <div class="out-row">
         <div class="out-label">BASE64</div>
-        <div class="out-val" id="base64Out">—</div>
+        <div class="out-val" id="base64Out">--</div>
       </div>
     </div>
   </div>
@@ -105,7 +105,7 @@
   <div class="window" id="win-net" data-win="net" hidden>
     <div class="titlebar" data-drag>
       <div class="tb-dot"></div>
-      <div class="tb-title">NETINSPECT — PACKET STREAM</div>
+      <div class="tb-title">NETINSPECT: PACKET STREAM</div>
       <button class="tb-btn close" data-action="close" aria-label="Close NetInspect">×</button>
     </div>
     <div class="content netinspect" style="padding:0;">
@@ -117,11 +117,11 @@
   <div class="window" id="win-sys" data-win="sys" hidden>
     <div class="titlebar" data-drag>
       <div class="tb-dot"></div>
-      <div class="tb-title">SYSAUDIT — SYSTEM SELF-TEST</div>
+      <div class="tb-title">SYSAUDIT: SYSTEM SELF-TEST</div>
       <button class="tb-btn close" data-action="close" aria-label="Close SysAudit">×</button>
     </div>
     <div class="content sysaudit">
-      <div class="check-row"><span>HAL — 8042 PS/2 controller</span><span class="ok">OK</span></div>
+      <div class="check-row"><span>HAL: 8042 PS/2 controller</span><span class="ok">OK</span></div>
       <div class="check-row"><span>VirtIO-Net PCI DMA</span><span class="ok">OK</span></div>
       <div class="check-row"><span>Plasma compositor (Zig SIMD)</span><span class="ok">OK</span></div>
       <div class="check-row"><span>AliasFS volume</span><span class="ok">MOUNTED</span></div>
@@ -137,7 +137,7 @@ UEFI FIRMWARE    → GOP fb · PCI DMA · hw timers</div>
   <div class="window" id="win-files" data-win="files" hidden>
     <div class="titlebar" data-drag>
       <div class="tb-dot"></div>
-      <div class="tb-title">DOLPHIN FILES — /HOME/<span id="filesUserLabel">GUEST</span></div>
+      <div class="tb-title">DOLPHIN FILES: /HOME/<span id="filesUserLabel">GUEST</span></div>
       <button class="tb-btn close" data-action="close" aria-label="Close Files">×</button>
     </div>
     <div class="content files">
@@ -147,7 +147,7 @@ UEFI FIRMWARE    → GOP fb · PCI DMA · hw timers</div>
       </div>
       <div id="fileList"></div>
       <div class="file-editor" id="fileEditor" hidden>
-        <div class="file-editor-head"><span id="fileEditorName">—</span><span id="fileEditorStatus"></span></div>
+        <div class="file-editor-head"><span id="fileEditorName">--</span><span id="fileEditorStatus"></span></div>
         <textarea id="fileEditorBody" spellcheck="false"></textarea>
         <div class="file-editor-actions">
           <button id="fileSaveBtn">SAVE</button>
@@ -160,7 +160,7 @@ UEFI FIRMWARE    → GOP fb · PCI DMA · hw timers</div>
   <div class="window" id="win-settings" data-win="settings" hidden>
     <div class="titlebar" data-drag>
       <div class="tb-dot"></div>
-      <div class="tb-title">SETTINGS — S:SET</div>
+      <div class="tb-title">SETTINGS: S:SET</div>
       <button class="tb-btn close" data-action="close" aria-label="Close Settings">×</button>
     </div>
     <div class="content settings">
@@ -199,7 +199,7 @@ UEFI FIRMWARE    → GOP fb · PCI DMA · hw timers</div>
       </div>
       <button class="reboot-btn" id="rebootBtn">REBOOT SYSTEM</button>
       <button class="reboot-btn" id="logoutBtn">LOG OUT</button>
-      <div class="settings-footer">SPAWNOS — WEB BUILD<br>real bare-metal project → <a href="https://github.com/aliasist/aliasist-os" target="_blank" rel="noopener noreferrer">github.com/aliasist/aliasist-os</a></div>
+      <div class="settings-footer">SPAWNOS: WEB BUILD<br>real bare-metal project → <a href="https://github.com/aliasist/aliasist-os" target="_blank" rel="noopener noreferrer">github.com/aliasist/aliasist-os</a></div>
     </div>
   </div>
 
@@ -208,9 +208,9 @@ UEFI FIRMWARE    → GOP fb · PCI DMA · hw timers</div>
       <button class="k-btn" id="kBtn">K</button>
     </div>
     <div class="task-right">
-      <span id="syncStatus" class="agent-on">● DB: —</span>
+      <span id="syncStatus" class="agent-on">● DB: --</span>
       <span id="taskUserLabel">guest</span>
-      <span id="fpsOut">— FPS</span>
+      <span id="fpsOut">-- FPS</span>
       <span id="pollOut">1000HZ POLL</span>
       <span class="clock" id="clock">00:00:00</span>
     </div>

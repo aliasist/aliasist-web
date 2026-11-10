@@ -15,12 +15,12 @@
  * Backend/API URLs (for developers): see `src/config/api.ts` (`siteEndpoints`).
  */
 
-import aliasistTechBanner from "@images/aliasist_tech_waterfall_banner_cinematic.webp";
-import clearasistBanner from "@images/clearasist_banner_cinematic.webp";
-import filesAbductorBanner from "@images/files_abductor_banner_cinematic.webp";
-import globalizeBanner from "@images/globalize_banner_cinematic.webp";
-import spaceBanner from "@images/spacesist_banner_cinematic.webp";
-import pdfsistBanner from "@images/pdfsist_banner_cinematic.webp";
+const aliasistTechBanner = "/retro-banners/aliasist-ai.svg";
+const clearasistBanner = "/retro-banners/clearasist.svg";
+const filesAbductorBanner = "/retro-banners/files-abductor.svg";
+const globalizeBanner = "/retro-banners/globalize.svg";
+const spaceBanner = "/retro-banners/spacesist.svg";
+const pdfsistBanner = "/retro-banners/pdfsist.svg";
 
 // ── Suite apps (live products) ───────────────────────────────────────────────
 
@@ -28,31 +28,31 @@ import pdfsistBanner from "@images/pdfsist_banner_cinematic.webp";
 export const suiteApps = [
   {
     label: "Aliasist AI",
-    sub: "Chat, images, and cited answers",
+    sub: "Ask questions from your files",
     href: "https://www.aliasist.tech",
     icon: "AT",
   },
   {
     label: "Globalize",
-    sub: "Interactive global infrastructure map",
+    sub: "Live 3D globe with flights and cables",
     href: "https://www.aliasist.world",
     icon: "GL",
   },
   {
     label: "SpaceSist",
-    sub: "Live space dashboard",
+    sub: "Watch live rocket launches and the Space Station",
     href: "https://space.aliasist.com",
     icon: "SS",
   },
   {
     label: "ClearSist",
-    sub: "Private file metadata cleaner",
+    sub: "Wipe hidden details from photos and files",
     href: "https://clearasist.pages.dev",
     icon: "CL",
   },
   {
     label: "PDFSist",
-    sub: "Sign and annotate PDFs in your browser",
+    sub: "Sign and write on PDFs in your browser",
     href: "https://pdf.aliasist.com",
     icon: "PDF",
   },
@@ -81,10 +81,9 @@ export const hero = {
 // ── Navbar ───────────────────────────────────────────────────────────────────
 
 export const pageNavLinks = [
+  { label: "Directory", href: "#directory" },
   { label: "About", href: "#about" },
-  { label: "Projects", href: "#projects" },
-  { label: "Updates", href: "#updates" },
-  { label: "News", href: "#transmissions" },
+  { label: "Contact", href: "#contact" },
 ] as const;
 
 
@@ -145,7 +144,7 @@ export const projects = [
     tech: ["Chat", "Image generation", "Cited sources"],
     downloads: [],
     status: "Live" as "Live" | "Archived",
-    tone: "violet",
+    tone: "teal",
     link: "https://www.aliasist.tech",
     linkLabel: "Open Aliasist AI",
     banner: aliasistTechBanner,
@@ -169,7 +168,7 @@ export const projects = [
     tech: ["Launches", "ISS tracking", "Asteroids", "Exoplanets"],
     downloads: [],
     status: "Live" as "Live" | "Archived",
-    tone: "violet",
+    tone: "blue",
     link: "https://space.aliasist.com",
     linkLabel: "Open SpaceSist",
     banner: spaceBanner,
@@ -243,16 +242,16 @@ export const about = {
    */
   bioBlocks: [
     {
-      kicker: "Who I am",
-      body: "I'm studying computer science because I want to understand how technology is built. I want to use what I learn to make projects that help people and improve lives.",
-    },
-    {
       kicker: "What Aliasist is",
-      body: "Aliasist is where I practice by building. Each app looks at a real need or a simpler way to use complex technology. Right now I'm not adding new apps. I'm making the ones here solid.",
+      body: "Aliasist is an independent directory of web applications and privacy tools built by Blake.",
     },
     {
-      kicker: "Why I build it",
-      body: "I build to learn and to give good ideas a chance to become useful. The goal is simple: make technology with care, share it, and keep working on things that can help people.",
+      kicker: "How it is built",
+      body: "Everything here is built around three rules: client-side processing first so files stay on your device, zero tracking or analytics scripts, and pure utility without paywalls.",
+    },
+    {
+      kicker: "Current focus",
+      body: "I am a computer science student building software one tool at a time. Right now, I am not adding new apps. I am keeping the five tools in this directory fast, solid, and reliable.",
     },
   ] as const,
 

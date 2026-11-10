@@ -88,7 +88,7 @@
       '<div class="content webapp"><div class="webapp-bar"><span class="webapp-host"></span>' +
       (a.embed === false ? '' : '<button type="button" class="webapp-btn" data-reload>RELOAD</button>') +
       '<a class="webapp-btn" target="_blank" rel="noopener noreferrer">OPEN IN NEW TAB</a></div></div>';
-    win.querySelector('.tb-title').textContent = a.name.toUpperCase() + ' — ' + host;
+    win.querySelector('.tb-title').textContent = a.name.toUpperCase() + ': ' + host;
     win.querySelector('[data-action="close"]').setAttribute('aria-label', 'Close ' + a.name);
     win.querySelector('.webapp-host').textContent = host;
     win.querySelector('a.webapp-btn').href = a.url;
@@ -125,14 +125,14 @@
 
   /* ================= boot sequence ================= */
   var BOOT_LINES = [
-    'spawnOS bootloader — x86_64 UEFI',
+    'spawnOS bootloader: x86_64 UEFI',
     'Initializing UEFI GOP framebuffer (1280x800)... [OK]',
     'Scanning PCI bus for devices... [OK]',
     'VirtIO-Net PCI DMA ring buffers... [OK]',
-    'smoltcp TCP/IP stack — 10.0.2.15/24... [OK]',
+    'smoltcp TCP/IP stack: 10.0.2.15/24... [OK]',
     '8042 PS/2 controller (0x60 / 0x64)... [OK]',
     'Zig SIMD glyph rasterizer... [OK]',
-    'Plasma compositor — double buffered GOP... [OK]',
+    'Plasma compositor: double buffered GOP... [OK]',
     'Mounting AliasFS...  [OK]',
     'Starting CyberKonsole shell...  [OK]'
   ];
@@ -824,8 +824,8 @@
   var base64Out = document.getElementById('base64Out');
   function updateCrypto(){
     var v = cryptoInput.value;
-    sha256Hex(v).then(function(hex){ sha256Out.textContent = hex || '—'; });
-    try { base64Out.textContent = v ? btoa(unescape(encodeURIComponent(v))) : '—'; }
+    sha256Hex(v).then(function(hex){ sha256Out.textContent = hex || '--'; });
+    try { base64Out.textContent = v ? btoa(unescape(encodeURIComponent(v))) : '--'; }
     catch(e){ base64Out.textContent = 'encoding error'; }
   }
   cryptoInput.addEventListener('input', updateCrypto);
@@ -982,7 +982,7 @@
       browserVideo.hidden = false; browserVideo.src = v; browserVideo.play().catch(function(){});
       frameFallback.hidden = false;
       frameFallbackLink.href = v;
-      statusText.textContent = 'PLAYING VIDEO — ' + v;
+      statusText.textContent = 'PLAYING VIDEO: ' + v;
     } else if (/^https?:\/\//i.test(v)){
       var frameSrc = yt || v;
       browserView.dataset.mode = 'frame';
@@ -990,7 +990,7 @@
       browserFrame.hidden = false; browserFrame.src = frameSrc;
       frameFallback.hidden = false;
       frameFallbackLink.href = v;
-      statusText.textContent = 'LOADED — ' + v;
+      statusText.textContent = 'LOADED: ' + v;
     } else {
       browserView.dataset.mode = 'text';
       frameFallback.hidden = true; browserFrame.hidden = true; browserVideo.hidden = true;

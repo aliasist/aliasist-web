@@ -26,12 +26,6 @@ const AboutSection = () => {
       aria-labelledby="about-heading"
       className="relative overflow-hidden px-4 py-28 sm:px-8 lg:px-12 xl:px-16"
     >
-      {/* Starts transparent, not a fixed tint, Hero's own gradients all fade
-          to transparent at its lower edge, so matching that here keeps the
-          seam between the two sections continuous instead of stepping. */}
-      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-background/20 to-background/10 pointer-events-none" />
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_72%_48%_at_50%_14%,_hsl(165_90%_42%_/_0.04)_0%,_transparent_62%)] pointer-events-none" />
-
       <div className="relative z-10 mx-auto w-full max-w-site">
         <motion.div
           initial={{ opacity: 0, y: 12 }}
@@ -128,9 +122,8 @@ const AboutSection = () => {
                 whileInView={{ opacity: 1, y: 0 }}
                 viewport={{ once: true }}
                 transition={{ duration: 0.5, delay: i * 0.1 }}
-                className="group relative bg-background border-l-2 border-transparent hover:border-electric px-8 py-7 transition-all duration-300 hover:bg-card hover:shadow-electric-sm overflow-hidden"
+                className="group relative bg-background border-l-2 border-transparent hover:border-electric px-8 py-7 transition-colors duration-200 hover:bg-card overflow-hidden"
               >
-                <div className="absolute inset-0 bg-gradient-to-r from-electric/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
                 <div className="relative text-5xl font-bold tracking-tight text-foreground mb-1.5">
                   {s.sym ? (
                     <>

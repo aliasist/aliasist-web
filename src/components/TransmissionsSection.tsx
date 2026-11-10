@@ -96,11 +96,6 @@ const CardThumbnail = ({ article }: { article: Article }) => {
         </defs>
         <rect width="100%" height="100%" fill={`url(#${svgId})`} />
       </svg>
-      {/* Radial glow at centre */}
-      <div
-        className="absolute inset-0"
-        style={{ background: `radial-gradient(ellipse 60% 60% at 50% 50%, ${article.color}18 0%, transparent 70%)` }}
-      />
       {/* Faint source label watermark */}
       <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
         <span
@@ -115,8 +110,8 @@ const CardThumbnail = ({ article }: { article: Article }) => {
       {/* Category tag */}
       <div className="absolute bottom-3 left-3">
         <span
-          className="text-xs px-2 py-0.5 border rounded-sm backdrop-blur-sm bg-background/40"
-          style={{ color: article.color, borderColor: `${article.color}40` }}
+          className="text-xs px-2 py-0.5 border rounded-sm bg-background font-mono"
+          style={{ color: article.color, borderColor: `${article.color}50` }}
         >
           {article.tag === "aisec" ? "Security" : article.tag}
         </span>

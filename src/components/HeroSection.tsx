@@ -62,22 +62,21 @@ const HeroSection = () => {
         >
           <a
             href={hero.ctaContactHref}
-            className="group relative inline-flex items-center justify-center gap-2 overflow-hidden rounded-sm bg-electric px-7 py-3.5 text-sm text-background shadow-electric-sm outline-none transition-all duration-300 hover:-translate-y-0.5 hover:shadow-cta-duo focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+            className="inline-flex items-center justify-center gap-2 rounded-sm bg-electric px-6 py-3 text-sm font-medium text-background transition-colors hover:bg-electric/90 active:scale-95"
           >
-            <span className="absolute inset-0 translate-y-full bg-white/10 transition-transform duration-300 group-hover:translate-y-0" />
-            <span className="relative">{hero.ctaContact}</span>
-            <ArrowRight className="relative size-3.5 transition-transform duration-300 group-hover:translate-x-0.5" aria-hidden />
+            <span>{hero.ctaContact}</span>
+            <ArrowRight className="size-3.5" aria-hidden />
           </a>
           <a
             href={hero.ctaSecondaryHref}
-            className="inline-flex items-center justify-center gap-2 rounded-sm border border-border bg-background px-7 py-3.5 text-sm text-foreground/82 outline-none transition-colors duration-200 hover:border-electric/60 hover:text-electric focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+            className="inline-flex items-center justify-center gap-2 rounded-sm border border-border bg-card px-6 py-3 text-sm text-foreground transition-colors hover:border-electric/60 hover:text-electric active:scale-95"
           >
             <Mail className="size-3.5" aria-hidden />
             {hero.ctaSecondary}
           </a>
           <a
             href={hero.ctaOsHref}
-            className="inline-flex items-center justify-center gap-2 rounded-sm border border-electric/40 bg-background px-7 py-3.5 font-mono text-sm text-electric outline-none transition-colors duration-200 hover:border-electric hover:bg-electric/5 focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-offset-background active:scale-95"
+            className="inline-flex items-center justify-center gap-2 rounded-sm border border-electric/40 bg-card px-6 py-3 font-mono text-sm text-electric transition-colors hover:border-electric hover:bg-electric/5 active:scale-95"
           >
             <Terminal className="size-3.5" aria-hidden />
             {hero.ctaOs}

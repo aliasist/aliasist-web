@@ -18,7 +18,7 @@ const KIND_LABELS: Record<UpdateKind, string> = {
 
 const KIND_COLORS: Record<UpdateKind, string> = {
   update: "hsl(var(--electric))",
-  event: "hsl(var(--violet))",
+  event: "hsl(43 96% 56%)",
 };
 
 interface UpdatesResponse {

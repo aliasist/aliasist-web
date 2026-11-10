@@ -161,8 +161,16 @@ const RAG_CACHE_TTL_SECONDS_LIVE = 60;
 export async function fetchRagContext(
   env: Env,
   question: string,
+  history: Array<{ role: string; content: string }> = [],
 ): Promise<string | null> {
-  const sist = detectSist(question);
+  // Follow-up questions often omit the topic ("what about Europe?", "and
+  // tomorrow?"). Prefer the current question's topic, then inherit the most
+  // recent topic from the conversation so these still reach the right corpus.
+  const sist = detectSist(question) ?? [...history]
+    .reverse()
+    .filter((message) => message.role === "user")
+    .map((message) => detectSist(message.content))
+    .find((topic): topic is SistId => topic !== null);
   if (!sist) return null;
 
   const live = sist === "eco";
@@ -224,19 +232,19 @@ const GROQ_MODEL = "llama-3.3-70b-versatile";
 const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
 const DEFAULT_WORKERS_AI_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 
-const BASE_SYSTEM = `You are Aliasist, the assistant built into aliasist.com — Blake's site for a growing set of free tools built to be clear, practical, and ready to use, not locked behind a sales pitch.
+const BASE_SYSTEM = `You are Aliasist, the assistant built into aliasist.com, Blake's site for a growing set of free tools built to be clear, practical, and ready to use, not locked behind a sales pitch.
 
 About Aliasist:
 - Focus: data dashboards, privacy tools, file utilities, and small web apps and games
-- Projects: Aliasist AI (document chat and image generation — this assistant's own home), Globalize (3D globe of data centers, subsea cables, air traffic, and seismic activity), SpaceSist (live NASA, SpaceX, ISS, and exoplanet dashboard), Aliasist Files Abductor (desktop YouTube and URL downloader), Tetra-Protocol (a story-driven cyberpunk Tetris game)
+- Projects: Aliasist AI (document chat and image generation, this assistant's own home), Globalize (3D globe of data centers, subsea cables, air traffic, and seismic activity), SpaceSist (live NASA, SpaceX, ISS, and exoplanet dashboard), Aliasist Files Abductor (desktop YouTube and URL downloader), Tetra-Protocol (a story-driven cyberpunk Tetris game)
 - Contact: dev@aliasist.com | github.com/aliasist
 - Background: Aliasist is shaped by older web design habits and modern application work: layout, CSS, interfaces, APIs, storage, and deployment.
 
-Your voice: direct and a little dry. Explain things plainly, skip the sales language, and don't pad an answer just to sound impressive — you'd rather undersell a project and let it speak for itself.
+Your voice: direct and a little dry. Explain things plainly, skip the sales language, and don't pad an answer just to sound impressive, you'd rather undersell a project and let it speak for itself.
 
 Your role: Help visitors understand Aliasist and its projects. Be concise and concrete. Keep responses under 3 paragraphs. Do not oversell. Do not invent project details. When someone has a project idea, suggest contacting Aliasist through the site.
 
-When RAG context is provided below, use it as your primary source of truth. Cite it naturally — do not mention "RAG" or "corpus" to the user.`;
+When RAG context is provided below, use it as your primary source of truth. Cite it naturally, do not mention "RAG" or "corpus" to the user.`;
 
 function buildSystem(ragContext: string | null): string {
   if (!ragContext) return BASE_SYSTEM;
@@ -449,7 +457,7 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
   const lastUserMsg = [...messages].reverse().find((m) => m.role === "user")?.content ?? "";
 
   // --- RAG fetch (blocking, cached; 12s upstream timeout) ---
-  const ragContext = await fetchRagContext(env, lastUserMsg);
+  const ragContext = await fetchRagContext(env, lastUserMsg, messages);
   const system = buildSystem(ragContext);
   const providerErrors: string[] = [];
 

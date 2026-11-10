@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 360" shape-rendering="crispEdges">
+  <rect width="640" height="360" fill="#bdbdbd"/><rect x="10" y="10" width="620" height="340" fill="#fff" stroke="#111" stroke-width="3"/>
+  <rect x="13" y="13" width="614" height="34" fill="#000080"/><text x="25" y="36" fill="#fff" font-family="Courier New,monospace" font-size="20">GLOBALIZE - WORLD MAP</text>
+  <rect x="30" y="62" width="580" height="236" fill="#add8e6" stroke="#111" stroke-width="3"/>
+  <path d="M60 115l32-30 48 8 21 22 34 4 10 26-29 17-8 35-37 12-17-27-35-7-18-27zM222 99l32-17 48 12 21 25-19 15 6 35-29 20-21-19-33 4-18-34zM343 116l34-28 62 12 27 24-17 19 3 36-37 13-16-21-34-1-13-29zM474 211l48-12 27 19-12 29-51 8-23-19z" fill="#28a745" stroke="#176b2c" stroke-width="5"/>
+  <g fill="#ff4500" stroke="#fff" stroke-width="3"><circle cx="144" cy="151" r="8"/><circle cx="273" cy="133" r="8"/><circle cx="393" cy="149" r="8"/><circle cx="495" cy="231" r="8"/></g>
+  <rect x="30" y="309" width="580" height="22" fill="#c0c0c0" stroke="#777" stroke-width="2"/><text x="42" y="326" fill="#111" font-family="Courier New,monospace" font-size="15">DATA CENTERS  |  CABLES  |  WEATHER</text>
+</svg>

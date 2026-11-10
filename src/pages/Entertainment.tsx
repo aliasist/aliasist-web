@@ -317,7 +317,7 @@ const MoviesTab = () => {
                 </span>
                 <span className="flex items-center gap-1 text-muted-foreground">
                   <Star className="size-3 fill-electric text-electric" />
-                  {item.rating?.toFixed(1) ?? "—"}
+                  {item.rating?.toFixed(1) ?? "--"}
                 </span>
               </div>
             </CardContent>
@@ -365,7 +365,7 @@ const MoviesTab = () => {
                 </div>
                 <span className="font-mono text-xs font-bold text-electric flex items-center gap-1">
                   <Star className="size-3.5 fill-electric text-electric" />
-                  {selectedMovie.rating?.toFixed(1) ?? "—"}/10
+                  {selectedMovie.rating?.toFixed(1) ?? "--"}/10
                 </span>
               </div>
 
@@ -2189,7 +2189,7 @@ const AnimeTab = () => {
                 </span>
                 <span className="flex items-center gap-1 text-muted-foreground">
                   <Star className="size-3 fill-amber-300 text-amber-300" />
-                  {anime.score?.toFixed(1) ?? "—"}
+                  {anime.score?.toFixed(1) ?? "--"}
                 </span>
               </div>
             </CardContent>
@@ -2227,7 +2227,7 @@ const AnimeTab = () => {
               <div className="flex items-center justify-between">
                 <span className="font-mono text-xs font-bold text-amber-300 flex items-center gap-1">
                   <Star className="size-3.5 fill-amber-300 text-amber-300" />
-                  {selectedAnime.score?.toFixed(2) ?? "—"} / 10
+                  {selectedAnime.score?.toFixed(2) ?? "--"} / 10
                 </span>
               </div>
 
@@ -2588,7 +2588,7 @@ const OddsTab = () => {
   return (
     <div className="space-y-5">
       <p className="font-mono text-[10px] uppercase tracking-[0.14em] text-muted-foreground/60">
-        Informational odds display only — no bets are placed on this site.
+        Informational odds display only. No bets are placed on this site.
       </p>
       <div className="grid gap-4 sm:grid-cols-2">
         {displayOdds.map((event) => {
@@ -2643,24 +2643,11 @@ const Entertainment = () => (
         {/* Ambient premium glow, matching the site's hero treatment */}
         <div className="pointer-events-none absolute inset-0 -z-10 bg-[radial-gradient(ellipse_70%_60%_at_50%_30%,_hsl(165_90%_42%_/_0.08)_0%,_transparent_65%)]" />
 
-        {/* Animated gradient orb centerpiece, a soft, breathing blur behind
-            the title. Two overlapping green and cyan colors drifting at
-            slightly different rhythms so it never feels static. */}
-        <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 flex justify-center" aria-hidden="true">
-          <div className="relative h-[280px] w-[280px] sm:h-[380px] sm:w-[380px]">
-            <div className="absolute inset-0 animate-pulse rounded-full bg-electric/25 blur-3xl [animation-duration:4s]" />
-            <div
-              className="absolute inset-0 animate-pulse rounded-full bg-cyan-400/20 blur-3xl [animation-duration:5s]"
-              style={{ animationDelay: "1s" }}
-            />
-          </div>
-        </div>
-
         <div className="px-6 py-4">
           <div className="section-divider mx-auto mb-8 max-w-xs font-sans tracking-[0.3em]">
             <span>Now Playing</span>
           </div>
-          <h1 className="bg-gradient-to-r from-electric via-emerald-300 to-electric bg-clip-text font-sans text-4xl font-black tracking-wide text-transparent drop-shadow-[0_0_30px_rgba(10,204,151,0.35)] sm:text-6xl sm:tracking-widest">
+          <h1 className="font-sans text-4xl font-black tracking-wide text-electric sm:text-6xl sm:tracking-widest">
             Entertainment
           </h1>
           <p className="mx-auto mt-5 max-w-2xl font-sans text-base leading-relaxed tracking-wide text-muted-foreground">
@@ -2674,7 +2661,7 @@ const Entertainment = () => (
           Entertainment sections
         </h2>
         <Tabs defaultValue="movies" className="w-full">
-          <TabsList className="mx-auto mb-8 flex w-fit max-w-full flex-wrap justify-center gap-1 rounded-lg border border-violet/15 bg-background/76 p-1.5 shadow-[0_0_22px_hsl(var(--electric)_/_0.08),0_0_28px_hsl(var(--violet)_/_0.06),0_2px_14px_hsl(0_0%_0%_/_0.14)] backdrop-blur-md">
+          <TabsList className="mx-auto mb-8 flex w-fit max-w-full flex-wrap justify-center gap-1 rounded-sm border border-border/70 bg-background/90 p-1.5 shadow-sm backdrop-blur-md">
             <TabsTrigger value="movies" className="flex items-center gap-1.5">
               <Film className="size-3.5" /> Movies & TV
             </TabsTrigger>

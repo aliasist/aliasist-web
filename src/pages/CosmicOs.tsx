@@ -313,7 +313,7 @@ const DEFAULT_APPS: RegisteredApp[] = [
     runtime: "Mojo MLIR AI",
     runtimeBadgeColor: "bg-orange-500/15 border-orange-500/40 text-orange-400",
     icon: "🔥",
-    description: "Next-gen MLIR AI tensor engine executing high-dimensional vector math & neural fine-tuning in pure Mojo.",
+    description: "MLIR AI tensor engine executing high-dimensional vector math & neural fine-tuning in pure Mojo.",
     ramEstimate: "~48 MB",
     capabilities: ["MLIR Tensor Cores", "SIMD Vector Math", "Qdrant Cosine Bridge", "Hardware Autotuning"],
     launchType: "cli",
@@ -781,20 +781,20 @@ const CosmicOs = () => {
         {/* Header Hero */}
         <section className="text-center space-y-4 max-w-3xl mx-auto">
           <div className="flex items-center justify-center gap-2">
-            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full border border-electric/40 bg-electric/10 text-electric font-mono text-xs uppercase tracking-widest">
-              <Layers className="size-3.5" /> Next-Gen Multi-Persona Sovereign OS
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-sm border border-electric/40 bg-electric/10 text-electric font-mono text-xs uppercase tracking-widest">
+              <Layers className="size-3.5" /> Multi-Persona Terminal & App Workspace
             </div>
             <button
               type="button"
               onClick={() => setAudioEnabled(!audioEnabled)}
-              className="p-1.5 rounded-full border border-border/60 bg-card/70 hover:border-electric text-muted-foreground hover:text-foreground transition-all cursor-pointer"
-              title={audioEnabled ? "Disable Quantum Audio" : "Enable Quantum Audio"}
+              className="p-1.5 rounded-sm border border-border/60 bg-card hover:border-electric text-muted-foreground hover:text-foreground transition-all cursor-pointer"
+              title={audioEnabled ? "Disable Audio" : "Enable Audio"}
             >
               {audioEnabled ? <Volume2 className="size-3.5 text-electric" /> : <VolumeX className="size-3.5" />}
             </button>
           </div>
 
-          <h1 className="bg-gradient-to-r from-electric via-emerald-300 to-cyan-400 bg-clip-text text-5xl font-black tracking-tight text-transparent sm:text-7xl drop-shadow-[0_0_35px_rgba(10,204,151,0.35)]">
+          <h1 className="text-5xl font-black tracking-tight text-electric sm:text-7xl">
             Alias
           </h1>
           <p className="text-muted-foreground text-sm sm:text-base leading-relaxed font-sans">
@@ -809,7 +809,7 @@ const CosmicOs = () => {
                   <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-400 opacity-75"></span>
                   <span className="relative inline-flex rounded-full h-2 w-2 bg-emerald-500"></span>
                 </span>
-                <span>Alias Kernel IPC Active (127.0.0.1:7777) — Multi-Persona Grid Ready</span>
+                <span>Alias Kernel IPC Active (127.0.0.1:7777): Multi-Persona Grid Ready</span>
               </div>
             ) : (
               <div className="inline-flex items-center gap-2 px-3 py-1 rounded-md bg-amber-500/10 border border-amber-500/30 text-amber-300 font-mono text-xs">
@@ -925,7 +925,7 @@ const CosmicOs = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-cyan-400 font-mono text-xs font-bold">
               <Download className="size-4 animate-bounce" />
-              <span>TRACTOR BEAM PROTOCOL (TBP) — EXTRACTION & MATERIALIZATION SANDBOX</span>
+              <span>TRACTOR BEAM PROTOCOL (TBP): EXTRACTION & MATERIALIZATION SANDBOX</span>
             </div>
             <span className="text-[10px] font-mono text-cyan-300/80">Quantum Target Lock · Hyperspace Staging · CoW Swap</span>
           </div>
@@ -1138,7 +1138,7 @@ const CosmicOs = () => {
                 key={cat}
                 type="button"
                 onClick={() => setFilter(cat)}
-                className={`px-4 py-1.5 rounded-full border text-xs font-mono transition-all cursor-pointer ${
+                className={`px-4 py-1.5 rounded-sm border text-xs font-mono transition-colors cursor-pointer ${
                   filter === cat
                     ? "bg-electric text-black font-black border-electric shadow-lg shadow-electric/20"
                     : "bg-card/70 border-border/60 text-muted-foreground hover:text-foreground hover:bg-white/5"

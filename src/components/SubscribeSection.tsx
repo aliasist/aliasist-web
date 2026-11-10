@@ -35,7 +35,7 @@ const SubscribeSection = () => {
   };
 
   const inputClass =
-    "w-full bg-background/[0.14] border border-background/30 text-background placeholder:text-background/55 font-[family-name:var(--font-heading)] text-base md:text-sm font-medium leading-normal px-4 py-3 rounded-sm antialiased caret-electric shadow-[inset_0_1px_0_rgba(255,255,255,0.06)] focus:outline-none focus-visible:border-electric focus-visible:bg-background/[0.18] focus-visible:shadow-electric-xs focus-visible:placeholder:text-background/40 focus-visible:ring-2 focus-visible:ring-electric/45 focus-visible:ring-offset-2 focus-visible:ring-offset-foreground transition-all duration-200";
+    "w-full rounded-sm border border-background/30 bg-background/15 px-4 py-3 text-sm text-background placeholder:text-background/50 focus:border-electric focus:outline-none focus:ring-1 focus:ring-electric transition-colors";
 
   return (
     <section
@@ -43,10 +43,6 @@ const SubscribeSection = () => {
       aria-labelledby="subscribe-heading"
       className="relative overflow-hidden bg-foreground px-4 py-24 text-background sm:px-8 lg:px-12 xl:px-16"
     >
-      <div className="absolute -left-24 -top-24 w-[420px] h-[420px] rounded-full pointer-events-none opacity-[0.05]"
-        style={{ background: "radial-gradient(circle, hsl(var(--violet)), transparent 70%)" }}
-      />
-
       <div className="relative z-10 mx-auto w-full max-w-site">
         <div className="section-divider mb-10 [&>span]:text-background/35 before:bg-background/10 after:bg-background/10">
           <span>{subscribeSection.dividerLabel}</span>

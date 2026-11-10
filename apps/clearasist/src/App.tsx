@@ -66,7 +66,7 @@ function App() {
           }
           result = await processOffice(file)
         } else {
-          newErrors.push(`Unsupported format: ${file.name} (${file.type || 'unknown type'}) — supported: JPEG/PNG/WebP/HEIC, PDF, DOCX/PPTX/XLSX`)
+          newErrors.push(`Unsupported format: ${file.name} (${file.type || 'unknown type'}): supported: JPEG/PNG/WebP/HEIC, PDF, DOCX/PPTX/XLSX`)
           continue
         }
 
@@ -140,7 +140,7 @@ function App() {
   }
 
   return (
-    <div className="min-h-screen bg-background text-foreground flex items-center justify-center">
+    <div className="clearasist-page min-h-screen bg-background text-foreground flex items-center justify-center">
       <div className="w-full max-w-md px-6">
         {/* Minimal Header */}
         <div className="text-center mb-10">
@@ -156,7 +156,7 @@ function App() {
           onDragOver={handleDragOver}
           onDragEnter={handleDragEnter}
           onDragLeave={handleDragLeave}
-          className={`block focus-within:ring-2 focus-within:ring-electric border-2 border-dashed rounded-2xl p-14 text-center cursor-pointer transition-all duration-200 ${
+          className={`block focus-within:ring-2 focus-within:ring-electric border-2 border-dashed rounded-sm p-14 text-center cursor-pointer transition-all duration-200 ${
             isActuallyDragging
               ? 'border-electric bg-electric/10 scale-[1.01] shadow-lg shadow-electric/10'
               : 'border-border hover:border-electric/40'
@@ -172,7 +172,7 @@ function App() {
             disabled={isProcessing}
             onChange={handleFileSelect}
           />
-          <div className="mx-auto w-14 h-14 rounded-full bg-secondary flex items-center justify-center mb-5">
+          <div className="mx-auto w-14 h-14 rounded-sm bg-secondary flex items-center justify-center mb-5">
             {isProcessing ? (
               <Loader2 className="w-7 h-7 text-electric animate-spin" />
             ) : (
@@ -214,7 +214,7 @@ function App() {
                 aria-label={`Download cleaned ${file.originalName}`}
                 key={file.id}
                 onClick={() => downloadFile(file)}
-                className="group w-full text-left focus-visible:ring-2 focus-visible:ring-electric bg-card border border-border rounded-xl p-4 flex items-center justify-between cursor-pointer transition-all hover:border-electric/40 hover:shadow-md active:scale-[0.985] opacity-0 animate-[fadeIn_0.2s_ease_forwards]"
+                className="group w-full text-left focus-visible:ring-2 focus-visible:ring-electric bg-card border border-border rounded-sm p-4 flex items-center justify-between cursor-pointer transition-colors hover:border-electric/55 active:scale-[0.985] opacity-0 animate-[fadeIn_0.2s_ease_forwards]"
                 style={{ animationDelay: `${index * 60}ms` }}
               >
                 <div>
@@ -227,7 +227,7 @@ function App() {
                       : 'Cleaned (no metadata found)'}
                   </div>
                 </div>
-                <div className="flex items-center gap-2 text-electric group-hover:text-white transition-colors">
+                <div className="flex items-center gap-2 text-electric group-hover:text-foreground transition-colors">
                   <Download size={18} />
                 </div>
               </button>
@@ -250,7 +250,7 @@ function App() {
               </button>
             </div>
             {errors.map((err, i) => (
-              <div key={i} className="text-xs bg-amber-950/50 border border-amber-900/50 text-amber-300 rounded-lg px-3 py-2">
+              <div key={i} className="text-xs bg-amber-50 border border-amber-300 text-amber-950 rounded-sm px-3 py-2">
                 {err}
               </div>
             ))}

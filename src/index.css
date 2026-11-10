@@ -310,14 +310,13 @@ body::after {
   height: 1.45rem;
   margin: -0.28rem auto 0;
   padding-bottom: 0.28rem;
-  border: 1px solid hsl(var(--violet) / 0.24);
+  border: 1px solid hsl(var(--electric) / 0.24);
   border-radius: 999px / 58%;
   background:
     linear-gradient(180deg, hsl(198 92% 72% / 0.42), hsl(var(--card) / 0.96) 62%),
     radial-gradient(ellipse at center, hsl(var(--electric) / 0.2), transparent 64%);
   box-shadow:
     inset 0 1px 0 hsl(0 0% 100% / 0.18),
-    0 0 22px hsl(var(--violet) / 0.12),
     0 0 18px hsl(var(--electric) / 0.12);
 }
 
@@ -348,7 +347,7 @@ body::after {
   clip-path: polygon(38% 0, 62% 0, 100% 100%, 0 100%);
   background:
     linear-gradient(180deg, hsl(var(--electric) / 0.14), hsl(var(--electric) / 0.045) 62%, transparent),
-    repeating-linear-gradient(90deg, transparent 0 8px, hsl(var(--violet) / 0.04) 8px 9px);
+    repeating-linear-gradient(90deg, transparent 0 8px, hsl(var(--electric) / 0.04) 8px 9px);
   filter: blur(0.2px);
   opacity: 0.72;
   animation: ambient-ufo-beam 4.6s ease-in-out infinite;
@@ -369,7 +368,7 @@ body::after {
 
 .ambient-ufo__signal--b {
   animation-delay: 2.4s;
-  border-color: hsl(var(--violet) / 0.12);
+  border-color: hsl(var(--electric) / 0.12);
 }
 
 @keyframes ambient-drift {
@@ -498,12 +497,11 @@ body::after {
   flex: 1;
   height: 1px;
 }
-/* Teal stays nearest the label; violet blends out toward the neutral border. */
 .section-divider::before {
-  background: linear-gradient(90deg, hsl(var(--border)) 0%, hsl(var(--violet) / 0.3) 72%, hsl(var(--electric) / 0.45) 100%);
+  background: linear-gradient(90deg, hsl(var(--border)) 0%, hsl(var(--electric) / 0.4) 100%);
 }
 .section-divider::after {
-  background: linear-gradient(90deg, hsl(var(--electric) / 0.45) 0%, hsl(var(--violet) / 0.3) 28%, hsl(var(--border)) 100%);
+  background: linear-gradient(90deg, hsl(var(--electric) / 0.4) 0%, hsl(var(--border)) 100%);
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -1097,3 +1095,606 @@ html {
     transform: none !important;
   }
 }
+
+/* ─── Daunt Directory Theme & Components ─── */
+.daunt-shell {
+  min-height: 100vh;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  font-family: var(--font-body);
+}
+
+.daunt-container {
+  width: 100%;
+  max-width: 960px;
+  margin: 0 auto;
+  padding: 0 1.25rem;
+}
+
+/* Header matching Daunt screenshot */
+.daunt-top-bar {
+  background-color: #15171c;
+  border-bottom: 1px solid #000;
+  color: #8e929b;
+}
+
+/* Filter bar matching Daunt screenshot */
+.daunt-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+  padding: 1.25rem 0 0.5rem;
+}
+
+.daunt-tab {
+  font-family: var(--font-body);
+  font-size: 0.82rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  padding: 0.45rem 1.35rem;
+  border-radius: 2px;
+  border: none;
+  background: transparent;
+  color: #e24d3e;
+  cursor: pointer;
+  transition: opacity 0.15s, background-color 0.15s;
+}
+
+.daunt-tab:hover {
+  text-decoration: underline;
+}
+
+.daunt-tab.active {
+  background-color: #e24d3e;
+  color: #ffffff;
+  text-decoration: none;
+}
+
+/* Service Item matching Daunt screenshot */
+.service-item-daunt {
+  border-bottom: 1px solid hsl(var(--border) / 0.5);
+  transition: background-color 0.15s;
+}
+
+.service-item-daunt:hover {
+  background-color: hsl(var(--muted) / 0.18);
+}
+
+.service-item-daunt .item-detail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.85rem 0.5rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.service-item-daunt .circle-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 1.15rem;
+  color: #ffffff;
+  flex-shrink: 0;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+.service-item-daunt .service-name {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: #e24d3e;
+  transition: opacity 0.15s;
+}
+
+.service-item-daunt:hover .service-name {
+  opacity: 0.9;
+}
+
+.service-item-daunt .count {
+  font-size: 0.8rem;
+  color: #8a8f98;
+}
+
+.service-item-daunt .caret {
+  color: #555555;
+  font-size: 0.75rem;
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.service-item-daunt.open .caret {
+  transform: rotate(180deg);
+}
+
+.daunt-header {
+  border-bottom: 1px solid hsl(var(--border));
+  background: hsl(var(--background) / 0.95);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.daunt-header .centerWrap {
+  width: 100%;
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 0.85rem 1rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.dreadLogo {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+  text-decoration: none;
+  color: inherit;
+}
+
+.dreadLogo .square {
+  width: 14px;
+  height: 14px;
+  background-color: hsl(var(--primary));
+  border-radius: 2px;
+  box-shadow: 0 0 10px hsl(var(--primary) / 0.4);
+}
+
+.dreadLogo .text {
+  font-family: var(--font-heading);
+  font-size: 1.15rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: hsl(var(--foreground));
+  text-transform: lowercase;
+}
+
+.subdreadQuick ul {
+  display: flex;
+  align-items: center;
+  gap: 1.25rem;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.subdreadQuick a {
+  font-family: var(--font-mono);
+  font-size: 0.82rem;
+  color: hsl(var(--muted-foreground));
+  text-decoration: none;
+  text-transform: lowercase;
+  transition: color 0.15s;
+}
+
+.subdreadQuick a:hover,
+.subdreadQuick a.active {
+  color: hsl(var(--primary));
+}
+
+.userNav {
+  display: flex;
+  align-items: center;
+  gap: 0.65rem;
+}
+
+.userNav .no_auth a,
+.userNav .auth-btn {
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  padding: 0.3rem 0.7rem;
+  border: 1px solid hsl(var(--border));
+  border-radius: 2px;
+  color: hsl(var(--foreground));
+  background: hsl(var(--card));
+  text-decoration: none;
+  transition: all 0.15s;
+}
+
+.userNav .no_auth a:hover,
+.userNav .auth-btn:hover {
+  border-color: hsl(var(--primary));
+  color: hsl(var(--primary));
+}
+
+/* ─── Daunt Notice / Banner ─── */
+.dir-notice {
+  margin: 1.25rem 0 0.5rem;
+  padding: 0.6rem 0.85rem;
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 2px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.76rem;
+}
+
+.dir-notice .status-indicator {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.dir-notice .dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: hsl(var(--primary));
+  box-shadow: 0 0 6px hsl(var(--primary));
+}
+
+.dir-intro {
+  margin: 1.25rem 0 1.5rem;
+}
+
+.dir-intro h1 {
+  font-family: var(--font-heading);
+  font-size: 1.5rem;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  color: hsl(var(--foreground));
+  margin-bottom: 0.35rem;
+}
+
+.dir-intro p {
+  font-size: 0.88rem;
+  color: hsl(var(--muted-foreground));
+  line-height: 1.5;
+  max-width: 680px;
+}
+
+/* ─── Daunt Directory List & Filter ─── */
+.dir-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.dir-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.dir-filters {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  flex-wrap: wrap;
+}
+
+.standardBtn.dir-filter {
+  padding: 0.35rem 0.8rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  border-radius: 2px;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  color: hsl(var(--muted-foreground));
+  cursor: pointer;
+  user-select: none;
+  transition: all 0.15s;
+}
+
+.standardBtn.dir-filter:hover {
+  border-color: hsl(var(--primary) / 0.5);
+  color: hsl(var(--foreground));
+}
+
+.standardBtn.dir-filter.active {
+  background: hsl(var(--primary) / 0.14);
+  border-color: hsl(var(--primary));
+  color: hsl(var(--primary));
+  font-weight: 600;
+}
+
+.dir-search-wrap {
+  position: relative;
+  min-width: 200px;
+  flex: 1;
+  max-width: 280px;
+}
+
+.dir-search-input {
+  width: 100%;
+  padding: 0.35rem 0.75rem;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  color: hsl(var(--foreground));
+  border-radius: 2px;
+  outline: none;
+  transition: border-color 0.15s;
+}
+
+.dir-search-input:focus {
+  border-color: hsl(var(--primary));
+}
+
+/* ─── Daunt Directory Items ─── */
+.dir-list .items {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.service-item {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 3px;
+  overflow: hidden;
+  transition: border-color 0.15s, background-color 0.15s;
+}
+
+.service-item:hover {
+  border-color: hsl(var(--primary) / 0.45);
+}
+
+.service-item.open {
+  border-color: hsl(var(--primary) / 0.6);
+}
+
+.item-detail {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  user-select: none;
+}
+
+.item-detail .icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 2px;
+  background: hsl(var(--muted));
+  border: 1px solid hsl(var(--border));
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: hsl(var(--primary));
+  flex-shrink: 0;
+  text-transform: uppercase;
+}
+
+.item-detail .text-hold {
+  flex: 1;
+  margin-left: 0.85rem;
+  min-width: 0;
+}
+
+.item-detail .service-name {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: hsl(var(--foreground));
+  display: inline-block;
+  text-decoration: none;
+}
+
+.item-detail .count {
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: hsl(var(--muted-foreground));
+  margin-top: 1px;
+}
+
+.expand-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: hsl(var(--muted-foreground));
+  transition: transform 0.2s ease, color 0.15s;
+  flex-shrink: 0;
+}
+
+.service-item.open .expand-btn {
+  transform: rotate(180deg);
+  color: hsl(var(--primary));
+}
+
+.mirror-list {
+  border-top: 1px solid hsl(var(--border) / 0.6);
+  padding: 0.85rem 1rem;
+  background: hsl(220 18% 8%);
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+}
+
+.mirror-desc {
+  font-size: 0.82rem;
+  color: hsl(var(--foreground) / 0.85);
+  line-height: 1.5;
+  margin-bottom: 0.35rem;
+}
+
+.mirror-badges {
+  display: flex;
+  gap: 0.4rem;
+  flex-wrap: wrap;
+  margin-bottom: 0.4rem;
+}
+
+.mirror-badge {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  padding: 0.15rem 0.5rem;
+  border-radius: 2px;
+  border: 1px solid hsl(var(--border));
+  background: hsl(var(--card));
+  color: hsl(var(--muted-foreground));
+}
+
+.mirror {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 2px;
+  background: hsl(var(--card) / 0.6);
+  border: 1px solid hsl(var(--border) / 0.5);
+  font-family: var(--font-mono);
+  font-size: 0.75rem;
+  transition: background 0.15s, border-color 0.15s;
+}
+
+.mirror:hover {
+  background: hsl(var(--card));
+  border-color: hsl(var(--border));
+}
+
+.mirror .symbol {
+  width: 16px;
+  height: 16px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: hsl(var(--primary));
+  flex-shrink: 0;
+}
+
+.mirror .link {
+  flex: 1;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: hsl(var(--foreground));
+  text-decoration: none;
+}
+
+.mirror .link:hover {
+  text-decoration: underline;
+}
+
+.mirror .verify {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.22rem 0.65rem;
+  border-radius: 2px;
+  font-size: 0.7rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  background: hsl(var(--primary) / 0.12);
+  color: hsl(var(--primary));
+  border: 1px solid hsl(var(--primary) / 0.35);
+  text-decoration: none;
+  transition: all 0.15s;
+  flex-shrink: 0;
+}
+
+.mirror .verify:hover {
+  background: hsl(var(--primary));
+  color: hsl(var(--primary-foreground));
+}
+
+/* ─── Daunt Secondary Sections: About, Log, Contact ─── */
+.dir-section {
+  margin-top: 3rem;
+  padding-top: 2rem;
+  border-top: 1px solid hsl(var(--border));
+}
+
+.dir-section-header {
+  margin-bottom: 1rem;
+}
+
+.dir-section-header h2 {
+  font-family: var(--font-heading);
+  font-size: 1.25rem;
+  font-weight: 700;
+  color: hsl(var(--foreground));
+  letter-spacing: -0.01em;
+}
+
+.dir-section-header p {
+  font-size: 0.82rem;
+  color: hsl(var(--muted-foreground));
+}
+
+.dir-card {
+  background: hsl(var(--card));
+  border: 1px solid hsl(var(--border));
+  border-radius: 3px;
+  padding: 1.25rem;
+}
+
+/* ─── Daunt Footer ─── */
+footer.daunt-footer {
+  border-top: 1px solid hsl(var(--border));
+  margin-top: 4rem;
+  padding: 2.5rem 0 2rem;
+  background: hsl(var(--background));
+}
+
+footer.daunt-footer .columns {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 2rem;
+  margin: 2rem 0 1.75rem;
+}
+
+@media (max-width: 640px) {
+  footer.daunt-footer .columns {
+    grid-template-columns: 1fr;
+    gap: 1.5rem;
+  }
+}
+
+footer.daunt-footer .item .heading {
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: hsl(var(--muted-foreground));
+  margin-bottom: 0.75rem;
+}
+
+footer.daunt-footer .item a {
+  display: block;
+  font-size: 0.82rem;
+  color: hsl(var(--foreground) / 0.75);
+  text-decoration: none;
+  margin-bottom: 0.45rem;
+  transition: color 0.15s;
+}
+
+footer.daunt-footer .item a:hover {
+  color: hsl(var(--primary));
+}
+
+footer.daunt-footer .bottomLine {
+  padding-top: 1.5rem;
+  border-top: 1px solid hsl(var(--border) / 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  font-family: var(--font-mono);
+  font-size: 0.72rem;
+  color: hsl(var(--muted-foreground));
+}
+

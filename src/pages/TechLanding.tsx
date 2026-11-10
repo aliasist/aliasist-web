@@ -6,7 +6,7 @@ export default function TechLanding() {
     <div className="min-h-screen relative bg-background text-foreground overflow-hidden">
       {/* Background */}
       <div className="absolute inset-0 bg-grid-pattern opacity-5" />
-      <div className="absolute inset-0 bg-gradient-to-b from-violet/5 via-transparent to-electric/5" />
+      <div className="absolute inset-0 bg-gradient-to-b from-transparent via-transparent to-electric/[0.03]" />
       
       {/* Content */}
       <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-8 lg:px-12 py-24">
@@ -19,13 +19,13 @@ export default function TechLanding() {
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
-            className="inline-flex items-center gap-2 rounded-sm border border-violet/20 bg-background/55 px-4 py-2 font-mono text-xs uppercase tracking-widest text-muted-foreground mb-8"
+            className="inline-flex items-center gap-2 rounded-sm border border-electric/30 bg-background/55 px-4 py-2 font-mono text-xs uppercase tracking-widest text-electric/90 mb-8"
           >
             Aliasist.tech
           </motion.div>
           
           <h1 className="text-6xl md:text-8xl font-bold mb-6 tracking-tight">
-            <span className="bg-gradient-to-r from-electric to-violet bg-clip-text text-transparent">
+            <span className="text-electric">
               ENGINEERING
             </span>
             <br />
@@ -62,7 +62,7 @@ export default function TechLanding() {
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: i * 0.1 }}
-              className="rounded-sm border border-violet/10 bg-background/50 p-6 hover:border-violet/30 transition-colors"
+              className="rounded-sm border border-border/60 bg-background/50 p-6 hover:border-electric/40 transition-colors"
             >
               <tech.icon className="size-8 text-electric mb-4" />
               <h3 className="text-lg font-semibold mb-2">{tech.title}</h3>
@@ -83,7 +83,7 @@ export default function TechLanding() {
             {[
               { name: "Globalize", desc: "Live 3D globe with global data signals", link: "https://www.aliasist.world" },
               { name: "SpaceSist", desc: "Live space portal", link: "https://space.aliasist.com" },
-              { name: "Clearasist", desc: "Privacy metadata cleaner", link: "https://clearasist.pages.dev" },
+              { name: "ClearSist", desc: "Privacy metadata cleaner", link: "https://clearasist.pages.dev" },
               { name: "PDFSist", desc: "Sign and annotate PDFs in your browser", link: "https://pdf.aliasist.com" },
             ].map((project, i) => (
               <motion.a
@@ -92,7 +92,7 @@ export default function TechLanding() {
                 initial={{ opacity: 0, y: 20 }}
                 animate={{ opacity: 1, y: 0 }}
                 transition={{ delay: 0.4 + i * 0.05 }}
-                className="group rounded-sm border border-violet/10 bg-background/50 p-6 text-left hover:border-electric/50 hover:bg-background/80 transition-all"
+                className="group rounded-sm border border-border/60 bg-background/50 p-6 text-left hover:border-electric/50 hover:bg-background/80 transition-all"
               >
                 <h3 className="text-lg font-semibold mb-2 group-hover:text-electric transition-colors">
                   {project.name}
