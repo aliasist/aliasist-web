@@ -32,9 +32,6 @@ interface DirectoryService {
   categories: ("apps" | "tools" | "experiments")[];
   categoryBadge: string;
   icon?: string;
-  monogram: string;
-  iconBg: string;
-  countLabel: string;
   statusBadge: string;
   description: string;
   architectureNotes: string;
@@ -49,9 +46,6 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     categories: ["apps", "tools"],
     categoryBadge: "Smart Search",
     icon: aliasistLogo,
-    monogram: "A",
-    iconBg: "#14b85f",
-    countLabel: "1 links",
     statusBadge: "Reads Your Files",
     description:
       "Upload your documents and ask questions about them. It reads your files and shows you the exact page where it found the answer, so it never guesses.",
@@ -73,9 +67,6 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     categories: ["apps", "experiments"],
     categoryBadge: "3D Globe",
     icon: globalizeLogo,
-    monogram: "G",
-    iconBg: "#b8621b",
-    countLabel: "2 links",
     statusBadge: "Live World Map",
     description:
       "A 3D spinning globe you can explore in your browser. See internet cables under the ocean, giant data centers, planes flying right now, and real earthquakes as they happen.",
@@ -102,9 +93,6 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "SpaceSist",
     categories: ["apps", "experiments"],
     categoryBadge: "Space",
-    monogram: "S",
-    iconBg: "#14b85f",
-    countLabel: "2 links",
     statusBadge: "Live Tracking",
     description:
       "A live space dashboard that watches rocket launches, tracks where the Space Station is flying right above Earth, and counts down to the next rocket takeoff.",
@@ -131,9 +119,6 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "ClearSist",
     categories: ["apps", "tools"],
     categoryBadge: "Privacy",
-    monogram: "C",
-    iconBg: "#b8621b",
-    countLabel: "2 links",
     statusBadge: "100% Private",
     description:
       "Photos you take hide your secret location, time, and camera details. ClearSist wipes that hidden info away before you send your pictures to anyone.",
@@ -160,9 +145,6 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "PDFSist",
     categories: ["apps", "tools"],
     categoryBadge: "PDF Tool",
-    monogram: "P",
-    iconBg: "#b8621b",
-    countLabel: "2 links",
     statusBadge: "No Sign-Up",
     description:
       "Sign papers and write on PDFs without printing them. Draw your signature with your mouse or finger, save the file, and you are done.",
@@ -303,12 +285,8 @@ const Index = () => {
                     }}
                   >
                     <div className="flex items-center gap-3.5">
-                      <div
-                        className="circle-icon"
-                        style={{ backgroundColor: service.icon ? "transparent" : service.iconBg }}
-                        title={service.categoryBadge}
-                      >
-                        {service.icon ? (
+                      {service.icon && (
+                        <div className="circle-icon" title={service.categoryBadge}>
                           <img
                             src={service.icon}
                             alt=""
@@ -316,16 +294,13 @@ const Index = () => {
                             height={44}
                             className="w-full h-full object-cover rounded-full"
                           />
-                        ) : (
-                          service.monogram
-                        )}
-                      </div>
+                        </div>
+                      )}
 
                       <div className="text-hold">
                         <div className="flex items-center gap-2">
                           <span className="service-name">{service.name}</span>
                         </div>
-                        <div className="count">{service.countLabel}</div>
                       </div>
                     </div>
 
@@ -554,49 +529,12 @@ const Index = () => {
             <div className="item">
               <div className="heading">About</div>
               <div>
-                <a href="#about">What is Aliasist?</a>
-              </div>
-              <div>
-                <a href="#about">Project Notes</a>
-              </div>
-              <div>
                 <a href="mailto:dev@aliasist.com">dev@aliasist.com</a>
               </div>
               <div>
                 <a href="https://github.com/aliasist" target="_blank" rel="noopener noreferrer">
                   GitHub Profile
                 </a>
-              </div>
-            </div>
-
-            <div className="item">
-              <div className="heading">Directory</div>
-              <div>
-                <button
-                  type="button"
-                  onClick={() => selectCategoryAndScroll("apps")}
-                  className="text-left cursor-pointer hover:text-primary text-[0.82rem] text-foreground/75"
-                >
-                  Web Apps
-                </button>
-              </div>
-              <div>
-                <button
-                  type="button"
-                  onClick={() => selectCategoryAndScroll("tools")}
-                  className="text-left cursor-pointer hover:text-primary text-[0.82rem] text-foreground/75"
-                >
-                  Privacy Tools
-                </button>
-              </div>
-              <div>
-                <button
-                  type="button"
-                  onClick={() => selectCategoryAndScroll("experiments")}
-                  className="text-left cursor-pointer hover:text-primary text-[0.82rem] text-foreground/75"
-                >
-                  Experiments
-                </button>
               </div>
             </div>
 
