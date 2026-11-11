@@ -4,9 +4,6 @@ import BuyMeACoffee from "@/components/BuyMeACoffee";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import aliasistLogo from "@/assets/aliasist-logo.png";
 import globalizeLogo from "@/assets/globalize-logo.png";
-import spacesistLogo from "@/assets/spacesist-logo.png";
-import clearsistLogo from "@/assets/clearsist-logo.png";
-import pdfsistLogo from "@/assets/pdfsist-logo.png";
 import { siteEndpoints } from "@/config/api";
 import {
   Globe,
@@ -48,7 +45,7 @@ interface DirectoryService {
 const DIRECTORY_SERVICES: DirectoryService[] = [
   {
     id: "aliasist-ai",
-    name: "Aliasist AI",
+    name: "Aliasist",
     categories: ["apps", "tools"],
     categoryBadge: "Smart Search",
     icon: aliasistLogo,
@@ -59,7 +56,7 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     description:
       "Upload your documents and ask questions about them. It reads your files and shows you the exact page where it found the answer, so it never guesses.",
     architectureNotes:
-      "Your files stay private. They are never used to train any AI models.",
+      "Your files stay private. They are never used to train models.",
     tags: ["Chat With Files", "Exact Quotes", "Private"],
     mirrors: [
       {
@@ -105,7 +102,6 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "SpaceSist",
     categories: ["apps", "experiments"],
     categoryBadge: "Space",
-    icon: spacesistLogo,
     monogram: "S",
     iconBg: "#14b85f",
     countLabel: "2 links",
@@ -135,7 +131,6 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "ClearSist",
     categories: ["apps", "tools"],
     categoryBadge: "Privacy",
-    icon: clearsistLogo,
     monogram: "C",
     iconBg: "#b8621b",
     countLabel: "2 links",
@@ -165,7 +160,6 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "PDFSist",
     categories: ["apps", "tools"],
     categoryBadge: "PDF Tool",
-    icon: pdfsistLogo,
     monogram: "P",
     iconBg: "#b8621b",
     countLabel: "2 links",
@@ -355,7 +349,7 @@ const Index = () => {
 
                       {service.architectureNotes && (
                         <div className="text-[11px] font-mono text-muted-foreground/80 mb-1">
-                          <span className="text-primary">Note:</span> {service.architectureNotes}
+                          {service.architectureNotes}
                         </div>
                       )}
 
