@@ -196,7 +196,6 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
 
 const Index = () => {
   const [selectedCategory, setSelectedCategory] = useState<ServiceCategory>("all");
-  const [searchQuery, setSearchQuery] = useState("");
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({
     pdfsist: true,
     "aliasist-ai": true,
@@ -249,19 +248,9 @@ const Index = () => {
       const matchesCategory =
         selectedCategory === "all" || service.categories.includes(selectedCategory);
 
-      if (!matchesCategory) return false;
-
-      if (!searchQuery.trim()) return true;
-
-      const q = searchQuery.toLowerCase();
-      const matchName = service.name.toLowerCase().includes(q);
-      const matchDesc = service.description.toLowerCase().includes(q);
-      const matchTags = service.tags.some(t => t.toLowerCase().includes(q));
-      const matchMirrors = service.mirrors.some(m => m.label.toLowerCase().includes(q));
-
-      return matchName || matchDesc || matchTags || matchMirrors;
+      return matchesCategory;
     });
-  }, [selectedCategory, searchQuery]);
+  }, [selectedCategory]);
 
   const handleContactSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -358,10 +347,7 @@ const Index = () => {
           </div>
 
           {/* Quick expand/collapse & counter */}
-          <div className="flex items-center justify-between text-xs font-mono text-muted-foreground px-1 pb-1">
-            <span>
-              Showing {filteredServices.length} of {DIRECTORY_SERVICES.length} tools
-            </span>
+          <div className="flex items-center justify-end text-xs font-mono text-muted-foreground px-1 pb-1">
             <div className="space-x-3">
               <button
                 type="button"
@@ -508,7 +494,7 @@ const Index = () => {
 
             {filteredServices.length === 0 && (
               <div className="p-8 text-center border border-border rounded bg-card font-mono text-xs text-muted-foreground">
-                No tools found for "{searchQuery}".
+                No tools found in this category.
               </div>
             )}
           </div>
