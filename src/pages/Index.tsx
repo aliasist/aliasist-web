@@ -15,7 +15,6 @@ import {
   Terminal,
   Gamepad2,
   FileText,
-  Search,
   Check,
   Copy,
   Mail,
@@ -356,21 +355,6 @@ const Index = () => {
                   Experiments
                 </button>
               </div>
-
-            {/* Search Input */}
-            <div className="dir-search-wrap">
-              <input
-                type="text"
-                placeholder="Search tools..."
-                value={searchQuery}
-                onChange={e => setSearchQuery(e.target.value)}
-                className="dir-search-input pl-8"
-              />
-              <Search
-                size={13}
-                className="absolute left-2.5 top-1/2 -translate-y-1/2 text-muted-foreground pointer-events-none"
-              />
-            </div>
           </div>
 
           {/* Quick expand/collapse & counter */}
