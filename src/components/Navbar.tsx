@@ -295,20 +295,6 @@ const Navbar = () => {
               className="h-8 w-8 object-contain rounded"
             />
           </a>
-
-          <div className="hidden sm:block h-5 w-px bg-zinc-700/80 mx-2" />
-
-          <nav className="hidden sm:flex items-center gap-5 text-sm text-[#8e929b] font-sans lowercase">
-            <a href="#directory" className="hover:text-white transition-colors">
-              directory
-            </a>
-            <a href="#about" className="hover:text-white transition-colors">
-              about
-            </a>
-            <a href="#contact" className="hover:text-white transition-colors">
-              contact
-            </a>
-          </nav>
         </div>
 
         {/* ── RIGHT: Menu & Login ── */}
