@@ -448,7 +448,6 @@ const Index = () => {
             </p>
 
             <div className="pt-2 flex items-center justify-between flex-wrap gap-2 text-xs font-mono text-muted-foreground">
-              <span>Made by Blake</span>
               <a
                 href="mailto:dev@aliasist.com"
                 className="text-primary hover:underline flex items-center gap-1"
@@ -638,7 +637,7 @@ const Index = () => {
           </div>
 
           <div className="bottomLine">
-            <div>Aliasist © 2026 • Made by Blake • Useful tools • No tracking</div>
+            <div>Aliasist © 2026 • Made with &lt;3 by Blake • Useful tools • No tracking</div>
             <div>
               <a href="#directory" className="hover:text-primary transition-colors">
                 Back to top ↑
