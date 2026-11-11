@@ -37,8 +37,9 @@ AI_MODEL = "@cf/meta/llama-3.3-70b-instruct-fp8-fast"
 
 # Cloudflare Workers AI, free-tier edge LLM, no external API key. Powers the
 # homepage chat (functions/api/chat.ts) without needing GROQ_API_KEY.
-[ai]
-binding = "AI"
+# Disabled for local Mini-PC wrangler pages dev so it does not require a remote Cloudflare login:
+# [ai]
+# binding = "AI"
 
 [[d1_databases]]
 binding = "ANALYTICS"
