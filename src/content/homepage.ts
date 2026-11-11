@@ -67,9 +67,9 @@ export const hero = {
   mascotAlt: "Aliasist",
   mascotTitle: "Aliasist",
   wordmark: "ALIASIST",
-  tagline: "Tools, dashboards, and experiments for the web",
+  tagline: "Tools for the web",
   subcopy:
-    "A group of free tools I'm building for research, data, privacy, and the web. They are simple to use and made to be useful. Pick one and take a look.",
+    "All tools are client-side with no connection to the servers.",
   ctaContact: "Projects",
   ctaContactHref: "#projects",
   ctaSecondary: "Let's talk",
@@ -116,7 +116,7 @@ const downloadLinks = {
 export const projectsSection = {
   dividerLabel: "Projects",
   headline: "What's live right now",
-  subcopy: "These started as things I wanted to understand better. Now you can use them too.",
+  subcopy: "This started because I wanted to build a website that tracked data centers",
 } as const;
 
 export const projects = [
@@ -140,8 +140,8 @@ export const projects = [
   {
     name: "Aliasist AI",
     description:
-      "Chat and make images with a tool that answers from real documents and shows where the answer came from.",
-    tech: ["Chat", "Image generation", "Cited sources"],
+      "Chat and make images with a tool that answers from real documents and shows where the answer came from. They can halfway communicate across the ecosystem.",
+    tech: ["Chat", "Image generation", "AI will cite it's sources"],
     downloads: [],
     status: "Live" as "Live" | "Archived",
     tone: "teal",
@@ -152,7 +152,7 @@ export const projects = [
   {
     name: "Globalize",
     description:
-      "Use a 3D globe to see data centers, undersea cables, air traffic, and earthquakes in one place.",
+      "Use a 3D globe to see data centers, undersea cables, air traffic, and more in one place.",
     tech: ["3D globe", "Data centers", "Air traffic", "Earthquakes"],
     downloads: [],
     status: "Live" as "Live" | "Archived",
@@ -188,7 +188,7 @@ export const projects = [
   {
     name: "PDFSist",
     description:
-      "Add text, draw or type your signature, and download the signed PDF. Your file stays in your browser.",
+      "Add text, draw or type your signature, and download the signed PDF. Your file stays in your browser, no uploads.",
     tech: ["Sign PDFs", "Add text", "Free", "No uploads"],
     downloads: [],
     status: "Live" as "Live" | "Archived",
@@ -222,19 +222,9 @@ export const about = {
   dividerLabel: "About",
   headline: "A little about me",
   pathBadge: "Studying computer science · Building with systems in mind.",
-  skillsLabel: "Tools I use",
+  skillsLabel: "2026 semester: C# desktop apps",
   skills: [
-    "TypeScript",
-    "JavaScript",
-    "Node.js",
-    "SQL",
-    "Python",
-    "React",
-    "Tailwind CSS",
-    "Cloudflare Workers",
-    "D1 databases",
-    "Vector databases",
-    "AI document systems",
+    "C# is what I am studying in school, and I use it for desktop apps.",
   ] as const,
   /**
    * Each block: optional `kicker` (small label) + `body` (main text).
@@ -251,7 +241,7 @@ export const about = {
     },
     {
       kicker: "Current focus",
-      body: "I am a computer science student building software one tool at a time. Right now, I am not adding new apps. I am keeping the five tools in this directory fast, solid, and reliable.",
+      body: "I am a computer science student building software one small project at a time. Right now, I am not adding new apps. I am keeping the five tools in this directory fast, solid, and reliable.",
     },
   ] as const,
 
@@ -271,7 +261,7 @@ export const contact = {
   dividerLabel: "Contact",
   introLabel: "Contact",
   headline: "Want to get in touch?",
-  introStrong: "Have an idea, a question, or found something broken?",
+  introStrong: "Want to work together, give feedback, or just say hi?",
   introRest: "Send it my way. I read everything, and feedback helps me make these tools better.",
   successTitle: "Got it!",
   successBody:
