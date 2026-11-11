@@ -254,6 +254,21 @@ const Index = () => {
     <div className="daunt-shell min-h-screen">
       <Navbar />
 
+      <div className="flex justify-center overflow-hidden px-3 pt-3">
+        <h1 className="sr-only">Aliasist</h1>
+        <pre
+          aria-hidden="true"
+          className="select-none whitespace-pre text-center font-mono text-[clamp(5px,1.5vw,11px)] font-black leading-[1.12] tracking-[-0.01em] text-electric"
+        >
+{` █████╗ ██╗     ██╗ █████╗ ███████╗██╗███████╗████████╗
+██╔══██╗██║     ██║██╔══██╗██╔════╝██║██╔════╝╚══██╔══╝
+███████║██║     ██║███████║███████╗██║███████╗   ██║${" ".repeat(3)}
+██╔══██║██║     ██║██╔══██║╚════██║██║╚════██║   ██║${" ".repeat(3)}
+██║  ██║███████╗██║██║  ██║███████║██║███████║   ██║${" ".repeat(3)}
+╚═╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═╝╚══════╝╚═╝╚══════╝   ╚═╝`}
+        </pre>
+      </div>
+
       <ErrorBoundary>
         <main id="main-content" className="daunt-container py-3" tabIndex={-1}>
           {/* Directory List & Controls matching Daunt */}
@@ -431,8 +446,8 @@ const Index = () => {
         {/* ── Contact Card ── */}
         <section id="contact" className="dir-section">
           <div className="dir-section-header">
-            <h2>Get in Touch</h2>
-            <p>Got an idea, found something broken, or just want to say hi? Drop a note below.</p>
+            <h2>Open Contact</h2>
+            <p>Wanna work together, give feedback, or just say hi? Hmu :) </p>
           </div>
 
           <div className="dir-card">

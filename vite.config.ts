@@ -103,6 +103,21 @@ export default defineConfig(async ({ mode }) => {
     server: {
       host: "127.0.0.1",
       port: 8080,
+      watch: {
+        // The homepage shares a repo with several sub-apps and archived builds.
+        // Polling avoids exhausting Linux inotify slots on larger workspaces.
+        usePolling: true,
+        interval: 1000,
+        ignored: [
+          "**/apps/**",
+          "**/archive/**",
+          "**/recovery/**",
+          "**/.reports/**",
+          "**/.wrangler/**",
+          "**/website/**",
+          "**/dist/**",
+        ],
+      },
       hmr: {
         overlay: false,
       },
