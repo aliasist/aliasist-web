@@ -447,33 +447,6 @@ const Index = () => {
               Right now, I'm not making new apps. I'm focused on making these five tools work great and stay reliable.
             </p>
 
-            <div className="pt-2 border-t border-border/60">
-              <div className="text-xs font-mono font-semibold text-muted-foreground uppercase tracking-wider mb-2">
-                Tools & Stack
-              </div>
-              <div className="flex flex-wrap gap-1.5 font-mono text-xs">
-                {[
-                  "TypeScript",
-                  "JavaScript",
-                  "Python",
-                  "Node.js",
-                  "SQL",
-                  "Cloudflare Workers",
-                  "D1 Databases",
-                  "React",
-                  "Tailwind CSS",
-                  "yt-dlp",
-                ].map(tool => (
-                  <span
-                    key={tool}
-                    className="px-2 py-0.5 rounded bg-muted/60 border border-border text-foreground"
-                  >
-                    {tool}
-                  </span>
-                ))}
-              </div>
-            </div>
-
             <div className="pt-2 flex items-center justify-between flex-wrap gap-2 text-xs font-mono text-muted-foreground">
               <span>Made by Blake</span>
               <a
