@@ -1,4 +1,4 @@
-import { useState, useMemo, type FormEvent } from "react";
+import { useState, type FormEvent } from "react";
 import Navbar from "@/components/Navbar";
 import BuyMeACoffee from "@/components/BuyMeACoffee";
 import ErrorBoundary from "@/components/ErrorBoundary";
@@ -20,8 +20,6 @@ import {
   Mail,
   Send,
 } from "lucide-react";
-
-type ServiceCategory = "all" | "apps" | "tools" | "experiments";
 
 interface MirrorLink {
   label: string;
@@ -195,7 +193,6 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
 ];
 
 const Index = () => {
-  const [selectedCategory, setSelectedCategory] = useState<ServiceCategory>("all");
   const [openItems, setOpenItems] = useState<Record<string, boolean>>({
     pdfsist: true,
     "aliasist-ai": true,
@@ -216,26 +213,6 @@ const Index = () => {
     }));
   };
 
-  const expandAll = () => {
-    const next: Record<string, boolean> = {};
-    DIRECTORY_SERVICES.forEach(s => {
-      next[s.id] = true;
-    });
-    setOpenItems(next);
-  };
-
-  const collapseAll = () => {
-    setOpenItems({});
-  };
-
-  const selectCategoryAndScroll = (cat: ServiceCategory) => {
-    setSelectedCategory(cat);
-    const el = document.getElementById("directory");
-    if (el) {
-      el.scrollIntoView({ behavior: "smooth" });
-    }
-  };
-
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {
       setCopiedLink(text);
@@ -243,14 +220,7 @@ const Index = () => {
     });
   };
 
-  const filteredServices = useMemo(() => {
-    return DIRECTORY_SERVICES.filter(service => {
-      const matchesCategory =
-        selectedCategory === "all" || service.categories.includes(selectedCategory);
-
-      return matchesCategory;
-    });
-  }, [selectedCategory]);
+  const filteredServices = DIRECTORY_SERVICES;
 
   const handleContactSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -312,60 +282,6 @@ const Index = () => {
         <main id="main-content" className="daunt-container py-3" tabIndex={-1}>
           {/* Directory List & Controls matching Daunt */}
           <div id="directory" className="dir-list pt-2">
-            <div className="dir-filter-bar flex-col sm:flex-row items-stretch sm:items-center">
-              {/* Filter buttons matching Daunt screenshot */}
-              <div className="daunt-filters">
-                <button
-                  type="button"
-                  onClick={() => setSelectedCategory("all")}
-                  className={`daunt-tab ${selectedCategory === "all" ? "active" : ""}`}
-                >
-                  All
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedCategory("apps")}
-                  className={`daunt-tab ${selectedCategory === "apps" ? "active" : ""}`}
-                >
-                  Web Apps
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedCategory("tools")}
-                  className={`daunt-tab ${selectedCategory === "tools" ? "active" : ""}`}
-                >
-                  Tools
-                </button>
-                <button
-                  type="button"
-                  onClick={() => setSelectedCategory("experiments")}
-                  className={`daunt-tab ${selectedCategory === "experiments" ? "active" : ""}`}
-                >
-                  Experiments
-                </button>
-              </div>
-          </div>
-
-          {/* Quick expand/collapse & counter */}
-          <div className="flex items-center justify-end text-xs font-mono text-muted-foreground px-1 pb-1">
-            <div className="space-x-3">
-              <button
-                type="button"
-                onClick={expandAll}
-                className="hover:text-primary transition-colors cursor-pointer"
-              >
-                Expand all
-              </button>
-              <span>/</span>
-              <button
-                type="button"
-                onClick={collapseAll}
-                className="hover:text-primary transition-colors cursor-pointer"
-              >
-                Collapse all
-              </button>
-            </div>
-          </div>
 
           {/* Items Stack matching Daunt screenshot */}
           <div className="items border-t border-zinc-200 dark:border-border">
