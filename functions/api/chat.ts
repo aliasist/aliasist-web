@@ -246,14 +246,46 @@ async function fetchAndCache(
   }
 
   // Cache only successful lookups, never poison results during a transient
-  // upstream outage by caching a miss.
+  // upstream outage by caching a miss. A failed write (eviction, quota, or a
+  // synchronous throw) must never reject or throw out of this function:
+  // callers hand its promise to waitUntil, where an unhandled rejection
+  // surfaces as a worker error.
   if (cache && context) {
-    await cache
-      .put(cacheKey, storedResponse(context, live ? RAG_CACHE_TTL_SECONDS_LIVE : RAG_CACHE_TTL_SECONDS))
-      .catch(() => {});
+    try {
+      await cache.put(cacheKey, storedResponse(context, live ? RAG_CACHE_TTL_SECONDS_LIVE : RAG_CACHE_TTL_SECONDS));
+    } catch {
+      // The stale context already served stands; the next lookup retries.
+    }
   }
 
   return context;
+}
+
+/**
+ * One in-flight hub fetch per cache key: concurrent requests for the same
+ * entry share the single lookup instead of stampeding the hub. Entries are
+ * removed as soon as the fetch settles, so failures are retried on the next
+ * request.
+ */
+const inFlightRagFetches = new Map<string, Promise<string | null>>();
+
+function dedupedRagFetch(
+  env: Env,
+  sist: SistId,
+  question: string,
+  live: boolean,
+  cache: Cache | undefined,
+  cacheKey: Request,
+): Promise<string | null> {
+  const existing = inFlightRagFetches.get(cacheKey.url);
+  if (existing) return existing;
+  const promise = fetchAndCache(env, sist, question, live, cache, cacheKey);
+  inFlightRagFetches.set(cacheKey.url, promise);
+  void promise.then(
+    () => { inFlightRagFetches.delete(cacheKey.url); },
+    () => { inFlightRagFetches.delete(cacheKey.url); },
+  );
+  return promise;
 }
 
 /**
@@ -285,25 +317,26 @@ export async function fetchRagContext(
   const live = sist === "eco";
   const cache = (globalThis as { caches?: { default?: Cache } }).caches?.default;
   const cacheKey = ragCacheKey(sist, question);
-  const ttlMs = (live ? RAG_CACHE_TTL_SECONDS_LIVE : RAG_CACHE_TTL_SECONDS) * 1000;
-  const swrWindowMs = (live ? RAG_ECO_SWR_MAX_AGE_SECONDS : RAG_SWR_MAX_AGE_SECONDS) * 1000;
+  const ttlSeconds = live ? RAG_CACHE_TTL_SECONDS_LIVE : RAG_CACHE_TTL_SECONDS;
+  const swrWindowSeconds = live ? RAG_ECO_SWR_MAX_AGE_SECONDS : RAG_SWR_MAX_AGE_SECONDS;
   const wait = opts.waitUntil ?? ((promise: Promise<unknown>) => {
     void promise;
   });
 
+  let hit: Response | undefined;
   if (cache) {
-    const hit = await cache.match(cacheKey).catch(() => undefined);
+    hit = await cache.match(cacheKey).catch(() => undefined);
     if (hit) {
-      const age = ageMs(hit, live ? RAG_CACHE_TTL_SECONDS_LIVE : RAG_CACHE_TTL_SECONDS);
-      if (age < ttlMs) return await hit.text();
-      if (age <= swrWindowMs) {
-        wait(fetchAndCache(env, sist, question, live, cache, cacheKey));
+      const age = ageMs(hit, ttlSeconds);
+      if (age < ttlSeconds * 1000) return await hit.text();
+      if (age <= swrWindowSeconds * 1000) {
+        wait(dedupedRagFetch(env, sist, question, live, cache, cacheKey));
         return await hit.text();
       }
     }
   }
 
-  const background = fetchAndCache(env, sist, question, live, cache, cacheKey);
+  const background = dedupedRagFetch(env, sist, question, live, cache, cacheKey);
 
   // Cold eco asks don't get to hold the reply hostage: race the hub against
   // a short budget. If the budget wins, hand the still-running fetch to
@@ -327,7 +360,11 @@ export async function fetchRagContext(
     }
   }
 
-  return await background;
+  const fresh = await background;
+  // The hub is unreachable and we're holding an aged-out entry: serving it
+  // beats answering with nothing at all.
+  if (fresh === null && hit) return await hit.text();
+  return fresh;
 }
 
 // ---------------------------------------------------------------------------

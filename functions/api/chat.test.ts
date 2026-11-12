@@ -333,7 +333,9 @@ describe("fetchRagContext cache freshness", () => {
   function stubCache() {
     const store = new Map<string, Response>();
     const cache = {
-      match: vi.fn(async (req: Request) => store.get(req.url)),
+      // Real cache.match hands back a fresh copy of the entry each time, so
+      // concurrent readers can each consume the body — mirror that here.
+      match: vi.fn(async (req: Request) => store.get(req.url)?.clone()),
       put: vi.fn(async (req: Request, res: Response) => {
         store.set(req.url, res);
       }),
@@ -519,13 +521,63 @@ describe("fetchRagContext cache freshness", () => {
     expect(result).toBe("stale space text");
     await expect(Promise.all(waited)).resolves.toBeDefined();
   });
+
+  it("keeps serving stale context when the background cache write throws synchronously", async () => {
+    const cache = stubCache();
+    await cache.put(ragCacheKey("space", "when is the next SpaceX launch?"), cachedEntry("stale space text", 2 * 3600_000));
+    cache.put.mockClear();
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(hubResult("space", "fresh from hub"));
+    cache.put.mockImplementation(() => { throw new Error("sync cache failure"); });
+    const waited: Promise<unknown>[] = [];
+
+    const result = await fetchRagContext({}, "when is the next SpaceX launch?", [], {
+      waitUntil: (p) => waited.push(p),
+    });
+
+    expect(result).toBe("stale space text");
+    await expect(Promise.all(waited)).resolves.toBeDefined();
+  });
+
+  it("serves the stale entry instead of null when the hub fails beyond the stale window", async () => {
+    const cache = stubCache();
+    await cache.put(ragCacheKey("space", "when is the next SpaceX launch?"), cachedEntry("ancient space text", 25 * 3600_000));
+    vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("hub down"));
+
+    const result = await fetchRagContext({}, "when is the next SpaceX launch?");
+
+    expect(result).toBe("ancient space text");
+  });
+
+  it("dedupes concurrent lookups of the same stale entry into one hub fetch", async () => {
+    const cache = stubCache();
+    await cache.put(ragCacheKey("space", "when is the next SpaceX launch?"), cachedEntry("stale space text", 2 * 3600_000));
+    cache.put.mockClear();
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockImplementation(
+      () => new Promise<Response>((resolve) => {
+        setTimeout(() => resolve(hubResult("space", "fresh from hub")), 10);
+      }),
+    );
+    const waited: Promise<unknown>[] = [];
+    const collect = (p: Promise<unknown>) => { waited.push(p); };
+
+    const [a, b] = await Promise.all([
+      fetchRagContext({}, "when is the next SpaceX launch?", [], { waitUntil: collect }),
+      fetchRagContext({}, "when is the next SpaceX launch?", [], { waitUntil: collect }),
+    ]);
+    await Promise.all(waited);
+
+    expect(a).toBe("stale space text");
+    expect(b).toBe("stale space text");
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    expect(cache.put).toHaveBeenCalledTimes(1);
+  });
 });
 
 describe("onRequestPost RAG wiring", () => {
   function stubCache() {
     const store = new Map<string, Response>();
     const cache = {
-      match: vi.fn(async (req: Request) => store.get(req.url)),
+      match: vi.fn(async (req: Request) => store.get(req.url)?.clone()),
       put: vi.fn(async (req: Request, res: Response) => {
         store.set(req.url, res);
       }),
@@ -556,13 +608,16 @@ describe("onRequestPost RAG wiring", () => {
 
   it("forwards Pages waitUntil so background revalidation settles", async () => {
     const cache = stubCache();
-    await cache.put(ragCacheKey("space", "when is the next SpaceX launch?"), cachedEntry("stale space text", 2 * 3600_000));
+    // Distinct question: its cache key never collides with other tests'
+    // entries or with any in-flight fetch left over from a failing test.
+    const question = "how does the ISS stay in orbit?";
+    await cache.put(ragCacheKey("space", question), cachedEntry("stale space text", 2 * 3600_000));
     cache.put.mockClear();
     vi.spyOn(globalThis, "fetch").mockResolvedValue(hubResult("fresh from hub"));
     const waited: Promise<unknown>[] = [];
 
     const res = await onRequestPost({
-      request: chatRequest("when is the next SpaceX launch?"),
+      request: chatRequest(question),
       env: { AI: { run: vi.fn(async () => ({ response: "edge answer" })) } },
       waitUntil: (p) => waited.push(p),
     });
