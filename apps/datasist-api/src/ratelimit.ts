@@ -38,7 +38,19 @@ export function rateLimit(
   if (recent.length) buckets.set(key, recent);
   else buckets.delete(key);
   return { allowed: true, retryAfterSec: 0 };
-}
+
+// ------------------------------------------------------------------
+// DataSist API Rate Limiter (sliding window)
+// ------------------------------------------------------------------
+// Lightweight abuse/cost protection for the public AI endpoints
+// (`/api/ai/chat`, `/api/ai/rag-chat`), which call paid LLM providers.
+// 
+// The rate limiter is an in-memory sliding window. On Workers this is
+// per-isolate (best-effort), it meaningfully throttles a single abuser hitting
+// one colo, but is not a globally-consistent quota. Upgrade path when needed:
+// a Durable Object or the Workers Rate Limiting binding. Kept dependency-free
+// and pure so it is unit-testable.
+// ------------------------------------------------------------------
 
 /** Best-effort client identity for rate limiting. */
 export function clientKey(request: Request): string {

@@ -551,6 +551,18 @@ async function checkRateLimit(env: Env, ip: string): Promise<boolean> {
   return true;
 }
 
+// ------------------------------------------------------------------
+// Chat Rate Limit Code (10 requests / 60 seconds per IP)
+// ------------------------------------------------------------------
+// Fixed-window per-IP rate limit for anonymous chat requests, backed by KV.
+// KV has no atomic increment, so under concurrent requests from the same IP
+// within the same window this can undercount slightly, that's an accepted
+// tradeoff for a lightweight abuse guard, not a precise limiter.
+// 
+// Local development can omit the KV binding. Production must provide
+// CHAT_RATE_LIMIT (see wrangler.toml); KV is an approximate abuse guard.
+// ------------------------------------------------------------------
+
 /**
  * RAG-augmented chat endpoint.
  *
