@@ -56,10 +56,10 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     icon: aliasistLogo,
     statusBadge: "Reads Your Files",
     description:
-      "Upload your documents and ask questions about them. It reads your files and shows you the exact page where it found the answer, so it never guesses.",
+      "RAG (Retrieval-Augmented Generation) technology that lets you chat and talk about all the data currently collected by Aliasist Project.",
     architectureNotes:
-      "Your files stay private. They are never used to train models.",
-    tags: ["Chat With Files", "Exact Quotes", "Private"],
+      "Can be used to create a chatbot that can answer questions about the data or create images",
+    tags: ["Chat With Files", "Accumulated Data", "Image Generation"],
     mirrors: [
       {
         label: "www.aliasist.tech",
@@ -79,8 +79,8 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     description:
       "A 3D spinning globe you can explore in your browser. See internet cables under the ocean, giant data centers, planes flying right now, and real earthquakes as they happen.",
     architectureNotes:
-      "Pulls live data directly from flight trackers and earthquake monitors.",
-    tags: ["3D Earth", "Planes in Air", "Ocean Cables", "Earthquakes"],
+      "Pulls live data directly from flight trackers and earthquake monitors & many others.",
+    tags: ["3D Earth", "Data Centers", "Ocean Cables", "Earthquakes"],
     mirrors: [
       {
         label: "www.aliasist.world",
@@ -106,7 +106,7 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     description:
       "A live space dashboard that watches rocket launches, tracks where the Space Station is flying right above Earth, and counts down to the next rocket takeoff.",
     architectureNotes:
-      "Gets live signals directly from NASA and satellite trackers.",
+      "Gets live info from NASA and other space agencies I was able to connect to.",
     tags: ["Rockets", "Space Station", "NASA", "SpaceX", "Asteroids"],
     mirrors: [
       {
