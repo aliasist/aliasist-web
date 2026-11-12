@@ -17,7 +17,6 @@ import {
   Copy,
   Mail,
   Send,
-  ArrowDown,
 } from "lucide-react";
 
 const filesAbductor = projects.find((p) => p.name === "Files Abductor");
@@ -287,25 +286,27 @@ const Index = () => {
     <div className="daunt-shell min-h-screen">
       <Navbar />
 
+      <div className="flex justify-center overflow-hidden px-3 pt-3">
+        <h1 className="sr-only">Aliasist</h1>
+        <pre
+          aria-hidden="true"
+          className="select-none whitespace-pre text-center font-mono text-[clamp(5px,1.5vw,11px)] font-black leading-[1.12] tracking-[-0.01em] text-electric"
+        >
+{` █████╗ ██╗     ██╗ █████╗ ███████╗██╗███████╗████████╗
+██╔══██╗██║     ██║██╔══██╗██╔════╝██║██╔════╝╚══██╔══╝
+███████║██║     ██║███████║███████╗██║███████╗   ██║${" ".repeat(3)}
+██╔══██║██║     ██║██╔══██║╚════██║██║╚════██║   ██║${" ".repeat(3)}
+██║  ██║███████╗██║██║  ██║███████║██║███████║   ██║${" ".repeat(3)}
+╚═╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═╝╚══════╝╚═╝╚══════╝   ╚═╝`}
+        </pre>
+      </div>
+
       <ErrorBoundary>
         <main id="main-content" className="daunt-container py-3" tabIndex={-1}>
-          <header className="directory-hero">
-            <div className="directory-hero-copy">
-              <span className="directory-hero-kicker"><span className="directory-live-dot" /> Independent tools · built with curiosity</span>
-              <h1>Useful things for a more <span>curious world.</span></h1>
-              <p>A small ecosystem of free tools, live data, and experiments. Explore the collection and find the one you need.</p>
-              <a href="#directory" className="directory-hero-link">Explore the collection <ArrowDown size={15} aria-hidden /></a>
-            </div>
-            <div className="directory-hero-mark" aria-hidden="true">
-              <img src={aliasistLogo} alt="" />
-              <span>ALIASIST</span>
-              <i />
-            </div>
-          </header>
-
-          {/* Directory List & Controls */}
+          {/* Directory List & Controls matching Daunt */}
           <div id="directory" className="dir-list pt-2">
 
+          {/* Items Stack matching Daunt screenshot */}
           <div className="items border-t border-zinc-200 dark:border-border">
             {filteredServices.map(service => {
               const isOpen = !!openItems[service.id];
