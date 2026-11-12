@@ -76,8 +76,7 @@ const MobileAuthControl = () => {
 // ── Main Navbar ───────────────────────────────────────────────────────────────
 
 const Navbar = () => {
-  const [mobileOpen, setMobileOpen]       = useState(false);
-  const [activeSection, setActiveSection] = useState("");
+  const [mobileOpen, setMobileOpen] = useState(false);
   const mobileTriggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -102,23 +101,6 @@ const Navbar = () => {
       document.removeEventListener("keydown", onKeyDown);
     };
   }, [mobileOpen]);
-
-  // Scroll-spy, highlight the nav link whose section is in view
-  useEffect(() => {
-    const sectionIds = pageNavLinks.map(l => l.href.replace("#", ""));
-    const observers: IntersectionObserver[] = [];
-    sectionIds.forEach(id => {
-      const el = document.getElementById(id);
-      if (!el) return;
-      const obs = new IntersectionObserver(
-        ([entry]) => { if (entry.isIntersecting) setActiveSection(id); },
-        { threshold: 0.25, rootMargin: "-80px 0px -40% 0px" }
-      );
-      obs.observe(el);
-      observers.push(obs);
-    });
-    return () => observers.forEach(o => o.disconnect());
-  }, []);
 
   useEffect(() => {
     const stored = localStorage.getItem("aliasist-theme");
