@@ -503,4 +503,74 @@ describe("fetchRagContext cache freshness", () => {
     await Promise.all(waited);
     expect(cache.put).toHaveBeenCalledTimes(1);
   });
+
+  it("keeps serving stale context when background revalidation's cache write fails", async () => {
+    const cache = stubCache();
+    await cache.put(ragCacheKey("space", "when is the next SpaceX launch?"), cachedEntry("stale space text", 2 * 3600_000));
+    cache.put.mockClear();
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(hubResult("space", "fresh from hub"));
+    cache.put.mockRejectedValue(new Error("quota exceeded"));
+    const waited: Promise<unknown>[] = [];
+
+    const result = await fetchRagContext({}, "when is the next SpaceX launch?", [], {
+      waitUntil: (p) => waited.push(p),
+    });
+
+    expect(result).toBe("stale space text");
+    await expect(Promise.all(waited)).resolves.toBeDefined();
+  });
+});
+
+describe("onRequestPost RAG wiring", () => {
+  function stubCache() {
+    const store = new Map<string, Response>();
+    const cache = {
+      match: vi.fn(async (req: Request) => store.get(req.url)),
+      put: vi.fn(async (req: Request, res: Response) => {
+        store.set(req.url, res);
+      }),
+    };
+    vi.stubGlobal("caches", { default: cache });
+    return cache;
+  }
+
+  function cachedEntry(text: string, ageMs: number) {
+    return new Response(text, {
+      headers: {
+        "Cache-Control": "max-age=3600",
+        "x-aliasist-stored-at": String(Date.now() - ageMs),
+      },
+    });
+  }
+
+  function hubResult(answer: string) {
+    return new Response(
+      JSON.stringify({ sist: "space", answer, model: "test", source: "vectorize", latencyMs: 1, chunks: [] }),
+      { status: 200, headers: { "Content-Type": "application/json" } },
+    );
+  }
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("forwards Pages waitUntil so background revalidation settles", async () => {
+    const cache = stubCache();
+    await cache.put(ragCacheKey("space", "when is the next SpaceX launch?"), cachedEntry("stale space text", 2 * 3600_000));
+    cache.put.mockClear();
+    vi.spyOn(globalThis, "fetch").mockResolvedValue(hubResult("fresh from hub"));
+    const waited: Promise<unknown>[] = [];
+
+    const res = await onRequestPost({
+      request: chatRequest("when is the next SpaceX launch?"),
+      env: { AI: { run: vi.fn(async () => ({ response: "edge answer" })) } },
+      waitUntil: (p) => waited.push(p),
+    });
+
+    expect(res.status).toBe(200);
+    await expect(res.json()).resolves.toMatchObject({ response: "edge answer" });
+    expect(waited.length).toBeGreaterThan(0);
+    await expect(Promise.all(waited)).resolves.toBeDefined();
+    expect(cache.put).toHaveBeenCalledTimes(1);
+  });
 });
