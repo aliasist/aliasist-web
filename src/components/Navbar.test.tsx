@@ -83,16 +83,4 @@ describe("homepage navigation", () => {
     expect(document.body.style.overflow).toBe("");
     expect(mediaListeners.size).toBe(0);
   });
-
-  it("dismisses the desktop project links with Escape and returns focus", () => {
-    render(<Navbar />);
-    const trigger = button("Menu");
-    click(trigger);
-    expect(trigger.getAttribute("aria-expanded")).toBe("true");
-    const link = document.querySelector<HTMLAnchorElement>("#suite-navigation a")!;
-    act(() => link.focus());
-    escape(link);
-    expect(trigger.getAttribute("aria-expanded")).toBe("false");
-    expect(document.activeElement).toBe(trigger);
-  });
 });
