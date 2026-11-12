@@ -174,6 +174,13 @@ const RAG_SWR_MAX_AGE_SECONDS = 86_400;
  */
 const RAG_ECO_SWR_MAX_AGE_SECONDS = 300;
 
+/**
+ * Cold `eco` asks race the hub against this budget: if the grounded context
+ * doesn't arrive in time, the reply goes out without it and the fetch keeps
+ * running under waitUntil, seeding the cache so the next turn is grounded.
+ */
+const RAG_ECO_BUDGET_MS = 4_500;
+
 /** Store a successful RAG lookup with an explicit stored-at timestamp so freshness is computable on every hit. */
 function storedResponse(text: string, ttlSeconds: number): Response {
   return new Response(text, {
@@ -261,7 +268,7 @@ export async function fetchRagContext(
   env: Env,
   question: string,
   history: Array<{ role: string; content: string }> = [],
-  opts: { waitUntil?: RagWaitUntil } = {},
+  opts: { waitUntil?: RagWaitUntil; ecoBudgetMs?: number } = {},
 ): Promise<string | null> {
   // Follow-up questions often omit the topic ("what about Europe?", "and
   // tomorrow?"). Prefer the current question's topic, then inherit the most
@@ -294,7 +301,31 @@ export async function fetchRagContext(
     }
   }
 
-  return await fetchAndCache(env, sist, question, live, cache, cacheKey);
+  const background = fetchAndCache(env, sist, question, live, cache, cacheKey);
+
+  // Cold eco asks don't get to hold the reply hostage: race the hub against
+  // a short budget. If the budget wins, hand the still-running fetch to
+  // waitUntil (its success path seeds the cache) and answer without
+  // grounding this turn.
+  if (live) {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    try {
+      const winner = await Promise.race([
+        background.then(() => "fetch" as const),
+        new Promise<"budget">((resolve) => {
+          timer = setTimeout(() => resolve("budget"), opts.ecoBudgetMs ?? RAG_ECO_BUDGET_MS);
+        }),
+      ]);
+      if (winner === "budget") {
+        wait(background);
+        return null;
+      }
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+
+  return await background;
 }
 
 // ---------------------------------------------------------------------------

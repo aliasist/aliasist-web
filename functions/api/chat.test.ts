@@ -480,4 +480,27 @@ describe("fetchRagContext cache freshness", () => {
     expect(result).toContain("fresh from hub");
     expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
+
+  it("returns no context when a cold eco fetch misses the budget, then seeds the cache", async () => {
+    const cache = stubCache();
+    // Upstream answers 20ms late; the 5ms budget wins the race.
+    vi.spyOn(globalThis, "fetch").mockImplementation(
+      () => new Promise<Response>((resolve) => {
+        setTimeout(() => resolve(new Response(
+          JSON.stringify({ sist: "eco", answer: "storm overhead", chunks: [] }),
+          { status: 200 },
+        )), 20);
+      }),
+    );
+    const waited: Promise<unknown>[] = [];
+
+    const result = await fetchRagContext({}, "any hurricanes right now?", [], {
+      waitUntil: (p) => waited.push(p),
+      ecoBudgetMs: 5,
+    });
+
+    expect(result).toBeNull();
+    await Promise.all(waited);
+    expect(cache.put).toHaveBeenCalledTimes(1);
+  });
 });
