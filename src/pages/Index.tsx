@@ -4,9 +4,6 @@ import BuyMeACoffee from "@/components/BuyMeACoffee";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import aliasistLogo from "@/assets/aliasist-logo.png";
 import globalizeLogo from "@/assets/globalize-logo.png";
-import spacesistLogo from "@/assets/spacesist-logo.png";
-import clearsistLogo from "@/assets/clearsist-logo.png";
-import pdfsistLogo from "@/assets/pdfsist-logo.png";
 import { siteEndpoints } from "@/config/api";
 import { projects } from "@/content/homepage";
 import {
@@ -101,7 +98,6 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "SpaceSist",
     categories: ["apps", "experiments"],
     categoryBadge: "Space",
-    icon: spacesistLogo,
     statusBadge: "Live Tracking",
     description:
       "A live space dashboard that watches rocket launches, tracks where the Space Station is flying right above Earth, and counts down to the next rocket takeoff.",
@@ -128,7 +124,6 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "ClearSist",
     categories: ["apps", "tools"],
     categoryBadge: "Privacy",
-    icon: clearsistLogo,
     statusBadge: "100% Private",
     description:
       "Photos you take hide your secret location, time, and camera details. ClearSist wipes that hidden info away before you send your pictures to anyone.",
@@ -155,7 +150,6 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "PDFSist",
     categories: ["apps", "tools"],
     categoryBadge: "PDF Tool",
-    icon: pdfsistLogo,
     statusBadge: "No Sign-Up",
     description:
       "Sign papers and write on PDFs without printing them. Draw your signature with your mouse or finger, save the file, and you are done.",
