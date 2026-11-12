@@ -30,6 +30,8 @@ interface Env extends ClerkEnv {
 type PagesContext = {
   request: Request;
   env: Env;
+  /** Pages handler `waitUntil`, so background RAG work can outlive the reply. */
+  waitUntil?: RagWaitUntil;
 };
 
 // ---------------------------------------------------------------------------
@@ -518,14 +520,16 @@ async function checkRateLimit(env: Env, ip: string): Promise<boolean> {
  * Flow:
  *   1. Auth check (optional, see below)
  *   2. Parse the last user message
- *   3. Detect topic → fetch RAG context from api.aliasist.tech (cached; 3.5s timeout)
+ *   3. Detect topic → fetch RAG context from api.aliasist.tech (fresh hits
+ *      instant; stale-but-young hits served while revalidating in the
+ *      background; cold eco asks race a 4.5s budget; hub timeout 12s)
  *   4. Build enriched system prompt (BASE_SYSTEM + RAG block)
  *   5. Call the configured chat providers in order of preference
  *
  * Request:  POST /api/chat  { messages: [{role, content}, ...] }
  * Response: { response: string, model: string } | { error: string }
  */
-export const onRequestPost = async ({ request, env }: PagesContext) => {
+export const onRequestPost = async ({ request, env, waitUntil }: PagesContext) => {
   // --- Auth (optional) ---
   // Chat is open to the public. A signed-in request is still verified (so a
   // forged/expired token is rejected), but signing in is no longer required
@@ -561,8 +565,10 @@ export const onRequestPost = async ({ request, env }: PagesContext) => {
   }
   const lastUserMsg = [...messages].reverse().find((m) => m.role === "user")?.content ?? "";
 
-  // --- RAG fetch (blocking, cached; 12s upstream timeout) ---
-  const ragContext = await fetchRagContext(env, lastUserMsg, messages);
+  // --- RAG fetch (freshness-aware: fresh/stale-serve hits are instant;
+  // stale ones revalidate in the background via waitUntil; a cold eco ask
+  // only waits up to a 4.5s budget; the hub itself times out at 12s) ---
+  const ragContext = await fetchRagContext(env, lastUserMsg, messages, { waitUntil });
   const system = buildSystem(ragContext);
   const providerErrors: string[] = [];
 
