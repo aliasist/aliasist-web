@@ -69,7 +69,7 @@ export const hero = {
   wordmark: "ALIASIST",
   tagline: "Tools for the web",
   subcopy:
-    "All tools are client-side with no connection to the servers.",
+    "Six tools I'm building: privacy apps that stay in your browser, live maps and dashboards, and a desktop downloader.",
   ctaContact: "Projects",
   ctaContactHref: "#projects",
   ctaSecondary: "Let's talk",
@@ -116,7 +116,8 @@ const downloadLinks = {
 export const projectsSection = {
   dividerLabel: "Projects",
   headline: "What's live right now",
-  subcopy: "This started because I wanted to build a website that tracked data centers",
+  subcopy:
+    "Five web apps and one desktop app. Same Aliasist directory, six jobs done well.",
 } as const;
 
 export const projects = [
@@ -140,8 +141,8 @@ export const projects = [
   {
     name: "Aliasist AI",
     description:
-      "Chat and make images with a tool that answers from real documents and shows where the answer came from. They can halfway communicate across the ecosystem.",
-    tech: ["Chat", "Image generation", "AI will cite it's sources"],
+      "Chat and make images with a tool that answers from real documents and shows where the answer came from.",
+    tech: ["Chat", "Image generation", "Cites its sources"],
     downloads: [],
     status: "Live" as "Live" | "Archived",
     tone: "teal",
@@ -237,11 +238,11 @@ export const about = {
     },
     {
       kicker: "How it is built",
-      body: "Everything here is built around three rules: client-side processing first so files stay on your device, zero tracking or analytics scripts, and pure utility without paywalls.",
+      body: "Privacy tools like PDFSist and ClearSist run in your browser so files stay on your device. The live apps pull public data. This site has no tracking or analytics scripts.",
     },
     {
       kicker: "Current focus",
-      body: "I am a computer science student building software one small project at a time. Right now, I am not adding new apps. I am keeping the five tools in this directory fast, solid, and reliable.",
+      body: "I am a computer science student building software one small project at a time. Right now, I am not adding new apps. I am keeping the six tools in this directory fast, solid, and reliable.",
     },
   ] as const,
 

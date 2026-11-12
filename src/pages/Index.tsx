@@ -4,7 +4,11 @@ import BuyMeACoffee from "@/components/BuyMeACoffee";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import aliasistLogo from "@/assets/aliasist-logo.png";
 import globalizeLogo from "@/assets/globalize-logo.png";
+import spacesistLogo from "@/assets/spacesist-logo.png";
+import clearsistLogo from "@/assets/clearsist-logo.png";
+import pdfsistLogo from "@/assets/pdfsist-logo.png";
 import { siteEndpoints } from "@/config/api";
+import { projects } from "@/content/homepage";
 import {
   Globe,
   Download,
@@ -17,6 +21,10 @@ import {
   Mail,
   Send,
 } from "lucide-react";
+
+const filesAbductor = projects.find((p) => p.name === "Files Abductor");
+const filesAbductorDownloads = filesAbductor?.downloads ?? [];
+const filesAbductorGithub = filesAbductor?.github ?? "https://github.com/aliasist/files-abductor/releases";
 
 interface MirrorLink {
   label: string;
@@ -42,7 +50,7 @@ interface DirectoryService {
 const DIRECTORY_SERVICES: DirectoryService[] = [
   {
     id: "aliasist-ai",
-    name: "Aliasist",
+    name: "Aliasist AI",
     categories: ["apps", "tools"],
     categoryBadge: "Smart Search",
     icon: aliasistLogo,
@@ -93,6 +101,7 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "SpaceSist",
     categories: ["apps", "experiments"],
     categoryBadge: "Space",
+    icon: spacesistLogo,
     statusBadge: "Live Tracking",
     description:
       "A live space dashboard that watches rocket launches, tracks where the Space Station is flying right above Earth, and counts down to the next rocket takeoff.",
@@ -119,6 +128,7 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "ClearSist",
     categories: ["apps", "tools"],
     categoryBadge: "Privacy",
+    icon: clearsistLogo,
     statusBadge: "100% Private",
     description:
       "Photos you take hide your secret location, time, and camera details. ClearSist wipes that hidden info away before you send your pictures to anyone.",
@@ -145,6 +155,7 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "PDFSist",
     categories: ["apps", "tools"],
     categoryBadge: "PDF Tool",
+    icon: pdfsistLogo,
     statusBadge: "No Sign-Up",
     description:
       "Sign papers and write on PDFs without printing them. Draw your signature with your mouse or finger, save the file, and you are done.",
@@ -162,6 +173,33 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
         label: "github.com/aliasist/pdfsist",
         url: "https://github.com/aliasist",
         actionText: "Source Code",
+        type: "github",
+      },
+    ],
+  },
+  {
+    id: "files-abductor",
+    name: "Files Abductor",
+    categories: ["apps", "tools"],
+    categoryBadge: "Desktop",
+    statusBadge: "Download",
+    description:
+      "A desktop app for downloading files from YouTube and other links. Linux and Windows builds are ready to grab.",
+    architectureNotes:
+      "Runs on your computer. Pick the installer for your system and you're set.",
+    tags: ["YouTube", "Downloads", "Linux", "Windows"],
+    mirrors: [
+      ...filesAbductorDownloads.map((d) => ({
+        label: d.label,
+        url: d.href,
+        actionText: `Get ${d.label}`,
+        type: "download" as const,
+        isDirectDownload: true,
+      })),
+      {
+        label: "github.com/aliasist/files-abductor",
+        url: filesAbductorGithub,
+        actionText: "Releases",
         type: "github",
       },
     ],
@@ -400,11 +438,11 @@ const Index = () => {
           </div>
         </div>
 
-        {/* ── About the Project ── */}
+        {/* Welcome to Aliasist*/}
         <section id="about" className="dir-section">
           <div className="dir-section-header">
-            <h2>About the Project</h2>
-            <p>A quick note on what Aliasist is and how it works.</p>
+            <h2>What it's about</h2>
+            <p>This started as a personal project to gather information on data centers being built and the consumption. Well, it turned into an ecosystem of tools and resources for developers, students, and users alike.</p>
           </div>
 
           <div className="dir-card space-y-4">
@@ -419,21 +457,21 @@ const Index = () => {
                   <strong className="text-foreground">Your files stay on your device:</strong> When you use PDFSist or ClearSist, everything happens right inside your web browser. Your photos and papers are never sent to my computer or anyone else's server.
                 </li>
                 <li>
-                  <strong className="text-foreground">No tracking:</strong> No ads, no tracking cookies, and no collecting your personal info.
+                  <strong className="text-foreground">No tracking:</strong> No ads, no tracking cookies, and no collecting your personal info on this site. Ever. 
                 </li>
                 <li>
-                  <strong className="text-foreground">Just simple tools:</strong> Free to use, no sign-ups, and no paywalls. They just do what they say.
+                  <strong className="text-foreground">Just useful tools:</strong> Each one has a clear job. PDFSist and ClearSist need no account. The live apps pull public data so you can explore.
                 </li>
               </ul>
             </div>
 
             <p className="text-sm leading-relaxed text-foreground/90">
-              Right now, I'm not making new apps. I'm focused on making these five tools work great and stay reliable.
+              Right now, I'm not making new apps. I'm focused on making these six tools work great and stay reliable with updates.
             </p>
 
             <div className="pt-2 flex items-center justify-between flex-wrap gap-2 text-xs font-mono text-muted-foreground">
               <a
-                href="mailto:dev@aliasist.com"
+                href="mailto:dev@aliasist.tech"
                 className="text-primary hover:underline flex items-center gap-1"
               >
                 <Mail size={12} />
@@ -443,11 +481,11 @@ const Index = () => {
           </div>
         </section>
 
-        {/* ── Contact Card ── */}
+        {/* Contact me through email */}
         <section id="contact" className="dir-section">
           <div className="dir-section-header">
             <h2>Open Contact</h2>
-            <p>Wanna work together, give feedback, or just say hi? Hmu :) </p>
+            <p>Wanna work together, give feedback, or just say hi? Hmu :)</p>
           </div>
 
           <div className="dir-card">
@@ -518,7 +556,7 @@ const Index = () => {
               {contactStatus === "success" && (
                 <div className="p-2 border border-primary/40 bg-primary/10 rounded font-mono text-xs text-primary flex items-center gap-2">
                   <Check size={14} />
-                  <span>Got it! Thanks for reaching out. I'll get back to you soon.</span>
+                  <span>Got it! I'll get back to you soon.</span>
                 </div>
               )}
 
@@ -580,11 +618,20 @@ const Index = () => {
                   PDFSist
                 </a>
               </div>
+              <div>
+                <a
+                  href={filesAbductorGithub}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Files Abductor
+                </a>
+              </div>
             </div>
           </div>
 
           <div className="bottomLine">
-            <div>Aliasist © 2026 • Made with &lt;3 by Blake • Useful tools • No tracking</div>
+            <div>Aliasist Project 2026 • Made with &lt;3 by Blake • Sharing is caring• No tracking cookies. We value security & privacy.</div>
             <div>
               <a href="#directory" className="hover:text-primary transition-colors">
                 Back to top ↑
