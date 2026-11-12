@@ -201,10 +201,6 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
 ];
 
 const Index = () => {
-  const [openItems, setOpenItems] = useState<Record<string, boolean>>({
-    pdfsist: true,
-    "aliasist-ai": true,
-  });
   const [copiedLink, setCopiedLink] = useState<string | null>(null);
 
   // Contact form state
@@ -213,13 +209,6 @@ const Index = () => {
   const [contactMessage, setContactMessage] = useState("");
   const [contactSubmitting, setContactSubmitting] = useState(false);
   const [contactStatus, setContactStatus] = useState<"idle" | "success" | "error">("idle");
-
-  const toggleItem = (id: string) => {
-    setOpenItems(prev => ({
-      ...prev,
-      [id]: !prev[id],
-    }));
-  };
 
   const copyToClipboard = (text: string) => {
     navigator.clipboard.writeText(text).then(() => {
@@ -309,28 +298,14 @@ const Index = () => {
           {/* Items Stack matching Daunt screenshot */}
           <div className="items border-t border-zinc-200 dark:border-border">
             {filteredServices.map(service => {
-              const isOpen = !!openItems[service.id];
-
               return (
                 <div
                   key={service.id}
-                  className={`service-item-daunt ${isOpen ? "open" : ""}`}
+                  className="service-item-daunt"
                   data-category={service.categories.join(" ")}
                 >
                   {/* Header Row */}
-                  <div
-                    className="item-detail"
-                    onClick={() => toggleItem(service.id)}
-                    role="button"
-                    tabIndex={0}
-                    aria-expanded={isOpen}
-                    onKeyDown={e => {
-                      if (e.key === "Enter" || e.key === " ") {
-                        e.preventDefault();
-                        toggleItem(service.id);
-                      }
-                    }}
-                  >
+                  <div className="item-detail">
                     <div className="flex items-center gap-3.5">
                       {service.icon && (
                         <div className="circle-icon" title={service.categoryBadge}>
@@ -350,15 +325,10 @@ const Index = () => {
                         </div>
                       </div>
                     </div>
-
-                    <div className="caret" aria-hidden="true">
-                      ▼
-                    </div>
                   </div>
 
-                  {/* Expandable Mirror List Drawer */}
-                  {isOpen && (
-                    <div className="mirror-list">
+                  {/* Mirror List — always visible, no collapse */}
+                  <div className="mirror-list">
                       <p className="mirror-desc">{service.description}</p>
 
                       <div className="mirror-badges">
@@ -419,7 +389,6 @@ const Index = () => {
                         ))}
                       </div>
                     </div>
-                  )}
                 </div>
               );
             })}
