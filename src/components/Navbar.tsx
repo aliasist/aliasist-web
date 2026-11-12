@@ -17,147 +17,6 @@ const liveSuiteApps = suiteApps.filter(
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
 
-// Projects dropdown
-const SuiteDropdown = ({ isActive = false }: { isActive?: boolean }) => {
-  const [open, setOpen] = useState(false);
-  const ref = useRef<HTMLDivElement>(null);
-  const triggerRef = useRef<HTMLButtonElement>(null);
-  const closeTimerRef = useRef<ReturnType<typeof setTimeout>>();
-  const highlighted = open || isActive;
-
-  useEffect(() => {
-    if (!open) return;
-
-    let remove: (() => void) | undefined;
-    const frame = requestAnimationFrame(() => {
-      const onPointerDown = (e: PointerEvent) => {
-        if (ref.current?.contains(e.target as Node)) return;
-        setOpen(false);
-      };
-      document.addEventListener("pointerdown", onPointerDown);
-      remove = () => document.removeEventListener("pointerdown", onPointerDown);
-    });
-
-    return () => {
-      cancelAnimationFrame(frame);
-      remove?.();
-    };
-  }, [open]);
-
-  useEffect(() => () => clearTimeout(closeTimerRef.current), []);
-
-  const openNow = () => {
-    clearTimeout(closeTimerRef.current);
-    setOpen(true);
-  };
-
-  // Short delay so moving the cursor from the button down into the dropdown
-  // panel doesn't close it, mouse briefly leaves both elements mid-transit.
-  const closeSoon = () => {
-    clearTimeout(closeTimerRef.current);
-    closeTimerRef.current = setTimeout(() => setOpen(false), 150);
-  };
-
-  return (
-    <div
-      ref={ref}
-      className="relative"
-      onMouseEnter={openNow}
-      onMouseLeave={closeSoon}
-      onBlur={event => {
-        if (!event.currentTarget.contains(event.relatedTarget)) setOpen(false);
-      }}
-      onKeyDown={event => {
-        if (event.key === "Escape" && open) {
-          event.preventDefault();
-          setOpen(false);
-          triggerRef.current?.focus();
-        }
-      }}
-    >
-      <button
-        ref={triggerRef}
-        type="button"
-        aria-expanded={open}
-        aria-controls="suite-navigation"
-        onClick={() => setOpen(o => !o)}
-        className={`group relative flex items-center gap-1.5 overflow-hidden rounded-sm px-2.5 py-1.5 text-sm outline-none transition-all duration-300 ease-out focus-visible:ring-2 focus-visible:ring-electric/55 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
-          highlighted
-            ? "bg-electric/10 text-electric shadow-electric-xs"
-            : "text-muted-foreground hover:bg-electric/[0.06] hover:text-foreground hover:shadow-electric-ring-inset"
-        }`}
-      >
-        <span className="relative z-10">Menu</span>
-        <motion.svg
-          animate={{ rotate: open ? 180 : 0 }}
-          transition={{ duration: 0.2 }}
-          className="relative z-10"
-          width="10" height="10" viewBox="0 0 24 24" fill="none"
-        >
-          <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-        </motion.svg>
-        <span
-          className={`absolute bottom-1 left-1/2 h-[2px] -translate-x-1/2 rounded-sm bg-electric shadow-[0_0_8px_hsl(var(--electric)/0.5)] transition-all duration-300 ease-out ${
-            highlighted ? "w-[calc(100%-1.25rem)] opacity-100" : "w-0 opacity-0 group-hover:w-[calc(100%-1.25rem)] group-hover:opacity-100"
-          }`}
-          aria-hidden
-        />
-      </button>
-
-      <AnimatePresence>
-        {open && (
-          <motion.div
-            id="suite-navigation"
-            initial={{ opacity: 0, y: 8, scale: 0.97 }}
-            animate={{ opacity: 1, y: 0, scale: 1 }}
-            exit={{ opacity: 0, y: 8, scale: 0.97 }}
-            transition={{ duration: 0.18, ease: [0.16, 1, 0.3, 1] }}
-            className="absolute top-full right-0 z-50 mt-3 w-64 overflow-hidden rounded-sm border border-border bg-card shadow-lg"
-          >
-            {/* Header */}
-            <div className="px-4 py-3 border-b border-border/60 flex items-center justify-between">
-              <span className="text-xs text-muted-foreground/50">
-                Projects
-              </span>
-              <span className="text-xs text-electric/60">
-                {liveSuiteApps.length} Links
-              </span>
-            </div>
-
-            {liveSuiteApps.map((app, i) => (
-              <motion.a
-                key={app.label}
-                href={app.href}
-                target={opensInNewTab(app) ? "_blank" : undefined}
-                rel={opensInNewTab(app) ? "noopener noreferrer" : undefined}
-                onClick={() => setOpen(false)}
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: 1, x: 0 }}
-                transition={{ duration: 0.15, delay: i * 0.04 }}
-                className="group relative flex items-center gap-3 border-b border-border/30 px-4 py-3 transition-colors duration-300 last:border-0 hover:bg-[linear-gradient(90deg,hsl(165_90%_42%_/_0.06)_0%,transparent_100%)] outline-none focus-visible:z-10 focus-visible:bg-[linear-gradient(90deg,hsl(165_90%_42%_/_0.12)_0%,transparent_100%)] focus-visible:ring-2 focus-visible:ring-electric/60 focus-visible:ring-inset"
-              >
-                <span className="absolute left-0 top-1/2 h-0 w-[3px] -translate-y-1/2 rounded-sm bg-electric opacity-0 shadow-electric-accent-line transition-all duration-300 group-hover:h-[60%] group-hover:opacity-100" aria-hidden />
-                <span className="flex size-7 shrink-0 items-center justify-center rounded-sm border border-border/60 bg-background/45 font-mono text-[10px] font-semibold text-electric transition-all duration-300 group-hover:border-electric/50 group-hover:shadow-[0_0_12px_hsl(var(--electric)/0.28)]">
-                  {app.icon}
-                </span>
-                <div className="flex-1 min-w-0">
-                  <p className="font-mono text-xs font-semibold text-foreground transition-colors duration-300 group-hover:text-electric">
-                    {app.label}
-                  </p>
-                  <p className="text-xs text-muted-foreground/50 mt-0.5 truncate">
-                    {app.sub}
-                  </p>
-                </div>
-                <span className="translate-x-0.5 font-mono text-xs text-electric opacity-0 transition-all duration-300 group-hover:translate-x-0 group-hover:opacity-100">↗</span>
-              </motion.a>
-            ))}
-          </motion.div>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-};
-
 const mobileSignInButtonClass =
   "flex-1 rounded-md border border-electric/35 bg-electric/[0.04] py-2.5 text-center text-sm text-electric shadow-electric-mobile-signin transition-all duration-300 hover:border-electric/50 hover:bg-electric/10 hover:shadow-electric-mobile-signin-hover active:scale-[0.99]";
 
@@ -297,9 +156,8 @@ const Navbar = () => {
           </a>
         </div>
 
-        {/* ── RIGHT: Menu & Login ── */}
+        {/* ── RIGHT: Login ── */}
         <div className="hidden md:flex items-center gap-5 flex-shrink-0">
-          <SuiteDropdown isActive={activeSection === "projects"} />
           <DesktopAuthControl />
         </div>
 
