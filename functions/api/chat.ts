@@ -38,6 +38,9 @@ type PagesContext = {
 
 const DEFAULT_RAG_BASE_URL = "https://api.aliasist.tech";
 
+/** Callback that keeps the runtime alive while background work finishes (Pages `waitUntil`). */
+type RagWaitUntil = (promise: Promise<unknown>) => void;
+
 /** Valid sist IDs on the RAG worker. */
 const SIST_IDS = ["agsc", "data", "eco", "general", "pulse", "space"] as const;
 type SistId = (typeof SIST_IDS)[number];
@@ -135,7 +138,7 @@ export function formatRagContext(sist: SistId, data: RagAskResult): string | nul
  * Build a stable cache key for a RAG lookup. Cache API keys must be a full URL,
  * so we fold the sist + normalized question into the path of a synthetic origin.
  */
-function ragCacheKey(sist: SistId, question: string): Request {
+export function ragCacheKey(sist: SistId, question: string): Request {
   const norm = question.trim().toLowerCase().replace(/\s+/g, " ").slice(0, 256);
   const key = `https://rag-cache.aliasist.internal/${sist}/${encodeURIComponent(norm)}`;
   return new Request(key, { method: "GET" });
@@ -152,36 +155,62 @@ const RAG_CACHE_TTL_SECONDS = 3600;
  */
 const RAG_CACHE_TTL_SECONDS_LIVE = 60;
 
+/** Header carrying the epoch-ms at which a cached RAG entry was stored. */
+const STORED_AT_HEADER = "x-aliasist-stored-at";
+
 /**
- * Fetch grounded RAG context for a question from the aliasist workers-api.
- * Blocking by design, the LLM system prompt depends on the result, but cached
- * through edge caching so repeated questions skip the upstream round-trip.
- * Returns a formatted context block, or null if RAG is unavailable/irrelevant.
+ * Static corpora (space, data, pulse, agsc, general) are curated and change
+ * rarely: an entry up to this many seconds past its TTL is served instantly
+ * while a background revalidation refreshes it, instead of making the reply
+ * wait on the hub.
  */
-export async function fetchRagContext(
+const RAG_SWR_MAX_AGE_SECONDS = 86_400;
+
+/**
+ * `eco` answers ride on live feed data the hub itself edge-caches for 5–10
+ * minutes (cf cacheTtl 300–600 in liveSnapshots), so serving a ≤5-minute-old
+ * snapshot while revalidating is no staler than what a fresh call would
+ * return.
+ */
+const RAG_ECO_SWR_MAX_AGE_SECONDS = 300;
+
+/** Store a successful RAG lookup with an explicit stored-at timestamp so freshness is computable on every hit. */
+function storedResponse(text: string, ttlSeconds: number): Response {
+  return new Response(text, {
+    headers: {
+      "Cache-Control": `max-age=${ttlSeconds}`,
+      [STORED_AT_HEADER]: String(Date.now()),
+    },
+  });
+}
+
+/**
+ * Age of a cached entry in ms, computed from its stored-at header — never
+ * assumed from Cache-Control or from how the runtime treats expired entries.
+ * An entry without a usable header is treated as exactly TTL old: stale, but
+ * young enough to serve-while-revalidating rather than block.
+ */
+function ageMs(cached: Response, ttlSeconds: number): number {
+  const raw = cached.headers.get(STORED_AT_HEADER);
+  if (raw === null) return ttlSeconds * 1000;
+  const storedAt = Number(raw);
+  if (!Number.isFinite(storedAt)) return ttlSeconds * 1000;
+  return Math.max(0, Date.now() - storedAt);
+}
+
+/**
+ * Blocking lookup against the hub, caching the result on success. Resolves
+ * null on any failure and never rejects, so it is safe to run under
+ * waitUntil where an unhandled rejection would surface as a worker error.
+ */
+async function fetchAndCache(
   env: Env,
+  sist: SistId,
   question: string,
-  history: Array<{ role: string; content: string }> = [],
+  live: boolean,
+  cache: Cache | undefined,
+  cacheKey: Request,
 ): Promise<string | null> {
-  // Follow-up questions often omit the topic ("what about Europe?", "and
-  // tomorrow?"). Prefer the current question's topic, then inherit the most
-  // recent topic from the conversation so these still reach the right corpus.
-  const sist = detectSist(question) ?? [...history]
-    .reverse()
-    .filter((message) => message.role === "user")
-    .map((message) => detectSist(message.content))
-    .find((topic): topic is SistId => topic !== null);
-  if (!sist) return null;
-
-  const live = sist === "eco";
-  const cache = (globalThis as { caches?: { default?: Cache } }).caches?.default;
-  const cacheKey = ragCacheKey(sist, question);
-
-  if (cache) {
-    const hit = await cache.match(cacheKey).catch(() => undefined);
-    if (hit) return await hit.text();
-  }
-
   const base = (env.RAG_BASE_URL?.trim() || DEFAULT_RAG_BASE_URL).replace(/\/+$/, "");
   let context: string | null = null;
   try {
@@ -195,8 +224,8 @@ export async function fetchRagContext(
         ...(live ? { live: { includeDataSnapshot: true } } : {}),
       }),
       // The hub's live-data asks (eco snapshot = 5 upstream feeds + waterfall
-      // generation) routinely exceed the old 3.5s budget, which silently
-      // dropped RAG context and produced generic persona answers.
+      // generation) routinely exceed short budgets, which silently dropped
+      // RAG context and produced generic persona answers — hence 12s.
       signal: AbortSignal.timeout(12_000),
     });
     if (res.ok) {
@@ -211,16 +240,61 @@ export async function fetchRagContext(
   // upstream outage by caching a miss.
   if (cache && context) {
     await cache
-      .put(
-        cacheKey,
-        new Response(context, {
-          headers: { "Cache-Control": `max-age=${live ? RAG_CACHE_TTL_SECONDS_LIVE : RAG_CACHE_TTL_SECONDS}` },
-        }),
-      )
+      .put(cacheKey, storedResponse(context, live ? RAG_CACHE_TTL_SECONDS_LIVE : RAG_CACHE_TTL_SECONDS))
       .catch(() => {});
   }
 
   return context;
+}
+
+/**
+ * Fetch grounded RAG context for a question from the aliasist workers-api.
+ * Freshness-aware: a fresh cache hit answers instantly; a stale-but-young hit
+ * answers instantly while background revalidation refreshes the cache
+ * (stale-while-revalidate); anything older, or a miss, blocks on the hub
+ * under a 12s timeout. `opts.waitUntil` receives background work when the
+ * caller can keep the worker alive (Pages handlers can); without it,
+ * background work is best-effort. Returns a formatted context block, or null
+ * if RAG is unavailable/irrelevant.
+ */
+export async function fetchRagContext(
+  env: Env,
+  question: string,
+  history: Array<{ role: string; content: string }> = [],
+  opts: { waitUntil?: RagWaitUntil } = {},
+): Promise<string | null> {
+  // Follow-up questions often omit the topic ("what about Europe?", "and
+  // tomorrow?"). Prefer the current question's topic, then inherit the most
+  // recent topic from the conversation so these still reach the right corpus.
+  const sist = detectSist(question) ?? [...history]
+    .reverse()
+    .filter((message) => message.role === "user")
+    .map((message) => detectSist(message.content))
+    .find((topic): topic is SistId => topic !== null);
+  if (!sist) return null;
+
+  const live = sist === "eco";
+  const cache = (globalThis as { caches?: { default?: Cache } }).caches?.default;
+  const cacheKey = ragCacheKey(sist, question);
+  const ttlMs = (live ? RAG_CACHE_TTL_SECONDS_LIVE : RAG_CACHE_TTL_SECONDS) * 1000;
+  const swrWindowMs = (live ? RAG_ECO_SWR_MAX_AGE_SECONDS : RAG_SWR_MAX_AGE_SECONDS) * 1000;
+  const wait = opts.waitUntil ?? ((promise: Promise<unknown>) => {
+    void promise;
+  });
+
+  if (cache) {
+    const hit = await cache.match(cacheKey).catch(() => undefined);
+    if (hit) {
+      const age = ageMs(hit, live ? RAG_CACHE_TTL_SECONDS_LIVE : RAG_CACHE_TTL_SECONDS);
+      if (age < ttlMs) return await hit.text();
+      if (age <= swrWindowMs) {
+        wait(fetchAndCache(env, sist, question, live, cache, cacheKey));
+        return await hit.text();
+      }
+    }
+  }
+
+  return await fetchAndCache(env, sist, question, live, cache, cacheKey);
 }
 
 // ---------------------------------------------------------------------------

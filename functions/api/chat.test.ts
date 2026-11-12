@@ -1,6 +1,6 @@
 import * as auth from "../_lib/clerk-auth";
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { detectSist, fetchRagContext, formatRagContext, onRequestPost, parseMessages } from "./chat";
+import { detectSist, fetchRagContext, formatRagContext, onRequestPost, parseMessages, ragCacheKey } from "./chat";
 
 function chatRequest(content = "hello") {
   return new Request("https://aliasist.test/api/chat", {
@@ -324,5 +324,160 @@ describe("fetchRagContext", () => {
     const body = JSON.parse(init.body as string);
     expect(body.sist).toBe("space");
     expect(body.live).toBeUndefined();
+  });
+});
+
+describe("fetchRagContext cache freshness", () => {
+  const STORED_AT = "x-aliasist-stored-at";
+
+  function stubCache() {
+    const store = new Map<string, Response>();
+    const cache = {
+      match: vi.fn(async (req: Request) => store.get(req.url)),
+      put: vi.fn(async (req: Request, res: Response) => {
+        store.set(req.url, res);
+      }),
+    };
+    vi.stubGlobal("caches", { default: cache });
+    return cache;
+  }
+
+  function cachedEntry(text: string, ageMs: number, headers: Record<string, string> = {}) {
+    return new Response(text, {
+      headers: {
+        "Cache-Control": "max-age=3600",
+        [STORED_AT]: String(Date.now() - ageMs),
+        ...headers,
+      },
+    });
+  }
+
+  function hubResult(sist: string, answer: string) {
+    return new Response(
+      JSON.stringify({ sist, answer, model: "test", source: "vectorize", latencyMs: 1, chunks: [] }),
+      { status: 200, headers: { "Content-Type": "application/json" } },
+    );
+  }
+
+  afterEach(() => {
+    vi.unstubAllGlobals();
+  });
+
+  it("serves a fresh static entry instantly without fetching", async () => {
+    const cache = stubCache();
+    await cache.put(ragCacheKey("space", "when is the next SpaceX launch?"), cachedEntry("cached space text", 0));
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+
+    const result = await fetchRagContext({}, "when is the next SpaceX launch?");
+
+    expect(result).toBe("cached space text");
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("serves a stale static entry instantly and revalidates in the background", async () => {
+    const cache = stubCache();
+    await cache.put(ragCacheKey("space", "when is the next SpaceX launch?"), cachedEntry("stale space text", 2 * 3600_000));
+    cache.put.mockClear();
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(hubResult("space", "fresh from hub"));
+    const waited: Promise<unknown>[] = [];
+
+    const result = await fetchRagContext({}, "when is the next SpaceX launch?", [], {
+      waitUntil: (p) => waited.push(p),
+    });
+    await Promise.all(waited);
+
+    expect(result).toBe("stale space text");
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    expect(cache.put).toHaveBeenCalledTimes(1);
+    const [, putRes] = cache.put.mock.calls[0];
+    const storedAt = Number(putRes.headers.get(STORED_AT));
+    expect(Math.abs(Date.now() - storedAt)).toBeLessThanOrEqual(5000);
+  });
+
+  it("blocks on the hub for a static entry older than the 24h stale window", async () => {
+    const cache = stubCache();
+    await cache.put(ragCacheKey("space", "when is the next SpaceX launch?"), cachedEntry("ancient space text", 25 * 3600_000));
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(hubResult("space", "fresh from hub"));
+    const waited: Promise<unknown>[] = [];
+
+    const result = await fetchRagContext({}, "when is the next SpaceX launch?", [], {
+      waitUntil: (p) => waited.push(p),
+    });
+
+    expect(result).toContain("fresh from hub");
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    expect(waited).toHaveLength(0);
+  });
+
+  it("treats entries without a stored-at header as stale and revalidates", async () => {
+    const cache = stubCache();
+    const entry = cachedEntry("legacy space text", 0);
+    entry.headers.delete(STORED_AT);
+    await cache.put(ragCacheKey("space", "when is the next SpaceX launch?"), entry);
+    cache.put.mockClear();
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(hubResult("space", "fresh from hub"));
+    const waited: Promise<unknown>[] = [];
+
+    const result = await fetchRagContext({}, "when is the next SpaceX launch?", [], {
+      waitUntil: (p) => waited.push(p),
+    });
+    await Promise.all(waited);
+
+    expect(result).toBe("legacy space text");
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+    expect(cache.put).toHaveBeenCalledTimes(1);
+  });
+
+  it("treats a future stored-at as fresh rather than crashing on negative age", async () => {
+    const cache = stubCache();
+    await cache.put(ragCacheKey("space", "when is the next SpaceX launch?"), cachedEntry("time-traveling text", -60_000));
+    const fetchSpy = vi.spyOn(globalThis, "fetch");
+
+    const result = await fetchRagContext({}, "when is the next SpaceX launch?");
+
+    expect(result).toBe("time-traveling text");
+    expect(fetchSpy).not.toHaveBeenCalled();
+  });
+
+  it("keeps serving stale context when background revalidation fails", async () => {
+    const cache = stubCache();
+    await cache.put(ragCacheKey("space", "when is the next SpaceX launch?"), cachedEntry("stale space text", 2 * 3600_000));
+    cache.put.mockClear();
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockRejectedValue(new Error("hub down"));
+    const waited: Promise<unknown>[] = [];
+
+    const result = await fetchRagContext({}, "when is the next SpaceX launch?", [], {
+      waitUntil: (p) => waited.push(p),
+    });
+
+    expect(result).toBe("stale space text");
+    await expect(Promise.all(waited)).resolves.toBeDefined();
+    expect(cache.put).not.toHaveBeenCalled();
+  });
+
+  it("serves eco context stale-in-window and revalidates in the background", async () => {
+    const cache = stubCache();
+    await cache.put(ragCacheKey("eco", "are there any hurricanes right now"), cachedEntry("stale eco text", 120_000));
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(hubResult("eco", "fresh from hub"));
+    const waited: Promise<unknown>[] = [];
+
+    const result = await fetchRagContext({}, "are there any hurricanes right now", [], {
+      waitUntil: (p) => waited.push(p),
+    });
+    await Promise.all(waited);
+
+    expect(result).toBe("stale eco text");
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it("treats eco entries beyond the 5-minute stale window as a miss", async () => {
+    const cache = stubCache();
+    await cache.put(ragCacheKey("eco", "are there any hurricanes right now"), cachedEntry("ancient eco text", 400_000));
+    const fetchSpy = vi.spyOn(globalThis, "fetch").mockResolvedValue(hubResult("eco", "fresh from hub"));
+
+    const result = await fetchRagContext({}, "are there any hurricanes right now");
+
+    expect(result).toContain("fresh from hub");
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
   });
 });
