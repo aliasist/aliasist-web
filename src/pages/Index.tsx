@@ -3,11 +3,9 @@ import Navbar from "@/components/Navbar";
 import BuyMeACoffee from "@/components/BuyMeACoffee";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import aliasistLogo from "@/assets/aliasist-logo.png";
-import globalizeLogo from "@/assets/globalize-logo.png";
 import { siteEndpoints } from "@/config/api";
 import { projects } from "@/content/homepage";
 import {
-  Globe,
   Download,
   ExternalLink,
   Terminal,
@@ -71,7 +69,6 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "Globalize",
     categories: ["apps", "experiments"],
     categoryBadge: "3D Globe",
-    icon: globalizeLogo,
     statusBadge: "Live World Map",
     description:
       "A 3D spinning globe you can explore in your browser. See internet cables under the ocean, giant data centers, planes flying right now, and real earthquakes as they happen.",
@@ -255,7 +252,7 @@ const Index = () => {
   const getSymbolIcon = (type: MirrorLink["type"]) => {
     switch (type) {
       case "web":
-        return <Globe size={14} className="text-primary" />;
+        return <ExternalLink size={14} className="text-primary" />;
       case "download":
         return <Download size={14} className="text-primary" />;
       case "github":
@@ -380,7 +377,7 @@ const Index = () => {
                                 href={m.url}
                                 target="_blank"
                                 rel="noopener noreferrer"
-                                className="verify"
+                                className={`verify ${m.type === "github" ? "verify-secondary" : "verify-primary"}`}
                               >
                                 <span>{m.actionText}</span>
                               </a>

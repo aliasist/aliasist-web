@@ -1378,13 +1378,13 @@ html {
   padding: 0.35rem 0.8rem;
   font-family: var(--font-mono);
   font-size: 0.78rem;
-  border-radius: 2px;
+  border-radius: 6px;
   border: 1px solid hsl(var(--border));
   background: hsl(var(--card));
   color: hsl(var(--muted-foreground));
   cursor: pointer;
   user-select: none;
-  transition: all 0.15s;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .standardBtn.dir-filter:hover {
@@ -1393,10 +1393,23 @@ html {
 }
 
 .standardBtn.dir-filter.active {
-  background: hsl(var(--primary) / 0.14);
+  background: hsl(var(--primary));
   border-color: hsl(var(--primary));
-  color: hsl(var(--primary));
-  font-weight: 600;
+  color: #050a07;
+  font-weight: 700;
+  box-shadow: 0 0 14px hsl(var(--primary) / 0.25);
+}
+
+.standardBtn.dir-filter.active:hover {
+  background: #1affb0;
+  border-color: #1affb0;
+  color: #000000;
+  box-shadow: 0 0 20px hsl(var(--primary) / 0.45);
+  transform: translateY(-1px);
+}
+
+.standardBtn.dir-filter.active:active {
+  transform: translateY(0);
 }
 
 .dir-search-wrap {
@@ -1414,7 +1427,7 @@ html {
   border: 1px solid hsl(var(--border));
   background: hsl(var(--card));
   color: hsl(var(--foreground));
-  border-radius: 2px;
+  border-radius: 6px;
   outline: none;
   transition: border-color 0.15s;
 }
@@ -1536,7 +1549,7 @@ html {
   font-family: var(--font-mono);
   font-size: 0.68rem;
   padding: 0.15rem 0.5rem;
-  border-radius: 2px;
+  border-radius: 4px;
   border: 1px solid hsl(var(--border));
   background: hsl(var(--card));
   color: hsl(var(--muted-foreground));
@@ -1548,12 +1561,12 @@ html {
   justify-content: space-between;
   gap: 0.75rem;
   padding: 0.45rem 0.75rem;
-  border-radius: 2px;
+  border-radius: 6px;
   background: hsl(var(--card) / 0.6);
   border: 1px solid hsl(var(--border) / 0.5);
   font-family: var(--font-mono);
   font-size: 0.75rem;
-  transition: background 0.15s, border-color 0.15s;
+  transition: background 0.18s ease, border-color 0.18s ease;
 }
 
 .mirror:hover {
@@ -1579,33 +1592,69 @@ html {
   white-space: nowrap;
   color: hsl(var(--foreground));
   text-decoration: none;
+  font-size: 0.76rem;
+  letter-spacing: -0.01em;
 }
 
 .mirror .link:hover {
   text-decoration: underline;
+  color: hsl(var(--primary));
 }
 
 .mirror .verify {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 0.22rem 0.65rem;
-  border-radius: 2px;
-  font-size: 0.7rem;
-  font-weight: 600;
+  padding: 0.32rem 0.78rem;
+  border-radius: 6px;
+  font-family: var(--font-mono);
+  font-size: 0.69rem;
+  font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  background: hsl(var(--primary) / 0.12);
-  color: hsl(var(--primary));
-  border: 1px solid hsl(var(--primary) / 0.35);
+  letter-spacing: 0.05em;
   text-decoration: none;
-  transition: all 0.15s;
+  transition: all 0.18s cubic-bezier(0.16, 1, 0.3, 1);
   flex-shrink: 0;
+  line-height: 1.2;
 }
 
-.mirror .verify:hover {
+/* Primary CTA Button (Open App, Download) */
+.mirror .verify.verify-primary {
   background: hsl(var(--primary));
-  color: hsl(var(--primary-foreground));
+  color: #050a07;
+  border: 1px solid hsl(var(--primary));
+  box-shadow: 0 0 14px hsl(var(--primary) / 0.25);
+}
+
+.mirror .verify.verify-primary:hover {
+  background: #1affb0;
+  border-color: #1affb0;
+  color: #000000;
+  box-shadow: 0 0 20px hsl(var(--primary) / 0.45);
+  transform: translateY(-1px);
+}
+
+.mirror .verify.verify-primary:active {
+  transform: translateY(0);
+  box-shadow: 0 0 8px hsl(var(--primary) / 0.3);
+}
+
+/* Secondary CTA Button (Source Code, Releases) */
+.mirror .verify.verify-secondary {
+  background: hsl(var(--card) / 0.8);
+  color: hsl(var(--muted-foreground));
+  border: 1px solid hsl(var(--border));
+}
+
+.mirror .verify.verify-secondary:hover {
+  background: hsl(var(--card));
+  border-color: hsl(var(--foreground) / 0.35);
+  color: hsl(var(--foreground));
+  transform: translateY(-1px);
+}
+
+.mirror .verify.verify-secondary:active {
+  transform: translateY(0);
 }
 
 /* ─── Daunt Secondary Sections: About, Log, Contact ─── */
