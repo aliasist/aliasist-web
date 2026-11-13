@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 
 const EASTER_EGG_VIDEO = "/intro-homepage.mp4";
@@ -8,9 +8,19 @@ interface CowAbductionEasterEggProps {
   onClose: () => void;
 }
 
+type Phase = "abduct" | "flight";
+
 const CowAbductionEasterEgg = ({ open, onClose }: CowAbductionEasterEggProps) => {
+  const [phase, setPhase] = useState<Phase>("abduct");
+  const onCloseRef = useRef(onClose);
+
+  useEffect(() => {
+    onCloseRef.current = onClose;
+  }, [onClose]);
+
   useEffect(() => {
     if (!open) return;
+    setPhase("abduct");
     const onKey = (e: KeyboardEvent) => {
       if (e.key === "Escape") onClose();
     };
@@ -22,6 +32,12 @@ const CowAbductionEasterEgg = ({ open, onClose }: CowAbductionEasterEggProps) =>
       document.body.style.overflow = prevOverflow;
     };
   }, [open, onClose]);
+
+  useEffect(() => {
+    if (phase !== "flight") return;
+    const t = setTimeout(() => onCloseRef.current(), 1500);
+    return () => clearTimeout(t);
+  }, [phase]);
 
   return (
     <AnimatePresence>
@@ -61,8 +77,43 @@ const CowAbductionEasterEgg = ({ open, onClose }: CowAbductionEasterEggProps) =>
                 initial={{ opacity: 0, scale: 1.02 }}
                 animate={{ opacity: 1, scale: 1 }}
                 transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                onEnded={onClose}
+                onEnded={() => {
+                  if (phase === "abduct") setPhase("flight");
+                }}
               />
+
+              {phase === "flight" && (
+                <div className="pointer-events-none absolute inset-0 z-10 overflow-hidden">
+                  <motion.div
+                    className="absolute left-[54%] top-[46%]"
+                    initial={{ opacity: 1, y: 0, scale: 1 }}
+                    animate={{ opacity: 0, y: -150, scale: 1.6 }}
+                    transition={{ duration: 1.2, ease: "easeIn" }}
+                  >
+                    {/* Cow specimen being released / disappearing */}
+                    <div className="relative h-5 w-14 rounded-[45%_55%_48%_52%] bg-white shadow-lg">
+                      <div className="absolute -left-2 top-0 h-4 w-2.5 rounded-full bg-white border-l border-gray-300" />
+                      <div className="absolute -right-1.5 top-1 h-3 w-2 rounded-full bg-white border-r border-gray-300" />
+                      <div className="mt-1.5 flex pl-1.5 pr-1.5 justify-between">
+                        <div className="h-2 w-0.5 rounded-full bg-gray-300" />
+                        <div className="h-2 w-0.5 rounded-full bg-gray-300" />
+                        <div className="h-2 w-0.5 rounded-full bg-gray-300" />
+                        <div className="h-2 w-0.5 rounded-full bg-gray-300" />
+                      </div>
+                    </div>
+                  </motion.div>
+                  <motion.div
+                    className="absolute left-[54%] top-[46%]"
+                    initial={{ opacity: 1, y: 0, scale: 1 }}
+                    animate={{ opacity: 0, y: -320, scale: 2.2 }}
+                    transition={{ duration: 1.4, ease: "easeIn" }}
+                  >
+                    {/* UFO breaking off / flying off */}
+                    <div className="relative h-9 w-20 rounded-full border-2 border-cyan-300 bg-cyan-100/80 shadow-[0_0_24px_rgba(99,243,255,0.6)]" />
+                    <div className="absolute -bottom-2 left-1/2 h-1.5 w-16 -translate-x-1/2 rounded-full bg-yellow-200" />
+                  </motion.div>
+                </div>
+              )}
             </div>
           </motion.div>
         </motion.div>
