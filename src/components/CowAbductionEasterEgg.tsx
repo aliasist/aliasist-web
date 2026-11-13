@@ -45,6 +45,7 @@ const CowAbductionEasterEgg = ({ open, onClose }: CowAbductionEasterEggProps) =>
         <motion.div
           role="dialog"
           aria-modal="true"
+          aria-labelledby="easter-egg-title"
           className="fixed inset-0 z-[250] flex items-stretch justify-center sm:items-center p-0 sm:p-6 max-sm:pt-[max(0.75rem,env(safe-area-inset-top))] max-sm:pb-[max(0.75rem,env(safe-area-inset-bottom))]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
@@ -65,6 +66,9 @@ const CowAbductionEasterEgg = ({ open, onClose }: CowAbductionEasterEggProps) =>
             transition={{ type: "spring", stiffness: 380, damping: 28 }}
             onClick={(e) => e.stopPropagation()}
           >
+            <h2 id="easter-egg-title" className="sr-only">
+              Hooman Specimen upload complete
+            </h2>
             <div className="relative aspect-video w-full overflow-hidden bg-black">
               <motion.video
                 key="intro-homepage"
