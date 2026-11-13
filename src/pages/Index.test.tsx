@@ -37,18 +37,15 @@ afterEach(() => {
   vi.unstubAllGlobals();
 });
 
-describe("Sovereign Deck Index Landing Page", () => {
-  it("renders the hero ASCII banner and sovereign tagline", () => {
+describe("Aliasist Index Landing Page", () => {
+  it("renders the hero ASCII banner", () => {
     render(<Index />);
-    expect(container.textContent).toContain("Aliasist Sovereign Computing Deck");
-    expect(container.textContent).toContain("Sovereign tools for an");
-    expect(container.textContent).toContain("uncompromised");
-    expect(container.textContent).toContain("Zero server-side retention");
+    expect(container.textContent).toContain("█████╗ ██╗");
+    expect(container.querySelector("#main-content")).not.toBeNull();
   });
 
-  it("renders spawnOS spotlight and fleet tools", () => {
+  it("renders all fleet tools and services", () => {
     render(<Index />);
-    expect(container.textContent).toContain("spawnOS");
     expect(container.textContent).toContain("Aliasist AI");
     expect(container.textContent).toContain("Globalize");
     expect(container.textContent).toContain("SpaceSist");
@@ -57,11 +54,12 @@ describe("Sovereign Deck Index Landing Page", () => {
     expect(container.textContent).toContain("Files Abductor");
   });
 
-  it("renders the interactive cyber-terminal deck", () => {
+  it("renders the about section and contact form", () => {
     render(<Index />);
-    const terminal = container.querySelector("#terminal");
-    expect(terminal).not.toBeNull();
-    expect(container.textContent).toContain("aliasist-interactive-shell");
-    expect(container.textContent).toContain("aliasist@deck:~$");
+    expect(container.querySelector("#about")).not.toBeNull();
+    expect(container.textContent).toContain("What it's about");
+    expect(container.querySelector("#contact")).not.toBeNull();
+    expect(container.textContent).toContain("Open Contact");
+    expect(container.querySelector("form")).not.toBeNull();
   });
 });
