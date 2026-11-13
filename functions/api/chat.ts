@@ -1,5 +1,6 @@
 import type { ClerkEnv } from "../_lib/clerk-auth";
 import { authenticateRequest, corsHeaders, json } from "../_lib/clerk-auth";
+import { checkRateLimit as checkSharedRateLimit, rateLimitNamespace } from "../_lib/rate-limit";
 
 /** Minimal shape of the edge model binding. */
 interface WorkersAi {
@@ -531,36 +532,31 @@ const RATE_LIMIT_MAX_PER_WINDOW = 10;
 const RATE_LIMIT_WINDOW_SECONDS = 60;
 
 /**
+ * Chat bodies are capped at 10 messages x 1200 chars in `parseMessages`, so
+ * anything past this is padding, not conversation. Rejecting it before parsing
+ * keeps a hostile body from costing more than a normal one.
+ */
+const MAX_BODY_BYTES = 32 * 1024;
+
+/**
  * Fixed-window per-IP rate limit for anonymous chat requests, backed by KV.
- * KV has no atomic increment, so under concurrent requests from the same IP
- * within the same window this can undercount slightly, that's an accepted
- * tradeoff for a lightweight abuse guard, not a precise limiter.
+ * The limiter itself lives in `_lib/rate-limit` so contact/subscribe share the
+ * same semantics; this wrapper only supplies the chat bucket name.
  *
  * Local development can omit the KV binding. Production must provide
- * CHAT_RATE_LIMIT (see wrangler.toml); KV is an approximate abuse guard.
+ * CHAT_RATE_LIMIT (see wrangler.toml).
  */
 async function checkRateLimit(env: Env, ip: string): Promise<boolean> {
-  if (!env.CHAT_RATE_LIMIT) return true;
-  const key = `chat-rl:${ip}`;
-  const current = await env.CHAT_RATE_LIMIT.get(key);
-  const count = current ? parseInt(current, 10) : 0;
-  if (count >= RATE_LIMIT_MAX_PER_WINDOW) return false;
-  await env.CHAT_RATE_LIMIT.put(key, String(count + 1), {
-    expirationTtl: RATE_LIMIT_WINDOW_SECONDS,
+  return checkSharedRateLimit(rateLimitNamespace(env), ip, {
+    bucket: "chat-rl",
+    max: RATE_LIMIT_MAX_PER_WINDOW,
+    windowSeconds: RATE_LIMIT_WINDOW_SECONDS,
   });
-  return true;
 }
 
 // ------------------------------------------------------------------
-// Chat Rate Limit Code (10 requests / 60 seconds per IP)
-// ------------------------------------------------------------------
-// Fixed-window per-IP rate limit for anonymous chat requests, backed by KV.
-// KV has no atomic increment, so under concurrent requests from the same IP
-// within the same window this can undercount slightly, that's an accepted
-// tradeoff for a lightweight abuse guard, not a precise limiter.
-// 
-// Local development can omit the KV binding. Production must provide
-// CHAT_RATE_LIMIT (see wrangler.toml); KV is an approximate abuse guard.
+// Chat Rate Limit (10 requests / 60 seconds per IP)
+// See `_lib/rate-limit` for the shared implementation.
 // ------------------------------------------------------------------
 
 /**
@@ -602,9 +598,17 @@ export const onRequestPost = async ({ request, env, waitUntil }: PagesContext) =
     }
   }
 
+  const declaredLength = Number(request.headers.get("content-length") ?? "0");
+  if (Number.isFinite(declaredLength) && declaredLength > MAX_BODY_BYTES) {
+    return json({ error: "That conversation is too long." }, 413);
+  }
+
   const bodyText = await request.text();
   if (!bodyText.trim()) {
     return json({ error: "Missing request body." }, 400);
+  }
+  if (bodyText.length > MAX_BODY_BYTES) {
+    return json({ error: "That conversation is too long." }, 413);
   }
 
   // --- Parse messages & detect topic ---
