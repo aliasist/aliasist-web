@@ -3,7 +3,7 @@ import Navbar from "@/components/Navbar";
 import BuyMeACoffee from "@/components/BuyMeACoffee";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import aliasistLogo from "@/assets/aliasist-logo.png";
-import globalizeLogo from "@/assets/globalize-logo.svg";
+import globalizeLogo from "@/assets/globalize-logo.png";
 import { siteEndpoints } from "@/config/api";
 import { projects } from "@/content/homepage";
 import {
