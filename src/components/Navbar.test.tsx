@@ -63,6 +63,17 @@ describe("homepage navigation", () => {
     expect(document.body.style.overflow).toBe("auto");
   });
 
+  it("opens the cow abduction easter egg modal from the logo", () => {
+    render(<Navbar />);
+    click(button("Aliasist"));
+    const dialog = container.querySelector('[role="dialog"]');
+    expect(dialog).not.toBeNull();
+    expect(dialog?.getAttribute("aria-modal")).toBe("true");
+    const video = dialog?.querySelector("video");
+    expect(video).not.toBeNull();
+    expect(video?.getAttribute("src")).toContain("/intro-homepage.mp4");
+  });
+
   it("releases the scroll lock when the viewport switches to desktop", () => {
     render(<Navbar />);
     const trigger = button("Toggle menu");

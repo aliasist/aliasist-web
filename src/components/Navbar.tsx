@@ -4,6 +4,7 @@ import { useAuth, UserButton } from "@clerk/react";
 import aliasistLogo from "@/assets/apple-touch-icon.png";
 import { pageNavLinks, suiteApps } from "@/content/homepage";
 import { useOpenSiteSignIn } from "@/lib/use-open-site-sign-in";
+import CowAbductionEasterEgg from "@/components/CowAbductionEasterEgg";
 
 const isExternalHref = (href: string) => /^https?:\/\//.test(href);
 const opensInNewTab = (app: (typeof liveSuiteApps)[number]) =>
@@ -77,6 +78,7 @@ const MobileAuthControl = () => {
 
 const Navbar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [easterEggOpen, setEasterEggOpen] = useState(false);
   const mobileTriggerRef = useRef<HTMLButtonElement>(null);
 
   useEffect(() => {
@@ -125,17 +127,18 @@ const Navbar = () => {
 
         {/* ── LEFT: Aliasist Logo & Daunt quick nav ── */}
         <div className="flex items-center gap-2">
-          <a
-            href="/"
-            className="flex items-center gap-2.5 text-white no-underline outline-none focus-visible:ring-2 focus-visible:ring-primary"
-            aria-label="Back to Aliasist homepage"
+          <button
+            type="button"
+            onClick={() => setEasterEggOpen(true)}
+            className="flex cursor-pointer items-center gap-2.5 bg-transparent p-0 text-white no-underline outline-none focus-visible:ring-2 focus-visible:ring-primary"
+            aria-label="Aliasist"
           >
             <img
               src={aliasistLogo}
               alt="Aliasist Logo"
               className="h-8 w-8 object-contain rounded"
             />
-          </a>
+          </button>
         </div>
 
         {/* ── RIGHT: Login ── */}
@@ -238,6 +241,8 @@ const Navbar = () => {
           </>
         )}
       </AnimatePresence>
+
+      <CowAbductionEasterEgg open={easterEggOpen} onClose={() => setEasterEggOpen(false)} />
     </motion.nav>
   );
 };
