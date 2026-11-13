@@ -35,23 +35,23 @@
 - Produces: default-exported `CowAbductionEasterEgg` accepting `{ open: boolean; onClose: () => void }`.
 - Navbar consumes: `easterEggOpen` state + setter.
 
-- [ ] **Step 1: Write the failing test**
+- [x] **Step 1: Write the failing test**
 
 Add to `src/components/Navbar.test.tsx`: rendering `<Navbar />`, clicking the logo button (`aria-label="Aliasist"`), opens a dialog (`role="dialog"`, `aria-modal="true"`) that contains the intro video (`/intro-homepage.mp4`).
 
-- [ ] **Step 2: Run test to verify it fails**
+- [x] **Step 2: Run test to verify it fails**
 
 Run the Navbar test file. Expected: FAIL (no dialog / no video yet).
 
-- [ ] **Step 3: Implement `CowAbductionEasterEgg`**
+- [x] **Step 3: Implement `CowAbductionEasterEgg`**
 
 Create `src/components/CowAbductionEasterEgg.tsx`: framer-motion `motion.div` dialog with backdrop, `motion.video` for `/intro-homepage.mp4` (autoPlay, controls, playsInline), Escape/backdrop close, body scroll lock while open. Phase starts as video mode.
 
-- [ ] **Step 4: Run test to verify it passes**
+- [x] **Step 4: Run test to verify it passes**
 
 Run Navbar tests. Expected: PASS.
 
-- [ ] **Step 5: Commit**
+- [x] **Step 5: Commit**
 
 ### Task 2: Add the fly-off ending
 
@@ -60,15 +60,15 @@ Run Navbar tests. Expected: PASS.
 
 **Interfaces:** Consumes `{ open, onClose }` from Task 1; adds internal phase (`"abduct" | "flight"`); on video `onEnded` → `"flight"`, then auto-close via `onClose()`.
 
-- [ ] **Step 1: Implement flight phase**
+- [x] **Step 1: Implement flight phase**
 
 On video `onEnded`, set phase to `"flight"`. In flight phase, hide the cow and animate the UFO (`motion.div`) to fly off the modal, then call `onClose()` to auto-close after the fly-off.
 
-- [ ] **Step 2: Verify**
+- [x] **Step 2: Verify**
 
 Run `npm run check` (lint, unit tests, production build, JS budget). Expected: green.
 
-- [ ] **Step 3: Commit**
+- [x] **Step 3: Commit**
 
 ## Self-Review
 

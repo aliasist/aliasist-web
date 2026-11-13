@@ -2,6 +2,7 @@ import { motion } from "framer-motion";
 import { ArrowRight, Mail, Terminal } from "lucide-react";
 import { hero } from "@/content/homepage";
 import { HomeGoogleAuth } from "@/components/HomeGoogleAuth";
+import globalizeLogo from "@/assets/globalize-logo.svg";
 
 const HeroSection = () => {
   return (
@@ -22,7 +23,15 @@ const HeroSection = () => {
           animate={{ opacity: 1, y: 0, scale: 1 }}
           transition={{ duration: 0.7, delay: 0.48, ease: [0.16, 1, 0.3, 1] }}
         >
-          <h1 className="sr-only">{hero.wordmark}</h1>
+          <div className="flex flex-col items-center gap-2 mb-8">
+            <img
+              src={globalizeLogo}
+              alt="Globalize"
+              className="w-20 h-auto max-w-full"
+              style={{ filter: "invert(30%) sepia(50%) saturate(10%) hue-rotate(160deg) brightness(1.2) contrast(1.1)" }}
+            />
+            <h1 className="sr-only">{hero.wordmark}</h1>
+          </div>
           <pre
             aria-hidden="true"
             className="font-mono select-none text-center font-black whitespace-pre leading-[1.12] sm:leading-[1.15] tracking-[-0.01em] text-electric text-[7.5px] min-[390px]:text-[9px] min-[480px]:text-[11.5px] sm:text-[14.5px] md:text-[18px] lg:text-[21px] xl:text-[23px]"

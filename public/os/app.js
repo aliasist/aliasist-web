@@ -67,7 +67,10 @@
       icon:'<circle cx="12" cy="12" r="9"/><path d="M4.5 8h15M4.5 16h15"/><path d="M12 3c-3.5 3.5-3.5 14.5 0 18"/>' },
     { id:'clear', code:'C:CLR', label:'CLEAR\nSIST', name:'ClearSist', sq:'cyan', url:'https://clearasist.pages.dev/', embed:false,
       about:'Strip hidden metadata out of photos, PDFs and Office files before you share them.',
-      icon:'<path d="M4 20h16"/><path d="M7 17l9-9 3 3-6 6z"/><path d="M5 9l1-2 2-1-2-1-1-2-1 2-2 1 2 1z"/>' }
+      icon:'<path d="M4 20h16"/><path d="M7 17l9-9 3 3-6 6z"/><path d="M5 9l1-2 2-1-2-1-1-2-1 2-2 1 2 1z"/>' },
+    { id:'abductor', code:'D:ABD', label:'FILES\nABDUCT', name:'Files Abductor', sq:'green', url:'https://github.com/aliasist/files-abductor/releases', embed:false,
+      about:'High-speed native desktop workstation for streaming media and direct downloads without telemetry.',
+      icon:'<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/>' }
   ];
   var ALL_APPS = APPS.concat(WEB_APPS);
 

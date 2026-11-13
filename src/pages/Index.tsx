@@ -3,6 +3,7 @@ import Navbar from "@/components/Navbar";
 import BuyMeACoffee from "@/components/BuyMeACoffee";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import aliasistLogo from "@/assets/aliasist-logo.png";
+import globalizeLogo from "@/assets/globalize-logo.svg";
 import { siteEndpoints } from "@/config/api";
 import { projects } from "@/content/homepage";
 import {
@@ -35,6 +36,8 @@ interface DirectoryService {
   categories: ("apps" | "tools" | "experiments")[];
   categoryBadge: string;
   icon?: string;
+  monogram?: string;
+  accent?: string;
   statusBadge: string;
   description: string;
   architectureNotes: string;
@@ -51,10 +54,10 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     icon: aliasistLogo,
     statusBadge: "Reads Your Files",
     description:
-      "RAG (Retrieval-Augmented Generation) technology that lets you chat and talk about all the data currently collected by Aliasist Project.",
+      "Chat and make images with a tool that answers from real documents and shows where the answer came from.",
     architectureNotes:
-      "Can be used to create a chatbot that can answer questions about the data or create images",
-    tags: ["Chat With Files", "Accumulated Data", "Image Generation"],
+      "Answers questions from your documents and can create images",
+    tags: ["Chat With Files", "Cites Sources", "Image Generation"],
     mirrors: [
       {
         label: "www.aliasist.tech",
@@ -69,6 +72,8 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "Globalize",
     categories: ["apps", "experiments"],
     categoryBadge: "3D Globe",
+    icon: globalizeLogo,
+    monogram: "GL",
     statusBadge: "Live World Map",
     description:
       "A 3D spinning globe you can explore in your browser. See internet cables under the ocean, giant data centers, planes flying right now, and real earthquakes as they happen.",
@@ -149,7 +154,7 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     categoryBadge: "PDF Tool",
     statusBadge: "No Sign-Up",
     description:
-      "Sign papers and write on PDFs without printing them. Draw your signature with your mouse or finger, save the file, and you are done.",
+      "Sign papers and write on PDFs without printing them. Draw your signature with your mouse or finger, save the file, and you're done.",
     architectureNotes:
       "Free, no accounts, and your papers are never uploaded to the internet.",
     tags: ["Sign PDFs", "Draw Signature", "No Account", "Free"],
@@ -402,7 +407,7 @@ const Index = () => {
         <section id="about" className="dir-section">
           <div className="dir-section-header">
             <h2>What it's about</h2>
-            <p>This started as a personal project to gather information on data centers being built and the consumption. Well, it turned into an ecosystem of tools and resources for developers, students, and users alike.</p>
+            <p>This started as a personal project to track data centers being built and how much power they use. It turned into a growing set of tools.</p>
           </div>
 
           <div className="dir-card space-y-4">
@@ -445,7 +450,7 @@ const Index = () => {
         <section id="contact" className="dir-section">
           <div className="dir-section-header">
             <h2>Open Contact</h2>
-            <p>Wanna work together, give feedback, or just say hi? Hmu :)</p>
+            <p>Want to work together, give feedback, or just say hi?</p>
           </div>
 
           <div className="dir-card">
@@ -591,7 +596,7 @@ const Index = () => {
           </div>
 
           <div className="bottomLine">
-            <div>Aliasist Project 2026 • Made with &lt;3 by Blake • Sharing is caring• No tracking cookies. We value security & privacy.</div>
+            <div>Aliasist Project 2026 • Made with &lt;3 by Blake • Sharing is caring • No tracking cookies. I care about your security & privacy.</div>
             <div>
               <a href="#directory" className="hover:text-primary transition-colors">
                 Back to top ↑

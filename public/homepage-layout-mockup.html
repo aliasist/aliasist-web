@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Aliasist — Control Room (layout mockup)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Space+Grotesk:wght@500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --bg: hsl(220 18% 7%);
+      --bg-raised: hsl(220 18% 10%);
+      --foreground: hsl(150 10% 94%);
+      --muted: hsl(220 12% 55%);
+      --border: hsl(220 15% 17%);
+      --electric: hsl(165 90% 42%);
+      --font-body: 'Inter', ui-sans-serif, system-ui, sans-serif;
+      --font-heading: 'Space Grotesk', ui-sans-serif, system-ui, sans-serif;
+      --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+      --radius: 0.6rem;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--bg);
+      color: var(--foreground);
+      font-family: var(--font-body);
+      line-height: 1.6;
+      overflow-x: hidden;
+    }
+    ::selection { background: hsl(165 90% 42% / 0.38); color: var(--foreground); }
+
+    .console-bar {
+      position: sticky; top: 0; z-index: 50;
+      display: flex; align-items: center; justify-content: space-between; gap: 1rem;
+      padding: 0.65rem clamp(1rem, 4vw, 3rem);
+      border-bottom: 1px solid hsl(var(--border) / 0.6);
+      background: hsl(var(--bg) / 0.85);
+      backdrop-filter: blur(8px);
+      font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted);
+    }
+    .console-bar .path { color: hsl(var(--electric) / 0.9); }
+    .console-bar .status { color: hsl(150 60% 60%); display: inline-flex; align-items: center; gap: 0.45rem; }
+    .console-bar .status i { width: 7px; height: 7px; border-radius: 50%; background: hsl(150 60% 55%); box-shadow: 0 0 8px hsl(150 60% 55% / 0.7); }
+    .console-bar .cta { font-family: var(--font-mono); font-size: 0.72rem; color: var(--electric); text-decoration: none; border: 1px solid hsl(var(--electric) / 0.5); padding: 0.35rem 0.8rem; border-radius: 999px; }
+
+    main { display: block; }
+
+    /* ── HERO: Control Room ─────────────────────────────── */
+    .hero {
+      position: relative;
+      min-height: 100svh;
+      display: grid;
+      grid-template-columns: minmax(0, 1.15fr) minmax(0, 0.85fr);
+      align-items: center;
+      gap: clamp(2rem, 5vw, 5rem);
+      padding: clamp(5rem, 12vh, 8rem) clamp(1.25rem, 5vw, 4rem) clamp(3rem, 8vh, 6rem);
+      overflow: hidden;
+    }
+    .hero::before {
+      content: ""; position: absolute; inset: 0; pointer-events: none; opacity: 0.5;
+      background: radial-gradient(ellipse 60% 50% at 50% 40%, hsl(var(--electric) / 0.07), transparent 70%);
+    }
+    .hero-left { position: relative; z-index: 2; }
+    .eyebrow {
+      font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.14em;
+      text-transform: uppercase; color: hsl(var(--electric) / 0.9); margin-bottom: 1.25rem;
+    }
+    .bus {
+      font-family: var(--font-mono); font-weight: 700; line-height: 1.12;
+      color: hsl(var(--electric) / 0.95); text-shadow: 0 0 14px hsl(var(--electric) / 0.22), 0 0 40px hsl(var(--electric) / 0.12);
+      white-space: pre; margin-bottom: 2rem;
+      font-size: clamp(5px, 1.35vw, 12px);
+      overflow-x: auto; scrollbar-width: none;
+    }
+    .tagline {
+      font-family: var(--font-heading); font-weight: 700;
+      font-size: clamp(2.6rem, 6vw, 4.6rem); line-height: 1.02; letter-spacing: -0.02em;
+      margin-bottom: 1.5rem;
+    }
+    .subcopy { font-size: clamp(1rem, 1.4vw, 1.2rem); color: hsl(var(--muted)); max-width: 46ch; margin-bottom: 2.5rem; }
+    .cta-row { display: flex; flex-wrap: wrap; gap: 0.9rem; align-items: center; }
+
+    .btn {
+      display: inline-flex; align-items: center; gap: 0.55rem;
+      font-family: var(--font-mono); font-size: 0.8rem; font-weight: 500;
+      padding: 0.8rem 1.4rem; border-radius: 999px; text-decoration: none; cursor: pointer;
+      transition: transform 0.25s ease, box-shadow 0.25s ease, background 0.25s ease, color 0.25s ease, border-color 0.25s ease;
+    }
+    .btn-primary { background: hsl(var(--electric)); color: #04120c; border: 1px solid hsl(var(--electric)); box-shadow: 0 0 22px hsl(var(--electric) / 0.25); }
+    .btn-primary:hover { background: hsl(var(--electric) / 0.85); transform: translateY(-2px); box-shadow: 0 0 34px hsl(var(--electric) / 0.4); }
+    .btn-ghost { border: 1px solid hsl(var(--border)); color: var(--foreground); background: transparent; }
+    .btn-ghost:hover { border-color: hsl(var(--electric) / 0.5); color: hsl(var(--electric)); transform: translateY(-2px); }
+    .btn-mono { border: 1px solid hsl(var(--electric) / 0.5); color: hsl(var(--electric)); background: hsl(var(--electric) / 0.06); }
+    .btn-mono:hover { background: hsl(var(--electric) / 0.14); transform: translateY(-2px); }
+
+    .status-panel {
+      position: relative; z-index: 2;
+      background: hsl(var(--bg-raised) / 0.72);
+      border: 1px solid hsl(var(--border) / 0.9);
+      border-radius: calc(var(--radius) * 1.6);
+      padding: 1.6rem;
+      backdrop-filter: blur(10px);
+      box-shadow: 0 0 60px hsl(var(--electric) / 0.06), 0 24px 60px hsl(0 0% 0% / 0.5);
+    }
+    .status-panel .panel-head { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 1.1rem; }
+    .status-panel .panel-title { font-family: var(--font-mono); font-size: 0.72rem; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); }
+    .status-panel .panel-id { font-family: var(--font-mono); font-size: 0.72rem; color: hsl(var(--electric)); }
+    .status-row { display: flex; justify-content: space-between; gap: 1rem; padding: 0.55rem 0; border-top: 1px dashed hsl(var(--border)); font-family: var(--font-mono); font-size: 0.78rem; }
+    .status-row .k { color: var(--muted); }
+    .status-row .v { color: var(--foreground); text-align: right; }
+    .status-row .v.ok { color: hsl(150 60% 60%); }
+    .status-foot { margin-top: 1.1rem; padding-top: 1rem; border-top: 1px dashed hsl(var(--border)); font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted); }
+
+    .ticker {
+      grid-column: 1 / -1;
+      border-top: 1px solid hsl(var(--border) / 0.7);
+      padding: 0.9rem clamp(1.25rem, 5vw, 4rem) 1.4rem;
+      display: flex; justify-content: space-between; gap: 2rem; flex-wrap: wrap;
+      font-family: var(--font-mono); font-size: 0.7rem; color: var(--muted);
+      background: hsl(var(--bg) / 0.6);
+    }
+
+    /* ── SECTIONS ───────────────────────────────────────── */
+    section { padding: clamp(4rem, 10vh, 7rem) clamp(1.25rem, 5vw, 4rem); max-width: 1200px; margin: 0 auto; }
+    section + section { border-top: 1px solid hsl(var(--border) / 0.5); }
+    .section-head { margin-bottom: 3rem; max-width: 720px; }
+    .section-head h2 { font-family: var(--font-heading); font-weight: 600; font-size: clamp(2rem, 4.5vw, 3.2rem); line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 1rem; }
+    .section-head p { color: var(--muted); font-size: 1.05rem; }
+
+    .fleet-row {
+      display: grid; grid-template-columns: auto auto minmax(0, 1fr) auto; align-items: center; gap: 1.25rem;
+      padding: 1.25rem 0; border-top: 1px solid hsl(var(--border) / 0.6);
+    }
+    .fleet-row:first-of-type { border-top: none; }
+    .fleet-row .bar { width: 3px; align-self: stretch; background: hsl(var(--accent, var(--electric))); box-shadow: 0 0 12px hsl(var(--accent, var(--electric)) / 0.55); border-radius: 2px; }
+    .fleet-row .badge {
+      width: 44px; height: 44px; border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      border: 1px solid hsl(var(--accent, var(--electric)) / 0.6); color: hsl(var(--accent, var(--electric)));
+      font-family: var(--font-mono); font-weight: 700; font-size: 0.85rem; background: hsl(var(--electric) / 0.06);
+      box-shadow: 0 0 16px hsl(var(--electric) / 0.18);
+    }
+    .fleet-row .name { font-family: var(--font-heading); font-weight: 600; font-size: 1.3rem; }
+    .fleet-row .sub { font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); margin-top: 0.15rem; }
+    .fleet-row .status { font-family: var(--font-mono); font-size: 0.7rem; color: hsl(150 60% 60%); border: 1px solid hsl(150 60% 55% / 0.35); background: hsl(150 60% 55% / 0.08); padding: 0.3rem 0.7rem; border-radius: 999px; }
+
+    /* ── FOOTER ────────────────────────────────────────── */
+    footer { border-top: 1px solid hsl(var(--border) / 0.6); padding: 2.5rem clamp(1.25rem, 5vw, 4rem) 3rem; display: flex; justify-content: space-between; gap: 2rem; flex-wrap: wrap; font-family: var(--font-mono); font-size: 0.72rem; color: var(--muted); }
+
+    /* ── MOTION ─────────────────────────────────────────── */
+    @media (prefers-reduced-motion: no-preference) {
+      .status-panel .status-row .v.ok i { font-style: normal; }
+    }
+
+    /* ── RESPONSIVE ─────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .hero { grid-template-columns: 1fr; align-content: center; min-height: auto; padding-top: 6rem; gap: 3rem; }
+      .hero-left { text-align: center; display: flex; flex-direction: column; align-items: center; }
+      .cta-row { justify-content: center; }
+      .subcopy { margin-inline: auto; }
+      .fleet-row { grid-template-columns: auto auto minmax(0, 1fr); }
+      .fleet-row .status { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="console-bar">
+    <span><span class="path">aliasist@hooman:~$</span> ./control-room --live</span>
+    <span class="status"><i></i>all systems operational</span>
+    <a class="cta" href="#top">launch ▸</a>
+  </div>
+
+  <main>
+    <section class="hero" id="top">
+      <div class="hero-left">
+        <div class="eyebrow">// aliasist-os · v2.7.0 · pasture online</div>
+        <pre class="bus" aria-hidden="true">
+ █████╗ ██╗     ██╗ █████╗ ███████╗██╗███████╗████████╗
+██╔══██╗██║     ██║██╔══██╗██╔════╝██║██╔════╝╚══██╔══╝
+███████║██║     ██║███████║███████╗██║███████╗   ██║
+██╔══██║██║     ██║██╔══██║╚════██║██║╚════██║   ██║
+██║  ██║███████╗██║██║  ██║███████║██║███████║   ██║
+╚═╝  ╚═╝╚══════╝╚═╝╚═╝  ╚═╝╚══════╝╚═╝╚══════╝   ╚═╝
+        </pre>
+        <h1 class="tagline">Tools for the web</h1>
+        <p class="subcopy">Six tools I'm building: privacy apps that stay in your browser, live maps and dashboards, and a desktop downloader.</p>
+        <div class="cta-row">
+          <a class="btn btn-primary" href="#fleet">Projects</a>
+          <a class="btn btn-ghost" href="#mission">Let's talk</a>
+          <a class="btn btn-mono" href="#top">Boot spawnOS</a>
+        </div>
+      </div>
+      <aside class="status-panel" aria-label="Control room status">
+        <div class="panel-head">
+          <span class="panel-title">Live status</span>
+          <span class="panel-id">CR-07 · hooman</span>
+        </div>
+        <div class="status-row"><span class="k">system</span><span class="v">aliasist-os</span></div>
+        <div class="status-row"><span class="k">status</span><span class="v ok">● operational</span></div>
+        <div class="status-row"><span class="k">products</span><span class="v">6 in fleet</span></div>
+        <div class="status-row"><span class="k">region</span><span class="v">global</span></div>
+        <div class="status-row"><span class="k">uptime</span><span class="v">00:12:34</span></div>
+        <div class="status-foot">v2.7.0 · files abductors synced · mirrors green</div>
+      </aside>
+      <div class="ticker" aria-hidden="true">
+        <span>// transmissions streaming · updates every 10 min</span>
+        <span>● globalize · live globe</span>
+        <span>● space · station tracking</span>
+        <span>● clear · photos private</span>
+      </div>
+    </section>
+
+    <section id="fleet">
+      <div class="section-head">
+        <div class="eyebrow">// fleet</div>
+        <h2>What's live right now</h2>
+        <p>Five web apps and one desktop app. Same Aliasist directory, six jobs done well.</p>
+      </div>
+      <div class="fleet-row">
+        <div class="bar"></div>
+        <div class="badge">AI</div>
+        <div><div class="name">Aliasist AI</div><div class="sub">Ask questions from your files</div></div>
+        <div class="status">operational</div>
+      </div>
+      <div class="fleet-row">
+        <div class="bar" style="--accent: hsl(38 95% 58%); background: hsl(38 95% 58% / 0.8); box-shadow: 0 0 12px hsl(38 95% 58% / 0.55);"></div>
+        <div class="badge" style="--accent: hsl(38 95% 58%); border-color: hsl(38 95% 58% / 0.6); color: hsl(38 95% 58%); background: hsl(38 95% 58% / 0.06); box-shadow: 0 0 16px hsl(38 95% 58% / 0.18);">GL</div>
+        <div><div class="name">Globalize</div><div class="sub">Live 3D globe with flights and cables</div></div>
+        <div class="status">operational</div>
+      </div>
+      <div class="fleet-row">
+        <div class="bar" style="--accent: hsl(243 80% 68%); background: hsl(243 80% 68% / 0.8); box-shadow: 0 0 12px hsl(243 80% 68% / 0.55);"></div>
+        <div class="badge" style="--accent: hsl(243 80% 68%); border-color: hsl(243 80% 68% / 0.6); color: hsl(243 80% 68%); background: hsl(243 80% 68% / 0.06); box-shadow: 0 0 16px hsl(243 80% 68% / 0.18);">SS</div>
+        <div><div class="name">SpaceSist</div><div class="sub">Watch live rocket launches and the Space Station</div></div>
+        <div class="status">operational</div>
+      </div>
+    </section>
+
+    <section id="mission">
+      <div class="section-head">
+        <div class="eyebrow">// mission</div>
+        <h2>Six tools, one directory, zero friction</h2>
+        <p>Privacy apps that stay in your browser, live maps and dashboards, and a desktop downloader — all wearing the same retro-future coat.</p>
+      </div>
+      <div class="cta-row">
+        <a class="btn btn-primary" href="#top">See the fleet</a>
+        <a class="btn btn-ghost" href="#mission">Read the mission</a>
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <span>The Aliasist Project</span>
+    <span>© 2026 · github.com/aliasist</span>
+    <span>built with coffee + rockets</span>
+  </footer>
+</body>
+</html>
