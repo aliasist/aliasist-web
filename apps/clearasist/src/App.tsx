@@ -142,8 +142,11 @@ function App() {
   return (
     <div className="clearasist-page min-h-screen bg-background text-foreground flex items-center justify-center">
       <div className="w-full max-w-md px-6">
-        {/* Minimal Header */}
+        {/* Minimal Header with Custom Logo */}
         <div className="text-center mb-10">
+          <div className="inline-flex items-center justify-center w-16 h-16 mb-4 rounded-xl shadow-lg shadow-amber-900/20">
+            <img src="/favicon.svg" alt="ClearSist Logo" className="w-16 h-16 rounded-xl object-contain" />
+          </div>
           <h1 className="text-4xl font-semibold tracking-tight">ClearSist</h1>
           <p className="text-muted-foreground mt-1 text-sm">Private file metadata cleanup by Aliasist</p>
         </div>
