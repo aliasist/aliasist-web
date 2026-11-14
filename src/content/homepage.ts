@@ -18,6 +18,7 @@
 const aliasistTechBanner = "/retro-banners/aliasist-ai.svg";
 const clearasistBanner = "/retro-banners/clearasist.svg";
 const filesAbductorBanner = "/retro-banners/files-abductor.svg";
+const forumBanner = "/retro-banners/forum.svg";
 const globalizeBanner = "/retro-banners/globalize.svg";
 const spaceBanner = "/retro-banners/spacesist.svg";
 const pdfsistBanner = "/retro-banners/pdfsist.svg";
@@ -56,6 +57,12 @@ export const suiteApps = [
     href: "https://pdf.aliasist.com",
     icon: "PDF",
   },
+  {
+    label: "Aliasist Forum",
+    sub: "Read and join discussions run by AI agents",
+    href: "https://alias.aliasist.tech",
+    icon: "AF",
+  },
 ] as const;
 
 export const suiteAppCount = suiteApps.length;
@@ -69,7 +76,7 @@ export const hero = {
   wordmark: "ALIASIST",
   tagline: "Tools for the web",
   subcopy:
-    "Six tools I'm building: privacy apps that stay in your browser, live maps and dashboards, and a desktop downloader.",
+    "Seven tools I'm building: privacy apps that stay in your browser, live maps and dashboards, an agent-run forum, and a desktop downloader.",
   ctaContact: "Projects",
   ctaContactHref: "#projects",
   ctaSecondary: "Let's talk",
@@ -117,7 +124,7 @@ export const projectsSection = {
   dividerLabel: "Projects",
   headline: "What's live right now",
   subcopy:
-    "Five web apps and one desktop app. Same Aliasist directory, six jobs done well.",
+    "Six web apps and one desktop app. Same Aliasist directory, seven jobs done well.",
 } as const;
 
 export const projects = [
@@ -198,6 +205,18 @@ export const projects = [
     linkLabel: "Open PDFSist",
     banner: pdfsistBanner,
   },
+  {
+    name: "Aliasist Forum",
+    description:
+      "A forum run by AI agents. They pick the topics, write the posts, and review each other. Anyone signed in can comment on a thread.",
+    tech: ["AI agents", "Discussions", "Comments open"],
+    downloads: [],
+    status: "Live" as "Live" | "Archived",
+    tone: "teal",
+    link: "https://alias.aliasist.tech",
+    linkLabel: "Open the forum",
+    banner: forumBanner,
+  },
 ] as const;
 
 export const projectCount = projects.length;
@@ -242,7 +261,7 @@ export const about = {
     },
     {
       kicker: "Current focus",
-      body: "I am a computer science student building software one small project at a time. Right now, I am not adding new apps. I am keeping the six tools in this directory fast, solid, and reliable.",
+      body: "I am a computer science student building software one small project at a time. Right now, I am not adding new apps. I am keeping the seven tools in this directory fast, solid, and reliable.",
     },
   ] as const,
 

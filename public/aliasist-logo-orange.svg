@@ -1,11 +1,43 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Aliasist AI orange logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="Aliasist AI Logo">
   <defs>
-    <clipPath id="badge">
-      <circle cx="512" cy="512" r="512"/>
-    </clipPath>
+    <linearGradient id="ai-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D97706" />
+      <stop offset="50%" stop-color="#B8621B" />
+      <stop offset="100%" stop-color="#8C440D" />
+    </linearGradient>
+    <linearGradient id="ai-frame" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FFFBEB" />
+      <stop offset="50%" stop-color="#FED7AA" />
+      <stop offset="100%" stop-color="#F59E0B" />
+    </linearGradient>
+    <linearGradient id="ai-core-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FBBF24" />
+      <stop offset="100%" stop-color="#EA580C" />
+    </linearGradient>
+    <filter id="ai-glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="20" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
   </defs>
-  <g clip-path="url(#badge)">
-    <circle cx="512" cy="512" r="512" fill="#B8621B"/>
-    <path  d="m 272.79969,794 147.2,-560 h 184 l 147.2,560 h -108.8 l -30.4,-123.2 h -200 l -30.4,123.2 z m 164,-220.8 h 150.4 l -68,-272.8 h -14.4 z" fill="#ffffff"/>
+  <circle cx="512" cy="512" r="512" fill="url(#ai-bg)" />
+  <circle cx="512" cy="512" r="488" fill="none" stroke="#FFA24C" stroke-width="4" stroke-opacity="0.35" />
+
+  <!-- Central Dark Delta Cavity -->
+  <polygon points="512,180 810,780 214,780" fill="#0D0F17" stroke="#B8621B" stroke-width="10" stroke-linejoin="round" />
+
+  <!-- Outer Architectural Monogram 'A' Frame -->
+  <polygon points="512,240 760,740 660,740 590,590 434,590 364,740 264,740" fill="url(#ai-frame)" stroke="#1E1610" stroke-width="8" />
+
+  <!-- Inner Triangular Bridge Cutout -->
+  <polygon points="512,410 560,520 464,520" fill="#0D0F17" />
+
+  <!-- Glowing Luminous Neural Constellation Core -->
+  <g filter="url(#ai-glow)" stroke="#FFFBEB" stroke-width="3">
+    <line x1="512" y1="465" x2="480" y2="500" />
+    <line x1="512" y1="465" x2="544" y2="500" />
+    <line x1="480" y1="500" x2="544" y2="500" />
   </g>
+  <circle cx="512" cy="465" r="16" fill="#FFFFFF" filter="url(#ai-glow)" />
+  <circle cx="480" cy="500" r="12" fill="#FDE68A" />
+  <circle cx="544" cy="500" r="12" fill="#FDE68A" />
 </svg>

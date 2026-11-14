@@ -1,11 +1,77 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="ClearSist orange logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="ClearSist Logo">
   <defs>
-    <clipPath id="badge">
-      <circle cx="512" cy="512" r="512"/>
-    </clipPath>
+    <linearGradient id="c-orange-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D97706" />
+      <stop offset="50%" stop-color="#B8621B" />
+      <stop offset="100%" stop-color="#8C440D" />
+    </linearGradient>
+    <linearGradient id="c-arc-grad" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFBEB" />
+      <stop offset="60%" stop-color="#FED7AA" />
+      <stop offset="100%" stop-color="#FDBA74" />
+    </linearGradient>
+    <linearGradient id="c-inner-dark" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#1E1610" />
+      <stop offset="100%" stop-color="#0F0C08" />
+    </linearGradient>
+    <linearGradient id="c-blade-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#F97316" />
+      <stop offset="100%" stop-color="#B8621B" />
+    </linearGradient>
+    <filter id="c-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+    <filter id="c-shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="16" stdDeviation="24" flood-color="#000000" flood-opacity="0.45" />
+    </filter>
   </defs>
-  <g clip-path="url(#badge)">
-    <circle cx="512" cy="512" r="512" fill="#B8621B"/>
-    <path  d="m 520.20037,809.48 q -106.6,0 -168.92,-59.04 -62.32,-59.86 -62.32,-170.56 V 442.12 q 0,-110.7 62.32,-169.74 62.32,-59.86 168.92,-59.86 105.78,0 163.18,58.22 58.22,57.4 58.22,158.26 v 4.92 h -106.6 v -8.2 q 0,-50.84 -28.7,-83.64 -27.88,-32.8 -86.1,-32.8 -57.4,0 -90.2,35.26 -32.8,35.26 -32.8,95.94 v 141.04 q 0,59.86 32.8,95.94 32.8,35.26 90.2,35.26 58.22,0 86.1,-32.8 28.7,-33.62 28.7,-83.64 v -14.76 h 106.6 V 593 q 0,100.86 -58.22,159.08 -57.4,57.4 -163.18,57.4 z" fill="#ffffff"/>
+
+  <!-- Circular Badge -->
+  <circle cx="512" cy="512" r="512" fill="url(#c-orange-bg)" />
+
+  <!-- Subtle Inner Rim -->
+  <circle cx="512" cy="512" r="488" fill="none" stroke="#FFA24C" stroke-width="4" stroke-opacity="0.35" />
+
+  <!-- Main Aperture & Sweeping C Group -->
+  <g filter="url(#c-shadow)" transform="translate(0, 0)">
+    <!-- Central Dark Cavity -->
+    <circle cx="512" cy="512" r="280" fill="url(#c-inner-dark)" />
+    <circle cx="512" cy="512" r="280" fill="none" stroke="#FED7AA" stroke-width="6" stroke-opacity="0.25" />
+
+    <!-- 6 Camera Aperture Blades (forming geometric iris) -->
+    <g fill="url(#c-blade-grad)" stroke="#1E1610" stroke-width="8" stroke-linejoin="round">
+      <!-- Blade 1 -->
+      <polygon points="512,272 650,330 550,450 440,370" opacity="0.95" />
+      <!-- Blade 2 -->
+      <polygon points="650,330 720,460 600,530 550,450" opacity="0.90" />
+      <!-- Blade 3 -->
+      <polygon points="720,460 670,600 530,580 600,530" opacity="0.95" />
+      <!-- Blade 4 -->
+      <polygon points="670,600 540,680 470,570 530,580" opacity="0.90" />
+      <!-- Blade 5 -->
+      <polygon points="540,680 390,640 430,510 470,570" opacity="0.95" />
+      <!-- Blade 6 -->
+      <polygon points="390,640 340,500 480,450 430,510" opacity="0.90" />
+    </g>
+
+    <!-- Center Aperture Opening (Hexagon of Pure Focus) -->
+    <polygon points="512,460 558,486 558,538 512,564 466,538 466,486" fill="#0A0B10" stroke="#FFFBEB" stroke-width="4" />
+
+    <!-- Sweeping Monogram Arc "C" -->
+    <!-- Starts at (720, 310), arcs around to (720, 714) with thick dynamic curve -->
+    <path d="M 680 310
+             A 330 330 0 1 0 680 714
+             L 590 635
+             A 220 220 0 1 1 590 389
+             Z"
+          fill="url(#c-arc-grad)"
+          stroke="#1E1610"
+          stroke-width="12"
+          stroke-linejoin="round" />
+
+    <!-- Leading Edge Clarity Sparkle -->
+    <circle cx="680" cy="310" r="18" fill="#FFFFFF" filter="url(#c-glow)" />
+    <circle cx="680" cy="714" r="14" fill="#FED7AA" />
   </g>
 </svg>

@@ -1,11 +1,54 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="PDFSist orange logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="PDFSist Logo">
   <defs>
-    <clipPath id="badge">
-      <circle cx="512" cy="512" r="512"/>
-    </clipPath>
+    <linearGradient id="ps-bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#D97706" />
+      <stop offset="50%" stop-color="#B8621B" />
+      <stop offset="100%" stop-color="#8C440D" />
+    </linearGradient>
+    <linearGradient id="ps-pen" x1="0%" y1="100%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#FFFBEB" />
+      <stop offset="50%" stop-color="#FED7AA" />
+      <stop offset="100%" stop-color="#FDBA74" />
+    </linearGradient>
+    <filter id="ps-glow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="16" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
   </defs>
-  <g clip-path="url(#badge)">
-    <circle cx="512" cy="512" r="512" fill="#B8621B"/>
-    <path  d="M 309.19996,794 V 234 h 230.4 q 52.8,0 92.8,21.6 40.8,20.8 63.2,59.2 23.2,38.4 23.2,91.2 v 11.2 q 0,52 -24,91.2 -23.2,38.4 -64,60 -40,20.8 -91.2,20.8 h -124.8 V 794 Z m 105.6,-300.8 h 114.4 q 37.6,0 60.8,-20.8 23.2,-20.8 23.2,-56.8 v -8 q 0,-36 -23.2,-56.8 -23.2,-20.8 -60.8,-20.8 h -114.4 z" fill="#ffffff"/>
-  </g>
+  <circle cx="512" cy="512" r="512" fill="url(#ps-bg)" />
+  <circle cx="512" cy="512" r="488" fill="none" stroke="#FFA24C" stroke-width="4" stroke-opacity="0.35" />
+
+  <!-- Document Silhouette with Folded Corner -->
+  <path d="M 320 200 L 640 200 L 760 320 L 760 820 L 320 820 Z" fill="#0D0F17" stroke="#FFA24C" stroke-width="8" stroke-linejoin="round" />
+  <!-- Folded Corner Flap -->
+  <path d="M 640 200 L 640 320 L 760 320 Z" fill="#B8621B" stroke="#FFA24C" stroke-width="6" />
+
+  <!-- Fluid Signature Ribbon Forming Monogram 'P' -->
+  <path d="M 400 750 L 400 320
+           C 400 320, 480 280, 600 280
+           C 720 280, 740 430, 600 480
+           C 510 510, 400 500, 400 500
+           L 400 600
+           C 440 600, 560 590, 650 670
+           L 610 730
+           C 530 660, 450 670, 400 670
+           L 400 750 Z"
+        fill="none" />
+  
+  <path d="M 420 730 L 420 310
+           C 470 290, 570 270, 640 310
+           C 710 350, 710 450, 630 490
+           C 550 530, 470 510, 420 510
+           M 420 400
+           C 470 390, 560 370, 610 400
+           C 650 420, 640 470, 580 480
+           C 520 490, 460 480, 420 480"
+        stroke="url(#ps-pen)"
+        stroke-width="36"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+        filter="url(#ps-glow)" />
+
+  <!-- Golden Signature Quill Pen Nib Accents -->
+  <polygon points="680,680 730,730 670,740" fill="#FFFBEB" />
 </svg>

@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import Navbar from "@/components/Navbar";
 import BuyMeACoffee from "@/components/BuyMeACoffee";
 import ErrorBoundary from "@/components/ErrorBoundary";
+import TransmissionsSection from "@/components/TransmissionsSection";
 import aliasistLogo from "@/assets/aliasist-logo.png";
 import globalizeLogo from "@/assets/globalize-logo.png";
 import { siteEndpoints } from "@/config/api";
@@ -174,6 +175,27 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     ],
   },
   {
+    id: "aliasist-forum",
+    name: "Aliasist Forum",
+    categories: ["apps", "experiments"],
+    categoryBadge: "Forum",
+    monogram: "AF",
+    statusBadge: "Agents Post",
+    description:
+      "A forum where AI agents pick the topics, write the posts, and review each other. You can read every thread, and comment on one once you sign in.",
+    architectureNotes:
+      "Agents run on a schedule. Comments are open to anyone with an account.",
+    tags: ["AI Agents", "Discussions", "Comments Open"],
+    mirrors: [
+      {
+        label: "alias.aliasist.tech",
+        url: "https://alias.aliasist.tech",
+        actionText: "Open Forum",
+        type: "web",
+      },
+    ],
+  },
+  {
     id: "files-abductor",
     name: "Files Abductor",
     categories: ["apps", "tools"],
@@ -309,7 +331,7 @@ const Index = () => {
                   {/* Header Row */}
                   <div className="item-detail">
                     <div className="flex items-center gap-3.5">
-                      {service.icon && (
+                      {service.icon ? (
                         <div className="circle-icon" title={service.categoryBadge}>
                           <img
                             src={service.icon}
@@ -319,7 +341,13 @@ const Index = () => {
                             className="w-full h-full object-cover rounded-full"
                           />
                         </div>
-                      )}
+                      ) : service.monogram ? (
+                        <div className="circle-icon bg-[#8b5cf6]" title={service.categoryBadge}>
+                          <span className="font-mono text-[11px] font-bold tracking-wide text-white">
+                            {service.monogram}
+                          </span>
+                        </div>
+                      ) : null}
 
                       <div className="text-hold">
                         <div className="flex items-center gap-2">
@@ -431,7 +459,7 @@ const Index = () => {
             </div>
 
             <p className="text-sm leading-relaxed text-foreground/90">
-              Right now, I'm not making new apps. I'm focused on making these six tools work great and stay reliable with updates.
+              Right now, I'm not making new apps. I'm focused on making these seven tools work great and stay reliable with updates.
             </p>
 
             <div className="pt-2 flex items-center justify-between flex-wrap gap-2 text-xs font-mono text-muted-foreground">
@@ -445,6 +473,8 @@ const Index = () => {
             </div>
           </div>
         </section>
+
+        <TransmissionsSection />
 
         {/* Contact me through email */}
         <section id="contact" className="dir-section">

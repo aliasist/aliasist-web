@@ -44,17 +44,17 @@ function timeAgo(iso: string): string {
 
 const FALLBACK_POSTS = [
   {
-    id: "f1", tag: "aisec", color: "#FF5555", category: "Security",
+    id: "f1", tag: "tech", color: "#BC5B00", category: "Tech",
     title: "Pen testing, software security, and building tools that are harder to break.",
     source: "Aliasist", url: "#", published: new Date().toISOString(),
   },
   {
-    id: "f2", tag: "tech", color: "#00C97B", category: "Tech",
+    id: "f2", tag: "tech", color: "#BC5B00", category: "Tech",
     title: "Building Files Abductor, my desktop app for downloading files.",
     source: "Aliasist", url: "#", published: new Date().toISOString(),
   },
   {
-    id: "f3", tag: "tech", color: "#00C97B", category: "Tech",
+    id: "f3", tag: "tech", color: "#BC5B00", category: "Tech",
     title: "From early web design to modern software: how the tools have changed.",
     source: "Aliasist", url: "#", published: new Date().toISOString(),
   },
@@ -64,7 +64,7 @@ const FILTERS = ["All", "Tech", "Finance", "Defense", "Security"];
 
 // Category-based thumbnail gradients, always render, no external dependency
 const CARD_GRADIENTS: Record<string, string> = {
-  tech:    "linear-gradient(135deg, hsl(165 90% 8%) 0%, hsl(165 60% 14%) 50%, hsl(165 90% 8%) 100%)",
+  tech:    "linear-gradient(135deg, hsl(25 60% 8%) 0%, hsl(25 50% 14%) 50%, hsl(25 60% 8%) 100%)",
   finance: "linear-gradient(135deg, hsl(195 90% 8%) 0%, hsl(195 60% 14%) 50%, hsl(195 90% 8%) 100%)",
   defense: "linear-gradient(135deg, hsl(30 80% 8%) 0%, hsl(30 50% 14%) 50%, hsl(30 80% 8%) 100%)",
   aisec:   "linear-gradient(135deg, hsl(0 80% 8%) 0%, hsl(0 50% 14%) 50%, hsl(0 80% 8%) 100%)",
@@ -283,10 +283,10 @@ const TransmissionsSection = () => {
             <button
               key={f}
               onClick={() => { setActiveFilter(f); }}
-              className={`text-sm px-3 py-1.5 border rounded-sm outline-none transition-[colors,border-color,box-shadow] duration-200 focus-visible:ring-2 focus-visible:ring-electric/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
+              className={`text-sm px-3 py-1.5 border rounded-sm outline-none transition-[colors,border-color,box-shadow] duration-200 focus-visible:ring-2 focus-visible:ring-primary/50 focus-visible:ring-offset-2 focus-visible:ring-offset-background ${
                 activeFilter === f
-                  ? "border-electric text-electric bg-electric/10 shadow-electric-xs"
-                  : "border-border text-muted-foreground hover:border-electric/40 hover:text-foreground"
+                  ? "border-primary text-primary bg-primary/10 shadow-primary-xs"
+                  : "border-border text-muted-foreground hover:border-primary/40 hover:text-primary"
               }`}
             >
               {f}

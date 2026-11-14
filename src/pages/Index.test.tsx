@@ -21,6 +21,17 @@ const render = (element: React.ReactNode) => {
 
 beforeEach(() => {
   vi.stubGlobal("IS_REACT_ACT_ENVIRONMENT", true);
+  // jsdom has no IntersectionObserver, and framer-motion's whileInView needs
+  // one. Without this stub, rendering any section that animates on scroll
+  // throws before the assertions run.
+  vi.stubGlobal("IntersectionObserver", function IntersectionObserverStub() {
+    return {
+      observe: vi.fn(),
+      unobserve: vi.fn(),
+      disconnect: vi.fn(),
+      takeRecords: () => [],
+    };
+  });
   container = document.createElement("div");
   document.body.append(container);
   root = createRoot(container);
@@ -51,6 +62,7 @@ describe("Aliasist Index Landing Page", () => {
     expect(container.textContent).toContain("SpaceSist");
     expect(container.textContent).toContain("ClearSist");
     expect(container.textContent).toContain("PDFSist");
+    expect(container.textContent).toContain("Aliasist Forum");
     expect(container.textContent).toContain("Files Abductor");
   });
 
