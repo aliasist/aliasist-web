@@ -1,54 +1,60 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="PDFSist Logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="PDFSist">
   <defs>
-    <linearGradient id="ps-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#D97706" />
-      <stop offset="50%" stop-color="#B8621B" />
-      <stop offset="100%" stop-color="#8C440D" />
+    <radialGradient id="field_pdfsist" cx="35%" cy="24%" r="82%">
+      <stop offset="0" stop-color="#2d1015"/>
+      <stop offset=".48" stop-color="#190a0d"/>
+      <stop offset="1" stop-color="#0b0406"/>
+    </radialGradient>
+    <linearGradient id="mark_pdfsist" x1="270" y1="780" x2="730" y2="196" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ff4757"/>
+      <stop offset=".52" stop-color="#ff6b81"/>
+      <stop offset="1" stop-color="#ffa502"/>
     </linearGradient>
-    <linearGradient id="ps-pen" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#FFFBEB" />
-      <stop offset="50%" stop-color="#FED7AA" />
-      <stop offset="100%" stop-color="#FDBA74" />
+    <linearGradient id="orbit_pdfsist" x1="130" y1="650" x2="900" y2="386" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ff4757"/>
+      <stop offset=".5" stop-color="#ff7f50"/>
+      <stop offset="1" stop-color="#ffd32a"/>
     </linearGradient>
-    <filter id="ps-glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="16" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    <linearGradient id="rim_pdfsist" x1="170" y1="160" x2="850" y2="864" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#ffa502"/>
+      <stop offset=".38" stop-color="#ff6b81"/>
+      <stop offset=".72" stop-color="#ee5253"/>
+      <stop offset="1" stop-color="#ffbe76"/>
+    </linearGradient>
+    <filter id="markGlow_pdfsist" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feFlood flood-color="#ff4757" flood-opacity=".38"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
     </filter>
+    <clipPath id="badge_pdfsist">
+      <circle cx="512" cy="512" r="480"/>
+    </clipPath>
   </defs>
-  <circle cx="512" cy="512" r="512" fill="url(#ps-bg)" />
-  <circle cx="512" cy="512" r="488" fill="none" stroke="#FFA24C" stroke-width="4" stroke-opacity="0.35" />
 
-  <!-- Document Silhouette with Folded Corner -->
-  <path d="M 320 200 L 640 200 L 760 320 L 760 820 L 320 820 Z" fill="#0D0F17" stroke="#FFA24C" stroke-width="8" stroke-linejoin="round" />
-  <!-- Folded Corner Flap -->
-  <path d="M 640 200 L 640 320 L 760 320 Z" fill="#B8621B" stroke="#FFA24C" stroke-width="6" />
+  <circle cx="512" cy="512" r="472" fill="#140608" stroke="#070203" stroke-width="20"/>
+  <circle cx="512" cy="512" r="458" fill="url(#field_pdfsist)" stroke="url(#rim_pdfsist)" stroke-width="12"/>
 
-  <!-- Fluid Signature Ribbon Forming Monogram 'P' -->
-  <path d="M 400 750 L 400 320
-           C 400 320, 480 280, 600 280
-           C 720 280, 740 430, 600 480
-           C 510 510, 400 500, 400 500
-           L 400 600
-           C 440 600, 560 590, 650 670
-           L 610 730
-           C 530 660, 450 670, 400 670
-           L 400 750 Z"
-        fill="none" />
-  
-  <path d="M 420 730 L 420 310
-           C 470 290, 570 270, 640 310
-           C 710 350, 710 450, 630 490
-           C 550 530, 470 510, 420 510
-           M 420 400
-           C 470 390, 560 370, 610 400
-           C 650 420, 640 470, 580 480
-           C 520 490, 460 480, 420 480"
-        stroke="url(#ps-pen)"
-        stroke-width="36"
-        stroke-linecap="round"
-        stroke-linejoin="round"
-        filter="url(#ps-glow)" />
+  <g clip-path="url(#badge_pdfsist)">
+    <g fill="none" stroke="#ff6b81" stroke-opacity=".14" stroke-width="9">
+      <ellipse cx="512" cy="512" rx="272" ry="445"/>
+      <ellipse cx="512" cy="512" rx="116" ry="445"/>
+      <ellipse cx="512" cy="512" rx="436" ry="176"/>
+      <path d="M100 365c122 44 265 67 412 67s290-23 412-67M100 659c122-44 265-67 412-67s290 23 412 67"/>
+    </g>
 
-  <!-- Golden Signature Quill Pen Nib Accents -->
-  <polygon points="680,680 730,730 670,740" fill="#FFFBEB" />
+    <g filter="url(#markGlow_pdfsist)" fill="none" stroke="url(#mark_pdfsist)" stroke-linejoin="round">
+      <path d="M306 799 512 218 718 799" stroke-width="118"/>
+      <path d="m532 558 97 30" stroke-width="76" stroke-linecap="square"/>
+    </g>
+
+    <ellipse cx="512" cy="516" rx="432" ry="181" fill="none" stroke="#ff7f50" stroke-opacity=".18" stroke-width="34" transform="rotate(-14 512 516)"/>
+    <ellipse cx="512" cy="516" rx="432" ry="181" fill="none" stroke="url(#orbit_pdfsist)" stroke-width="22" transform="rotate(-14 512 516)"/>
+    <ellipse cx="512" cy="505" rx="426" ry="170" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width="4" transform="rotate(-14 512 505)"/>
+    <circle cx="866" cy="330" r="21" fill="#fff0f2"/>
+    <circle cx="866" cy="330" r="42" fill="none" stroke="#ff4757" stroke-opacity=".35" stroke-width="10"/>
+  </g>
 </svg>

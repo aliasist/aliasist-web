@@ -1,43 +1,60 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="Aliasist AI Logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="Aliasist Forum">
   <defs>
-    <linearGradient id="ai-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#D97706" />
-      <stop offset="50%" stop-color="#B8621B" />
-      <stop offset="100%" stop-color="#8C440D" />
+    <radialGradient id="field_aliasist_forum" cx="35%" cy="24%" r="82%">
+      <stop offset="0" stop-color="#200e35"/>
+      <stop offset=".48" stop-color="#130822"/>
+      <stop offset="1" stop-color="#07030e"/>
+    </radialGradient>
+    <linearGradient id="mark_aliasist_forum" x1="270" y1="780" x2="730" y2="196" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#a855f7"/>
+      <stop offset=".52" stop-color="#c084fc"/>
+      <stop offset="1" stop-color="#e879f9"/>
     </linearGradient>
-    <linearGradient id="ai-frame" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FFFBEB" />
-      <stop offset="50%" stop-color="#FED7AA" />
-      <stop offset="100%" stop-color="#F59E0B" />
+    <linearGradient id="orbit_aliasist_forum" x1="130" y1="650" x2="900" y2="386" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#2dd4bf"/>
+      <stop offset=".5" stop-color="#a855f7"/>
+      <stop offset="1" stop-color="#ec4899"/>
     </linearGradient>
-    <linearGradient id="ai-core-grad" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FBBF24" />
-      <stop offset="100%" stop-color="#EA580C" />
+    <linearGradient id="rim_aliasist_forum" x1="170" y1="160" x2="850" y2="864" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#e879f9"/>
+      <stop offset=".38" stop-color="#a855f7"/>
+      <stop offset=".72" stop-color="#2dd4bf"/>
+      <stop offset="1" stop-color="#f3e8ff"/>
     </linearGradient>
-    <filter id="ai-glow" x="-30%" y="-30%" width="160%" height="160%">
-      <feGaussianBlur stdDeviation="20" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    <filter id="markGlow_aliasist_forum" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feFlood flood-color="#a855f7" flood-opacity=".38"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
     </filter>
+    <clipPath id="badge_aliasist_forum">
+      <circle cx="512" cy="512" r="480"/>
+    </clipPath>
   </defs>
-  <circle cx="512" cy="512" r="512" fill="url(#ai-bg)" />
-  <circle cx="512" cy="512" r="488" fill="none" stroke="#FFA24C" stroke-width="4" stroke-opacity="0.35" />
 
-  <!-- Central Dark Delta Cavity -->
-  <polygon points="512,180 810,780 214,780" fill="#0D0F17" stroke="#B8621B" stroke-width="10" stroke-linejoin="round" />
+  <circle cx="512" cy="512" r="472" fill="#0b0413" stroke="#040107" stroke-width="20"/>
+  <circle cx="512" cy="512" r="458" fill="url(#field_aliasist_forum)" stroke="url(#rim_aliasist_forum)" stroke-width="12"/>
 
-  <!-- Outer Architectural Monogram 'A' Frame -->
-  <polygon points="512,240 760,740 660,740 590,590 434,590 364,740 264,740" fill="url(#ai-frame)" stroke="#1E1610" stroke-width="8" />
+  <g clip-path="url(#badge_aliasist_forum)">
+    <g fill="none" stroke="#c084fc" stroke-opacity=".14" stroke-width="9">
+      <ellipse cx="512" cy="512" rx="272" ry="445"/>
+      <ellipse cx="512" cy="512" rx="116" ry="445"/>
+      <ellipse cx="512" cy="512" rx="436" ry="176"/>
+      <path d="M100 365c122 44 265 67 412 67s290-23 412-67M100 659c122-44 265-67 412-67s290 23 412 67"/>
+    </g>
 
-  <!-- Inner Triangular Bridge Cutout -->
-  <polygon points="512,410 560,520 464,520" fill="#0D0F17" />
+    <g filter="url(#markGlow_aliasist_forum)" fill="none" stroke="url(#mark_aliasist_forum)" stroke-linejoin="round">
+      <path d="M306 799 512 218 718 799" stroke-width="118"/>
+      <path d="m532 558 97 30" stroke-width="76" stroke-linecap="square"/>
+    </g>
 
-  <!-- Glowing Luminous Neural Constellation Core -->
-  <g filter="url(#ai-glow)" stroke="#FFFBEB" stroke-width="3">
-    <line x1="512" y1="465" x2="480" y2="500" />
-    <line x1="512" y1="465" x2="544" y2="500" />
-    <line x1="480" y1="500" x2="544" y2="500" />
+    <ellipse cx="512" cy="516" rx="432" ry="181" fill="none" stroke="#a855f7" stroke-opacity=".18" stroke-width="34" transform="rotate(-14 512 516)"/>
+    <ellipse cx="512" cy="516" rx="432" ry="181" fill="none" stroke="url(#orbit_aliasist_forum)" stroke-width="22" transform="rotate(-14 512 516)"/>
+    <ellipse cx="512" cy="505" rx="426" ry="170" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width="4" transform="rotate(-14 512 505)"/>
+    <circle cx="866" cy="330" r="21" fill="#faf5ff"/>
+    <circle cx="866" cy="330" r="42" fill="none" stroke="#a855f7" stroke-opacity=".35" stroke-width="10"/>
   </g>
-  <circle cx="512" cy="465" r="16" fill="#FFFFFF" filter="url(#ai-glow)" />
-  <circle cx="480" cy="500" r="12" fill="#FDE68A" />
-  <circle cx="544" cy="500" r="12" fill="#FDE68A" />
 </svg>

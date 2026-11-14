@@ -1,57 +1,60 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="SpaceSist Logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="SpaceSist">
   <defs>
-    <linearGradient id="ss-bg" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#D97706" />
-      <stop offset="50%" stop-color="#B8621B" />
-      <stop offset="100%" stop-color="#8C440D" />
+    <radialGradient id="field_spacesist" cx="35%" cy="24%" r="82%">
+      <stop offset="0" stop-color="#1e1035"/>
+      <stop offset=".48" stop-color="#110b24"/>
+      <stop offset="1" stop-color="#07040f"/>
+    </radialGradient>
+    <linearGradient id="mark_spacesist" x1="270" y1="780" x2="730" y2="196" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#818cf8"/>
+      <stop offset=".52" stop-color="#c084fc"/>
+      <stop offset="1" stop-color="#f472b6"/>
     </linearGradient>
-    <linearGradient id="ss-trail" x1="0%" y1="100%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#B8621B" />
-      <stop offset="50%" stop-color="#F59E0B" />
-      <stop offset="100%" stop-color="#FFFBEB" />
+    <linearGradient id="orbit_spacesist" x1="130" y1="650" x2="900" y2="386" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#6366f1"/>
+      <stop offset=".5" stop-color="#a855f7"/>
+      <stop offset="1" stop-color="#38bdf8"/>
     </linearGradient>
-    <linearGradient id="ss-planet" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#2D3142" />
-      <stop offset="100%" stop-color="#0E1017" />
+    <linearGradient id="rim_spacesist" x1="170" y1="160" x2="850" y2="864" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f472b6"/>
+      <stop offset=".38" stop-color="#c084fc"/>
+      <stop offset=".72" stop-color="#818cf8"/>
+      <stop offset="1" stop-color="#e0e7ff"/>
     </linearGradient>
-    <filter id="ss-glow" x="-20%" y="-20%" width="140%" height="140%">
-      <feGaussianBlur stdDeviation="16" result="blur" />
-      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    <filter id="markGlow_spacesist" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feFlood flood-color="#d946ef" flood-opacity=".38"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
     </filter>
+    <clipPath id="badge_spacesist">
+      <circle cx="512" cy="512" r="480"/>
+    </clipPath>
   </defs>
-  <circle cx="512" cy="512" r="512" fill="url(#ss-bg)" />
-  <circle cx="512" cy="512" r="488" fill="none" stroke="#FFA24C" stroke-width="4" stroke-opacity="0.35" />
-  
-  <!-- Cosmic Planet -->
-  <circle cx="512" cy="512" r="240" fill="url(#ss-planet)" stroke="#FFA24C" stroke-width="4" stroke-opacity="0.4" />
-  <!-- Planet Craters -->
-  <circle cx="450" cy="430" r="34" fill="#0A0B10" opacity="0.6" />
-  <circle cx="560" cy="550" r="24" fill="#0A0B10" opacity="0.6" />
-  <circle cx="430" cy="570" r="18" fill="#0A0B10" opacity="0.6" />
 
-  <!-- The Orbital "S" Ribbon Trajectory -->
-  <path d="M 680 320
-           C 540 220, 360 260, 340 400
-           C 320 520, 680 500, 680 660
-           C 680 770, 560 810, 420 780
-           L 440 710
-           C 540 730, 610 700, 610 650
-           C 610 540, 260 560, 260 390
-           C 260 240, 480 160, 710 260
-           Z"
-        fill="url(#ss-trail)"
-        filter="url(#ss-glow)" />
+  <circle cx="512" cy="512" r="472" fill="#090514" stroke="#030208" stroke-width="20"/>
+  <circle cx="512" cy="512" r="458" fill="url(#field_spacesist)" stroke="url(#rim_spacesist)" stroke-width="12"/>
 
-  <!-- Ascending Rocket -->
-  <g transform="translate(680, 260) rotate(35)">
-    <!-- Rocket Body -->
-    <path d="M 0 -80 C 30 -50, 30 50, 25 80 L -25 80 C -30 50, -30 -50, 0 -80 Z" fill="#FFFBEB" stroke="#1E1610" stroke-width="6" />
-    <!-- Nose Cone -->
-    <path d="M 0 -80 C 18 -60, 20 -30, 0 -30 C -20 -30, -18 -60, 0 -80 Z" fill="#B8621B" />
-    <!-- Fins -->
-    <polygon points="-25,40 -60,85 -25,75" fill="#F59E0B" />
-    <polygon points="25,40 60,85 25,75" fill="#F59E0B" />
-    <!-- Porthole -->
-    <circle cx="0" cy="0" r="16" fill="#0E1017" stroke="#F59E0B" stroke-width="4" />
+  <g clip-path="url(#badge_spacesist)">
+    <g fill="none" stroke="#c084fc" stroke-opacity=".14" stroke-width="9">
+      <ellipse cx="512" cy="512" rx="272" ry="445"/>
+      <ellipse cx="512" cy="512" rx="116" ry="445"/>
+      <ellipse cx="512" cy="512" rx="436" ry="176"/>
+      <path d="M100 365c122 44 265 67 412 67s290-23 412-67M100 659c122-44 265-67 412-67s290 23 412 67"/>
+    </g>
+
+    <g filter="url(#markGlow_spacesist)" fill="none" stroke="url(#mark_spacesist)" stroke-linejoin="round">
+      <path d="M306 799 512 218 718 799" stroke-width="118"/>
+      <path d="m532 558 97 30" stroke-width="76" stroke-linecap="square"/>
+    </g>
+
+    <ellipse cx="512" cy="516" rx="432" ry="181" fill="none" stroke="#a855f7" stroke-opacity=".18" stroke-width="34" transform="rotate(-14 512 516)"/>
+    <ellipse cx="512" cy="516" rx="432" ry="181" fill="none" stroke="url(#orbit_spacesist)" stroke-width="22" transform="rotate(-14 512 516)"/>
+    <ellipse cx="512" cy="505" rx="426" ry="170" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width="4" transform="rotate(-14 512 505)"/>
+    <circle cx="866" cy="330" r="21" fill="#fdf4ff"/>
+    <circle cx="866" cy="330" r="42" fill="none" stroke="#e879f9" stroke-opacity=".35" stroke-width="10"/>
   </g>
 </svg>

@@ -1,13 +1,60 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="ClearSist Logo">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" role="img" aria-label="ClearSist">
   <defs>
-    <clipPath id="badge-clip"><circle cx="512" cy="512" r="512"/></clipPath>
+    <radialGradient id="field_clearsist" cx="35%" cy="24%" r="82%">
+      <stop offset="0" stop-color="#082530"/>
+      <stop offset=".48" stop-color="#05161f"/>
+      <stop offset="1" stop-color="#02090e"/>
+    </radialGradient>
+    <linearGradient id="mark_clearsist" x1="270" y1="780" x2="730" y2="196" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#00f5d4"/>
+      <stop offset=".52" stop-color="#00bbf9"/>
+      <stop offset="1" stop-color="#a0f0ed"/>
+    </linearGradient>
+    <linearGradient id="orbit_clearsist" x1="130" y1="650" x2="900" y2="386" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0077b6"/>
+      <stop offset=".5" stop-color="#00b4d8"/>
+      <stop offset="1" stop-color="#90e0ef"/>
+    </linearGradient>
+    <linearGradient id="rim_clearsist" x1="170" y1="160" x2="850" y2="864" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#72efdd"/>
+      <stop offset=".38" stop-color="#48cae4"/>
+      <stop offset=".72" stop-color="#0077b6"/>
+      <stop offset="1" stop-color="#caf0f8"/>
+    </linearGradient>
+    <filter id="markGlow_clearsist" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="18" result="blur"/>
+      <feFlood flood-color="#00f5d4" flood-opacity=".38"/>
+      <feComposite in2="blur" operator="in"/>
+      <feMerge>
+        <feMergeNode/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+    <clipPath id="badge_clearsist">
+      <circle cx="512" cy="512" r="480"/>
+    </clipPath>
   </defs>
-  <g clip-path="url(#badge-clip)">
-    <circle cx="512" cy="512" r="512" fill="#0284c7"/>
-    <path d="M 751.01 313.45
-             A 312 312 0 1 0 751.01 714.55
-             L 645.29 625.85
-             A 174 174 0 1 1 645.29 402.15
-             Z" fill="#ffffff"/>
+
+  <circle cx="512" cy="512" r="472" fill="#030d12" stroke="#010507" stroke-width="20"/>
+  <circle cx="512" cy="512" r="458" fill="url(#field_clearsist)" stroke="url(#rim_clearsist)" stroke-width="12"/>
+
+  <g clip-path="url(#badge_clearsist)">
+    <g fill="none" stroke="#72efdd" stroke-opacity=".14" stroke-width="9">
+      <ellipse cx="512" cy="512" rx="272" ry="445"/>
+      <ellipse cx="512" cy="512" rx="116" ry="445"/>
+      <ellipse cx="512" cy="512" rx="436" ry="176"/>
+      <path d="M100 365c122 44 265 67 412 67s290-23 412-67M100 659c122-44 265-67 412-67s290 23 412 67"/>
+    </g>
+
+    <g filter="url(#markGlow_clearsist)" fill="none" stroke="url(#mark_clearsist)" stroke-linejoin="round">
+      <path d="M306 799 512 218 718 799" stroke-width="118"/>
+      <path d="m532 558 97 30" stroke-width="76" stroke-linecap="square"/>
+    </g>
+
+    <ellipse cx="512" cy="516" rx="432" ry="181" fill="none" stroke="#00b4d8" stroke-opacity=".18" stroke-width="34" transform="rotate(-14 512 516)"/>
+    <ellipse cx="512" cy="516" rx="432" ry="181" fill="none" stroke="url(#orbit_clearsist)" stroke-width="22" transform="rotate(-14 512 516)"/>
+    <ellipse cx="512" cy="505" rx="426" ry="170" fill="none" stroke="#fff" stroke-opacity=".2" stroke-width="4" transform="rotate(-14 512 505)"/>
+    <circle cx="866" cy="330" r="21" fill="#caf0f8"/>
+    <circle cx="866" cy="330" r="42" fill="none" stroke="#48cae4" stroke-opacity=".35" stroke-width="10"/>
   </g>
 </svg>
