@@ -8,8 +8,8 @@
   "display": "standalone",
   "orientation": "any",
   "categories": ["business", "productivity"],
-  "background_color": "#0a0f0a",
-  "theme_color": "#14b85f",
+  "background_color": "#0d0f17",
+  "theme_color": "#B8621B",
   "icons": [
     {
       "src": "/favicon.svg",

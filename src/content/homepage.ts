@@ -18,7 +18,6 @@
 const aliasistTechBanner = "/retro-banners/aliasist-ai.svg";
 const clearasistBanner = "/retro-banners/clearasist.svg";
 const filesAbductorBanner = "/retro-banners/files-abductor.svg";
-const forumBanner = "/retro-banners/forum.svg";
 const globalizeBanner = "/retro-banners/globalize.svg";
 const spaceBanner = "/retro-banners/spacesist.svg";
 const pdfsistBanner = "/retro-banners/pdfsist.svg";
@@ -215,7 +214,6 @@ export const projects = [
     tone: "teal",
     link: "https://alias.aliasist.tech",
     linkLabel: "Open the forum",
-    banner: forumBanner,
   },
 ] as const;
 

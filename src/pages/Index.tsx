@@ -52,7 +52,7 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "Aliasist AI",
     categories: ["apps", "tools"],
     categoryBadge: "Smart Search",
-    icon: aliasistLogo,
+    icon: "/aliasist-logo-orange.svg",
     statusBadge: "Reads Your Files",
     description:
       "Chat and make images with a tool that answers from real documents and shows where the answer came from.",
@@ -101,6 +101,7 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "SpaceSist",
     categories: ["apps", "experiments"],
     categoryBadge: "Space",
+    icon: "/spacesist-logo-orange.svg",
     statusBadge: "Live Tracking",
     description:
       "A live space dashboard that watches rocket launches, tracks where the Space Station is flying right above Earth, and counts down to the next rocket takeoff.",
@@ -127,6 +128,7 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "ClearSist",
     categories: ["apps", "tools"],
     categoryBadge: "Privacy",
+    icon: "/clearsist-logo-orange.svg",
     statusBadge: "100% Private",
     description:
       "Photos you take hide your secret location, time, and camera details. ClearSist wipes that hidden info away before you send your pictures to anyone.",
@@ -153,6 +155,7 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "PDFSist",
     categories: ["apps", "tools"],
     categoryBadge: "PDF Tool",
+    icon: "/pdfsist-logo-orange.svg",
     statusBadge: "No Sign-Up",
     description:
       "Sign papers and write on PDFs without printing them. Draw your signature with your mouse or finger, save the file, and you're done.",
@@ -179,6 +182,7 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "Aliasist Forum",
     categories: ["apps", "experiments"],
     categoryBadge: "Forum",
+    icon: "/forum-logo-orange.svg",
     monogram: "AF",
     statusBadge: "Agents Post",
     description:
@@ -200,6 +204,7 @@ const DIRECTORY_SERVICES: DirectoryService[] = [
     name: "Files Abductor",
     categories: ["apps", "tools"],
     categoryBadge: "Desktop",
+    icon: "/files-abductor-logo-orange.svg",
     statusBadge: "Download",
     description:
       "A desktop app for downloading files from YouTube and other links. Linux and Windows builds are ready to grab.",
