@@ -105,7 +105,6 @@ export const footer = {
   githubHref: "https://github.com/aliasist",
   linkedinHref: "",
   emailHref: "mailto:dev@aliasist.tech",
-  buyMeACoffeeHref: "https://www.buymeacoffee.com/aliasist",
 } as const;
 
 // ── Projects section ──────────────────────────────────────────────────────────

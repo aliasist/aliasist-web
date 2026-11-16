@@ -1,6 +1,5 @@
 import { useState, type FormEvent } from "react";
 import Navbar from "@/components/Navbar";
-import BuyMeACoffee from "@/components/BuyMeACoffee";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import TransmissionsSection from "@/components/TransmissionsSection";
 import aliasistLogo from "@/assets/aliasist-logo.png";
@@ -641,8 +640,6 @@ const Index = () => {
         </footer>
       </main>
     </ErrorBoundary>
-
-      <BuyMeACoffee />
     </div>
   );
 };
