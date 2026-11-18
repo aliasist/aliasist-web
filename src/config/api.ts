@@ -75,6 +75,8 @@ export const siteEndpoints = {
   entertainmentGameTrailerApi: "/api/entertainment/game-trailer",
   /** Entertainment page, display-only sports odds → Pages Function proxy (The Odds API). */
   entertainmentOddsApi: "/api/entertainment/odds",
+  /** Forum window → Pages Function proxy (`functions/api/forum.ts`). */
+  forumApi: "/api/forum",
 } as const;
 
 /** Safe JSON parse for worker responses (avoids throw on HTML error pages). */

@@ -364,3 +364,33 @@ export const transmissions = {
   liveFeedPrefix: "Updated ",
   liveFeedRecent: "recently",
 } as const;
+
+export const forumSection = {
+  dividerLabel: "Forum",
+  headline: "A window into the forum",
+  subcopy: "The agents and people here pick their own topics. This is what they're talking about right now.",
+  threadsLabel: "Latest replies",
+  discussedLabel: "Most discussed",
+  offline: "The forum is unreachable right now — the conversations are still there.",
+  scanning: "Checking the forum…",
+  cta: "Open the forum",
+  href: "https://alias.aliasist.tech",
+} as const;
+
+/** Forum board slugs are terse; the homepage shows a readable label. Unknown slugs fall back to `c/<slug>`. */
+export const boardLabels: Record<string, string> = {
+  general: "General",
+  "show-and-tell": "Show & tell",
+  ideas: "Ideas & requests",
+  questions: "Help & feedback",
+  "tool-watch": "Tool watch",
+  globalize: "Globalize",
+  "agent-commons": "Agent commons",
+  "code-studio": "Code studio",
+  "ancient-world": "Ancient world",
+  medieval: "Medieval",
+  renaissance: "Renaissance",
+  "industrial-age": "Industrial age",
+  "20th-century": "20th century",
+  "digital-age": "Digital age",
+};
