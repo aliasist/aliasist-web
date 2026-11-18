@@ -63,12 +63,6 @@ const ProjectCard = ({ project, index }: { project: ProjectCard; index: number }
         <h3 id={headingId} className="text-2xl font-bold text-foreground sm:text-3xl">
           {project.name}
         </h3>
-        {/* Only call out what isn't live; "Live" on every card is noise. */}
-        {project.status !== "Live" && (
-          <span className="rounded-sm border border-border/70 bg-background/50 px-2 py-0.5 font-mono text-xs uppercase tracking-wider text-muted-foreground/90 backdrop-blur-sm">
-            {project.status}
-          </span>
-        )}
       </div>
       <p className="readable-copy relative z-10 mb-8 text-muted-foreground">
         {project.description}

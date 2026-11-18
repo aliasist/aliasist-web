@@ -177,8 +177,8 @@
   function setSyncStatus(ok){
     var el = document.getElementById('syncStatus');
     if (!el) return;
-    if (!persistEnabled){ el.textContent = '○ DB: OFFLINE'; el.classList.remove('agent-on'); return; }
-    el.textContent = ok ? '● DB: SYNCED' : '● DB: ERROR';
+    if (!persistEnabled){ el.textContent = 'DB: OFFLINE'; el.classList.remove('agent-on'); return; }
+    el.textContent = ok ? 'DB: SYNCED' : 'DB: ERROR';
     el.classList.toggle('agent-on', !!ok);
   }
 

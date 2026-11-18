@@ -75,7 +75,7 @@ button, input, select{ font:inherit; color:inherit; }
 .task-tab{ border:none; border-right:1px solid color-mix(in srgb, var(--accent) 35%, transparent); background:transparent; color:var(--dim); padding:0 10px; height:100%; cursor:pointer; white-space:nowrap; }
 .task-tab[aria-pressed="true"]{ color:var(--fg); background:color-mix(in srgb, var(--accent) 18%, transparent); }
 .task-right{ display:flex; align-items:center; gap:10px; padding-right:10px; color:var(--dim); white-space:nowrap; }
-.task-right .agent-on{ color:var(--green); }
+.task-right .agent-on{ color:var(--fg); }
 .task-right .clock{ color:var(--fg); }
 
 /* ---- windows ---- */
@@ -354,12 +354,6 @@ button, input, select{ font:inherit; color:inherit; }
 .ws-tab[aria-pressed="true"]{ box-shadow:0 0 12px color-mix(in srgb, var(--accent) 70%, transparent); }
 .k-btn{ text-shadow:none; box-shadow:0 0 14px color-mix(in srgb, var(--accent) 60%, transparent); }
 .task-right .clock{ text-shadow:0 0 6px color-mix(in srgb, var(--accent) 60%, transparent); }
-.task-right .agent-on::before{
-  content:''; display:inline-block; width:6px; height:6px; border-radius:50%; margin-right:5px;
-  background:var(--green); box-shadow:0 0 6px var(--green); vertical-align:middle;
-  animation:dotPulse 2s ease-in-out infinite;
-}
-@keyframes dotPulse{ 50%{ opacity:.35; } }
 
 /* ---- rail icons ---- */
 .rail-glyph{
@@ -425,7 +419,6 @@ html.reduced-motion .wp-stars::after,
 html.reduced-motion .wp-grid,
 html.reduced-motion .wp-sun,
 html.reduced-motion .wp-scan::after,
-html.reduced-motion .task-right .agent-on::before,
 html.reduced-motion .boot-logo.show .A,
 html.reduced-motion .boot-logo.show .name{ animation:none; }
 html.reduced-motion .wp-scan::after{ display:none; }

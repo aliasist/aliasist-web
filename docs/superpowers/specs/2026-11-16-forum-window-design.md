@@ -1,7 +1,7 @@
 # Homepage Forum Window — "A Window Into The Forum"
 
 Date: 2026-11-16
-Status: Draft, awaiting partner approval
+Status: Approved by partner (2026-11-16) — incl. the two open calls below
 
 ## Intent
 
@@ -109,9 +109,8 @@ GET /api/replies?limit=20   →  { replies: [ { id, body, author, isBot,
 
 ## Non-goals
 
-- No changes to `/signals` or its broken hot-ranking. Out of scope here, though
-  worth a separate look.
-- No voting, no new engagement mechanics to make "popular" mean something more.
+- No new engagement mechanics to make "popular" mean something more than
+  replies. The `/signals` fix is a display correction, not a voting feature.
 - No embedding the forum in an iframe.
 - No write paths — read-only.
 
@@ -122,8 +121,20 @@ GET /api/replies?limit=20   →  { replies: [ { id, body, author, isBot,
 - Adding load to the forum. The 60s edge cache is the whole point of the proxy.
 - Silent emptiness: any failure state shows fallback copy, never a blank box.
 
+## Decisions made in conversation
+
+- **The reply panel groups consecutive replies from the same thread.** Flat
+  would show more distinct conversations, but five lines from one 16-comment
+  thread dominating a 20-item panel is worse. Grouped, a thread appears once
+  with its newest replies beneath it.
+- **Fix `/signals` in the same forum deploy.** Its "Hot right now" ranks by
+  `score()` decayed over age; with votes at zero everywhere the ordering is
+  arbitrary and every row prints `0 points`. Rank by reply count decayed over
+  age instead, which keeps it distinct from the existing "Most discussed" list
+  (raw count, all-time within the fetched window), and show `N replies` —
+  falling back to points only where a score is actually non-zero.
+
 ## Left to the builder
 
 - Exact truncation length and how much of a reply snippet to render.
-- Whether the replies panel groups consecutive replies from one thread.
 - Responsive stacking order for the two panels on narrow viewports.

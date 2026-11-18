@@ -924,7 +924,7 @@ const CosmicOs = () => {
         <section className="border border-cyan-500/40 bg-card/80 rounded-xl p-5 shadow-2xl backdrop-blur-md space-y-4">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2 text-cyan-400 font-mono text-xs font-bold">
-              <Download className="size-4 animate-bounce" />
+              <Download className="size-4" />
               <span>TRACTOR BEAM PROTOCOL (TBP): EXTRACTION & MATERIALIZATION SANDBOX</span>
             </div>
             <span className="text-[10px] font-mono text-cyan-300/80">Quantum Target Lock · Hyperspace Staging · CoW Swap</span>

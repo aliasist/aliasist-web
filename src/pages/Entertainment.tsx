@@ -2073,7 +2073,7 @@ const ArcadeTab = () => {
             </>
           ) : (
             <div className="absolute inset-0 bg-black/85 flex flex-col items-center justify-center gap-3 p-6 text-center z-20">
-              <span className="text-3xl animate-bounce">{activeGame.icon}</span>
+              <span className="text-3xl">{activeGame.icon}</span>
               <h4 className="font-mono text-sm font-black text-foreground uppercase tracking-widest">
                 {activeGame.title}
               </h4>
