@@ -2,6 +2,7 @@ import { useState, type FormEvent } from "react";
 import Navbar from "@/components/Navbar";
 import ErrorBoundary from "@/components/ErrorBoundary";
 import TransmissionsSection from "@/components/TransmissionsSection";
+import ForumSection from "@/components/ForumSection";
 import aliasistLogo from "@/assets/aliasist-logo.png";
 import globalizeLogo from "@/assets/globalize-logo.png";
 import { siteEndpoints } from "@/config/api";
@@ -479,6 +480,7 @@ const Index = () => {
         </section>
 
         <TransmissionsSection />
+        <ForumSection />
 
         {/* Contact me through email */}
         <section id="contact" className="dir-section">

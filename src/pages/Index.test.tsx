@@ -3,6 +3,7 @@ import React, { act } from "react";
 import { createRoot, type Root } from "react-dom/client";
 import { afterEach, beforeEach, describe, expect, it, vi } from "vitest";
 import Index from "./Index";
+import { forumSection } from "@/content/homepage";
 
 vi.mock("@clerk/react", () => ({
   useAuth: () => ({ isLoaded: true, isSignedIn: false }),
@@ -40,6 +41,7 @@ beforeEach(() => {
     addEventListener: vi.fn(),
     removeEventListener: vi.fn(),
   }));
+  vi.spyOn(globalThis, "fetch").mockImplementation(() => new Promise(() => {}));
 });
 
 afterEach(() => {
@@ -73,5 +75,14 @@ describe("Aliasist Index Landing Page", () => {
     expect(container.querySelector("#contact")).not.toBeNull();
     expect(container.textContent).toContain("Open Contact");
     expect(container.querySelector("form")).not.toBeNull();
+  });
+
+  it("renders the forum window between transmissions and contact", () => {
+    render(<Index />);
+    const forum = container.querySelector("#forum");
+    expect(forum).not.toBeNull();
+    expect(container.textContent).toContain(forumSection.headline);
+    const order = Array.from(container.querySelectorAll("#transmissions, #forum, #contact"));
+    expect(order.map((el) => el.id)).toEqual(["transmissions", "forum", "contact"]);
   });
 });

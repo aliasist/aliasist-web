@@ -84,7 +84,6 @@ export default function ForumSection() {
     discussed: FALLBACK_DISCUSSED,
   });
   const [isOffline, setIsOffline] = useState(false);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     let mounted = true;
@@ -102,12 +101,10 @@ export default function ForumSection() {
             discussed: Array.isArray(json.discussed) && json.discussed.length > 0 ? json.discussed : FALLBACK_DISCUSSED,
           });
           setIsOffline(false);
-          setIsLoading(false);
         }
       } catch {
         if (mounted) {
           setIsOffline(true);
-          setIsLoading(false);
         }
       }
     }
