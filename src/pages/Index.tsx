@@ -362,7 +362,7 @@ const Index = () => {
                     </div>
                   </div>
 
-                  {/* Mirror List — always visible, no collapse */}
+                  {/* Mirror List: always visible, no collapse */}
                   <div className="mirror-list">
                       <p className="mirror-desc">{service.description}</p>
 

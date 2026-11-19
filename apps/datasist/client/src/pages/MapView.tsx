@@ -29,11 +29,11 @@ const STATUS_COLORS: Record<string, string> = {
 
 // Region groupings
 const REGIONS: Record<string, string[]> = {
-  "USA — Northeast": ["New York", "New Jersey", "Connecticut", "Massachusetts", "Pennsylvania", "Maryland", "Delaware"],
-  "USA — Southeast": ["Virginia", "North Carolina", "South Carolina", "Georgia", "Florida", "Tennessee", "Louisiana"],
-  "USA — Midwest": ["Ohio", "Indiana", "Illinois", "Wisconsin", "Michigan", "Iowa"],
-  "USA — South Central": ["Texas", "Oklahoma", "Arkansas", "Mississippi", "Alabama"],
-  "USA — West": ["Oregon", "Washington", "California", "Nevada", "Arizona", "Colorado"],
+  "USA - Northeast": ["New York", "New Jersey", "Connecticut", "Massachusetts", "Pennsylvania", "Maryland", "Delaware"],
+  "USA - Southeast": ["Virginia", "North Carolina", "South Carolina", "Georgia", "Florida", "Tennessee", "Louisiana"],
+  "USA - Midwest": ["Ohio", "Indiana", "Illinois", "Wisconsin", "Michigan", "Iowa"],
+  "USA - South Central": ["Texas", "Oklahoma", "Arkansas", "Mississippi", "Alabama"],
+  "USA - West": ["Oregon", "Washington", "California", "Nevada", "Arizona", "Colorado"],
   "Europe": [],
   "Asia-Pacific": [],
   "Middle East": [],
@@ -60,7 +60,7 @@ function getRegion(c: DataCenter): string {
   for (const [region, states] of Object.entries(REGIONS)) {
     if (states.includes(c.state)) return region;
   }
-  return "USA — Other";
+  return "USA - Other";
 }
 
 function getMarkerHtml(center: DataCenterWithEnergy, isMobile: boolean, index: number) {
@@ -536,7 +536,7 @@ export default function MapView() {
             style={{ background: "rgba(94,246,255,0.06)", border: "1px solid rgba(94,246,255,0.18)" }}
           >
             <div style={{ fontSize: "9px", letterSpacing: "0.1em", color: "var(--color-cyan)" }}>
-              COMPARE MODE — {compareSelections.length}/2
+              COMPARE MODE: {compareSelections.length}/2
             </div>
             {compareSelections.map((c) => (
               <div key={c.id} className="flex items-center justify-between gap-1">

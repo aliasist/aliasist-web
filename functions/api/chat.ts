@@ -195,7 +195,7 @@ function storedResponse(text: string, ttlSeconds: number): Response {
 }
 
 /**
- * Age of a cached entry in ms, computed from its stored-at header — never
+ * Age of a cached entry in ms, computed from its stored-at header, never
  * assumed from Cache-Control or from how the runtime treats expired entries.
  * An entry without a usable header is treated as exactly TTL old: stale, but
  * young enough to serve-while-revalidating rather than block.
@@ -235,7 +235,7 @@ async function fetchAndCache(
       }),
       // The hub's live-data asks (eco snapshot = 5 upstream feeds + waterfall
       // generation) routinely exceed short budgets, which silently dropped
-      // RAG context and produced generic persona answers — hence 12s.
+      // RAG context and produced generic persona answers, hence 12s.
       signal: AbortSignal.timeout(12_000),
     });
     if (res.ok) {

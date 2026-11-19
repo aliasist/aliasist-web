@@ -109,7 +109,7 @@ const BlogCosmicOs = () => {
             </p>
             
             <div className="p-4 rounded-lg bg-card/80 border border-electric/30 space-y-3 font-mono text-xs">
-              <div className="text-electric font-bold">🛸 TRACTOR BEAM ARCHITECTURE</div>
+              <div className="text-electric font-bold">TRACTOR BEAM ARCHITECTURE</div>
               <ul className="space-y-2 text-muted-foreground">
                 <li>• <strong className="text-foreground">Quantum Target Lock:</strong> Probes streams, rotates JA3 TLS fingerprints, and applies anti-bot stealth cloaking.</li>
                 <li>• <strong className="text-foreground">Hyperspace Staging Enclave:</strong> Data streams directly into hidden vaults (<code>.hyperspace_{`{cargo}`}.vault</code>), keeping destination directories pristine.</li>
@@ -141,7 +141,7 @@ const BlogCosmicOs = () => {
                 </thead>
                 <tbody className="divide-y divide-border/50 bg-card/40">
                   <tr className="text-emerald-300">
-                    <td className="p-3 font-bold">🛸 Tauri v3</td>
+                    <td className="p-3 font-bold">Tauri v3</td>
                     <td className="p-3">Rust + React</td>
                     <td className="p-3">5.81 MB</td>
                     <td className="p-3">~35 MB</td>
@@ -149,7 +149,7 @@ const BlogCosmicOs = () => {
                     <td className="p-3">Memory Safe</td>
                   </tr>
                   <tr className="text-cyan-300">
-                    <td className="p-3 font-bold">🌳 Elm Edition</td>
+                    <td className="p-3 font-bold">Elm Edition</td>
                     <td className="p-3">Pure Elm + Rust</td>
                     <td className="p-3">5.71 MB</td>
                     <td className="p-3">~35 MB</td>
@@ -157,7 +157,7 @@ const BlogCosmicOs = () => {
                     <td className="p-3 font-black text-emerald-400">Zero Exceptions</td>
                   </tr>
                   <tr className="text-blue-300">
-                    <td className="p-3 font-bold">👽 Electron OG</td>
+                    <td className="p-3 font-bold">Electron OG</td>
                     <td className="p-3">Node + Chromium</td>
                     <td className="p-3">~195 MB</td>
                     <td className="p-3">~180 MB</td>

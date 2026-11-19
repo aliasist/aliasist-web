@@ -67,12 +67,12 @@ export default function MasterAdmin() {
             <div className="bg-card border border-border rounded-2xl p-6">
               <h3 className="font-medium mb-4">Feature Ideas &amp; Roadmap (kept concise)</h3>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-                <div className="p-3 border border-border rounded">Realtime Presence (Durable Objects, WebSockets) — live activity across sists and Clearasist.</div>
-                <div className="p-3 border border-border rounded">User &amp; Activity Management — cross-app roles, history, tied to Clerk.</div>
-                <div className="p-3 border border-border rounded">Deployments — one-click for site/apps/workers, history, via agents/Wrangler.</div>
-                <div className="p-3 border border-border rounded">Logs &amp; Observability — aggregated, searchable, correlated with actions.</div>
-                <div className="p-3 border border-border rounded">Full Agent Swarm Orchestration — deeper than current AI layer (scheduling, multi-step, audit).</div>
-                <div className="p-3 border border-border rounded">Training Data Pipeline — automated export from Clearasist + snapshots for AI agents.</div>
+                <div className="p-3 border border-border rounded">Realtime Presence (Durable Objects, WebSockets): live activity across sists and Clearasist.</div>
+                <div className="p-3 border border-border rounded">User &amp; Activity Management: cross-app roles, history, tied to Clerk.</div>
+                <div className="p-3 border border-border rounded">Deployments: one-click for site/apps/workers, history, via agents/Wrangler.</div>
+                <div className="p-3 border border-border rounded">Logs &amp; Observability: aggregated, searchable, correlated with actions.</div>
+                <div className="p-3 border border-border rounded">Full Agent Swarm Orchestration: deeper than current AI layer (scheduling, multi-step, audit).</div>
+                <div className="p-3 border border-border rounded">Training Data Pipeline: automated export from Clearasist + snapshots for AI agents.</div>
               </div>
               <div className="mt-3 text-[10px] text-muted-foreground">These preserve the ideas from the original vision in a compact list. Most would plug into the existing customization layer and aliasist-agent.</div>
             </div>

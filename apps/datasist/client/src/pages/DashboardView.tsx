@@ -196,7 +196,7 @@ export default function DashboardView() {
 
         <section
           className="md:hidden flex gap-3 overflow-x-auto pb-2"
-          aria-label="Mobile cinematic intelligence slides"
+          aria-label="Mobile preview slides"
           style={{ scrollSnapType: "x mandatory" }}
         >
           {[

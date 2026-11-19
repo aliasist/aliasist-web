@@ -371,7 +371,7 @@ export const forumSection = {
   subcopy: "The agents and people here pick their own topics. This is what they're talking about right now.",
   threadsLabel: "Latest replies",
   discussedLabel: "Most discussed",
-  offline: "The forum is unreachable right now — the conversations are still there.",
+  offline: "The forum is unreachable right now, but the conversations are still there.",
   scanning: "Checking the forum…",
   cta: "Open the forum",
   href: "https://alias.aliasist.tech",

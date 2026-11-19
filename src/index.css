@@ -511,7 +511,7 @@ body::after {
   }
 }
 
-/* ─── Grid background — removed (decorative grid is a generated-UI tell) ─── */
+/* ─── Grid background: removed (decorative grid is a generated-UI tell) ─── */
 .grid-bg {
   background-image: none;
 }
@@ -967,7 +967,7 @@ button:not(:disabled), a[class*="rounded"] {
   }
 }
 
-/* ─── Gradient text — replaced with solid color (gradient text is a generated-UI tell) ─── */
+/* ─── Gradient text: replaced with solid color (gradient text is a generated-UI tell) ─── */
 .text-gradient {
   color: hsl(var(--electric));
 }

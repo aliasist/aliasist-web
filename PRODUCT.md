@@ -16,7 +16,7 @@ Aliasist is the central homepage and front door to the entire Aliasist suite. It
 
 ## Positioning
 
-A personal homepage that serves as a unified portal to five web apps and one desktop app — not a corporate landing page, but a curated showcase of tools built by one developer. The homepage itself hosts spawnOS, a browser-based OS where each app opens in its own window.
+A personal homepage that serves as a unified portal to five web apps and one desktop app: not a corporate landing page, but a personal showcase of tools built by one developer. The homepage itself hosts spawnOS, a browser-based OS where each app opens in its own window.
 
 ## Operating Context
 
@@ -33,12 +33,12 @@ A personal homepage that serves as a unified portal to five web apps and one des
 - Cloudflare Pages Functions handle `/api/*` routes
 - Clerk for optional sign-in
 - Radix UI for accessible components
-- No backend database — content-driven from source files
+- No backend database: content-driven from source files
 
 ## Brand Commitments
 
 - Name: Aliasist
-- Aesthetic: Minimal and clean — flat dark surfaces, no decorative grid backgrounds, solid colors over gradients
+- Aesthetic: Minimal and clean: flat dark surfaces, no decorative grid backgrounds, solid colors over gradients
 - Font: DM Sans (body), DM Serif Display (headings), replaced from Inter/Space Grotesk per Impeccable craft-floor
 
 ## Evidence on Hand
@@ -50,7 +50,7 @@ A personal homepage that serves as a unified portal to five web apps and one des
 
 ## Product Principles
 
-1. **Portal, not product** — the homepage exists to route visitors to the real apps.
-2. **Curated, not exhaustive** — only shipped, working apps appear; experiments stay hidden.
-3. **Personal voice** — written by one developer for real people, not a corporate template.
-4. **Minimal chrome** — flat dark surfaces, no decorative effects, let the apps speak.
+1. **Portal, not product**: the homepage exists to route visitors to the real apps.
+2. **Curated, not exhaustive**: only shipped, working apps appear; experiments stay hidden.
+3. **Personal voice**: written by one developer for real people, not a corporate template.
+4. **Minimal chrome**: flat dark surfaces, no decorative effects, let the apps speak.

@@ -159,7 +159,7 @@ const DEFAULT_BENCHMARKS: BenchmarkEntry[] = [
     throughput_ops_sec: 94200,
     latency_nanos: 9,
     memory_rss: "2.8 MB",
-    badge: "⚡ Lowest Memory RSS & Zero Overhead",
+    badge: "Lowest Memory RSS & Zero Overhead",
     relative_speed: 1.15
   },
   {
@@ -168,7 +168,7 @@ const DEFAULT_BENCHMARKS: BenchmarkEntry[] = [
     throughput_ops_sec: 82400,
     latency_nanos: 12,
     memory_rss: "5.8 MB",
-    badge: "🦀 Maximum Type Safety & Fearless Concurrency",
+    badge: "Maximum Type Safety & Fearless Concurrency",
     relative_speed: 1.0
   },
   {
@@ -177,7 +177,7 @@ const DEFAULT_BENCHMARKS: BenchmarkEntry[] = [
     throughput_ops_sec: 78600,
     latency_nanos: 13,
     memory_rss: "48.0 MB",
-    badge: "🔥 1536-Dim Qdrant Cosine Vector Vectorization",
+    badge: "1536-Dim Qdrant Cosine Vector Vectorization",
     relative_speed: 0.95
   },
   {
@@ -186,7 +186,7 @@ const DEFAULT_BENCHMARKS: BenchmarkEntry[] = [
     throughput_ops_sec: 14200,
     latency_nanos: 85,
     memory_rss: "185.0 MB",
-    badge: "👽 Classic Event Loop Baseline",
+    badge: "Classic Event Loop Baseline",
     relative_speed: 0.17
   }
 ];
@@ -504,7 +504,7 @@ const CosmicOs = () => {
   const [daemonConnected, setDaemonConnected] = useState<boolean>(false);
   const [activeNotification, setActiveNotification] = useState<string | null>(null);
   const [autopilotInput, setAutopilotInput] = useState<string>("");
-  const [autopilotLog, setAutopilotLog] = useState<string>("🤖 Standing by for natural language system instructions.");
+  const [autopilotLog, setAutopilotLog] = useState<string>("Standing by for natural language system instructions.");
   const [audioEnabled, setAudioEnabled] = useState<boolean>(true);
   const [benchmarking, setBenchmarking] = useState<boolean>(false);
 
@@ -900,21 +900,21 @@ const CosmicOs = () => {
                 onClick={() => { setAutopilotInput("Run polyglot benchmark"); }}
                 className="hover:text-electric transition-colors cursor-pointer"
               >
-                [⚡ Benchmark]
+                [Benchmark]
               </button>
               <button
                 type="button"
                 onClick={() => { setAutopilotInput("Verify Zig checksum"); }}
                 className="hover:text-electric transition-colors cursor-pointer"
               >
-                [⚡ Zig]
+                [Zig]
               </button>
               <button
                 type="button"
                 onClick={() => { setAutopilotInput("Test Mojo MLIR tensor"); }}
                 className="hover:text-electric transition-colors cursor-pointer"
               >
-                [🔥 Mojo]
+                [Mojo]
               </button>
             </div>
           </div>

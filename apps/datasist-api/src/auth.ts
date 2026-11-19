@@ -88,7 +88,7 @@ export async function requireAdmin(
     return {
       ok: false,
       response: errorResponse(
-        "Unauthorized — missing Clerk session token.",
+        "Unauthorized: missing Clerk session token.",
         401,
         corsHeaders,
       ),
@@ -112,7 +112,7 @@ export async function requireAdmin(
       return {
         ok: false,
         response: errorResponse(
-          "Unauthorized — invalid or expired Clerk session.",
+          "Unauthorized: invalid or expired Clerk session.",
           401,
           corsHeaders,
         ),
@@ -132,7 +132,7 @@ export async function requireAdmin(
       return {
         ok: false,
         response: errorResponse(
-          "Forbidden — this account is not an admin for DataSist.",
+          "Forbidden: this account is not an admin for DataSist.",
           403,
           corsHeaders,
         ),
@@ -145,7 +145,7 @@ export async function requireAdmin(
     return {
       ok: false,
       response: errorResponse(
-        "Unauthorized — could not verify Clerk session.",
+        "Unauthorized: could not verify Clerk session.",
         401,
         corsHeaders,
       ),

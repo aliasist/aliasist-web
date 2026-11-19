@@ -50,7 +50,7 @@ Sharing now works cross-device via the backend (stores metadata + base64 audio f
 ## Monetization Ideas (to generate income)
 
 - Freemium: Basic pitch tuner + local catalog free. Pro ($4.99/mo or $29/yr via in-app purchase): unlimited cloud shares, AI RAG suggestions, advanced analytics, MIDI export, ad-free.
-- One-time unlock for full features.
+- One-time purchase for full features.
 - Target: 10k+ musicians on Play Store/App Store. Music education niche converts well.
 - Add real IAP with `in_app_purchase` package + backend receipt validation.
 - Future: Web SaaS tier for teachers/studios.

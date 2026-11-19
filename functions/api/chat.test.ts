@@ -334,7 +334,7 @@ describe("fetchRagContext cache freshness", () => {
     const store = new Map<string, Response>();
     const cache = {
       // Real cache.match hands back a fresh copy of the entry each time, so
-      // concurrent readers can each consume the body — mirror that here.
+      // concurrent readers can each consume the body, so mirror that here.
       match: vi.fn(async (req: Request) => store.get(req.url)?.clone()),
       put: vi.fn(async (req: Request, res: Response) => {
         store.set(req.url, res);
