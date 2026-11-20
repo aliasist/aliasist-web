@@ -37,6 +37,13 @@ export default {
       });
     }
 
+    // Health check
+    if (path === '/api/health' && request.method === 'GET') {
+      return new Response(JSON.stringify({ status: 'ok', app: 'Clearasist', db: !!env.DB }), {
+        headers: { 'Content-Type': 'application/json', 'Access-Control-Allow-Origin': '*' },
+      });
+    }
+
     // === ADMIN ENDPOINTS (protected) ===
     if (path.startsWith('/admin')) {
       const authHeader = request.headers.get('Authorization') || '';

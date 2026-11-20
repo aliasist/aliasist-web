@@ -150,6 +150,11 @@ export default {
 			return new Response(null, { status: 204, headers: corsHeaders(origin, env) });
 		}
 
+		// Health check
+		if (url.pathname === '/api/health' && request.method === 'GET') {
+			return json({ status: 'ok', app: 'Aliasist Updates', db: !!env.DB }, 200, origin, env);
+		}
+
 		const match = url.pathname.match(/^\/api\/updates(?:\/([^/]+))?$/);
 		if (!match) return json({ error: 'Not found' }, 404, origin, env);
 		const id = match[1];

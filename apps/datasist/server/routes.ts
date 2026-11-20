@@ -8,9 +8,21 @@ const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 export async function registerRoutes(httpServer: Server, app: Express): Promise<Server> {
   storage.seedIfEmpty();
 
-  // ── GET all data centers ──
-  app.get("/api/data-centers", (_req, res) => {
+  // ── GET all data centers (with optional pagination) ──
+  app.get("/api/data-centers", (req, res) => {
     try {
+      const limitParam = req.query.limit;
+      const offsetParam = req.query.offset;
+
+      // If pagination params are provided, use paginated endpoint
+      if (limitParam !== undefined && offsetParam !== undefined) {
+        const limit = Math.min(parseInt(limitParam as string) || 50, 200);
+        const offset = Math.max(parseInt(offsetParam as string) || 0, 0);
+        const { items, total } = storage.getDataCentersPaginated(limit, offset);
+        return res.json({ items, total, limit, offset });
+      }
+
+      // Otherwise return all (for charts, stats, etc.)
       res.json(storage.getAllDataCenters());
     } catch {
       res.status(500).json({ error: "Failed to fetch data centers" });

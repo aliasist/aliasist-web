@@ -37,6 +37,7 @@ sqlite.exec(`
 
 export interface IStorage {
   getAllDataCenters(): DataCenter[];
+  getDataCentersPaginated(limit: number, offset: number): { items: DataCenter[]; total: number };
   getDataCenterById(id: number): DataCenter | undefined;
   createDataCenter(data: InsertDataCenter): DataCenter;
   updateDataCenter(id: number, data: Partial<InsertDataCenter>): DataCenter | undefined;
@@ -47,6 +48,11 @@ export interface IStorage {
 export const storage: IStorage = {
   getAllDataCenters() {
     return db.select().from(dataCenters).all();
+  },
+  getDataCentersPaginated(limit: number, offset: number) {
+    const total = db.select().from(dataCenters).all().length;
+    const items = db.select().from(dataCenters).limit(limit).offset(offset).all();
+    return { items, total };
   },
   getDataCenterById(id: number) {
     return db.select().from(dataCenters).where(eq(dataCenters.id, id)).get();

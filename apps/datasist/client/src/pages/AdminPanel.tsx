@@ -2,8 +2,9 @@ import { useState } from "react";
 import { useQuery, useMutation } from "@tanstack/react-query";
 import { apiRequest, queryClient } from "@/lib/queryClient";
 import type { DataCenter, InsertDataCenter } from "@shared/schema";
-import { Plus, Edit2, Trash2, X, Save, Shield, Search, Globe, ChevronDown, Radar, ExternalLink, Check, Ban } from "lucide-react";
+import { Plus, Edit2, Trash2, X, Save, Shield, Search, Globe, ChevronDown, Radar, ExternalLink, Check, Ban, ChevronLeft, ChevronRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import { Skeleton } from "@/components/ui/skeleton";
 
 type FormMode = "add" | "edit" | null;
 type AdminTab = "facilities" | "leads";
@@ -88,11 +89,17 @@ export default function AdminPanel() {
   const [searchQuery, setSearchQuery] = useState("");
   const [deleteConfirm, setDeleteConfirm] = useState<number | null>(null);
   const [leadStatusFilter, setLeadStatusFilter] = useState<FacilityLead["status"] | "all">("new");
+  const [page, setPage] = useState(0);
+  const PAGE_SIZE = 50;
 
-  const { data: centers = [], isLoading } = useQuery<DataCenter[]>({
-    queryKey: ["/api/data-centers"],
-    queryFn: () => apiRequest("GET", "/api/data-centers").then((r) => r.json()),
+  const { data: centersData, isLoading } = useQuery({
+    queryKey: ["/api/data-centers", page],
+    queryFn: () =>
+      apiRequest("GET", `/api/data-centers?limit=${PAGE_SIZE}&offset=${page * PAGE_SIZE}`).then((r) => r.json()),
   });
+  const centers = centersData?.items ?? [];
+  const totalCenters = centersData?.total ?? 0;
+  const totalPages = Math.ceil(totalCenters / PAGE_SIZE);
 
   const { data: leadsData, isLoading: leadsLoading } = useQuery<{ leads: FacilityLead[] }>({
     queryKey: ["/api/facility-leads", leadStatusFilter],
@@ -240,6 +247,11 @@ export default function AdminPanel() {
       c.country.toLowerCase().includes(searchQuery.toLowerCase())
   );
 
+  // Reset to page 0 when search changes
+  if (searchQuery && page > 0) {
+    setPage(0);
+  }
+
   return (
     <div className="flex h-full overflow-hidden" style={{ fontFamily: "'Inter', sans-serif" }}>
       {/* Table section */}
@@ -278,7 +290,7 @@ export default function AdminPanel() {
               className="px-2 py-0.5 rounded-full"
               style={{ fontSize: "10px", background: "rgba(255,179,71,0.1)", color: "#ffb347", border: "1px solid rgba(255,179,71,0.25)", letterSpacing: "0.08em" }}
             >
-              {tab === "facilities" ? `${centers.length} FACILITIES` : `${leads.length} LEADS`}
+              {tab === "facilities" ? `${totalCenters} FACILITIES` : `${leads.length} LEADS`}
             </span>
           </div>
           {tab === "facilities" ? (
@@ -346,6 +358,7 @@ export default function AdminPanel() {
 
         {/* Table */}
         {tab === "facilities" ? (
+        <>
         <div className="flex-1 overflow-auto">
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
             <thead>
@@ -370,11 +383,17 @@ export default function AdminPanel() {
             </thead>
             <tbody>
               {isLoading && (
-                <tr>
-                  <td colSpan={8} style={{ padding: "24px", textAlign: "center", fontSize: "12px", color: "var(--color-text-muted)" }}>
-                    Loading facilities...
-                  </td>
-                </tr>
+                <>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <tr key={i} style={{ borderBottom: "1px solid var(--color-border)" }}>
+                      {Array.from({ length: 8 }).map((_, j) => (
+                        <td key={j} style={{ padding: "8px 12px" }}>
+                          <Skeleton className="h-4 w-full" />
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </>
               )}
               {!isLoading && filtered.length === 0 && (
                 <tr>
@@ -491,6 +510,54 @@ export default function AdminPanel() {
             </tbody>
           </table>
         </div>
+
+        {/* Pagination */}
+        {tab === "facilities" && totalPages > 1 && (
+          <div
+            className="flex items-center justify-between px-4 py-2.5 border-t flex-shrink-0"
+            style={{ background: "var(--color-surface)", borderColor: "var(--color-border)" }}
+          >
+            <div style={{ fontSize: "11px", color: "var(--color-text-muted)" }}>
+              Showing {(page * PAGE_SIZE) + 1}–{Math.min((page + 1) * PAGE_SIZE, totalCenters)} of {totalCenters}
+            </div>
+            <div className="flex items-center gap-2">
+              <button
+                onClick={() => setPage((p) => Math.max(0, p - 1))}
+                disabled={page === 0}
+                className="flex items-center gap-1 px-2.5 py-1 rounded transition-all"
+                style={{
+                  fontSize: "11px",
+                  background: page === 0 ? "transparent" : "rgba(94,246,255,0.08)",
+                  border: `1px solid ${page === 0 ? "var(--color-border)" : "rgba(94,246,255,0.2)"}`,
+                  color: page === 0 ? "var(--color-text-muted)" : "var(--color-cyan)",
+                  opacity: page === 0 ? 0.5 : 1,
+                }}
+              >
+                <ChevronLeft size={12} />
+                Prev
+              </button>
+              <span style={{ fontSize: "11px", color: "var(--color-text-muted)", minWidth: "60px", textAlign: "center" }}>
+                Page {page + 1} of {totalPages}
+              </span>
+              <button
+                onClick={() => setPage((p) => Math.min(totalPages - 1, p + 1))}
+                disabled={page >= totalPages - 1}
+                className="flex items-center gap-1 px-2.5 py-1 rounded transition-all"
+                style={{
+                  fontSize: "11px",
+                  background: page >= totalPages - 1 ? "transparent" : "rgba(94,246,255,0.08)",
+                  border: `1px solid ${page >= totalPages - 1 ? "var(--color-border)" : "rgba(94,246,255,0.2)"}`,
+                  color: page >= totalPages - 1 ? "var(--color-text-muted)" : "var(--color-cyan)",
+                  opacity: page >= totalPages - 1 ? 0.5 : 1,
+                }}
+              >
+                Next
+                <ChevronRight size={12} />
+              </button>
+            </div>
+          </div>
+        )}
+        </>
         ) : (
         <div className="flex-1 overflow-auto">
           <table style={{ width: "100%", borderCollapse: "collapse" }}>
@@ -516,11 +583,17 @@ export default function AdminPanel() {
             </thead>
             <tbody>
               {leadsLoading && (
-                <tr>
-                  <td colSpan={6} style={{ padding: "24px", textAlign: "center", fontSize: "12px", color: "var(--color-text-muted)" }}>
-                    Loading leads...
-                  </td>
-                </tr>
+                <>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <tr key={i} style={{ borderBottom: "1px solid var(--color-border)" }}>
+                      {Array.from({ length: 6 }).map((_, j) => (
+                        <td key={j} style={{ padding: "8px 12px" }}>
+                          <Skeleton className="h-4 w-full" />
+                        </td>
+                      ))}
+                    </tr>
+                  ))}
+                </>
               )}
               {!leadsLoading && leads.length === 0 && (
                 <tr>

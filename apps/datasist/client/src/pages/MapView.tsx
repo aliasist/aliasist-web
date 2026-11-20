@@ -714,9 +714,14 @@ export default function MapView() {
       <div className={`flex-1 relative ${isMobile ? "" : "datasist-map-frame datasist-panel-strong"}`}>
         {isLoading && (
           <div
-            className="absolute inset-0 flex items-center justify-center z-10"
+            className="absolute inset-0 flex flex-col items-center justify-center gap-4 z-10"
             style={{ background: "rgba(7, 16, 25, 0.92)" }}
           >
+            <div className="flex gap-1.5">
+              <div className="w-2 h-2 rounded-full animate-bounce" style={{ background: "var(--color-green)", animationDelay: "0ms" }} />
+              <div className="w-2 h-2 rounded-full animate-bounce" style={{ background: "var(--color-green)", animationDelay: "150ms" }} />
+              <div className="w-2 h-2 rounded-full animate-bounce" style={{ background: "var(--color-green)", animationDelay: "300ms" }} />
+            </div>
             <div style={{ fontSize: "12px", color: "var(--color-green)", letterSpacing: "0.15em" }}>
               LOADING DATA CENTER RECORDS...
             </div>

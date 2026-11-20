@@ -53,6 +53,10 @@ async function handleShareRequest(request: Request, env: Env): Promise<Response>
 export default {
   async fetch(request: Request, env: Env, ctx: ExecutionContext): Promise<Response> {
     const url = new URL(request.url);
+    // Health check
+    if (url.pathname === '/api/health' && request.method === 'GET') {
+      return Response.json({ status: 'ok', app: 'Musician Ideas', db: !!env.IDEAS_DB, r2: !!env.AUDIO_BUCKET });
+    }
     if (url.pathname.startsWith('/api/rag')) {
       return handleRAGRequest(request, env);
     }

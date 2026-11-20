@@ -72,15 +72,23 @@ interface RagAskResult {
   liveContext?: string | null;
 }
 
+// Pre-compiled regex patterns for detectSist() — compiled once at module load
+const SPACE_REGEX = /\b(space|nasa|iss|spacex|asteroids?|exoplanets?|orbit|rockets?|satellites?|hubble|james webb|apollo)\b/;
+const DATA_REGEX = /\b(data.?centers?|datacenters?|servers?|hyperscale|colocation|colo|facilit(y|ies)|pue|racks?|gpu.?clusters?)\b/;
+const ECO_REGEX = /\b(eco|weather|climate|storms?|hurricanes?|wildfires?|floods?|earthquakes?|quakes?|seismic|tsunamis?|air quality|space.?weather|geomagnetic)\b/;
+const PULSE_REGEX = /\b(markets?|stocks?|tickers?|finance|crypto|macro|earnings|gdp|fed|interest rates?|inflation)\b/;
+const AGSC_REGEX = /\b(waterfall|agsc|globe|countr(y|ies)|data.?center.?maps?|undersea.?cables?|internet.?exchanges?|submarine.?cables?)\b/;
+const FORUM_REGEX = /\bforum\b/;
+
 /** Map keywords in the user's latest message to a sist ID. */
 export function detectSist(text: string): SistId | null {
   const t = text.toLowerCase();
-  if (/\b(space|nasa|iss|spacex|asteroids?|exoplanets?|orbit|rockets?|satellites?|hubble|james webb|apollo)\b/.test(t)) return "space";
-  if (/\b(data.?centers?|datacenters?|servers?|hyperscale|colocation|colo|facilit(y|ies)|pue|racks?|gpu.?clusters?)\b/.test(t)) return "data";
-  if (/\b(eco|weather|climate|storms?|hurricanes?|wildfires?|floods?|earthquakes?|quakes?|seismic|tsunamis?|air quality|space.?weather|geomagnetic)\b/.test(t)) return "eco";
-  if (/\b(markets?|stocks?|tickers?|finance|crypto|macro|earnings|gdp|fed|interest rates?|inflation)\b/.test(t)) return "pulse";
-  if (/\b(waterfall|agsc|globe|countr(y|ies)|data.?center.?maps?|undersea.?cables?|internet.?exchanges?|submarine.?cables?)\b/.test(t)) return "agsc";
-  if (/\bforum\b/.test(t)) return "general";
+  if (SPACE_REGEX.test(t)) return "space";
+  if (DATA_REGEX.test(t)) return "data";
+  if (ECO_REGEX.test(t)) return "eco";
+  if (PULSE_REGEX.test(t)) return "pulse";
+  if (AGSC_REGEX.test(t)) return "agsc";
+  if (FORUM_REGEX.test(t)) return "general";
   return null;
 }
 

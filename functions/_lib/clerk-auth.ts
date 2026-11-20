@@ -1,5 +1,10 @@
 import { createClerkClient } from "@clerk/backend";
 
+// Re-export shared CORS utilities so existing imports from this module
+// continue to work without changes. The actual implementation lives in
+// _lib/cors.ts.
+export { standardCorsHeaders, extendedCorsHeaders, handleCorsPreflight, jsonCors } from "./cors";
+
 const PRODUCTION_PUBLISHABLE_KEY = "pk_live_Y2xlcmsuYWxpYXNpc3QuY29tJA";
 
 export type ClerkEnv = {
@@ -27,6 +32,12 @@ export type AliasistAdminEnv = {
   ALIASIST_ADMIN_USER_IDS?: string;
 };
 
+/**
+ * Legacy corsHeaders constant — kept for backward compatibility with existing
+ * imports that expect a plain object with Content-Type baked in.
+ * New code should import `standardCorsHeaders` from _lib/cors.ts instead.
+ * @deprecated Use `standardCorsHeaders` from `_lib/cors` instead.
+ */
 export const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, PATCH, OPTIONS",
@@ -34,6 +45,10 @@ export const corsHeaders = {
   "Content-Type": "application/json",
 };
 
+/**
+ * Build a JSON response with CORS headers. Kept for backward compatibility.
+ * @deprecated Use `jsonCors` from `_lib/cors` instead.
+ */
 export function json(payload: Record<string, unknown>, status = 200) {
   return new Response(JSON.stringify(payload), {
     status,

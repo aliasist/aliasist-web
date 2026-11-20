@@ -28,6 +28,8 @@ export interface Env {
   // Comma-separated Clerk user ids that are allowed to mutate facilities.
   // Fail-closed: if empty or unset, every admin route returns 503.
   ADMIN_USER_IDS?: string;
+  // Sentry DSN for error reporting (optional — errors still logged to console if unset)
+  SENTRY_DSN?: string;
 }
 
 // State abbreviation map
@@ -632,11 +634,11 @@ You are expected to be insightful, intelligent, and wise in your responses. Foll
 10. **Correct Yourself**: If during a conversation you realize a previous statement might be inaccurate or incomplete, correct it immediately.`;
 
 // ── Sentry (lightweight, no SDK needed in Workers) ───────────────────────────
-const SENTRY_DSN = "https://a4392f5f65eb0725f34d6c410f97e1b1@o4511142133760000.ingest.us.sentry.io/4511142165348352";
-async function captureError(err: unknown, context: string): Promise<void> {
+async function captureError(err: unknown, context: string, dsn: string | undefined): Promise<void> {
+  if (!dsn) return;
   try {
     const msg = err instanceof Error ? err.message : String(err);
-    const [, key, host, projectId] = SENTRY_DSN.match(/https:\/\/([^@]+)@([^/]+)\/(.+)/) ?? [];
+    const [, key, host, projectId] = dsn.match(/https:\/\/([^@]+)@([^/]+)\/(.+)/) ?? [];
     if (!key) return;
     await fetch(`https://${host}/api/${projectId}/store/`, {
       method: "POST",
@@ -808,7 +810,7 @@ export default {
     } catch (err) {
       console.error(err);
       // Report to Sentry fire-and-forget
-      void captureError(err, "fetch");
+      void captureError(err, "fetch", env.SENTRY_DSN);
       return json({ error: "Internal server error" }, 500, corsHeaders);
     }
   },
@@ -1719,7 +1721,7 @@ async function syncD1ToNeon(env: Env): Promise<{ ok: boolean; synced: number; er
         synced += chunk.length;
       } catch (chunkErr) {
         console.warn(`Neon chunk ${i}-${i + CHUNK} failed:`, chunkErr);
-        void captureError(chunkErr, `neon-chunk-${i}`);
+        void captureError(chunkErr, `neon-chunk-${i}`, env.SENTRY_DSN);
       }
     }
 
@@ -1728,7 +1730,7 @@ async function syncD1ToNeon(env: Env): Promise<{ ok: boolean; synced: number; er
 
   } catch (err) {
     console.error("Neon sync error:", err);
-    void captureError(err, "syncD1ToNeon");
+    void captureError(err, "syncD1ToNeon", env.SENTRY_DSN);
     return { ok: false, synced: 0, error: String(err) };
   }
 }

@@ -6,6 +6,7 @@ import {
   PieChart, Pie, Cell, Legend, CartesianGrid,
 } from "recharts";
 import { Zap, DollarSign, Droplets, AlertTriangle, Globe, Leaf, Building2 } from "lucide-react";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const CHART_COLORS = ["#71ff9c", "#5ef6ff", "#ffb347", "#ff5555", "#a78bfa", "#f97316", "#34d399", "#fb7185"];
 
@@ -68,10 +69,24 @@ export default function DashboardView() {
 
   if (isLoading) {
     return (
-      <div className="flex items-center justify-center h-full">
-        <span style={{ fontSize: "12px", color: "var(--color-green)", letterSpacing: "0.15em" }}>
-          LOADING DASHBOARD DATA...
-        </span>
+      <div className="h-full overflow-y-auto p-4 flex flex-col gap-4 max-w-screen-xl mx-auto" style={{ background: "var(--color-bg)" }}>
+        {/* Header skeleton */}
+        <Skeleton className="h-24 w-full rounded" />
+        {/* KPI cards skeleton — 7 cards */}
+        <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3">
+          {Array.from({ length: 7 }).map((_, i) => (
+            <Skeleton key={i} className="h-20 rounded" />
+          ))}
+        </div>
+        {/* Power market pulse skeleton */}
+        <Skeleton className="h-36 w-full rounded" />
+        {/* Charts row skeleton */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <Skeleton className="h-64 rounded" />
+          <Skeleton className="h-64 rounded" />
+        </div>
+        {/* Community impact table skeleton */}
+        <Skeleton className="h-48 w-full rounded" />
       </div>
     );
   }
